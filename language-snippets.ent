@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: e354213395a98fbfe4454e1c386aca7ab6613a66 Maintainer: prateekbhujel Status: ready -->
+<!-- Keep 'em sorted -->
+
+<!ENTITY installation.enabled.disable 'यो extension डिफल्ट रूपमा सक्षम (enabled) गरिएको हुन्छ। यसलाई compile गर्दा निम्न विकल्प दिएर अक्षम (disable) गर्न सकिन्छ: '>
+
+<!-- Cautions -->
+<!ENTITY caution.cryptographically-insecure '<caution xmlns="http://docbook.org/ns/docbook"><para>यो function ले cryptographically secure value उत्पन्न गर्दैन, त्यसैले यसलाई सुरक्षा वा क्रिप्टोग्राफी सम्बन्धी प्रयोजनमा प्रयोग गर्नु हुँदैन। यदि cryptographically secure value चाहिने हो भने <function>random_int</function>, <function>random_bytes</function>, वा <function>openssl_random_pseudo_bytes</function> प्रयोग गर्नुहोस्।</para></caution>'>
+
+<!-- Notes -->
+<!ENTITY note.bin-safe '<note xmlns="http://docbook.org/ns/docbook"><simpara>यो function binary-safe छ।</simpara></note>'>
+
+<!ENTITY note.clearstatcache '<note xmlns="http://docbook.org/ns/docbook"><simpara>यस function को नतिजा cache हुन्छ। थप विवरणका लागि <function>clearstatcache</function> हेर्नुहोस्।</simpara></note>'>
+
+<!ENTITY note.context-support '<note xmlns="http://docbook.org/ns/docbook"><simpara>Context को समर्थन PHP 5.0.0 मा थपिएको थियो। <literal>context</literal> को विवरणका लागि <xref linkend="ref.stream"/> हेर्नुहोस्।</simpara></note>'>
+
+<!ENTITY note.func-callback '<note xmlns="http://docbook.org/ns/docbook"><simpara>Function को नामको साटो object reference र method name समावेश भएको array पनि pass गर्न सकिन्छ।</simpara></note>'>
+
+<!ENTITY note.funcbyref '<note xmlns="http://docbook.org/ns/docbook"><para>यदि arguments हरू reference द्वारा pass गरिएका छन् भने, ती arguments मा गरिने कुनै पनि परिवर्तन यस function बाट प्राप्त हुने value मा पनि देखिनेछ।</para></note>'>
+
+<!ENTITY note.no-windows '<note xmlns="http://docbook.org/ns/docbook"><simpara>यो function Windows platform मा उपलब्ध छैन।</simpara></note>'>

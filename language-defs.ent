@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 437bbf134e015c678f9d4b8a5b8da53429a9a12d Maintainer: prateekbhujel Status: ready -->
+<!-- Part titles used mostly in manual.xml itself -->
+<!ENTITY PHPManual         "PHP म्यानुअल">
+<!ENTITY Seealso           "यो पनि हेर्नुहोस्">
+<!ENTITY Date              "मिति:">
+<!ENTITY GettingStarted    "सुरुवात (Getting Started)">
+<!ENTITY InstallAndConfigure "स्थापना र कन्फिगरेसन (Installation and Configuration)">
+<!ENTITY Installation      "स्थापना (Installation)">
+<!ENTITY LanguageReference "Language Reference">
+<!ENTITY Features          "विशेषताहरू (Features)">
+<!ENTITY Security          "सुरक्षा (Security)">
+<!ENTITY FunctionReference "Function Reference">
+<!ENTITY VariableandTypeRelatedExtensions         "Variable र Type सम्बन्धी Extensions">
+<!ENTITY TextProcessing                           "Text Processing">
+<!ENTITY AffectingPHPsBehaviour                   "PHP को व्यवहार निर्धारण गर्ने Extensions">
+<!ENTITY SessionExtensions                        "Session Extensions">
+<!ENTITY OtherBasicExtensions                     "अन्य आधारभूत Extensions">
+<!ENTITY DatabaseExtensions                       "Database Extensions">
+<!ENTITY AbstractionLayers                        "Abstraction Layers">
+<!ENTITY VendorSpecificDatabaseExtensions         "Vendor-Specific Database Extensions">
+<!ENTITY XMLManipulation                          "XML Manipulation">
+<!ENTITY WebServices                              "Web Services">
+<!ENTITY CreditCardProcessing                     "Credit Card Processing">
+<!ENTITY MathematicalExtensions                   "गणितीय (Mathematical) Extensions">
+<!ENTITY CryptographyExtensions                   "Cryptography Extensions">
+<!ENTITY HumanLanguageandCharacterEncodingSupport "भाषा तथा Character Encoding Support">
+<!ENTITY FileSystemRelatedExtensions              "File System सम्बन्धी Extensions">
+<!ENTITY ProcessControlExtensions                 "Process Control Extensions">
+<!ENTITY MailRelatedExtensions                    "इमेल सम्बन्धी Extensions">
+<!ENTITY AuthenticationServices                   "Authentication Services">
+<!ENTITY OtherServices                            "अन्य Services">
+<!ENTITY CompressionExtensions                    "Compression Extensions">
+<!ENTITY CalendarandEventRelatedExtensions        "क्यालेन्डर र Event सम्बन्धी Extensions">
+<!ENTITY NonTextMIMEOutput                        "Non-Text MIME Output">
+<!ENTITY ImageProcessingandGeneration             "इमेज प्रोसेसिङ र जेनेरेसन">
+<!ENTITY AudioFormatsManipulation                 "Audio Formats Manipulation">
+<!ENTITY CommandLineSpecificExtensions            "Command Line Specific Extensions">
+<!ENTITY WindowsOnlyExtensions                    "Windows-मात्र (Windows-Only) Extensions">
+<!ENTITY ServerSpecificExtensions                 "Server Specific Extensions">
+<!ENTITY SearchEngineExtensions                   "Search Engine Extensions">
+<!ENTITY MiscExtensions                           "विविध (Miscellaneous) Extensions">
+<!ENTITY UIExtensions                             "UI Extensions">
+<!ENTITY Appendices        "परिशिष्टहरू (Appendices)">
+<!ENTITY PEAR              "PEAR: PHP Extension and Application Repository">
+<!ENTITY FAQ               "प्रायः सोधिने प्रश्नहरू (FAQ)">
+<!ENTITY FAQabbrev         "FAQ">
+<!ENTITY Internals         "PHP र Zend Internals">
+<!ENTITY Internals2        "PHP Core: ह्याकरहरूको गाइड">
+<!ENTITY ZendAPI           "Zend API: PHP Core ह्याकिङ">
+<!ENTITY IndexListing      "Index सूची">
+<!ENTITY FunctionListing   "Function र Method सूची">
+<!ENTITY FunctionListingDescription   "म्यानुअलमा रहेका सम्पूर्ण function तथा method हरूको सूची">
+<!ENTITY ExampleListing    "उदाहरण सूची">
+<!ENTITY ExampleListingDescription   "म्यानुअलमा रहेका सम्पूर्ण उदाहरणहरूको सूची">
+<!ENTITY ChangelogListingTitle "परिवर्तन इतिहास (Changelog)">
+<!ENTITY ChangelogListingDescription "यस extension का class/function/method हरूमा गरिएका परिवर्तनहरू।">
+<!ENTITY ChangelogListingBundledDescription "बन्डल गरिएका extension का function हरूमा गरिएका परिवर्तनहरू।">
+<!ENTITY CHMEdition        "HTML Help Edition">
+<!ENTITY ReservedConstants "पूर्वपरिभाषित Constants (Predefined Constants)">
+<!ENTITY MissingStuff      "अपूर्ण जानकारी">
+<!ENTITY AndSeveralOthers  "र अन्य धेरै">
+<!ENTITY Version           "संस्करण (Version)">
+<!ENTITY Description       "विवरण (Description)">
+<!ENTITY Changeable        "परिवर्तनशील (Changeable)">
+<!ENTITY ConfigureOptions  "कन्फिगरेसन विकल्पहरू (Configure Options)">
+<!ENTITY Default           "डिफल्ट (Default)">
+<!ENTITY Definition        "परिभाषा (Definition)">
+<!ENTITY Functions         "Functions">
+<!ENTITY Name              "नाम (Name)">
+<!ENTITY Alias             "को Alias">
+<!ENTITY Type              "Type">
+<!ENTITY Changelog         "Changelog">
+<!ENTITY Methods           "Methods">
+<!ENTITY InheritedMethods  "Inherited Methods">
+<!ENTITY InheritedProperties "Inherited Properties">
+<!ENTITY Properties        "Properties">
+<!ENTITY InheritedConstants "Inherited Constants">
+<!ENTITY Constants         "Constants">
+<!ENTITY NotAvailable      "उपलब्ध छैन">
+
+<!-- These are used in reference/$extname/reference.xml and other
+supplemental files to mark section titles -->
+<!ENTITY reftitle.changelog    '<title xmlns="http://docbook.org/ns/docbook">Changelog</title>'>
+<!ENTITY reftitle.classes      '<title xmlns="http://docbook.org/ns/docbook">पूर्वपरिभाषित Classes</title>'>
+<!ENTITY reftitle.classsynopsis '<title xmlns="http://docbook.org/ns/docbook">Class सारांश</title>'>
+<!ENTITY reftitle.constants    '<title xmlns="http://docbook.org/ns/docbook">पूर्वपरिभाषित Constants</title>'>
+<!ENTITY reftitle.constructor  '<title xmlns="http://docbook.org/ns/docbook">Constructor</title>'>
+<!ENTITY reftitle.description  '<title xmlns="http://docbook.org/ns/docbook">विवरण</title>'>
+<!ENTITY reftitle.encoding     '<title xmlns="http://docbook.org/ns/docbook">Encoding</title>'>
+<!ENTITY reftitle.examples     '<title xmlns="http://docbook.org/ns/docbook">उदाहरणहरू</title>'>
+<!ENTITY reftitle.exceptions   '<title xmlns="http://docbook.org/ns/docbook">Exceptions</title>'>
+<!ENTITY reftitle.errors       '<title xmlns="http://docbook.org/ns/docbook">Errors/Exceptions</title>'>
+<!ENTITY reftitle.faq          '<title xmlns="http://docbook.org/ns/docbook">&FAQ;</title>'>
+<!ENTITY reftitle.install      '<title xmlns="http://docbook.org/ns/docbook">स्थापना (Installation)</title>'>
+<!ENTITY reftitle.intro        '<title xmlns="http://docbook.org/ns/docbook">परिचय</title>'>
+<!ENTITY reftitle.indices      '<title xmlns="http://docbook.org/ns/docbook">Indices</title>'>
+<!ENTITY reftitle.interfacesynopsis '<title xmlns="http://docbook.org/ns/docbook">Interface सारांश</title>'>
+<!ENTITY reftitle.methods      '<title xmlns="http://docbook.org/ns/docbook">Methods</title>'>
+<!ENTITY reftitle.mysqlnd      '<title xmlns="http://docbook.org/ns/docbook">MySQL Native Driver मात्र</title>'>
+<!ENTITY reftitle.notes        '<title xmlns="http://docbook.org/ns/docbook">नोटहरू</title>'>
+<!ENTITY reftitle.parameters   '<title xmlns="http://docbook.org/ns/docbook">Parameters</title>'>
+<!ENTITY reftitle.options      '<title xmlns="http://docbook.org/ns/docbook">विकल्पहरू</title>'>
+<!ENTITY reftitle.properties   '<title xmlns="http://docbook.org/ns/docbook">Properties</title>'>
+<!ENTITY reftitle.required     '<title xmlns="http://docbook.org/ns/docbook">आवश्यकताहरू (Requirements)</title>'>
+<!ENTITY reftitle.resources    '<title xmlns="http://docbook.org/ns/docbook">Resource Types</title>'>
+<!ENTITY reftitle.runtime      '<title xmlns="http://docbook.org/ns/docbook">Runtime कन्फिगरेसन</title>'>
+<!ENTITY reftitle.returnvalues '<title xmlns="http://docbook.org/ns/docbook">Return Values</title>'>
+<!ENTITY reftitle.seealso      '<title xmlns="http://docbook.org/ns/docbook">यो पनि हेर्नुहोस्:</title>'>
+<!ENTITY reftitle.setup        '<title xmlns="http://docbook.org/ns/docbook">स्थापना/कन्फिगरेसन</title>'>
+<!ENTITY reftitle.unicode      '<title xmlns="http://docbook.org/ns/docbook">Unicode</title>'>
+<!ENTITY reftitle.usage        '<title xmlns="http://docbook.org/ns/docbook">प्रयोग</title>'>

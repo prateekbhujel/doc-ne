@@ -1,0 +1,5 @@
+* text=auto eol=lf
+*.xml text eol=lf
+*.ent text eol=lf
+*.md text eol=lf
+*.php text eol=lf

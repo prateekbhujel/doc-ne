@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Reviewed: no -->
+<!DOCTYPE translation SYSTEM "../doc-base/phpbook/phpbook-xsml/translation.dtd">
+
+<translation xmlns="http://docbook.org/ns/docbook">
+
+ <intro>
+  The Nepali translation of the official PHP Documentation is maintained
+  by Pratik Bhujel. For more information, or to contribute to the Nepali
+  translation, visit https://github.com/prateekbhujel/doc-ne or write to
+  the PHP documentation mailing list at phpdoc@lists.php.net.
+ </intro>
+
+ <chmindex>
+  यो फाइल तयार भएको मिति: <datetime/><br/>
+  हालको संस्करणका लागि <a href="http://www.php.net/download-docs">http://www.php.net/download-docs</a> हेर्नुहोस्।
+ </chmindex>
+
+ <translators>
+  <person name="Pratik Bhujel" email="prateekbhujelpb@gmail.com" nick="prateekbhujel" vcs="yes" editor="yes" />
+ </translators>
+
+</translation>
