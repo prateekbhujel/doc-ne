@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: e7ec2928daf49d50796dfe74d106eb1068a1c72b Maintainer: prateekbhujel Status: ready -->
+ <chapter xml:id="language.basic-syntax" xmlns="http://docbook.org/ns/docbook" annotations="interactive">
+  <title>आधारभूत सिन्ट्याक्स (Basic syntax)</title>
+  <sect1 xml:id="language.basic-syntax.phptags">
+   <title>PHP tags</title>
+   <para>
+    जब PHP ले कुनै file process गर्छ, यसले PHP code को दायरा छुट्याउन सुरु र अन्त्यका tags, <literal>&lt;?php</literal> र <literal>?&gt;</literal> लाई पहिचान गर्छ। यी tags बाहिर रहेका सबै सामग्रीलाई PHP parser ले वेवास्ता गर्छ, जसले गर्दा PHP लाई विभिन्न प्रकारका documents भित्र सजिलै embed गर्न सकिन्छ।
+   </para>
+
+   <para>
+    Token हरूलाई सही रूपमा छुट्याउनका लागि <literal>&lt;?php</literal> पछाडि एउटा whitespace (space, tab, वा नयाँ लाइन) हुनैपर्छ। यो whitespace नराखेमा syntax error आउनेछ।
+   </para>
+
+   <para>
+    PHP मा short echo tag <literal>&lt;?=</literal> पनि समावेश छ, जुन <code>&lt;?php echo</code> को छोटो रूप (shorthand) हो।
+   </para>
+   <para>
+    <example>
+     <title>PHP सुरु र अन्त्य हुने Tags</title>
+     <programlisting role="php">
+<![CDATA[
+1.  <?php echo 'if you want to serve PHP code in XHTML or XML documents,
+                use these tags'; ?>
+
+2.  You can use the short echo tag to <?= 'print this string' ?>.
+    It's equivalent to <?php echo 'print this string' ?>.
+
+3.  <? echo 'this code is within short tags, but will only work '.
+            'if short_open_tag is enabled'; ?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+
+   <simpara>
+    Short tags (माथिको उदाहरणको तेस्रो लाइन) डिफल्ट रूपमा उपलब्ध हुन्छन्, तर &php.ini; configuration file को <link linkend="ini.short-open-tag">short_open_tag</link> directive मार्फत तिनलाई disable गर्न सकिन्छ। साथै यदि PHP लाई <option>--disable-short-tags</option> विकल्पसहित build गरिएको छ भने पनि short tags डिफल्ट रूपमै बन्द हुन्छन्।
+   </simpara>
+   <para>
+    <note>
+     <para>
+      Short tags बन्द गर्न सकिने भएकाले अधिकतम अनुकूलता (compatibility) का लागि सधैँ सामान्य tags (<code>&lt;?php ?&gt;</code> र <code>&lt;?= ?&gt;</code>) मात्र प्रयोग गर्न सिफारिस गरिन्छ।
+     </para>
+    </note>
+   </para>
+
+   <para>
+    यदि कुनै file केवल PHP code मा मात्र सकिन्छ भने, file को अन्त्यमा PHP closing tag (<literal>?&gt;</literal>) नराख्नु नै उत्तम मानिन्छ। यसले गर्दा closing tag पछाडि दुर्घटनावश कुनै space वा नयाँ लाइन थपिन पाउँदैन, जसले script ले कुनै output पठाउन नचाहेको अवस्थामा पनि अनावश्यक रूपमा output buffering सुरु भएर समस्या आउने सम्भावना रहँदैन।
+   </para>
+   <para>
+    <example>
+     <title>केवल PHP Code भएको File</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+echo "Hello world\n";
+
+// ... more code
+
+echo "Last statement\n";
+
+// the script ends here with no PHP closing tag
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </sect1>
+
+  <sect1 xml:id="language.basic-syntax.phpmode">
+   <title>HTML बाट बाहिरिने तरिका (Escaping from HTML)</title>
+   <para>
+    सुरु र अन्त्यका tags भन्दा बाहिर रहेका सबै कुरालाई PHP parser ले वेवास्ता गर्छ, जसले गर्दा एउटै PHP file भित्र मिश्रित सामग्रीहरू राख्न सकिन्छ। यही विशेषताका कारण PHP लाई HTML documents भित्र राखेर templates बनाउन प्रयोग गरिन्छ।
+   </para>
+   <para>
+    <example>
+     <title>HTML भित्र PHP embed गर्ने तरिका</title>
+     <programlisting role="php">
+<![CDATA[
+<p>This is going to be ignored by PHP and displayed by the browser.</p>
+<?php echo 'While this is going to be parsed.'; ?>
+<p>This will also be ignored by PHP and displayed by the browser.</p>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <para>
+    यसले सोचे अनुसार नै काम गर्छ, किनभने जब PHP interpreter ले ?&gt; closing tag भेट्छ, यसले अर्को opening tag नभेटेसम्म जे भेटिन्छ त्यसलाई सिधै output दिन थाल्छ (लगत्तै आउने नयाँ लाइन बाहेक - <link linkend="language.basic-syntax.instruction-separation">instruction separation</link> हेर्नुहोस्)। तर यदि यो कुनै conditional statement भित्र छ भने, interpreter ले कुन भाग छोड्ने (skip गर्ने) भन्ने निर्णय लिनु अघि त्यो condition को नतिजा मूल्याङ्कन गर्छ। अर्को उदाहरण हेरौँ:
+   </para>
+   <para>
+    Conditions सहित संरचनाहरूको प्रयोग:
+    <example>
+     <title>Conditions प्रयोग गरी Advanced escaping</title>
+     <programlisting role="php">
+<![CDATA[
+<?php if (true): ?>
+  This will show if the expression is true.
+<?php else: ?>
+  Otherwise this will show.
+<?php endif; ?>
+]]>
+     </programlisting>
+    </example>
+    यस उदाहरणमा condition पूरा नभएको block हरूलाई PHP ले skip गर्नेछ, भले ती PHP open/close tags भन्दा बाहिर किन नहुन्। PHP interpreter ले शर्त पूरा नभएको अवस्थामा त्यस भित्रका blocks हरूलाई नपढी अघि बढ्छ।
+   </para>
+   <para>
+    ठूलो मात्रामा text output दिनुपर्दा, सबै text लाई <function>echo</function> वा <function>print</function> बाट पठाउनु भन्दा PHP parsing mode बाट बाहिरिएर सिधै लेख्नु सामान्यतया धेरै कार्यकुशल (efficient) हुन्छ।
+   </para>
+   <para>
+    <note>
+     <para>
+      यदि PHP लाई XML वा XHTML भित्र embed गरिएको छ भने standards पालना गर्न सामान्य <code>&lt;?php ?&gt;</code> नै प्रयोग गर्नुपर्छ।
+     </para>
+    </note>
+   </para>
+  </sect1>
+
+  <sect1 xml:id="language.basic-syntax.instruction-separation">
+   <title>निर्देशन विभाजन (Instruction separation)</title>
+   <para>
+    C वा Perl जस्तै, PHP मा पनि प्रत्येक statement को अन्त्यमा semicolon (<literal>;</literal>) राखेर निर्देशनहरू समाप्त गर्नुपर्छ। PHP code को कुनै block को अन्तिम closing tag ले स्वतः semicolon को काम गर्छ; त्यसैले PHP block को अन्तिम line मा semicolon राख्न अनिवार्य छैन। साथै block को closing tag सँगै आउने नयाँ लाइन (newline) लाई पनि PHP ले यसैभित्र समावेश गरेर हटाउँछ।
+   </para>
+
+   <para>
+    <example>
+     <title>Closing tag ले पछिल्लो newline हटाउने उदाहरण</title>
+     <programlisting role="php">
+<![CDATA[
+<?php echo "Some text"; ?>
+No newline
+<?= "But newline now" ?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+Some textNo newline
+But newline now
+]]>
+     </screen>
+    </example>
+   </para>
+
+   <para>
+    <example>
+     <title>PHP parser भित्र पस्ने र बाहिरिने उदाहरणहरू</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+    echo "This is a test\n";
+?>
+
+<?php echo "This is a test\n" ?>
+
+<?php echo "We omitted the last closing tag\n";
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <para>
+    <note>
+     <para>
+      File को अन्त्यमा रहेको PHP block को closing tag ऐच्छिक (optional) हुन्छ। विशेष गरी <function>include</function> वा <function>require</function> प्रयोग गर्दा यसलाई नराख्नु फाइदाजनक हुन्छ, जसले गर्दा files को अन्त्यमा अनावश्यक खाली ठाउँ (whitespace) आउन पाउँदैन र पछि response मा HTTP headers थप्न बाधा पर्दैन। Output buffering प्रयोग गर्दा पनि include गरिएका files बाट अनावश्यक whitespace नआओस् भन्नका लागि यो उपयोगी हुन्छ।
+     </para>
+    </note>
+   </para>
+  </sect1>
+  <sect1 xml:id="language.basic-syntax.comments">
+   <title>कमेन्टहरू (Comments)</title>
+   <para>
+    PHP ले 'C', 'C++' र Unix shell-style (Perl style) comments लाई समर्थन गर्दछ। उदाहरणका लागि:
+   </para>
+   <para>
+    <example>
+     <title>Comments का प्रकारहरू</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+    echo "This is a test\n"; // This is a one-line c++ style comment
+    /* This is a multi line comment
+       yet another line of comment */
+    echo "This is yet another test\n";
+    echo "One Final Test\n"; # This is a one-line shell-style comment
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <simpara>
+    "One-line" (एक लाइनका) comments हरूले लाइनको अन्त्यसम्म वा चालु PHP block को अन्त्यसम्म मात्र कमेन्ट गर्छन्। यसको मतलब <literal>// ... ?&gt;</literal> वा <literal># ...  ?&gt;</literal> पछाडिको HTML code प्रिन्ट हुनेछ: किनभने ?&gt; ले PHP mode लाई बन्द गरी HTML mode मा फर्काउँछ, र <literal>//</literal> वा <literal>#</literal> ले त्यसलाई रोक्न सक्दैन।
+   </simpara>
+   <para>
+    <example>
+     <title>One Line Comments</title>
+     <programlisting role="php">
+<![CDATA[
+<h1>This is an <?php # echo 'simple';?> example</h1>
+<p>The header above will say 'This is an  example'.</p>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <simpara>
+    'C' style comments पहिलो पटक भेटिने <literal>*/</literal> मा पुगेपछि समाप्त हुन्छ। त्यसैले 'C' style comments लाई एउटाभित्र अर्को (nest) नगर्नुहोस्। ठूलो code block लाई कमेन्ट आउट गर्न खोज्दा यस्तो गल्ती हुन सक्छ।
+   </simpara>
+   <para>
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+ /*
+    echo 'This is a test'; /* This comment will cause a problem */
+ */
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+  </sect1>
+ </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
