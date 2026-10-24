@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 7132d8833a86604aa2d10c16c0470d0ef1a0fdfb Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.types.float" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>Floating-point numbers (दशमलव सङ्ख्याहरू)</title>
+
+ <simpara>
+  Floating-point numbers (जसलाई "floats", "doubles", वा "real numbers" पनि भनिन्छ) लाई निम्न मध्ये कुनै पनि सिन्ट्याक्स प्रयोग गरेर लेख्न सकिन्छ:
+ </simpara>
+
+ <informalexample>
+  <programlisting role="php">
+<![CDATA[
+<?php
+$a = 1.234;
+$b = 1.2e3;
+$c = 7E-10;
+$d = 1_234.567; // PHP 7.4.0 देखि
+?>
+]]>
+  </programlisting>
+ </informalexample>
+
+ <para>
+  औपचारिक रूपमा, PHP 7.4.0 अनुसार सिन्ट्याक्स:
+ </para>
+
+ <informalexample>
+  <programlisting>
+<![CDATA[
+LNUM          [0-9]+(_[0-9]+)*
+DNUM          ({LNUM}?"."{LNUM}) | ({LNUM}"."{LNUM}?)
+EXPONENT_DNUM (({LNUM} | {DNUM}) [eE][+-]? {LNUM})
+]]>
+  </programlisting>
+ </informalexample>
+
+ <para>
+  Float को आकार platform मा भर पर्छ, यद्यपि लगभग 1.8e308 को अधिकतम मान र करिब १४ दशमलव अंकको शुद्धता (precision) सामान्य मान हो (६४-बिट IEEE format)।
+ </para>
+
+ <warning xml:id="warn.float-precision">
+  <title>Floating-point शुद्धता (Floating-point precision)</title>
+
+  <simpara>
+   Floating-point numbers को शुद्धता सीमित हुन्छ। PHP ले सामान्यतया IEEE 754 double precision format प्रयोग गर्छ, जसले गर्दा राउन्डिङका कारण अधिकतम त्रुटि लगभग 1.11e-16 सम्म हुन सक्छ। जटिल गणितीय गणनामा अझ बढी त्रुटि हुन सक्छ।
+  </simpara>
+
+  <simpara>
+   यसका अतिरिक्त, आधार १० मा स्पष्ट देखिने दशमलव सङ्ख्याहरू (जस्तै <literal>0.1</literal> वा <literal>0.7</literal>) लाई computer को भित्री आधार २ (binary) प्रणालीमा सधैँ दुरुस्त रूपमा राख्न सकिँदैन। त्यसैले तिनलाई बाइनरीमा बदल्दा केही सूक्ष्म शुद्धता गुम्न पुग्छ। यसले गर्दा कहिलेकाहीँ अचम्म लाग्दो नतिजा आउँछ: उदाहरणका लागि, <literal>floor((0.1+0.7)*10)</literal> ले अपेक्षा गरिएको <literal>8</literal> को साटो सामान्यतया <literal>7</literal> फर्काउँछ, किनभने भित्री रूपमा यसको मान <literal>7.9999999999999991118...</literal> जस्तो हुन जान्छ।
+  </simpara>
+
+  <simpara>
+   त्यसैले floating-point numbers को अन्तिम अंकमा कहिल्यै आँखा चिम्लेर भर नपर्नुहोस्, र दुई floats लाई सिधै समानताका लागि (<literal>==</literal>) तुलना नगर्नुहोस्। यदि उच्च शुद्धता आवश्यक छ भने <link linkend="ref.bc">BCMath functions</link> वा <link linkend="ref.gmp">GMP</link> functions प्रयोग गर्नुहोस्।
+  </simpara>
+
+  <para>
+   सरल व्याख्याका लागि "Why don’t my numbers add up?" शीर्षकको <link xlink:href="&url.floating.point.guide;">floating point guide</link> हेर्नुहोस्।
+  </para>
+ </warning>
+
+ <sect2 xml:id="language.types.float.casting">
+  <title>Float मा परिवर्तन गर्ने तरिका (Converting to float)</title>
+
+  <sect3 xml:id="language.types.float.casting.from-string">
+   <title>Strings बाट</title>
+
+   <simpara>
+    यदि string <link linkend="language.types.numeric-strings">numeric</link> छ भने त्यो सम्बन्धित float value मा परिणत हुन्छ, अन्यथा शून्य (<literal>0</literal>) बन्छ।
+   </simpara>
+  </sect3>
+
+  <sect3 xml:id="language.types.float.casting.from-other">
+   <title>अन्य types बाट</title>
+
+   <para>
+    अन्य types का values का लागि, पहिले त्यसलाई <type>int</type> मा र त्यसपछि <type>float</type> मा परिवर्तन गरिन्छ। थप जानकारीका लागि <link linkend="language.types.integer.casting">Integer मा परिवर्तन गर्ने तरिका</link> हेर्नुहोस्।
+   </para>
+  </sect3>
+ </sect2>
+
+ <sect2 xml:id="language.types.float.comparison">
+  <title>Floats तुलना गर्ने तरिका (Comparing floats)</title>
+
+  <simpara>
+   माथिको चेतावनीमा उल्लेख गरिए जस्तै, भित्री भण्डारण पद्धतिका कारण दुईवटा floating-point values को समानता जाँच्नु चुनौतीपूर्ण हुन्छ। तथापि, यी सीमाहरूलाई पार गरेर तुलना गर्ने उपायहरू छन्।
+  </simpara>
+
+  <simpara>
+   दुई floats समान छन् कि छैनन् भनी जाँच्नका लागि, गणनामा आउन सक्ने न्यूनतम स्वीकार्य भिन्नता (machine epsilon) प्रयोग गरिन्छ:
+  </simpara>
+
+  <example>
+   <title>Floats तुलना गर्ने उदाहरण</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a = 1.23456789;
+$b = 1.23456780;
+$epsilon = 0.00001;
+
+if (abs($a - $b) < $epsilon) {
+    echo "समान छन् (true)";
+}
+?>
+]]>
+   </programlisting>
+  </example>
+ </sect2>
+
+ <sect2 xml:id="language.types.float.nan">
+  <title>NaN</title>
+  <para>
+   केही गणितीय गणनाहरूको नतिजा <constant>NAN</constant> constant द्वारा प्रतिनिधित्व गरिन्छ। यसको अर्थ "Not a Number" हो, जसले floating-point गणनामा अनिर्धारित वा व्यक्त गर्न नसकिने मानलाई जनाउँछ। यो मानलाई आफू लगायत अन्य जुनसुकै मानहरूसँग तुलना गर्दा (कडा वा खुकुलो तुलना) सधैँ &false; आउँछ (&true; बाहेक)।
+  </para>
+  <para>
+   <constant>NAN</constant> ले कुनै पनि भिन्न मानहरूलाई प्रतिनिधित्व गर्न सक्ने भएकाले, यसलाई कहिल्यै अन्य मानहरूसँग सिधै तुलना गर्नु हुँदैन; यसको साटो सधैँ <function>is_nan</function> function प्रयोग गरी जाँच्नुपर्छ।
+  </para>
+ </sect2>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

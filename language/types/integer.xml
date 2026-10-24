@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 4fc9f9ea7ba36a383613ede343a0820f5cc46aa2 Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.types.integer">
+ <title>Integers (इन्टिजरहरू)</title>
+
+ <simpara>
+  <type>int</type> भनेको पूर्ण सङ्ख्याहरूको समूह &#8484; = {..., -2, -1, 0, 1, 2, ...} मध्येको कुनै एउटा सङ्ख्या हो।
+ </simpara>
+
+ <sect2 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><link linkend="language.types.float">Floating-point numbers</link></member>
+    <member><link linkend="book.bc">Arbitrary precision / BCMath</link></member>
+    <member><link linkend="book.gmp">Arbitrary length integer / GMP</link></member>
+   </simplelist>
+  </para>
+ </sect2>
+
+ <sect2 xml:id="language.types.integer.syntax">
+  <title>सिन्ट्याक्स (Syntax)</title>
+
+  <simpara>
+   <type>Int</type>s लाई decimal (आधार १०), hexadecimal (आधार १६), octal (आधार ८) वा binary (आधार २) स्वरूपमा लेख्न सकिन्छ।
+   ऋणात्मक <type>int</type> देखाउनका लागि <link linkend="language.operators.arithmetic">negation operator</link> (<literal>-</literal>) प्रयोग गर्न सकिन्छ।
+  </simpara>
+
+  <simpara>
+   Octal सङ्ख्या लेख्न सङ्ख्याको अगाडि <literal>0</literal> (शून्य) राख्नुपर्छ। PHP 8.1.0 देखि अगाडि <literal>0o</literal> वा <literal>0O</literal> पनि राख्न सकिन्छ।
+   Hexadecimal लेख्न अगाडि <literal>0x</literal> राख्नुपर्छ।
+   Binary लेख्न अगाडि <literal>0b</literal> राख्नुपर्छ।
+  </simpara>
+
+  <para>
+   PHP 7.4.0 देखि integer literals लाई पढ्न सजिलो बनाउन अंकहरूको बीचमा underscore (<literal>_</literal>) राख्न पाइन्छ। यी underscores लाई PHP को scanner ले स्वतः हटाइदिन्छ।
+  </para>
+
+  <example>
+   <title>Integer literals का उदाहरणहरू</title>
+   <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+$a = 1234; // decimal number
+$a = 0123; // octal number (decimal मा 83 बराबर)
+$a = 0o123; // octal number (PHP 8.1.0 देखि)
+$a = 0x1A; // hexadecimal number (decimal मा 26 बराबर)
+$a = 0b11111111; // binary number (decimal मा 255 बराबर)
+$a = 1_234_567; // decimal number (PHP 7.4.0 देखि)
+?>
+]]>
+   </programlisting>
+  </example>
+
+  <para>
+   औपचारिक रूपमा, PHP 8.1.0 अनुसार <type>int</type> literals को संरचना यस प्रकार छ:
+  </para>
+
+  <informalexample>
+   <programlisting>
+<![CDATA[
+decimal     : [1-9][0-9]*(_[0-9]+)*
+            | 0
+
+hexadecimal : 0[xX][0-9a-fA-F]+(_[0-9a-fA-F]+)*
+
+octal       : 0[oO]?[0-7]+(_[0-7]+)*
+
+binary      : 0[bB][01]+(_[01]+)*
+
+integer     : decimal
+            | hexadecimal
+            | octal
+            | binary
+]]>
+   </programlisting>
+  </informalexample>
+
+  <para>
+   <type>int</type> को आकार (size) platform अनुसार फरक हुन्छ, यद्यपि सामान्यतया अधिकतम मान करिब २ अर्ब हुन्छ (३२-बिट signed सङ्ख्या)।
+   ६४-बिट platforms मा सामान्यतया अधिकतम मान करिब ९E१८ हुन्छ।
+   PHP ले unsigned <type>int</type>s समर्थन गर्दैन।
+   <type>int</type> को आकार <constant>PHP_INT_SIZE</constant> constant मार्फत, अधिकतम मान <constant>PHP_INT_MAX</constant> मार्फत, र न्यूनतम मान <constant>PHP_INT_MIN</constant> मार्फत पत्ता लगाउन सकिन्छ।
+  </para>
+ </sect2>
+
+ <sect2 xml:id="language.types.integer.overflow">
+  <title>Integer overflow</title>
+
+  <para>
+   यदि PHP ले <type>int</type> type को सीमा भन्दा ठूलो सङ्ख्या भेट्यो भने, त्यसलाई स्वतः <type>float</type> को रूपमा मूल्याङ्कन गरिन्छ। त्यस्तै, कुनै गणनाको नतिजा <type>int</type> को सीमा नाघ्यो भने पनि त्यसले <type>float</type> नै फर्काउँछ।
+  </para>
+
+  <example>
+   <title>Integer overflow को उदाहरण</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$large_number = 50000000000000000000;
+var_dump($large_number);         // float(5.0E+19)
+
+var_dump(PHP_INT_MAX + 1);       // 32-bit system: float(2147483648)
+                                 // 64-bit system: float(9.2233720368548E+18)
+?>
+]]>
+   </programlisting>
+  </example>
+ </sect2>
+
+ <sect2 xml:id="language.types.integer.division">
+  <title>Integer भाग (Integer division)</title>
+
+  <simpara>
+   PHP मा छुट्टै <type>int</type> division operator छैन। पूर्णाङ्क भागफल निकाल्नका लागि <function>intdiv</function> function प्रयोग गर्नुहोस्।
+   <literal>1/2</literal> ले <type>float</type> <literal>0.5</literal> दिन्छ। त्यो value लाई <type>int</type> मा cast गरेर शून्यतर्फ राउन्ड गर्न सकिन्छ, अथवा <function>round</function> function प्रयोग गरेर अझ राम्रो नियन्त्रण गर्न सकिन्छ।
+  </simpara>
+
+  <example>
+   <title>भाग गर्ने उदाहरणहरू</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+var_dump(25/7);         // float(3.5714285714286)
+var_dump((int) (25/7)); // int(3)
+var_dump(round(25/7));  // float(4)
+?>
+]]>
+   </programlisting>
+  </example>
+ </sect2>
+
+ <sect2 xml:id="language.types.integer.casting">
+  <title>Integer मा परिवर्तन गर्ने तरिका (Converting to integer)</title>
+
+  <simpara>
+   कुनै value लाई स्पष्ट रूपमा <type>int</type> मा परिणत गर्न <literal>(int)</literal> cast प्रयोग गर्नुहोस्। यद्यपि धेरैजसो अवस्थामा यो cast आवश्यक पर्दैन, किनभने operator, function वा control structure ले <type>int</type> argument माग गर्दा PHP ले value लाई स्वतः परिवर्तन गरिदिन्छ। <function>intval</function> function मार्फत पनि मानलाई <type>int</type> बनाउन सकिन्छ।
+  </simpara>
+
+  <simpara>
+   यदि कुनै <type>resource</type> लाई <type>int</type> मा cast गरियो भने त्यसको नतिजा runtime मा PHP ले त्यो <type>resource</type> लाई दिएको विशिष्ट resource नम्बर हुनेछ।
+  </simpara>
+
+  <simpara>
+   यो पनि हेर्नुहोस्: <link linkend="language.types.type-juggling">Type Juggling</link>।
+  </simpara>
+
+  <sect3 xml:id="language.types.integer.casting.from-boolean">
+   <title><link linkend="language.types.boolean">Booleans</link> बाट</title>
+
+   <simpara>
+    &false; ले <literal>0</literal> (शून्य) दिन्छ, र &true; ले <literal>1</literal> (एक) दिन्छ।
+   </simpara>
+  </sect3>
+
+  <sect3 xml:id="language.types.integer.casting.from-float">
+   <title>
+    <link linkend="language.types.float">Floating point numbers</link> बाट
+   </title>
+
+   <simpara>
+    <type>float</type> बाट <type>int</type> मा परिवर्तन गर्दा सङ्ख्यालाई <emphasis>शून्यतर्फ</emphasis> राउन्ड गरिन्छ। PHP 8.1.0 देखि, यदि दशमलव भएको float लाई int मा बदल्दा precision गुम्छ भने deprecation notice जारी हुन्छ।
+   </simpara>
+
+   <example>
+    <title>Float बाट Cast गर्ने उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+function foo($value): int {
+  return $value;
+}
+
+var_dump(foo(8.1)); // PHP 8.1.0 देखि: "Deprecated: Implicit conversion from float 8.1 to int loses precision"
+var_dump(foo(8.1)); // PHP 8.1.0 भन्दा अघि: 8
+var_dump(foo(8.0)); // दुवै अवस्थामा 8
+
+var_dump((int) 8.1); // दुवै अवस्थामा 8
+var_dump(intval(8.1)); // दुवै अवस्थामा 8
+?>
+]]>
+    </programlisting>
+   </example>
+
+   <warning>
+    <para>
+     कुनै पनि अज्ञात भिन्न (unknown fraction) लाई कहिल्यै सिधै <type>int</type> मा cast नगर्नुहोस्, किनभने यसले कहिलेकाहीँ अप्रत्याशित नतिजा दिन सक्छ।
+    </para>
+
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+echo (int) ( (0.1+0.7) * 10 ); // यसले 7 output दिन्छ!
+?>
+]]>
+     </programlisting>
+    </informalexample>
+
+    <para>
+     यो पनि हेर्नुहोस्: <link linkend="warn.float-precision">float precision सम्बन्धी चेतावनी</link>।
+    </para>
+   </warning>
+  </sect3>
+
+  <sect3 xml:id="language.types.integer.casting.from-string">
+   <title>Strings बाट</title>
+
+   <simpara>
+    यदि string <link linkend="language.types.numeric-strings">numeric</link> छ भने त्यो सम्बन्धित integer value मा रूपान्तरण हुन्छ, अन्यथा शून्य (<literal>0</literal>) बन्छ।
+   </simpara>
+  </sect3>
+
+  <sect3 xml:id="language.types.integer.casting-from-null">
+   <title><type>NULL</type> बाट</title>
+
+   <simpara>
+    &null; सधैँ शून्य (<literal>0</literal>) मा परिणत हुन्छ।
+   </simpara>
+  </sect3>
+
+  <sect3 xml:id="language.types.integer.casting.from-other">
+   <title>अन्य types बाट</title>
+
+   <caution>
+    <simpara>
+     अन्य types बाट <type>int</type> मा परिवर्तन गर्दाको व्यवहार अनिश्चित (undefined) हुन्छ। कुनै देखिएको व्यवहारमा भर नपर्नुहोस्, किनभने यो बिना जानकारी परिवर्तन हुन सक्छ।
+    </simpara>
+   </caution>
+  </sect3>
+
+ </sect2>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

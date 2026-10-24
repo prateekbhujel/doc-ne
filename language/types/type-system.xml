@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 7132d8833a86604aa2d10c16c0470d0ef1a0fdfb Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.types.type-system">
+ <title>Type System (प्रकार प्रणाली)</title>
+
+ <para>
+  PHP ले बलियो behavioral subtyping सम्बन्ध भएको nominal type system प्रयोग गर्दछ।
+  Subtyping सम्बन्धलाई compile time मा जाँच गरिन्छ भने types को प्रमाणीकरण (verification) runtime मा dynamically जाँच गरिन्छ।
+ </para>
+
+ <para>
+  PHP को type system ले विभिन्न atomic types लाई समर्थन गर्छ, जसलाई आपसमा मिलाएर अझ जटिल types बनाउन सकिन्छ। यीमध्ये केही types लाई <link linkend="language.types.declarations">type declarations</link> को रूपमा लेख्न सकिन्छ।
+ </para>
+
+ <sect2 xml:id="language.types.type-system.atomic">
+  <title>Atomic types</title>
+  <simpara>
+   केही atomic types हरू built-in types हुन् जुन भाषासँग गहिरो रूपमा गाँसिएका हुन्छन् र तिनलाई user-defined types मार्फत पुन: बनाउन सकिँदैन।
+  </simpara>
+
+  <para>
+   आधारभूत types को सूची यस प्रकार छ:
+   <itemizedlist>
+    <listitem>
+     <simpara>Built-in types</simpara>
+     <itemizedlist>
+      <listitem>
+       <simpara>
+        Scalar types:
+       </simpara>
+       <itemizedlist>
+        <listitem>
+         <simpara><type>bool</type> type</simpara>
+        </listitem>
+        <listitem>
+         <simpara><type>int</type> type</simpara>
+        </listitem>
+        <listitem>
+         <simpara><type>float</type> type</simpara>
+        </listitem>
+        <listitem>
+         <simpara><type>string</type> type</simpara>
+        </listitem>
+       </itemizedlist>
+      </listitem>
+      <listitem>
+       <simpara><type>array</type> type</simpara>
+      </listitem>
+      <listitem>
+       <simpara><type>object</type> type</simpara>
+      </listitem>
+      <listitem>
+       <simpara><type>resource</type> type</simpara>
+      </listitem>
+      <listitem>
+       <simpara><type>never</type> type</simpara>
+      </listitem>
+      <listitem>
+       <simpara><type>void</type> type</simpara>
+      </listitem>
+      <listitem>
+       <simpara>
+        <link linkend="language.types.relative-class-types">Relative class types</link>:
+        <type>self</type>, <type>parent</type>, र <type>static</type>
+       </simpara>
+      </listitem>
+      <listitem>
+       <simpara>
+        <link linkend="language.types.singleton">Singleton types</link>
+       </simpara>
+       <itemizedlist>
+        <listitem>
+         <simpara><type>false</type></simpara>
+        </listitem>
+        <listitem>
+         <simpara><type>true</type></simpara>
+        </listitem>
+       </itemizedlist>
+      </listitem>
+      <listitem>
+       <simpara>
+        Unit types
+       </simpara>
+       <itemizedlist>
+        <listitem>
+         <simpara><type>null</type></simpara>
+        </listitem>
+       </itemizedlist>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+    <listitem>
+     <simpara>
+      User-defined types (सामान्यतया class-types भनिन्छ)
+     </simpara>
+     <itemizedlist>
+      <listitem>
+       <simpara><link linkend="language.oop5.interfaces">Interfaces</link></simpara>
+      </listitem>
+      <listitem>
+       <simpara><link linkend="language.oop5.basic.class">Classes</link></simpara>
+      </listitem>
+      <listitem>
+       <simpara><link linkend="language.types.enumerations">Enumerations</link></simpara>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+    <listitem>
+     <simpara><type>callable</type> type</simpara>
+    </listitem>
+   </itemizedlist>
+  </para>
+
+  <sect3 xml:id="language.types.type-system.atomic.scalar">
+   <title>Scalar types</title>
+   <simpara>
+    यदि कुनै value <type>int</type>, <type>float</type>, <type>string</type> वा <type>bool</type> type को हो भने त्यसलाई scalar मानिन्छ।
+   </simpara>
+  </sect3>
+
+  <sect3 xml:id="language.types.type-system.atomic.user-defined">
+   <title>User-defined types</title>
+   <simpara>
+    <link linkend="language.oop5.interfaces">Interfaces</link>, <link linkend="language.oop5.basic.class">classes</link> र <link linkend="language.types.enumerations">enumerations</link> प्रयोग गरेर अनुकूल (custom) types परिभाषित गर्न सकिन्छ। यिनीहरूलाई user-defined types, वा class-types भनिन्छ। उदाहरणका लागि, <literal>Elephant</literal> नामको class परिभाषित गरेपछि <literal>Elephant</literal> type का objects बनाउन सकिन्छ, र कुनै function ले <literal>Elephant</literal> type को parameter माग गर्न सक्छ।
+   </simpara>
+  </sect3>
+ </sect2>
+
+ <sect2 xml:id="language.types.type-system.composite">
+  <title>Composite types</title>
+  <para>
+   धेरै atomic types लाई मिलाएर composite types बनाउन सम्भव छ। PHP ले निम्न तरिकाले types संयोजन गर्न अनुमति दिन्छ:
+  </para>
+
+  <itemizedlist>
+   <listitem>
+    <simpara>
+     Class-types को Intersection (interfaces र class names)।
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     Types को Union।
+    </simpara>
+   </listitem>
+  </itemizedlist>
+
+  <sect3 xml:id="language.types.type-system.composite.intersection">
+   <title>Intersection types</title>
+   <simpara>
+    Intersection type ले कुनै एउटा मात्र नभएर धेरै class-type declarations लाई एकसाथ पूरा गर्ने values लाई मात्र स्वीकार गर्छ।
+    Intersection type बनाउने व्यक्तिगत types लाई <literal>&amp;</literal> चिन्हले जोडिन्छ। त्यसैले <literal>T</literal>, <literal>U</literal>, र <literal>V</literal> types मिलेर बनेको intersection type लाई <literal>T&amp;U&amp;V</literal> लेखिन्छ।
+   </simpara>
+  </sect3>
+
+  <sect3 xml:id="language.types.type-system.composite.union">
+   <title>Union types</title>
+   <simpara>
+    Union type ले कुनै एउटा मात्र नभएर धेरै फरक types का values मध्ये कुनै पनि एउटालाई स्वीकार गर्छ।
+    Union type बनाउने व्यक्तिगत types लाई <literal>|</literal> चिन्हले जोडिन्छ। त्यसैले <literal>T</literal>, <literal>U</literal>, र <literal>V</literal> types मिलेर बनेको union type लाई <literal>T|U|V</literal> लेखिन्छ।
+    यदि ती types मध्ये कुनै एउटा intersection type हो भने, त्यसलाई <acronym>DNF</acronym> मा लेख्नका लागि कोष्ठक (parentheses) भित्र राख्नुपर्छ: <literal>T|(X&amp;Y)</literal>।
+   </simpara>
+  </sect3>
+ </sect2>
+
+ <sect2 xml:id="language.types.type-system.alias">
+  <title>Type aliases</title>
+
+  <simpara>
+   PHP ले दुई प्रकारका type aliases लाई समर्थन गर्दछ: <type>mixed</type> र <type>iterable</type>। यी क्रमशः <literal>object|resource|array|string|float|int|bool|null</literal> र <literal>Traversable|array</literal> को <link linkend="language.types.type-system.composite.union">union type</link> सँग मेल खान्छन्।
+  </simpara>
+
+  <note>
+   <simpara>
+    PHP ले user-defined type aliases लाई समर्थन गर्दैन।
+   </simpara>
+  </note>
+ </sect2>
+
+</sect1>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
