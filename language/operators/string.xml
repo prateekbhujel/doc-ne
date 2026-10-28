@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.operators.string">
+ <title>String Operators</title>
+ <titleabbrev>String</titleabbrev>
+ <simpara>
+  PHP मा दुईवटा <type>string</type> operators छन्। पहिलो concatenation operator ('.') हो, जसले बायाँ र दायाँका दुई strings लाई जोडेर नयाँ string निकाल्छ। दोस्रो concatenating assignment operator ('<literal>.=</literal>') हो, जसले दायाँपट्टिको argument लाई बायाँपट्टिको argument को पछाडि जोड्छ। थप जानकारीका लागि <link linkend="language.operators.assignment">Assignment Operators</link> हेर्नुहोस्।
+ </simpara>
+
+ <para>
+  <example>
+   <title>String जोड्ने (Concatenating) उदाहरण</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a = "Hello ";
+$b = $a . "World!"; // अब $b भित्र "Hello World!" हुन्छ
+var_dump($b);
+
+$a = "Hello ";
+$a .= "World!";     // अब $a भित्र "Hello World!" हुन्छ
+var_dump($a);
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
+
+ <sect2 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><link linkend="language.types.string">String type</link></member>
+    <member><link linkend="ref.strings">String functions</link></member>
+   </simplelist>
+  </para>
+ </sect2>
+</sect1>

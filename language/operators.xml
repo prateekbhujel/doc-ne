@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 6043cd25418a3c45c64a4af118ee939c1835251b Maintainer: prateekbhujel Status: ready -->
+<chapter xml:id="language.operators" xmlns="http://docbook.org/ns/docbook" annotations="interactive">
+ <title>Operators (अपरेटरहरू)</title>
+ <simpara>
+  Operator भनेको त्यस्तो सङ्केत वा प्रतीक हो जसले एक वा बढी values (वा प्रोग्रामिङको भाषामा expressions) लिन्छ र अर्को नयाँ value निकाल्छ (जसले गर्दा त्यो संरचना आफैँमा एउटा expression बन्न पुग्छ)।
+ </simpara>
+ <para>
+  Operators लाई तिनले लिने values को सङ्ख्याका आधारमा वर्गीकरण गर्न सकिन्छ। Unary operators ले केवल एउटा मात्र value लिन्छन्; उदाहरणका लागि <literal>!</literal> (<link linkend="language.operators.logical">logical not operator</link>) वा <literal>++</literal> (<link linkend="language.operators.increment">increment operator</link>)।
+  Binary operators ले दुईवटा values लिन्छन्, जस्तै हामी सबैलाई परिचित <link linkend="language.operators.arithmetic">arithmetical operators</link> <literal>+</literal> (जोड) र <literal>-</literal> (घटाउ)। PHP का अधिकांश operators यसै वर्गमा पर्दछन्। अन्तमा, एउटा <link linkend="language.operators.comparison.ternary">ternary operator</link> (<literal>? :</literal>) छ, जसले तीनवटा values लिन्छ।
+ </para>
+ <para>
+  PHP का सबै operators को पूर्ण सूची <link linkend="language.operators.precedence">Operator Precedence</link> खण्डमा दिइएको छ। त्यस खण्डमा धेरै operators सँगै आउँदा कुन पहिला मूल्याङ्कन हुन्छ भन्ने precedence र associativity नियमहरूको पनि व्याख्या गरिएको छ।
+ </para>
+
+ &language.operators.precedence;
+ &language.operators.arithmetic;
+ &language.operators.increment;
+ &language.operators.assignment;
+ &language.operators.bitwise;
+ &language.operators.comparison;
+ &language.operators.errorcontrol;
+ &language.operators.execution;
+ &language.operators.logical;
+ &language.operators.string;
+ &language.operators.array;
+ &language.operators.type;
+ &language.operators.functional;
+
+</chapter>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

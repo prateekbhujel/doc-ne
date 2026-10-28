@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 4fc9f9ea7ba36a383613ede343a0820f5cc46aa2 Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.operators.comparison">
+ <title>Comparison Operators (तुलना अपरेटरहरू)</title>
+ <titleabbrev>Comparison</titleabbrev>
+ <simpara>
+  Comparison operators ले नामले नै सङ्केत गरे जस्तै दुईवटा values बीच तुलना गर्न अनुमति दिन्छन्।
+ </simpara>
+ <table>
+  <title>Comparison Operators</title>
+  <tgroup cols="3">
+   <thead>
+    <row>
+     <entry>उदाहरण (Example)</entry>
+     <entry>नाम (Name)</entry>
+     <entry>नतिजा (Result)</entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry>$a == $b</entry>
+     <entry>Equal</entry>
+     <entry>Type juggling पछि यदि <varname>$a</varname> र <varname>$b</varname> बराबर भएमा &true;।</entry>
+    </row>
+    <row>
+     <entry>$a === $b</entry>
+     <entry>Identical</entry>
+     <entry>
+      यदि <varname>$a</varname> र <varname>$b</varname> बराबर छन् र दुवै उही type का हुन् भने &true;।
+     </entry>
+    </row>
+    <row>
+     <entry>$a != $b</entry>
+     <entry>Not equal</entry>
+     <entry>Type juggling पछि यदि <varname>$a</varname> र <varname>$b</varname> बराबर छैनन् भने &true;।</entry>
+    </row>
+    <row>
+     <entry>$a &lt;&gt; $b</entry>
+     <entry>Not equal</entry>
+     <entry>Type juggling पछि यदि <varname>$a</varname> र <varname>$b</varname> बराबर छैनन् भने &true;।</entry>
+    </row>
+    <row>
+     <entry>$a !== $b</entry>
+     <entry>Not identical</entry>
+     <entry>
+      यदि <varname>$a</varname> र <varname>$b</varname> बराबर छैनन्, वा दुवै उही type का होइनन् भने &true;।
+     </entry>
+    </row>
+    <row>
+     <entry>$a &lt; $b</entry>
+     <entry>Less than</entry>
+     <entry>यदि <varname>$a</varname> strictly <varname>$b</varname> भन्दा सानो भएमा &true;।</entry>
+    </row>
+    <row>
+     <entry>$a &gt; $b</entry>
+     <entry>Greater than</entry>
+     <entry>यदि <varname>$a</varname> strictly <varname>$b</varname> भन्दा ठूलो भएमा &true;।</entry>
+    </row>
+    <row>
+     <entry>$a &lt;= $b</entry>
+     <entry>Less than or equal to</entry>
+     <entry>यदि <varname>$a</varname>, <varname>$b</varname> भन्दा सानो वा बराबर भएमा &true;।</entry>
+    </row>
+    <row>
+     <entry>$a &gt;= $b</entry>
+     <entry>Greater than or equal to</entry>
+     <entry>यदि <varname>$a</varname>, <varname>$b</varname> भन्दा ठूलो वा बराबर भएमा &true;।</entry>
+    </row>
+    <row>
+     <entry>$a &lt;=&gt; $b</entry>
+     <entry>Spaceship</entry>
+     <entry>
+      क्रमशः <varname>$a</varname> सानो, बराबर, वा ठूलो हुँदा शून्य भन्दा कम (-१), शून्य (०), वा शून्य भन्दा बढी (१) भएको <type>int</type>।
+     </entry>
+    </row>
+   </tbody>
+  </tgroup>
+ </table>
+ <para>
+  जब तुलना <literal>===</literal> वा <literal>!==</literal> मार्फत गरिन्छ, त्यहाँ कुनै type conversion हुँदैन किनभने यसले value का साथै type को पनि तुलना गर्छ।
+ </para>
+
+ <sect2 xml:id="language.operators.comparison.ternary">
+  <title>Ternary Operator</title>
+  <para>
+   अर्को महत्वपूर्ण conditional operator भनेको "?:" (वा ternary) operator हो।
+   <example>
+    <title>Ternary Operator को सिन्ट्याक्स</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// $action को मान empty भएमा 'default' लिने
+$action = (empty($_POST['action'])) ? 'default' : $_POST['action'];
+
+// माथिको कोड तलको if/else सँग बराबर हुन्छ:
+if (empty($_POST['action'])) {
+    $action = 'default';
+} else {
+    $action = $_POST['action'];
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </sect2>
+
+ <sect2 xml:id="language.operators.comparison.coalesce">
+  <title>Null Coalescing Operator</title>
+  <para>
+   PHP 7 मा थपिएको null coalescing operator (<literal>??</literal>) ले कुनै variable सेट भएको छ र &null; छैन भने त्यसको मान लिन्छ, अन्यथा दोस्रो मानमा फर्कन्छ:
+   <example>
+    <title>Null Coalescing Operator को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// यदि $_GET['user'] सेट छ भने त्यो लिने, नभए 'nobody' लिने
+$username = $_GET['user'] ?? 'nobody';
+
+// यो तलको सँग बराबर हुन्छ:
+$username = isset($_GET['user']) ? $_GET['user'] : 'nobody';
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </sect2>
+
+</sect1>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.operators.assignment">
+ <title>Assignment Operators</title>
+ <titleabbrev>Assignment</titleabbrev>
+ <simpara>
+  आधारभूत assignment operator <literal>=</literal> हो। यसलाई "बराबर" (equal to) भनेर नसोच्नुहोस्। यसको वास्तविक अर्थ दायाँपट्टिको expression को मान बायाँपट्टिको variable मा सेट गरिन्छ (set to) भन्ने हो।
+ </simpara>
+ <para>
+  Assignment expression को मान नै त्यसमा assign गरिएको मान हुन्छ। अर्थात् "<literal>$a = 3</literal>" को मान ३ हुन्छ। यसले गर्दा यस्ता कार्यहरू गर्न सकिन्छ:
+  <example>
+   <title>Nested Assignments</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a = ($b = 4) + 5; // $a अब ९ हुन्छ, र $b मा ४ सेट हुन्छ।
+var_dump($a);
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
+ <para>
+  आधारभूत assignment operator का साथै <link linkend="language.operators">binary arithmetic</link>, array union र string operators का लागि "combined operators" पनि उपलब्ध छन्, जसले variable को हालको मान प्रयोग गरेर गणना गर्छ र नतिजालाई त्यही variable मा पुनः सेट गर्छ:
+  <example>
+   <title>Combined Assignments</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a = 3;
+$a += 5; // $a मा ८ सेट हुन्छ; अर्थात् $a = $a + 5; जस्तै
+$b = "Hello ";
+$b .= "There!"; // $b मा "Hello There!" सेट हुन्छ; अर्थात् $b = $b . "There!";
+
+var_dump($a, $b);
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
+
+ <sect2 xml:id="language.operators.assignment.reference">
+  <title>Reference द्वारा Assignment (Assignment by Reference)</title>
+  <para>
+   "<computeroutput>$var = &amp;$othervar;</computeroutput>" सिन्ट्याक्स प्रयोग गरेर reference द्वारा assign गर्न पनि सकिन्छ। यसको अर्थ दुवै variables ले स्मृतिमा एउटै data लाई संकेत गर्छन्, र कहीँ पनि कुनै data copy हुँदैन।
+  </para>
+  <para>
+   <example>
+    <title>Reference द्वारा Assign गर्ने उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$a = 3;
+$b = &$a; // $b ले $a लाई reference गर्छ
+
+print "$a\n"; // 3 प्रिन्ट गर्छ
+print "$b\n"; // 3 प्रिन्ट गर्छ
+
+$a = 4; // $a परिवर्तन गरौँ
+
+print "$a\n"; // 4 प्रिन्ट गर्छ
+print "$b\n"; // यो पनि 4 नै प्रिन्ट हुन्छ किनभने $b ले $a लाई संकेत गरिरहेको छ
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </sect2>
+
+ <sect2 xml:id="language.operators.assignment.arithmetic">
+  <title>Arithmetic Assignment Operators</title>
+  <informaltable>
+   <tgroup cols="3">
+    <thead>
+     <row>
+      <entry>उदाहरण (Example)</entry>
+      <entry>बराबर (Equivalent)</entry>
+      <entry>कार्य (Operation)</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>$a += $b</entry>
+      <entry>$a = $a + $b</entry>
+      <entry>Addition</entry>
+     </row>
+     <row>
+      <entry>$a -= $b</entry>
+      <entry>$a = $a - $b</entry>
+      <entry>Subtraction</entry>
+     </row>
+     <row>
+      <entry>$a *= $b</entry>
+      <entry>$a = $a * $b</entry>
+      <entry>Multiplication</entry>
+     </row>
+     <row>
+      <entry>$a /= $b</entry>
+      <entry>$a = $a / $b</entry>
+      <entry>Division</entry>
+     </row>
+     <row>
+      <entry>$a %= $b</entry>
+      <entry>$a = $a % $b</entry>
+      <entry>Modulus</entry>
+     </row>
+     <row>
+      <entry>$a **= $b</entry>
+      <entry>$a = $a ** $b</entry>
+      <entry>Exponentiation</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </sect2>
+
+ <sect2 xml:id="language.operators.assignment.other">
+  <title>अन्य Assignment Operators</title>
+  <informaltable>
+   <tgroup cols="3">
+    <thead>
+     <row>
+      <entry>उदाहरण (Example)</entry>
+      <entry>बराबर (Equivalent)</entry>
+      <entry>कार्य (Operation)</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>$a .= $b</entry>
+      <entry>$a = $a . $b</entry>
+      <entry>String Concatenation</entry>
+     </row>
+     <row>
+      <entry>$a ??= $b</entry>
+      <entry>$a = $a ?? $b</entry>
+      <entry>Null Coalesce</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </sect2>
+
+ <sect2 role="seealso" xml:id="language.operators.assignment.see-also">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><link linkend="language.operators.arithmetic">arithmetic operators</link></member>
+    <member><link linkend="language.operators.bitwise">bitwise operators</link></member>
+    <member><link linkend="language.operators.comparison.coalesce">null coalescing operator</link></member>
+   </simplelist>
+  </para>
+ </sect2>
+</sect1>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 4bf52f20bcb7f0f7dee5e8e1f6e8afc7126f06ce Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.operators.increment">
+ <title>Incrementing/Decrementing Operators</title>
+ <titleabbrev>Increment and Decrement</titleabbrev>
+ <para>
+  PHP ले pre- र post-increment तथा decrement operators लाई समर्थन गर्दछ। यी unary operators ले मानलाई १ ले बढाउन वा घटाउन मद्दत गर्छन्।
+ </para>
+ <table>
+  <title>Increment/decrement Operators</title>
+  <tgroup cols="3">
+   <thead>
+    <row>
+     <entry>उदाहरण (Example)</entry>
+     <entry>नाम (Name)</entry>
+     <entry>प्रभाव (Effect)</entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry>++$a</entry>
+     <entry>Pre-increment</entry>
+     <entry><varname>$a</varname> लाई १ ले बढाउँछ, र त्यसपछि <varname>$a</varname> फर्काउँछ।</entry>
+    </row>
+    <row>
+     <entry>$a++</entry>
+     <entry>Post-increment</entry>
+     <entry><varname>$a</varname> फर्काउँछ, र त्यसपछि <varname>$a</varname> लाई १ ले बढाउँछ।</entry>
+    </row>
+    <row>
+     <entry>--$a</entry>
+     <entry>Pre-decrement</entry>
+     <entry><varname>$a</varname> लाई १ ले घटाउँछ, र त्यसपछि <varname>$a</varname> फर्काउँछ।</entry>
+    </row>
+    <row>
+     <entry>$a--</entry>
+     <entry>Post-decrement</entry>
+     <entry><varname>$a</varname> फर्काउँछ, र त्यसपछि <varname>$a</varname> लाई १ ले घटाउँछ।</entry>
+    </row>
+   </tbody>
+  </tgroup>
+ </table>
+
+ <para>
+  <example>
+   <title>Increment/Decrement का उदाहरणहरू</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+echo 'Post-increment:', PHP_EOL;
+$a = 5;
+var_dump($a++);
+var_dump($a);
+
+echo 'Pre-increment:', PHP_EOL;
+$a = 5;
+var_dump(++$a);
+var_dump($a);
+
+echo 'Post-decrement:', PHP_EOL;
+$a = 5;
+var_dump($a--);
+var_dump($a);
+
+echo 'Pre-decrement:', PHP_EOL;
+$a = 5;
+var_dump(--$a);
+var_dump($a);
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+Post-increment:
+int(5)
+int(6)
+Pre-increment:
+int(6)
+int(6)
+Post-decrement:
+int(5)
+int(4)
+Pre-decrement:
+int(4)
+int(4)
+]]>
+   </screen>
+  </example>
+
+  <warning>
+   <para>
+    Increment र decrement operators ले <type>bool</type> type का मानहरूमा कुनै असर गर्दैनन्।
+   </para>
+   <para>
+    Decrement operator ले <type>null</type> type का मानहरूमा कुनै असर गर्दैन।
+   </para>
+  </warning>
+ </para>
+</sect1>

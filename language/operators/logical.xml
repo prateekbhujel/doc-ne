@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.operators.logical">
+ <title>Logical Operators (तार्किक अपरेटरहरू)</title>
+ <titleabbrev>Logic</titleabbrev>
+
+ <table>
+  <title>Logical Operators</title>
+  <tgroup cols="3">
+   <thead>
+    <row>
+     <entry>उदाहरण (Example)</entry>
+     <entry>नाम (Name)</entry>
+     <entry>नतिजा (Result)</entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry>$a and $b</entry>
+     <entry>And</entry>
+     <entry>यदि <varname>$a</varname> र <varname>$b</varname> दुवै &true; भए &true;।</entry>
+    </row>
+    <row>
+     <entry>$a or $b</entry>
+     <entry>Or</entry>
+     <entry>यदि <varname>$a</varname> वा <varname>$b</varname> मध्ये कुनै एक &true; भए &true;।</entry>
+    </row>
+    <row>
+     <entry>$a xor $b</entry>
+     <entry>Xor</entry>
+     <entry>यदि <varname>$a</varname> वा <varname>$b</varname> मध्ये कुनै एक &true; भए तर दुवै &true; नभए &true;।</entry>
+    </row>
+    <row>
+     <entry>! $a</entry>
+     <entry>Not</entry>
+     <entry>यदि <varname>$a</varname> &true; छैन भने &true;।</entry>
+    </row>
+    <row>
+     <entry>$a &amp;&amp; $b</entry>
+     <entry>And</entry>
+     <entry>यदि <varname>$a</varname> र <varname>$b</varname> दुवै &true; भए &true;।</entry>
+    </row>
+    <row>
+     <entry>$a || $b</entry>
+     <entry>Or</entry>
+     <entry>यदि <varname>$a</varname> वा <varname>$b</varname> मध्ये कुनै एक &true; भए &true;।</entry>
+    </row>
+   </tbody>
+  </tgroup>
+ </table>
+ <simpara>
+  "and" र "or" का दुई भिन्न रूपहरू हुनुको मुख्य कारण तिनीहरूको प्राथमिकता (precedence) फरक हुनु हो। (थप जानकारीका लागि <link linkend="language.operators.precedence">Operator Precedence</link> हेर्नुहोस्।)
+ </simpara>
+ <example>
+  <title>Logical operators को प्रयोग</title>
+  <programlisting role="php">
+<![CDATA[
+<?php
+
+// --------------------
+// यी operators short-circuit हुने भएकाले foo() कहिल्यै call हुँदैन
+
+$a = (false && foo());
+$b = (true  || foo());
+$c = (false and foo());
+$d = (true  or  foo());
+
+// --------------------
+// "||" को प्राथमिकता "or" भन्दा बढी हुन्छ
+
+// (false || true) को नतिजा $e मा assign हुन्छ
+$e = false || true;
+
+// "or" operation हुनु अघि नै false मान $f मा assign हुन्छ
+$f = false or true;
+
+var_dump($e, $f);
+
+// --------------------
+// "&&" को प्राथमिकता "and" भन्दा बढी हुन्छ
+
+$g = true && false;
+$h = true and false;
+
+var_dump($g, $h);
+?>
+]]>
+  </programlisting>
+  &example.outputs.similar;
+  <screen>
+<![CDATA[
+bool(true)
+bool(false)
+bool(false)
+bool(true)
+]]>
+  </screen>
+ </example>
+</sect1>

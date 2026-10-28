@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.operators.type">
+ <title>Type Operators</title>
+ <titleabbrev>Type</titleabbrev>
+ <para>
+  कुनै PHP variable कुनै निश्चित <link linkend="language.oop5.basic.class">class</link> को वस्तु (instantiated object) हो कि होइन भनी जाँच्न <literal>instanceof</literal> प्रयोग गरिन्छ:
+  <example>
+   <title>Classes सँग <literal>instanceof</literal> को प्रयोग</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class MyClass
+{
+}
+
+class NotMyClass
+{
+}
+$a = new MyClass;
+
+var_dump($a instanceof MyClass);
+var_dump($a instanceof NotMyClass);
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+bool(true)
+bool(false)
+]]>
+   </screen>
+  </example>
+ </para>
+ <para>
+  Parent class बाट inherit भएको कुनै class को object हो कि होइन भनी जाँच्न पनि <literal>instanceof</literal> प्रयोग गर्न सकिन्छ।
+ </para>
+ <para>
+  कुनै object ले कुनै <link linkend="language.oop5.interfaces">interface</link> लागू (implement) गरेको छ कि छैन भनी जाँच्न पनि <literal>instanceof</literal> प्रयोग गर्न सकिन्छ:
+  <example>
+   <title>Interfaces सँग <literal>instanceof</literal> को प्रयोग</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+interface MyInterface
+{
+}
+
+class MyClass implements MyInterface
+{
+}
+
+$a = new MyClass;
+
+var_dump($a instanceof MyClass);
+var_dump($a instanceof MyInterface);
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+bool(true)
+bool(true)
+]]>
+   </screen>
+  </example>
+ </para>
+ <simpara>
+  <literal>instanceof</literal> operator को functional रूपान्तरण <function>is_a</function> function मार्फत उपलब्ध छ।
+ </simpara>
+
+ <sect2 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>get_class</function></member>
+    <member><function>is_a</function></member>
+   </simplelist>
+  </para>
+ </sect2>
+</sect1>

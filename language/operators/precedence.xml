@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 7c915c0c28b8e2e4306333c64602ee4800c73754 Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.operators.precedence">
+ <title>Operator Precedence</title>
+ <titleabbrev>Operator Precedence</titleabbrev>
+ <para>
+  कुनै operator को precedence ले दुईवटा expressions कति "बलियोसँग" (tightly) आपसमा बाँधिन्छन् भन्ने कुरा निर्धारण गर्छ। उदाहरणका लागि, <literal>1 + 5 * 3</literal> expression मा नतिजा <literal>16</literal> हुन्छ, <literal>18</literal> होइन; किनकि multiplication ("*") operator को precedence addition ("+") operator भन्दा बढी हुन्छ।
+  आवश्यक परेमा precedence परिवर्तन गर्न parentheses (कोष्ठक) को प्रयोग गर्न सकिन्छ। उदाहरणका लागि: <literal>(1 + 5) * 3</literal> को नतिजा <literal>18</literal> हुन्छ।
+ </para>
+ <para>
+  जब operators को precedence बराबर हुन्छ, तब तिनीहरूको associativity ले ती कसरी group हुन्छन् भन्ने निर्णय गर्छ। उदाहरणका लागि "-" left-associative हो, त्यसैले <literal>1 - 2 - 3</literal> लाई <literal>(1 - 2) - 3</literal> को रूपमा group गरिन्छ र यसको नतिजा <literal>-4</literal> आउँछ। अर्कोतर्फ "=" right-associative हो, त्यसैले <literal>$a = $b = $c</literal> लाई <literal>$a = ($b = $c)</literal> को रूपमा group गरिन्छ।
+ </para>
+ <para>
+  समान precedence भएका तर non-associative रहेका operators लाई एकअर्काको छेउमा प्रयोग गर्न मिल्दैन; उदाहरणका लागि PHP मा <literal>1 &lt; 2 &gt; 1</literal> लेख्न पाइँदैन। अर्कोतर्फ <literal>1 &lt;= 1 == 1</literal> expression मान्य छ, किनकि <literal>==</literal> operator को precedence <literal>&lt;=</literal> operator भन्दा कम हुन्छ।
+ </para>
+ <para>
+  Associativity केवल binary (र ternary) operators का लागि मात्र अर्थपूर्ण हुन्छ।
+  Unary operators कि त prefix वा postfix हुने भएकाले यो धारणा तिनीहरूमा लागू हुँदैन।
+  उदाहरणका लागि <literal>!!$a</literal> लाई केवल <literal>!(!$a)</literal> को रूपमा मात्र group गर्न सकिन्छ।
+ </para>
+ <para>
+  आवश्यक नभएको अवस्थामा पनि parentheses को प्रयोग गर्दा code को readability बढ्छ, किनकि यसले operator precedence र associativity को भर पर्नुको सट्टा grouping लाई स्पष्ट बनाउँछ।
+ </para>
+ <para>
+  तलको तालिकाले operators लाई precedence को क्रममा देखाउँछ, जहाँ सबैभन्दा बढी precedence भएकाहरू माथि छन्। एउटै पंक्तिमा रहेका operators को precedence समान हुन्छ, र त्यस्तो अवस्थामा associativity ले grouping तय गर्छ।
+  <table>
+   <title>Operator Precedence</title>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>Associativity</entry>
+      <entry>Operators</entry>
+      <entry>थप जानकारी</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>(n/a)</entry>
+      <entry>
+       <literal>clone</literal>
+       <literal>new</literal>
+      </entry>
+      <entry><link linkend="language.oop5.cloning">clone</link> र <link linkend="language.oop5.basic.new">new</link></entry>
+     </row>
+     <row>
+      <entry>right</entry>
+      <entry><literal>**</literal></entry>
+      <entry><link linkend="language.operators.arithmetic">arithmetic</link></entry>
+     </row>
+     <row>
+      <entry>(n/a)</entry>
+      <entry>
+       <literal>+</literal>
+       <literal>-</literal>
+       <literal>++</literal>
+       <literal>--</literal>
+       <literal>~</literal>
+       <literal>(int)</literal>
+       <literal>(float)</literal>
+       <literal>(string)</literal>
+       <literal>(array)</literal>
+       <literal>(object)</literal>
+       <literal>(bool)</literal>
+       <literal>@</literal>
+      </entry>
+      <entry>
+       <link linkend="language.operators.arithmetic">arithmetic</link> (unary <literal>+</literal> र <literal>-</literal>),
+       <link linkend="language.operators.increment">increment/decrement</link>,
+       <link linkend="language.operators.bitwise">bitwise</link>,
+       <link linkend="language.types.typecasting">type casting</link>&listendand;
+       <link linkend="language.operators.errorcontrol">error control</link>
+      </entry>
+     </row>
+     <row>
+      <entry>left</entry>
+      <entry><literal>instanceof</literal></entry>
+      <entry>
+       <link linkend="language.operators.type">type</link>
+      </entry>
+     </row>
+     <row>
+      <entry>(n/a)</entry>
+      <entry><literal>!</literal></entry>
+      <entry>
+       <link linkend="language.operators.logical">logical</link>
+      </entry>
+     </row>
+     <row>
+      <entry>left</entry>
+      <entry>
+       <literal>*</literal>
+       <literal>/</literal>
+       <literal>%</literal>
+      </entry>
+      <entry>
+       <link linkend="language.operators.arithmetic">arithmetic</link>
+      </entry>
+     </row>
+     <row>
+      <entry>left</entry>
+      <entry>
+       <literal>+</literal>
+       <literal>-</literal>
+       <literal>.</literal>
+      </entry>
+      <entry>
+       <link linkend="language.operators.arithmetic">arithmetic</link> (binary <literal>+</literal> र <literal>-</literal>),
+       <link linkend="language.operators.array">array</link>&listendand;
+       <link linkend="language.operators.string">string</link> (PHP 8.0.0 भन्दा पहिले <literal>.</literal>)
+      </entry>
+     </row>
+     <row>
+      <entry>left</entry>
+      <entry>
+       <literal>&lt;&lt;</literal>
+       <literal>&gt;&gt;</literal>
+      </entry>
+      <entry>
+       <link linkend="language.operators.bitwise">bitwise</link>
+      </entry>
+     </row>
+     <row>
+      <entry>left</entry>
+      <entry><literal>.</literal></entry>
+      <entry>
+       <link linkend="language.operators.string">string</link> (PHP 8.0.0 देखि)
+      </entry>
+     </row>
+     <row>
+      <entry>left</entry>
+      <entry><literal>|&gt;</literal></entry>
+      <entry>
+       <link linkend="language.operators.functional">pipe</link>
+      </entry>
+     </row>
+     <row>
+      <entry>non-associative</entry>
+      <entry>
+       <literal>&lt;</literal>
+       <literal>&lt;=</literal>
+       <literal>&gt;</literal>
+       <literal>&gt;=</literal>
+      </entry>
+      <entry>
+       <link linkend="language.operators.comparison">comparison</link>
+      </entry>
+     </row>
+     <row>
+      <entry>non-associative</entry>
+      <entry>
+       <literal>==</literal>
+       <literal>!=</literal>
+       <literal>===</literal>
+       <literal>!==</literal>
+       <literal>&lt;&gt;</literal>
+       <literal>&lt;=&gt;</literal>
+      </entry>
+      <entry>
+       <link linkend="language.operators.comparison">comparison</link>
+      </entry>
+     </row>
+     <row>
+      <entry>left</entry>
+      <entry><literal>&amp;</literal></entry>
+      <entry>
+       <link linkend="language.operators.bitwise">bitwise</link>&listendand;
+       <link linkend="language.references">references</link></entry>
+     </row>
+     <row>
+      <entry>left</entry>
+      <entry><literal>^</literal></entry>
+      <entry>
+       <link linkend="language.operators.bitwise">bitwise</link>
+      </entry>
+     </row>
+     <row>
+      <entry>left</entry>
+      <entry><literal>|</literal></entry>
+      <entry>
+       <link linkend="language.operators.bitwise">bitwise</link>
+      </entry>
+     </row>
+     <row>
+      <entry>left</entry>
+      <entry><literal>&amp;&amp;</literal></entry>
+      <entry>
+       <link linkend="language.operators.logical">logical</link>
+      </entry>
+     </row>
+     <row>
+      <entry>left</entry>
+      <entry><literal>||</literal></entry>
+      <entry>
+       <link linkend="language.operators.logical">logical</link>
+      </entry>
+     </row>
+     <row>
+      <entry>right</entry>
+      <entry><literal>??</literal></entry>
+      <entry>
+       <link linkend="language.operators.comparison.coalesce">null coalescing</link>
+      </entry>
+     </row>
+     <row>
+      <entry>non-associative</entry>
+      <entry><literal>? :</literal></entry>
+      <entry>
+       <link linkend="language.operators.comparison.ternary">ternary</link>
+       (PHP 8.0.0 भन्दा पहिले left-associative)
+      </entry>
+     </row>
+     <row>
+      <entry>right</entry>
+      <entry>
+       <literal>=</literal>
+       <literal>+=</literal>
+       <literal>-=</literal>
+       <literal>*=</literal>
+       <literal>**=</literal>
+       <literal>/=</literal>
+       <literal>.=</literal>
+       <literal>%=</literal>
+       <literal>&amp;=</literal>
+       <literal>|=</literal>
+       <literal>^=</literal>
+       <literal>&lt;&lt;=</literal>
+       <literal>&gt;&gt;=</literal>
+       <literal>??=</literal>
+      </entry>
+      <entry>
+       <link linkend="language.operators.assignment">assignment</link>
+      </entry>
+     </row>
+     <row>
+      <entry>(n/a)</entry>
+      <entry><literal>yield from</literal></entry>
+      <entry>
+       <link linkend="control-structures.yield.from">yield from</link>
+      </entry>
+     </row>
+     <row>
+      <entry>(n/a)</entry>
+      <entry><literal>=&gt;</literal></entry>
+      <entry>
+       <link linkend="language.generators.syntax">yield with keys</link>
+      </entry>
+     </row>
+     <row>
+      <entry>(n/a)</entry>
+      <entry><literal>yield</literal></entry>
+      <entry>
+       <link linkend="control-structures.yield">yield</link>
+      </entry>
+     </row>
+     <row>
+      <entry>(n/a)</entry>
+      <entry><literal>print</literal></entry>
+      <entry><function>print</function></entry>
+     </row>
+     <row>
+      <entry>left</entry>
+      <entry><literal>and</literal></entry>
+      <entry>
+       <link linkend="language.operators.logical">logical</link>
+      </entry>
+     </row>
+     <row>
+      <entry>left</entry>
+      <entry><literal>xor</literal></entry>
+      <entry>
+       <link linkend="language.operators.logical">logical</link>
+      </entry>
+     </row>
+     <row>
+      <entry>left</entry>
+      <entry><literal>or</literal></entry>
+      <entry>
+       <link linkend="language.operators.logical">logical</link>
+      </entry>
+     </row>
+     <row>
+      <entry>(n/a)</entry>
+      <entry>
+       <literal>include</literal>
+       <literal>include_once</literal>
+       <literal>require</literal>
+       <literal>require_once</literal>
+      </entry>
+      <entry>
+       <function>include</function>,
+       <function>include_once</function>,
+       <function>require</function>&listendand;
+       <function>require_once</function>
+      </entry>
+     </row>
+     <row>
+      <entry>(n/a)</entry>
+      <entry><literal>fn (...) =&gt;</literal></entry>
+      <entry><link linkend="functions.arrow">fn arrow</link> disambiguity</entry>
+     </row>
+     <row>
+      <entry>(n/a)</entry>
+      <entry><literal>throw</literal></entry>
+      <entry>
+       <link linkend="control-structures.throw">throw</link>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+ </para>
+ <note>
+  <simpara>
+   Cast operators सँगै पंक्ति साझा गर्ने unary operators हरू
+   (<literal>~</literal>, <literal>@</literal>, र unary
+   <literal>+</literal>/<literal>-</literal>) <literal>instanceof</literal> भन्दा बढी tightly bind हुन्छन्, जबकि <literal>!</literal> कम tightly bind हुन्छ। फलस्वरूप <literal>(int) $x instanceof Foo</literal> लाई <literal>((int) $x) instanceof Foo</literal> को रूपमा group गरिन्छ, जबकि <literal>!$x instanceof Foo</literal> लाई <literal>!($x instanceof Foo)</literal> को रूपमा group गरिन्छ।
+  </simpara>
+ </note>
+ <para>
+  <example>
+   <title>Associativity</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a = 3 * 3 % 5; // (3 * 3) % 5 = 4
+var_dump($a);
+
+$a = 1;
+$b = 2;
+$a = $b += 3; // $a = ($b += 3) -> $a = 5, $b = 5
+var_dump($a, $b);
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
+ <para>
+  Ternary operator मा precedence को अन्योल हटाउन विशेष रूपमा parentheses प्रयोग गर्नुपर्छ।
+ </para>
+ <para>
+  <example>
+   <title>Explicit Precedence</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a = true ? 0 : (true ? 1 : 2);
+var_dump($a);
+
+// this is not allowed since PHP 8
+// $a = true ? 0 : true ? 1 : 2;
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
+ <para>
+  Operator precedence र associativity ले केवल expressions कसरी group हुन्छन् भन्ने मात्र निर्धारण गर्छ, तिनीहरू evaluate हुने क्रम (order of evaluation) होइन। PHP ले (सामान्य अवस्थामा) expression कुन क्रममा evaluate हुन्छ भन्ने तोक्दैन, त्यसैले कुनै निश्चित evaluation order मा भर पर्ने code लेख्नु हुँदैन; किनकि PHP का विभिन्न संस्करणहरूमा वा वरिपरिको code अनुसार यो व्यवहार फरक हुन सक्छ।
+  <example>
+   <title>Undefined order of evaluation</title>
+   <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+$a = 1;
+echo $a + $a++; // may print either 2 or 3
+
+$i = 1;
+$array[$i] = $i++; // may set either index 1 or 2
+?>
+]]>
+   </programlisting>
+  </example>
+  <example>
+   <title><literal>+</literal>, <literal>-</literal> र <literal>.</literal> precedence</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$x = 4;
+// यो line ले अनपेक्षित output दिन सक्छ:
+echo "x minus one equals " . $x-1 . ", or so I hope\n";
+
+// अपेक्षित precedence का लागि parentheses प्रयोग गर्न सकिन्छ:
+echo "x minus one equals " . ($x-1) . ", or so I hope\n";
+
+// यसो गर्न पाइँदैन र TypeError आउँछ:
+echo (("x minus one equals " . $x) - 1) . ", or so I hope\n";
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+-1, or so I hope
+-1, or so I hope
+Fatal error: Uncaught TypeError: Unsupported operand types: string - int
+]]>
+   </screen>
+  </example>
+  <example>
+   <title>PHP 8 भन्दा पहिले, <literal>+</literal>, <literal>-</literal> र <literal>.</literal> को precedence एउटै थियो</title>
+   <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+$x = 4;
+// यो line ले अनपेक्षित output दिन सक्छ:
+echo "x minus one equals " . $x-1 . ", or so I hope\n";
+
+// किनभने यो यसरी evaluate हुन्थ्यो (PHP 8.0.0 भन्दा पहिले):
+echo (("x minus one equals " . $x) - 1) . ", or so I hope\n";
+
+// अपेक्षित precedence का लागि parentheses प्रयोग गर्न सकिन्छ:
+echo "x minus one equals " . ($x-1) . ", or so I hope\n";
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+-1, or so I hope
+-1, or so I hope
+x minus one equals 3, or so I hope
+]]>
+   </screen>
+  </example>
+ </para>
+ <note>
+  <para>
+   यद्यपि <literal>=</literal> को precedence प्रायः अन्य सबै operators भन्दा कम हुन्छ, तैपनि PHP ले यस्तो expression लेख्न अनुमति दिन्छ: <literal>if (!$a = foo())</literal>, जहाँ <literal>foo()</literal> को return value <varname>$a</varname> मा राखिन्छ।
+  </para>
+  <simpara>
+   यो सम्भव भएको कारण assignment को बायाँतर्फ variable नै हुनुपर्छ, त्यसैले assignment वरिपरिको उच्च-precedence prefix operator सँग नभई सोही variable सँग group हुन्छ। यही कुरा operand का रूपमा expression लिने अन्य prefix operators जस्तै <literal>clone</literal>, cast operators, <literal>@</literal> र <literal>~</literal> मा पनि लागू हुन्छ: उदाहरणका लागि <literal>clone $a = $b</literal> लाई <literal>clone ($a = $b)</literal> को रूपमा group गरिन्छ, <literal>(clone $a) = $b</literal> को रूपमा होइन।
+  </simpara>
+ </note>
+ <sect2 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       String concatenation (<literal>.</literal>) को precedence अब arithmetic addition/subtraction (<literal>+</literal> र <literal>-</literal>) तथा bitwise shift left/right (<literal>&lt;&lt;</literal> र <literal>&gt;&gt;</literal>) भन्दा कम हुन्छ; पहिले यसको precedence <literal>+</literal> र <literal>-</literal> बराबर तथा <literal>&lt;&lt;</literal> र <literal>&gt;&gt;</literal> भन्दा बढी थियो।
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Ternary operator (<literal>? :</literal>) अब non-associative भएको छ; पहिले यो left-associative थियो।
+      </entry>
+     </row>
+     <row>
+      <entry>7.4.0</entry>
+      <entry>
+       Arithmetic addition/subtraction (<literal>+</literal> वा <literal>-</literal>) वा bitwise shift left/right (<literal>&lt;&lt;</literal> वा <literal>&gt;&gt;</literal>) सँग string concatenation (<literal>.</literal>) को precedence मा भर पर्नु (अर्थात् parentheses नराखी सँगै प्रयोग गर्नु) deprecated गरिएको छ।
+      </entry>
+     </row>
+     <row>
+      <entry>7.4.0</entry>
+      <entry>
+       Ternary operator (<literal>? :</literal>) को left-associativity मा भर पर्नु (अर्थात् parentheses नराखी धेरै ternary operators नेस्ट गर्नु) deprecated गरिएको छ।
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </sect2>
+</sect1>

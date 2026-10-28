@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.operators.array">
+ <title>Array Operators</title>
+ <titleabbrev>Array</titleabbrev>
+ <table>
+  <title>Array Operators</title>
+  <tgroup cols="3">
+   <thead>
+    <row>
+     <entry>उदाहरण (Example)</entry>
+     <entry>नाम (Name)</entry>
+     <entry>नतिजा (Result)</entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry>$a + $b</entry>
+     <entry>Union</entry>
+     <entry><varname>$a</varname> र <varname>$b</varname> को युनियन (संयोजन)।</entry>
+    </row>
+    <row>
+     <entry>$a == $b</entry>
+     <entry>Equality</entry>
+     <entry>यदि <varname>$a</varname> र <varname>$b</varname> मा समान key/value pairs छन् भने &true;।</entry>
+    </row>
+    <row>
+     <entry>$a === $b</entry>
+     <entry>Identity</entry>
+     <entry>यदि <varname>$a</varname> र <varname>$b</varname> मा उही क्रम र उही type का समान key/value pairs छन् भने &true;।</entry>
+    </row>
+    <row>
+     <entry>$a != $b</entry>
+     <entry>Inequality</entry>
+     <entry>यदि <varname>$a</varname> र <varname>$b</varname> बराबर छैनन् भने &true;।</entry>
+    </row>
+    <row>
+     <entry>$a &lt;&gt; $b</entry>
+     <entry>Inequality</entry>
+     <entry>यदि <varname>$a</varname> र <varname>$b</varname> बराबर छैनन् भने &true;।</entry>
+    </row>
+    <row>
+     <entry>$a !== $b</entry>
+     <entry>Non-identity</entry>
+     <entry>यदि <varname>$a</varname> र <varname>$b</varname> ठ्याक्कै दुरुस्त छैनन् भने &true;।</entry>
+    </row>
+   </tbody>
+  </tgroup>
+ </table>
+ <para>
+  <literal>+</literal> operator ले दायाँपट्टिको array लाई बायाँपट्टिको array मा जोडेर नयाँ array निकाल्छ; दुवै array मा रहेका साझा keys का लागि बायाँपट्टिको array का तत्वहरू प्रयोग हुन्छन्, र दायाँपट्टिका मिल्दाजुल्दा तत्वहरूलाई वेवास्ता गरिन्छ।
+ </para>
+ <para>
+  <example>
+   <title>Array Union Operator को उदाहरण</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a = array("a" => "apple", "b" => "banana");
+$b = array("a" => "pear", "b" => "strawberry", "c" => "cherry");
+
+$c = $a + $b; // $a र $b को Union
+echo "Union of \$a and \$b: \n";
+var_dump($c);
+
+$c = $b + $a; // $b र $a को Union
+echo "Union of \$b and \$a: \n";
+var_dump($c);
+
+$a += $b; // $a मा $b युनियन गरी assign गर्ने
+echo "Union of \$a += \$b: \n";
+var_dump($a);
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen role="php">
+<![CDATA[
+Union of $a and $b:
+array(3) {
+  ["a"]=>
+  string(5) "apple"
+  ["b"]=>
+  string(6) "banana"
+  ["c"]=>
+  string(6) "cherry"
+}
+Union of $b and $a:
+array(3) {
+  ["a"]=>
+  string(4) "pear"
+  ["b"]=>
+  string(10) "strawberry"
+  ["c"]=>
+  string(6) "cherry"
+}
+Union of $a += $b:
+array(3) {
+  ["a"]=>
+  string(5) "apple"
+  ["b"]=>
+  string(6) "banana"
+  ["c"]=>
+  string(6) "cherry"
+}
+]]>
+   </screen>
+  </example>
+ </para>
+
+ <sect2 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><link linkend="language.types.array">Array type</link></member>
+    <member><link linkend="ref.array">Array functions</link></member>
+   </simplelist>
+  </para>
+ </sect2>
+</sect1>
