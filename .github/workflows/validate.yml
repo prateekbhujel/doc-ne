@@ -1,0 +1,35 @@
+name: Validation CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  validate:
+    name: DocBook XML & EN-Revision Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout doc-ne
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: dom, libxml, simplexml
+          coverage: none
+
+      - name: Clone php/doc-en Git History for Revision Verification
+        run: |
+          git clone --filter=blob:none --no-checkout https://github.com/php/doc-en.git /tmp/doc-en
+
+      - name: Run Automated Validation Harness
+        run: |
+          php tools/validate.php /tmp/doc-en
+
+      - name: Generate Translation Status Report
+        run: |
+          php tools/status.php
