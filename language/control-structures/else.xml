@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: b8147b7f03506e41f01631c32a907b955593525a Maintainer: prateekbhujel Status: ready -->
+
+<sect1 xml:id="control-structures.else" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>else</title>
+ <?phpdoc print-version-for="else"?>
+ <para>
+  प्रायः तपाईँ निश्चित शर्त पूरा हुँदा एउटा statement चलाउन चाहनुहुन्छ र शर्त पूरा नहुँदा अर्कै statement चलाउन चाहनुहुन्छ। यसै कामका लागि <literal>else</literal> प्रयोग गरिन्छ। <literal>else</literal> ले <literal>if</literal> statement लाई विस्तार गर्छ ताकि <literal>if</literal> भित्रको expression को मान &false; हुँदा अर्को statement चल्न सकोस्। उदाहरणका लागि, तलको code ले <varname>$a</varname> को मान <varname>$b</varname> भन्दा ठूलो भएमा <computeroutput>a is greater than b</computeroutput> देखाउनेछ, र यदि नभएमा <computeroutput>a is NOT greater than b</computeroutput> देखाउनेछ:
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a = 3;
+$b = 5;
+if ($a > $b) {
+  echo "a is greater than b\n";
+} else {
+  echo "a is NOT greater than b\n";
+}
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+a is NOT greater than b
+]]>
+   </screen>
+  </informalexample>
+
+  <literal>else</literal> statement त्यतिबेला मात्र कार्यान्वयन हुन्छ जब <literal>if</literal> expression को मान &false; आउँछ, र यदि कुनै <literal>elseif</literal> expressions छन् भने ती सबैको मान पनि &false; नै आउँछ (<link
+  linkend="control-structures.elseif">elseif</link> हेर्नुहोस्)।
+
+ </para>
+ <note>
+  <title>Dangling else</title>
+  <para>
+   धेरै तहका <literal>if</literal>-<literal>else</literal> statements को अवस्थामा, <literal>else</literal> सधैँ आफूभन्दा सबैभन्दा नजिकको <literal>if</literal> सँग जोडिन्छ।
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$a = false;
+$b = true;
+if ($a)
+    if ($b)
+        echo "b";
+else
+    echo "c";
+?>
+]]>
+    </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+
+]]>
+   </screen>
+   </informalexample>
+   Indentation (जसले PHP मा कुनै अर्थ राख्दैन) जस्तो देखिए तापनि, यो <literal>else</literal> वास्तवमा <literal>if ($b)</literal> सँग सम्बन्धित छ, त्यसैले यस उदाहरणले कुनै output निकाल्दैन। यद्यपि यस्तो व्यवहार प्राविधिक रूपमा मान्य छ, तर सम्भावित अन्योल हटाउन curly braces प्रयोग गरेर कोड स्पष्ट बनाउनु राम्रो मानिन्छ।
+  </para>
+ </note>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
