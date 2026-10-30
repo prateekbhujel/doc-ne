@@ -107,6 +107,25 @@ array(3) {
    </screen>
   </example>
  </para>
+ <para>
+  Array का element हरू समान key र value भएको अवस्थामा comparison का लागि बराबर मानिन्छन्।
+ </para>
+ <para>
+  <example>
+   <title>Array हरूको तुलना (Comparing arrays)</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a = array("apple", "banana");
+$b = array(1 => "banana", "0" => "apple");
+
+var_dump($a == $b); // bool(true)
+var_dump($a === $b); // bool(false)
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
 
  <sect2 role="seealso">
   &reftitle.seealso;

@@ -1,9 +1,9 @@
 # PHP Manual — नेपाली Translation Status Report
 
 - **Total Translated Files**: 46
-- **Human Proofread (`ready`)**: 21
-- **Pending Review (`draft`)**: 25
-- **Approximate Words Translated**: ~43427
+- **Human Proofread (`ready`)**: 20
+- **Pending Review (`draft`)**: 26
+- **Approximate Words Translated**: ~52117
 
 | # | File | Status | EN-Rev | Approx Words |
 |---|---|---|---|---|
@@ -20,7 +20,7 @@
 | 11 | `language/control-structures/else.xml` | `draft` | `b8147b7f` | 621 |
 | 12 | `language/control-structures/elseif.xml` | `draft` | `e6749906` | 848 |
 | 13 | `language/control-structures/for.xml` | `draft` | `8c273ad6` | 1463 |
-| 14 | `language/control-structures/foreach.xml` | `draft` | `0d9947f2` | 1250 |
+| 14 | `language/control-structures/foreach.xml` | `draft` | `0d9947f2` | 1246 |
 | 15 | `language/control-structures/goto.xml` | `draft` | `17c23851` | 486 |
 | 16 | `language/control-structures/if.xml` | `draft` | `b8147b7f` | 714 |
 | 17 | `language/control-structures/include-once.xml` | `draft` | `e6749906` | 426 |
@@ -34,14 +34,14 @@
 | 25 | `language/expressions.xml` | `ready` | `5f720ab2` | 1481 |
 | 26 | `language/operators.xml` | `ready` | `6043cd25` | 496 |
 | 27 | `language/operators/arithmetic.xml` | `ready` | `5f720ab2` | 573 |
-| 28 | `language/operators/array.xml` | `draft` | `5f720ab2` | 487 |
+| 28 | `language/operators/array.xml` | `draft` | `5f720ab2` | 562 |
 | 29 | `language/operators/assignment.xml` | `ready` | `5f720ab2` | 548 |
 | 30 | `language/operators/comparison.xml` | `ready` | `4fc9f9ea` | 660 |
-| 31 | `language/operators/increment.xml` | `draft` | `4bf52f20` | 305 |
+| 31 | `language/operators/increment.xml` | `draft` | `4bf52f20` | 1088 |
 | 32 | `language/operators/logical.xml` | `draft` | `5f720ab2` | 288 |
 | 33 | `language/operators/precedence.xml` | `draft` | `7c915c0c` | 1946 |
 | 34 | `language/operators/string.xml` | `draft` | `5f720ab2` | 179 |
-| 35 | `language/operators/type.xml` | `draft` | `5f720ab2` | 240 |
+| 35 | `language/operators/type.xml` | `draft` | `5f720ab2` | 750 |
 | 36 | `language/types.xml` | `ready` | `5f720ab2` | 1013 |
 | 37 | `language/types/boolean.xml` | `ready` | `ee66d210` | 712 |
 | 38 | `language/types/declarations.xml` | `ready` | `7132d883` | 1819 |
@@ -52,4 +52,4 @@
 | 43 | `language/types/null.xml` | `ready` | `7132d883` | 243 |
 | 44 | `language/types/type-system.xml` | `ready` | `7132d883` | 1086 |
 | 45 | `language/types/void.xml` | `ready` | `fff1bba9` | 629 |
-| 46 | `language/variables.xml` | `ready` | `cc96728a` | 1874 |
+| 46 | `language/variables.xml` | `draft` | `cc96728a` | 9200 |

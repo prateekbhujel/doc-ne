@@ -43,14 +43,14 @@ foreach (iterable_expression as $key => $value) {
 <![CDATA[
 <?php
 
-echo "Value मात्र:\n";
+echo "Value only\n";
 $array = [1, 2, 3, 17];
 
 foreach ($array as $value) {
     echo "Current element of \$array: $value.\n";
 }
 
-echo "\n\nKey र value:\n";
+echo "\n\nKey and value:\n";
 $array = [
     "one" => 1,
     "two" => 2,
@@ -85,14 +85,14 @@ foreach (range(1, 5) as $value) {
   &example.outputs;
   <screen>
 <![CDATA[
-Value मात्र:
+Value only
 Current element of $array: 1.
 Current element of $array: 2.
 Current element of $array: 3.
 Current element of $array: 17.
 
 
-Key र value:
+Key and value:
 Key: one => Value: 1
 Key: two => Value: 2
 Key: three => Value: 3
@@ -291,7 +291,7 @@ var_dump($arr);
 
 // unset($value) नगरिएकोले, $value अझै पनि अन्तिम item: $arr[3] को reference रहिरहन्छ
 
-echo "\nअर्को loop:\n";
+echo "\nAnother loop:\n";
 foreach ($arr as $key => $value) {
     // $arr[3] मा $arr का प्रत्येक मान update हुँदै जान्छ...
     echo "{$key} => {$value}\n";
@@ -315,7 +315,7 @@ array(4) {
   &int(8)
 }
 
-अर्को loop:
+Another loop:
 0 => 2
 1 => 4
 2 => 6

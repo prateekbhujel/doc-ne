@@ -1,171 +1,290 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: cc96728a01c9429c0e4cf06c746ec26385ca4e7e Maintainer: prateekbhujel Status: ready -->
- <chapter xml:id="language.variables" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink"
-  annotations="interactive">
-  <title>Variables (चलहरू)</title>
-  
-  <sect1 xml:id="language.variables.basics">
-   <title>आधारभूत कुराहरू (Basics)</title>
+<!-- $Revision$ -->
+<!-- EN-Revision: cc96728a01c9429c0e4cf06c746ec26385ca4e7e Maintainer: prateekbhujel Status: draft -->
+<chapter xml:id="language.variables" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink"
+ annotations="interactive">
+ <title>Variables</title>
+ 
+ <sect1 xml:id="language.variables.basics">
+  <title>Basics</title>
 
+  <simpara>
+   PHP मा variable लाई dollar sign (<literal>$</literal>) पछाडि variable को नाम राखेर जनाइन्छ। Variable को नाम case-sensitive हुन्छ।
+  </simpara>
+
+  <para>
+   मान्य variable को नाम letter (<literal>A-Z</literal>, <literal>a-z</literal>, वा १२८ देखि २५५ सम्मका byte हरू) वा underscore (<literal>_</literal>) बाट सुरु हुनुपर्छ। त्यसपछि जतिसुकै संख्यामा letter, number, वा underscore हरू आउन सक्छन्। Regular expression को रूपमा यसलाई यसरी व्यक्त गर्न सकिन्छ:
+   <code>^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$</code>
+  </para>
+
+  <note>
    <simpara>
-    PHP मा variables लाई dollar चिन्ह (<literal>$</literal>) पछाडि variable को नाम लेखेर प्रतिनिधित्व गरिन्छ। Variable को नाम case-sensitive (अक्षरको आकार अनुसार फरक) हुन्छ।
+    Variable का नामहरू character का रूपमा नभई byte का रूपमा दाँजिन्छन्। PHP ले १२८ देखि २५५ सम्मका byte हरूको encoding लाई जाँच्ने वा व्याख्या गर्ने काम गर्दैन; दुईवटा नामका byte हरू दुरुस्तै मिलेको अवस्थामा मात्र तिनीहरूले एउटै variable लाई जनाउँछन्।
    </simpara>
+   <simpara>
+    यसको एउटा प्रभाव के हो भने UTF-8 मा लेखिएका नामहरूले काम गर्छन्, किनभने UTF-8 multi-byte sequence का प्रत्येक byte स्वीकृत दायराभित्रै पर्छन्। non-ASCII byte हरू उक्त दायराभित्र पर्ने जुनसुकै encoding, वा कुनै पनि encoding मा मान्य text नहुने byte sequence हरूको हकमा पनि यही नियम लागू हुन्छ। तर multi-byte sequence भित्र १२८ भन्दा कम मान भएका byte हरू प्रयोग गर्ने Shift-JIS वा UTF-16 जस्ता encoding हरूले भने काम गर्दैनन्।
+   </simpara>
+   <simpara>
+    अर्को प्रभाव के हो भने, देख्दा दुरुस्तै देखिने दुईवटा नामहरू वास्तवमा फरक हुन सक्छन्। जस्तै U+00E4 का रूपमा encode गरिएको <literal>ä</literal> र <literal>a</literal> पछाडि combining diaeresis U+0308 राखिएको अक्षर फरक variable मानिन्छन्। त्यसैगरी पछाडि U+00A0 NO-BREAK SPACE भएको र नभएको नाम पनि फरक variable हुन्।
+   </simpara>
+  </note>
 
-   <para>
-    एउटा मान्य variable नाम कुनै अक्षर (<literal>A-Z</literal>, <literal>a-z</literal>, वा 128 देखि 255 सम्मका bytes) वा underscore (<literal>_</literal>) बाट सुरु हुन्छ, र त्यसपछि जति पनि अक्षर, अङ्क वा underscores आउन सक्छन्। Regular expression मा यसलाई यसरी व्यक्त गर्न सकिन्छ:
-    <code>^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$</code>
-   </para>
+  <note>
+   <simpara>
+    <literal>$this</literal> एउटा विशेष variable हो, जसमा बाहिरबाट value assign गर्न सकिँदैन।
+    PHP 7.1.0 भन्दा अगाडि अप्रत्यक्ष assignment (जस्तै <link linkend="language.variables.variable">variable variables</link> प्रयोग गरेर) सम्भव थियो।
+   </simpara>
+  </note>
 
-   <note>
-    <simpara>
-     Variable का नामहरूलाई characters को रूपमा नभई bytes को रूपमा तुलना गरिन्छ।
-    </simpara>
-   </note>
+  &tip.userlandnaming;
 
-   <note>
-    <simpara>
-     <literal>$this</literal> एउटा विशेष variable हो जसमा कुनै मान assign गर्न सकिँदैन।
-    </simpara>
-   </note>
-
-   &tip.userlandnaming;
-
-   <example>
-    <title>मान्य Variable नामहरू</title>
-    <programlisting role="php" annotations="non-interactive">
+  <example>
+   <title>मान्य variable का नामहरू (Valid variable names)</title>
+   <programlisting role="php" annotations="non-interactive">
 <![CDATA[
 <?php
 $var = 'Bob';
 $Var = 'Joe';
 echo "$var, $Var";      // outputs "Bob, Joe"
 
-$_4site = 'not yet';    // मान्य; underscore बाट सुरु भएको छ
-$täyte = 'mansikka';    // मान्य; 'ä' (Extended) ASCII 228 हो
-?>
+$_4site = 'not yet';    // valid; underscore बाट सुरु भएको
+$täyte = 'mansikka';    // valid; 'ä' Extended ASCII 228 हो।
 ]]>
-    </programlisting>
-   </example>
+   </programlisting>
+  </example>
 
-   <example>
-    <title>अमान्य Variable नामहरू</title>
+  <example>
+   <title>अमान्य variable का नामहरू (Invalid variable names)</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$4site = 'not yet';     // invalid; number बाट सुरु भएको
+]]>
+   </programlisting>
+  </example>
+
+  <simpara>
+   PHP ले कुनै पनि byte sequence लाई variable को नामका रूपमा स्वीकार गर्छ। माथि उल्लिखित नामकरण नियम पालना नगर्ने variable हरूलाई runtime मा dynamic रूपमा मात्र access गर्न सकिन्छ। तिनीहरूलाई कसरी access गर्ने भन्ने जानकारीका लागि <link linkend="language.variables.variable">variable variables</link> हेर्नुहोस्।
+  </simpara>
+
+  <example>
+   <title>असामान्य variable नामहरू access गर्ने तरिका</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+${'invalid-name'} = 'bar';
+$name = 'invalid-name';
+echo ${'invalid-name'}, " ", $$name;
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+bar bar
+]]>
+   </screen>
+  </example>
+
+  <para>
+   पूर्वनिर्धारित रूपमा variable हरू सधैं value द्वारा assign (assigned by value) हुन्छन्। अर्थात्, जब कुनै variable मा expression assign गरिन्छ, मूल expression को पूरै value गन्तव्य variable मा copy हुन्छ। यसको मतलब एउटा variable को value अर्को variable मा assign गरेपछि, तीमध्ये कुनै एउटालाई परिवर्तन गर्दा अर्कोमा कुनै असर पर्दैन। यस्तो प्रकारको assignment बारे थप जानकारीका लागि <link linkend="language.expressions">Expressions</link> अध्याय हेर्नुहोस्।
+  </para>
+  <para>
+   PHP ले variable मा value assign गर्ने अर्को तरिका पनि प्रदान गर्छ: <link linkend="language.references">reference द्वारा assignment (assign by reference)</link>।
+   यसको अर्थ नयाँ variable ले मूल variable लाई केवल reference गर्छ (अर्को शब्दमा भन्नुपर्दा, त्यसको "alias बन्छ" वा "point गर्छ")। नयाँ variable मा गरिएका परिवर्तनहरूले मूल variable लाई असर गर्छन्, र त्यसको विपरीत पनि लागू हुन्छ।
+  </para>
+  <para>
+   Reference द्वारा assign गर्नका लागि, assign भइरहेको variable (source variable) को अगाडि ampersand (&amp;) थप्नुपर्छ। उदाहरणका लागि, निम्न code ले '<literal>My name is Bob</literal>' दुई पटक output गर्छ:
+
+   <informalexample>
     <programlisting role="php">
 <![CDATA[
 <?php
-$4site = 'not yet';     // अमान्य; अंकबाट सुरु भएको छ
+$foo = 'Bob';              // $foo मा 'Bob' value assign गर्ने
+$bar = &$foo;              // $bar मार्फत $foo लाई reference गर्ने
+$bar = "My name is $bar";  // $bar परिमार्जन गर्ने...
+echo $bar . PHP_EOL;
+echo $foo . PHP_EOL;       // $foo पनि परिमार्जन हुन्छ।
 ]]>
     </programlisting>
-   </example>
+   </informalexample>
+  </para>
 
-   <para>
-    डिफल्ट रूपमा, variables मा सधैँ value द्वारा मान assign हुन्छ (assigned by value)। यसको अर्थ कुनै variable मा expression assign गर्दा मूल expression को सम्पूर्ण मान नयाँ variable मा copy हुन्छ। त्यसैले एउटा variable को मान परिवर्तन गर्दा अर्को variable मा कुनै असर पर्दैन।
-   </para>
-   <para>
-    PHP ले variable मा मान assign गर्ने अर्को तरिका पनि प्रदान गर्दछ: <link linkend="language.references">reference द्वारा assign गर्ने (assign by reference)</link>। यसको अर्थ नयाँ variable ले सिधै मूल variable लाई संकेत गर्छ (त्यसको alias बन्छ)। नयाँ variable मा गरिने परिवर्तनले मूल variable लाई असर गर्छ, र मूल variable मा गरिने परिवर्तन नयाँमा पनि देखिन्छ।
-   </para>
-   <para>
-    Reference द्वारा assign गर्नका लागि assign गरिने variable को अगाडि ampersand (<literal>&amp;</literal>) राख्नुपर्छ:
-
-    <informalexample>
-     <programlisting role="php">
+  <para>
+   यहाँ ध्यान दिनुपर्ने एउटा महत्त्वपूर्ण कुरा के हो भने reference द्वारा केवल variable हरूलाई मात्र assign गर्न सकिन्छ।
+   <informalexample>
+    <programlisting role="php">
 <![CDATA[
 <?php
-$foo = 'Bob';              // $foo मा 'Bob' assign गरौँ
-$bar = &$foo;              // $bar मार्फत $foo लाई reference गरौँ
-$bar = "My name is $bar";  // $bar बदल्दा...
-echo $bar . PHP_EOL;
-echo $foo . PHP_EOL;       // $foo पनि बदलिन्छ
-?>
+$original = 25;
+$ref1 = &$original;        // यो मान्य assignment हो।
+$ref2 = &(24 * 7);         // अमान्य; नाम नभएको expression लाई reference गरिएको छ।
 ]]>
-     </programlisting>
-    </informalexample>
-   </para>
-
-   <para>
-    PHP मा variable पहिले नै घोषणा (declare) गरिरहनु अनिवार्य छैन, तर त्यसो गर्नु राम्रो अभ्यास मानिन्छ। अपरिभाषित variable प्रयोग गर्दा <constant>E_WARNING</constant> आउँछ। अपरिभाषित variable को डिफल्ट मान &null; हुन्छ। कुनै variable सुरु (initialize) भइसकेको छ कि छैन जाँच्न <function>isset</function> प्रयोग गर्न सकिन्छ।
-   </para>
-   <para>
-    <example>
-     <title>Uninitialized Variable को डिफल्ट मान</title>
-     <programlisting role="php">
+    </programlisting>
+   </informalexample>
+   <informalexample>
+    <programlisting role="php">
 <![CDATA[
 <?php
-// घोषणा नगरिएको variable
+// Function declaration मा reference फिर्ता गर्ने संकेत & नभएको ध्यान दिनुहोस्।
+// अर्थात् function ले reference return गर्दैन, त्यसैले result लाई reference द्वारा assign गर्न सकिँदैन
+function test()
+{
+   $original = 25;
+   return $original;
+}
+
+// Note: Notice जारी हुन्छ, तर non-reference value assign हुन्छ
+$result1 = &test();        // अमान्य किनभने test() ले reference द्वारा variable return गर्दैन।
+var_dump($result1);
+
+// यो function लाई reference return गर्ने गरी define गरिएको छ, तर यसले variable return गर्दैन
+function &test2()
+{
+    return 26;             // अमान्य किनभने return गरिएको value variable reference होइन।
+}
+
+// Note: non-reference value assign हुन्छ
+$result2 = &test2();
+var_dump($result2);
+]]>
+    </programlisting>
+   </informalexample>
+  </para>
+  
+  <para>
+   PHP मा variable declare गर्न अनिवार्य छैन, यद्यपि यो धेरै राम्रो अभ्यास मानिन्छ। Undefined variable access गर्दा <constant>E_WARNING</constant> त्रुटि उत्पन्न हुन्छ (PHP 8.0.0 भन्दा पहिले <constant>E_NOTICE</constant>)।
+   Undefined variable को पूर्वनिर्धारित value &null; हुन्छ।
+   कुनै variable पहिले नै initialize भइसकेको छ कि छैन भनेर जाँच्न <function>isset</function> भाषा construct प्रयोग गर्न सकिन्छ।
+  </para>
+  <para>
+   <example>
+    <title>Uninitialized variable को पूर्वनिर्धारित value</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Unset र unreferenced (प्रयोग सन्दर्भ नभएको) variable.
 var_dump($unset_var);
-?>
 ]]>
-     </programlisting>
-     &example.outputs;
-     <screen>
+    </programlisting>
+    &example.outputs;
+    <screen>
 <![CDATA[
 Warning: Undefined variable $unset_var in ...
 NULL
 ]]>
-     </screen>
-    </example>
-   </para>
+    </screen>
+   </example>
+  </para>
 
+  <simpara>
+   PHP ले undefined variable बाट array autovivification (नयाँ array को स्वतः सिर्जना) गर्न अनुमति दिन्छ।
+   Undefined variable मा element थप्दा (appending) नयाँ array सिर्जना हुन्छ र कुनै warning जारी हुँदैन।
+  </simpara>
+  <example>
+   <title>Undefined variable बाट array को Autovivification</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$unset_array[] = 'value'; // Warning उत्पन्न गर्दैन।
+var_dump($unset_array);
+]]>
+   </programlisting>
+  </example>
+
+  <warning>
    <simpara>
-    Variable लाई नष्ट गर्नका लागि <function>unset</function> language construct प्रयोग गर्न सकिन्छ।
+    एउटै variable नाम प्रयोग गर्ने एउटा file लाई अर्को file भित्र include गर्दा uninitialized variable को पूर्वनिर्धारित value मा भर पर्नु समस्याग्रस्त हुन सक्छ।
    </simpara>
-  </sect1>
+  </warning>
 
-  <sect1 xml:id="language.variables.predefined">
-   <title>पूर्वपरिभाषित Variables (Predefined Variables)</title>
-   
+  <simpara>
+   Variable लाई <function>unset</function> भाषा construct प्रयोग गरेर नष्ट (destroy) गर्न सकिन्छ।
+  </simpara>
+
+  <simpara>
+   Variable सम्बन्धी function हरूको जानकारीका लागि <link linkend="ref.var">Variable Functions Reference</link> हेर्नुहोस्।
+  </simpara>
+ </sect1>
+
+ <sect1 xml:id="language.variables.predefined">
+  <title>Predefined Variables</title>
+  
+  <para>
+   PHP ले धेरै संख्यामा <link linkend="reserved.variables">predefined variables</link> प्रदान गर्दछ।
+   यसका साथै PHP ले web server (लागू हुने भएमा), वातावरण (environment), र प्रयोगकर्ताको input बाट variable हरू समावेश भएका predefined array हरूको अतिरिक्त सेट पनि उपलब्ध गराउँछ। यी array हरू हरेक scope मा स्वतः उपलब्ध हुन्छन्। यसै कारणले गर्दा, यिनीहरूलाई प्रायः "superglobals" भनिन्छ। (प्रयोगकर्ता आफैंले superglobals define गर्ने संयन्त्र PHP मा छैन।) थप विवरणका लागि <link linkend="language.variables.superglobals">superglobals को सूची</link> हेर्नुहोस्।
+  </para>
+
+  <note>
+   <title>Variable variables</title>
    <para>
-    PHP ले धेरै संख्यामा <link linkend="reserved.variables">predefined variables</link> प्रदान गर्दछ। साथै web server, environment र user input बाट आउने variables समावेश भएका predefined arrays पनि उपलब्ध गराउँछ। यी arrays हरू हरेक scope मा स्वतः उपलब्ध हुन्छन्, त्यसैले यिनीहरूलाई <quote>superglobals</quote> भनिन्छ। थप विवरणका लागि <link linkend="language.variables.superglobals">superglobals को सूची</link> हेर्नुहोस्।
+    Function वा class method भित्र superglobals लाई <link linkend="language.variables.variable">variable variables</link> का रूपमा प्रयोग गर्न सकिँदैन।
    </para>
-  </sect1>
+  </note>
 
-  <sect1 xml:id="language.variables.scope">
-   <title>Variable को दायरा (Variable scope)</title>
+  <para>
+   यदि <link linkend="ini.variables-order">variables_order</link> मा तोकिएका केही variable हरू set गरिएका छैनन् भने, तिनीहरूसँग सम्बन्धित PHP predefined array हरू पनि खाली नै रहन्छन्।
+  </para>
+ </sect1>
 
-   <simpara>
-    कुनै variable को scope भनेको त्यो कुन सन्दर्भ (context) भित्र मान्य छ भन्ने दायरा हो। PHP मा function scope र global scope हुन्छन्। Function बाहिर परिभाषित जुनसुकै variable पनि global scope मा सीमित हुन्छ।
-   </simpara>
-   <example>
-    <title>Global variable scope को उदाहरण</title>
-    <programlisting role="php" annotations="non-interactive">
+ <sect1 xml:id="language.variables.scope">
+  <title>Variable scope</title>
+
+  <simpara>
+   Variable को scope भन्नाले त्यो define गरिएको सन्दर्भ (context) लाई बुझाउँछ।
+   PHP मा function scope र global scope हुन्छ।
+   Function भन्दा बाहिर define गरिएको जुनसुकै variable global scope मा सीमित हुन्छ।
+   जब कुनै file लाई include गरिन्छ, त्यसभित्रको code ले include गरिएको line को variable scope प्राप्त गर्दछ।
+  </simpara>
+  <example>
+   <title>Global variable scope को उदाहरण</title>
+   <programlisting role="php" annotations="non-interactive">
 <![CDATA[
 <?php
 $a = 1;
-include 'b.inc'; // $a variable b.inc भित्र पनि उपलब्ध हुनेछ
-?>
+include 'b.inc'; // Variable $a फाइल b.inc भित्र उपलब्ध हुनेछ
 ]]>
-    </programlisting>
-   </example>
+   </programlisting>
+  </example>
 
-   <simpara>
-    कुनै function भित्र बनेको variable केवल त्यो function body भित्र मात्र सीमित (local) हुन्छ।
-   </simpara>
-    
-   <example>
-    <title>Local variable scope को उदाहरण</title>
-    <programlisting role="php"> 
+  <simpara>
+   कुनै named function वा <link linkend="functions.anonymous">anonymous function</link> भित्र सिर्जना गरिएको जुनसुकै variable function body को scope मा सीमित हुन्छ।
+   यद्यपि, <link linkend="functions.arrow">arrow functions</link> ले parent scope का variable हरूलाई function body भित्र उपलब्ध गराउन स्वतः bind गर्दछ।
+   यदि call गर्ने file को कुनै function भित्र file include गरिन्छ भने, include गरिएको file का variable हरू त्यसै function भित्र define गरिएसरह उपलब्ध हुन्छन्।
+  </simpara>
+   
+  <example>
+   <title>Local variable scope को उदाहरण</title>
+   <programlisting role="php">
 <![CDATA[
 <?php
 $a = 1; // global scope
 
 function test()
 { 
-    var_dump($a); // $a अपरिभाषित छ किनभने यसले स्थानीय $a लाई जनाउँछ
+    var_dump($a); // Variable $a undefined छ किनभने यसले local $a लाई जनाउँछ
 }
 
 test();
-?>
 ]]>
-    </programlisting>
-   </example>
+   </programlisting>
+  </example>
 
-   <sect2 xml:id="language.variables.scope.global">
-    <title><literal>global</literal> Keyword</title>
-    <simpara>
-     <literal>global</literal> keyword प्रयोग गरेर global scope को variable लाई local scope भित्र बाँध्न (bind गर्न) सकिन्छ:
-    </simpara>
-    <para>
-     <example>
-      <title><literal>global</literal> को प्रयोग</title>
-      <programlisting role="php">
+  <simpara>
+   माथिको उदाहरणले undefined variable <constant>E_WARNING</constant> (PHP 8.0.0 भन्दा पहिले <constant>E_NOTICE</constant>) उत्पन्न गर्नेछ।
+   यो किनभने echo वा var_dump statement ले <varname>$a</varname> variable को स्थानीय (local) संस्करणलाई जनाउँछ, र यस scope भित्र यसमा कुनै value assign गरिएको छैन।
+   यो C language भन्दा केही फरक छ भन्ने कुरा ध्यान दिनुहोस्; C मा global variable हरू स्थानीय परिभाषाद्वारा विशेष रूपमा override नगरिएसम्म function का लागि स्वतः उपलब्ध हुन्छन्।
+   यसले केही समस्या निम्त्याउन सक्छ किनभने मानिसहरूले अनजानमै global variable परिवर्तन गर्न सक्छन्। PHP मा यदि function भित्र कुनै global variable प्रयोग गर्नु छ भने, त्यसलाई function भित्र global का रूपमा declare गर्नैपर्छ।
+  </simpara>
+      
+  <sect2 xml:id="language.variables.scope.global">
+   <title><literal>global</literal> keyword</title>
+   <simpara>
+    <literal>global</literal> keyword को प्रयोग variable लाई global scope बाट local scope मा bind गर्नका लागि गरिन्छ। यो keyword लाई variable हरूको सूची वा एउटा मात्र variable सँग प्रयोग गर्न सकिन्छ। सोही नामको global variable लाई reference गर्ने गरी एउटा local variable सिर्जना हुन्छ। यदि त्यो global variable अस्तित्वमा छैन भने, global scope मा variable सिर्जना हुन्छ र त्यसमा &null; assign गरिन्छ।
+   </simpara>
+   <para>
+    <example>
+     <title><literal>global</literal> प्रयोग गर्ने तरिका</title>
+     <programlisting role="php">
 <![CDATA[
 <?php
 $a = 1;
@@ -180,98 +299,713 @@ function Sum()
 
 Sum();
 echo $b;
-?>
 ]]>
-      </programlisting>
-      &example.outputs;
-      <screen>
+     </programlisting>
+     &example.outputs;
+     <screen>
 <![CDATA[
 3
 ]]>
-      </screen>
-     </example>
-    </para>
-    <simpara>
-     साथै <varname>$GLOBALS</varname> superglobal array प्रयोग गरेर पनि सिधै global variables चलाउन सकिन्छ: <varname>$GLOBALS['b'] = $GLOBALS['a'] + $GLOBALS['b'];</varname>।
-    </simpara>
-   </sect2>
+     </screen>
+    </example>
+   </para>
 
-   <sect2 xml:id="language.variables.scope.static">
-    <title><literal>static</literal> Variables को प्रयोग</title>
+   <simpara>
+    Function भित्र <varname>$a</varname> र <varname>$b</varname> लाई global declare गरेपछि, ती variable का सबै सन्दर्भहरूले global संस्करणलाई जनाउनेछन्। कुनै function ले manipulate गर्न सक्ने global variable को संख्यामा कुनै सीमा हुँदैन।
+   </simpara>
+
+   <simpara>
+    Global scope बाट variable access गर्ने दोस्रो तरिका PHP द्वारा विशेष रूपमा परिभाषित <varname>$GLOBALS</varname> array प्रयोग गर्नु हो। अघिल्लो उदाहरणलाई यसरी पुनः लेख्न सकिन्छ:
+   </simpara>
+   <para>
+    <example>
+     <title>global को सट्टा <varname>$GLOBALS</varname> प्रयोग गर्ने तरिका</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$a = 1;
+$b = 2;
+
+function Sum()
+{
+    $GLOBALS['b'] = $GLOBALS['a'] + $GLOBALS['b'];
+} 
+
+Sum();
+echo $b;
+]]>
+     </programlisting>
+    </example>
+   </para>
+
+   <simpara>
+    <varname>$GLOBALS</varname> array एउटा associative array हो, जसमा global variable को नाम key र त्यो variable को सामग्री array element को value हुन्छ।
+    <varname>$GLOBALS</varname> जुनसुकै scope मा पनि किन अस्तित्वमा रहन्छ भने, <varname>$GLOBALS</varname> एउटा <link linkend="language.variables.superglobals">superglobal</link> हो।
+    यहाँ superglobals को क्षमता दर्शाउने उदाहरण प्रस्तुत गरिएको छ:
+   </simpara>
+   <para>
+    <example>
+     <title>Superglobals र scope प्रदर्शन गर्ने उदाहरण</title>
+     <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+function test_superglobal()
+{
+    echo $_POST['name'];
+}
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <note>
     <simpara>
-     Variable scope को अर्को महत्वपूर्ण विशेषता <literal>static</literal> variable हो। Static variable केवल function को local scope भित्र मात्र रहन्छ, तर function बाट बाहिरिँदा यसले आफ्नो मान गुमाउँदैन:
+     Function भन्दा बाहिर <literal>global</literal> keyword प्रयोग गर्नु कुनै त्रुटि होइन। यदि त्यो file कुनै function भित्रबाट include गरिएको छ भने यसलाई प्रयोग गर्न सकिन्छ।
     </simpara>
-    <para>
-     <example>
-      <title>Static variable को उदाहरण</title>
-      <programlisting role="php">
+   </note>
+  </sect2>
+ 
+  <sect2 xml:id="language.variables.scope.static">
+   <title><literal>static</literal> variable को प्रयोग</title>
+   <simpara>
+    Variable scoping को अर्को महत्त्वपूर्ण विशेषता <emphasis>static</emphasis> variable हो। Static variable स्थानीय function scope भित्र मात्र अस्तित्वमा रहन्छ, तर कार्यक्रमको कार्यान्वयनले उक्त scope छाड्दा पनि यसले आफ्नो value गुमाउँदैन। निम्न उदाहरण विचार गर्नुहोस्:
+   </simpara>
+   <para>
+    <example>
+     <title>Static variable को आवश्यकता देखाउने उदाहरण</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function test()
+{
+    $a = 0;
+    echo $a . PHP_EOL;
+    $a++;
+}
+
+test();
+test();
+test();
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <simpara>
+    यो function प्रायः निरर्थक छ किनभने हरेक पटक call गर्दा यसले <varname>$a</varname> लाई <literal>0</literal> बनाउँछ र <literal>0</literal> नै print गर्छ। Variable बढाउने <varname>$a</varname>++ को कुनै अर्थ रहँदैन किनभने function समाप्त हुनेबित्तिकै <varname>$a</varname> variable हराउँछ। हालको गणना (count) नगुमाउने उपयोगी counting function बनाउनका लागि, <varname>$a</varname> variable लाई static declare गरिन्छ:
+   </simpara>
+   <para>
+    <example>
+     <title>Static variable प्रयोगको उदाहरण</title>
+     <programlisting role="php">
 <![CDATA[
 <?php
 function test()
 {
     static $a = 0;
-    echo $a;
+    echo $a . PHP_EOL;
     $a++;
 }
 
-test(); // 0 प्रिन्ट गर्छ
-test(); // 1 प्रिन्ट गर्छ
-test(); // 2 प्रिन्ट गर्छ
-?>
-]]>
-      </programlisting>
-     </example>
-    </para>
-   </sect2>
-  </sect1>
-
-  <sect1 xml:id="language.variables.variable">
-   <title>Variable Variables</title>
-
-   <para>
-    कहिलेकाहीँ variable को नामलाई नै परिवर्तनशील (variable) बनाउनु उपयोगी हुन्छ। Variable variables ले एउटा variable को मानलाई लिएर त्यसलाई अर्को variable को नामको रूपमा व्यवहार गर्छ:
-   </para>
-
-   <para>
-    <example>
-     <title>Variable Variable को उदाहरण</title>
-     <programlisting role="php">
-<![CDATA[
-<?php
-$a = 'hello';
-$$a = 'world';
-
-echo "$a ${$a}"; // "hello world" output दिन्छ
-echo "$a $hello"; // ठ्याक्कै उही "hello world" output दिन्छ
-?>
+test();
+test();
+test();
 ]]>
      </programlisting>
     </example>
    </para>
-  </sect1>
+   <simpara>
+    अब, <varname>$a</varname> केवल function को पहिलो call मा मात्र initialize हुन्छ, र हरेक पटक <literal>test()</literal> function call गर्दा यसले <varname>$a</varname> को value print गरेर त्यसलाई बढाउनेछ।
+   </simpara>
 
-  <sect1 xml:id="language.variables.external">
-   <title>बाह्य स्रोतबाट आउने Variables (Variables From External Sources)</title>
+   <simpara>
+    Recursive function हरूसँग काम गर्न पनि static variable हरूले एउटा माध्यम प्रदान गर्छन्। निम्न सरल recursive function ले कहिले रोकिने भन्ने जान्न static variable <varname>$count</varname> प्रयोग गर्दै १० सम्म गणना गर्दछ:
+   </simpara>
+   <para>
+    <example>
+     <title>Recursive function हरूसँग Static variables</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function test()
+{
+    static $count = 0;
 
-   <sect2 xml:id="language.variables.external.forms">
-    <title>HTML Forms (GET र POST)</title>
+    $count++;
+    echo $count . PHP_EOL;
+    if ($count < 10) {
+        test();
+    }
+    // Increment उल्टाउने, ताकि test() समाप्त भएपछि $count फेरि 0 मा फर्कियोस्
+    // र test() को पछिल्लो call ले फेरि 1 बाट गणना सुरु गरोस्
+    $count--;
+}
 
-    <simpara>
-     जब कुनै HTML form लाई PHP script मा submit गरिन्छ, त्यो form का जानकारीहरू स्वतः PHP मा उपलब्ध हुन्छन्। Form को method अनुसार ती variables हरू <varname>$_GET</varname>, <varname>$_POST</varname> वा दुवै समेटिएको <varname>$_REQUEST</varname> superglobal array भित्र बस्छन्।
-    </simpara>
-   </sect2>
+test();
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+]]>
+     </screen>
+    </example>
+   </para>
 
-   <sect2 xml:id="language.variables.external.cookies">
-    <title>HTTP Cookies</title>
+   <para>
+    PHP 8.3.0 भन्दा पहिले, static variable हरू केवल constant expression प्रयोग गरेर मात्र initialize गर्न सकिन्थ्यो। PHP 8.3.0 देखि, dynamic expression हरू (जस्तै function call) पनि प्रयोग गर्न पाइन्छ:
+   </para>
+   <para>
+    <example>
+     <title>Static variable declare गर्ने तरिका</title>
+     <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+function foo(){
+    static $int = 0;          // मान्य
+    static $int = 1+2;        // मान्य
+    static $int = sqrt(121);  // PHP 8.3.0 देखि मान्य
 
-    <simpara>
-     PHP ले Netscape Spec अनुसार पारदर्शी रूपमा HTTP cookies लाई समर्थन गर्छ। Cookies सेट गर्नका लागि <function>setcookie</function> function प्रयोग गरिन्छ, र browser बाट प्राप्त भएका cookies हरू स्वतः <varname>$_COOKIE</varname> array भित्र उपलब्ध हुन्छन्।
-    </simpara>
-   </sect2>
-  </sect1>
+    $int++;
+    echo $int;
+}
+]]>
+     </programlisting>
+    </example>
+   </para>
 
- </chapter>
+   <simpara>
+    Anonymous function भित्रका static variable हरू त्यो निश्चित function instance भित्र मात्र कायम रहन्छन्। यदि anonymous function हरेक call मा पुनः सिर्जना गरिन्छ भने, static variable पनि पुनः initialize हुनेछ।
+   </simpara>
+   <example>
+    <title>Anonymous function भित्र Static variables</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function exampleFunction($input) {
+    $result = (static function () use ($input) {
+        static $counter = 0;
+        $counter++;
+        return "Input: $input, Counter: $counter\n";
+    });
+
+    return $result();
+}
+
+// exampleFunction का call हरूले anonymous function पुनः सिर्जना गर्छन्, त्यसैले
+// static variable ले आफ्नो value कायम राख्दैन।
+echo exampleFunction('A'); // Outputs: Input: A, Counter: 1
+echo exampleFunction('B'); // Outputs: Input: B, Counter: 1
+]]>
+    </programlisting>
+   </example>
+
+   <para>
+    PHP 8.1.0 देखि, जब static variable प्रयोग गर्ने method inherit हुन्छ (तर override हुँदैन), inherit भएको method ले parent method सँग static variable साझा गर्नेछ। यसको अर्थ method भित्रका static variable हरूले अब static property जस्तै व्यवहार गर्दछन्।
+   </para>
+
+   <simpara>
+    PHP 8.3.0 देखि, static variable हरूलाई arbitrary expression हरूद्वारा initialize गर्न सकिन्छ। यसको मतलब, उदाहरणका लागि, method call हरूलाई static variable initialize गर्न प्रयोग गर्न सकिन्छ।
+   </simpara>
+
+   <example>
+    <title>Inherit गरिएका Method हरूमा Static Variable को प्रयोग</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Foo {
+    public static function counter() {
+        static $counter = 0;
+        $counter++;
+        return $counter;
+    }
+}
+class Bar extends Foo {}
+var_dump(Foo::counter()); // int(1)
+var_dump(Foo::counter()); // int(2)
+var_dump(Bar::counter()); // int(3), PHP 8.1.0 भन्दा पहिले int(1)
+var_dump(Bar::counter()); // int(4), PHP 8.1.0 भन्दा पहिले int(2)
+]]>
+    </programlisting>
+   </example>
+  </sect2>
+
+  <sect2 xml:id="language.variables.scope.references">
+   <title><literal>global</literal> र <literal>static</literal> variable हरूसँग References</title>
+   <simpara>
+    PHP ले variable का लागि <link linkend="language.variables.scope.static">static</link> र <link linkend="language.variables.scope.global">global</link> modifier लाई <link linkend="language.references">reference</link> को आधारमा कार्यान्वयन गर्दछ। उदाहरणका लागि, <literal>global</literal> statement मार्फत function scope भित्र ल्याइएको वास्तविक global variable ले वास्तवमा global variable को reference सिर्जना गर्दछ। यसले अप्रत्याशित व्यवहार निम्त्याउन सक्छ, जसलाई निम्न उदाहरणले सम्बोधन गर्दछ:
+   </simpara>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function test_global_ref() {
+    global $obj;
+    $new = new stdClass;
+    $obj = &$new;
+}
+
+function test_global_noref() {
+    global $obj;
+    $new = new stdClass;
+    $obj = $new;
+}
+
+test_global_ref();
+var_dump($obj);
+test_global_noref();
+var_dump($obj);
+]]>
+    </programlisting>
+
+    &example.outputs;
+
+    <screen>
+<![CDATA[
+NULL
+object(stdClass)#1 (0) {
+}
+]]>
+    </screen>
+   </informalexample>
+
+   <simpara>
+    यस्तै व्यवहार <literal>static</literal> statement मा पनि लागू हुन्छ। Reference हरू statically भण्डारण हुँदैनन्:
+   </simpara>
+   
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function &get_instance_ref() {
+    static $obj;
+
+    echo 'Static object: ';
+    var_dump($obj);
+    if (!isset($obj)) {
+        $new = new stdClass;
+        // Static variable मा reference assign गर्ने
+        $obj = &$new;
+    }
+    if (!isset($obj->property)) {
+        $obj->property = 1;
+    } else {
+        $obj->property++;
+    }
+    return $obj;
+}
+
+function &get_instance_noref() {
+    static $obj;
+
+    echo 'Static object: ';
+    var_dump($obj);
+    if (!isset($obj)) {
+        $new = new stdClass;
+        // Static variable मा object assign गर्ने
+        $obj = $new;
+    }
+    if (!isset($obj->property)) {
+        $obj->property = 1;
+    } else {
+        $obj->property++;
+    }
+    return $obj;
+}
+
+$obj1 = get_instance_ref();
+$still_obj1 = get_instance_ref();
+echo "\n";
+$obj2 = get_instance_noref();
+$still_obj2 = get_instance_noref();
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Static object: NULL
+Static object: NULL
+
+Static object: NULL
+Static object: object(stdClass)#3 (1) {
+  ["property"]=>
+  int(1)
+}
+]]>
+    </screen>
+   </informalexample>
+
+   <simpara>
+    यस उदाहरणले देखाउँछ कि static variable मा reference assign गर्दा, दोस्रो पटक <literal>&amp;get_instance_ref()</literal> function call गर्दा त्यो <emphasis>सम्झनामा रहँदैन (not remembered)</emphasis>।
+   </simpara>
+  </sect2>
+ </sect1>
+
+ <sect1 xml:id="language.variables.variable">
+  <title>Variable variables</title>
+
+  <simpara>
+   कहिलेकाहीं variable का नामहरू पनि variable का रूपमा पाउनु सुविधाजनक हुन्छ। अर्थात्, एउटा यस्तो variable नाम जसलाई dynamic रूपमा set र प्रयोग गर्न सकिन्छ। सामान्य variable यस्तो statement मार्फत set गरिन्छ:
+  </simpara>
+
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a = 'hello';
+var_dump($a);
+]]>
+   </programlisting>
+  </informalexample>
+
+  <simpara>
+   Variable variable ले कुनै variable को value लिन्छ र त्यसलाई अर्को variable को नामका रूपमा व्यवहार गर्दछ। माथिको उदाहरणमा, दुईवटा dollar sign प्रयोग गरेर <emphasis>hello</emphasis> लाई variable को नामका रूपमा प्रयोग गर्न सकिन्छ, अर्थात्:
+  </simpara>
+
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a = 'hello';
+$$a = 'world';
+var_dump($hello);
+]]>
+   </programlisting>
+  </informalexample>
+
+  <simpara>
+   यस बिन्दुमा PHP symbol tree मा दुईवटा variable हरू define र भण्डारण भइसकेका हुन्छन्: "hello" सामग्री भएको <varname>$a</varname> र "world" सामग्री भएको <varname>$hello</varname>। तसर्थ, यो statement:
+  </simpara>
+
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a = 'hello';
+$$a = 'world';
+echo "$a {$$a}";
+]]>
+   </programlisting>
+  </informalexample>
+
+  <simpara>
+   ले निम्न statement सँग दुरुस्तै उस्तै output निकाल्छ:
+  </simpara>
+
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$a = 'hello';
+$$a = 'world';
+echo "$a $hello";
+]]>
+   </programlisting>
+  </informalexample>
+
+  <simpara>
+   अर्थात् दुवैले निकाल्ने output: <computeroutput>hello world</computeroutput> हो।
+  </simpara>
+
+  <simpara>
+   Array सँग variable variables प्रयोग गर्नका लागि, एउटा अस्पष्टता (ambiguity) समस्या समाधान गर्नुपर्ने हुन्छ। अर्थात्, यदि parser ले <varname>$$a[1]</varname> देख्यो भने उसले <varname>$a[1]</varname> लाई variable का रूपमा प्रयोग गर्न खोजेको हो, वा <varname>$$a</varname> लाई variable मानेर त्यसको <literal>[1]</literal> index लिन खोजेको हो भन्ने कुरा बुझ्नुपर्छ। यो अस्पष्टता समाधान गर्ने syntax पहिलो अवस्थाका लागि <varname>${$a[1]}</varname> र दोस्रो अवस्थाका लागि <varname>${$a}[1]</varname> हो।
+  </simpara>
+
+  <simpara>
+   Class property हरूलाई पनि variable property name प्रयोग गरेर access गर्न सकिन्छ। Variable property name लाई call गरिएको scope भित्रबाट समाधान (resolve) गरिनेछ। उदाहरणका लागि, यदि <varname>$foo->$bar</varname> जस्तो expression छ भने, स्थानीय scope मा <varname>$bar</varname> जाँच गरिनेछ र यसको value लाई <varname>$foo</varname> को property name का रूपमा प्रयोग गरिनेछ। यदि <varname>$bar</varname> कुनै array access हो भने पनि यो नियम लागू हुन्छ।
+  </simpara>
+
+  <simpara>
+   Property name लाई स्पष्ट रूपमा छुट्ट्याउन घुम्रिएको कोष्ठक (curly braces) को प्रयोग पनि गर्न सकिन्छ। Array समावेश भएको property भित्रका value access गर्दा, property name धेरै भागहरू मिलेर बनेको बेला, वा property name मा सामान्यतया अमान्य मानिने वर्णहरू समावेश हुँदा (जस्तै <function>json_decode</function> वा <link linkend="book.simplexml">SimpleXML</link> बाट आउँदा) यी कोष्ठकहरू सबैभन्दा बढी उपयोगी हुन्छन्।
+  </simpara>
+
+  <para>
+   <example>
+    <title>Variable property को उदाहरण</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class Foo {
+    public $bar = 'I am bar.';
+    public $arr = ['I am A.', 'I am B.', 'I am C.'];
+    public $r   = 'I am r.';
+}
+
+$foo = new Foo();
+$bar = 'bar';
+$baz = ['foo', 'bar', 'baz', 'quux'];
+echo $foo->$bar . "\n";
+echo $foo->{$baz[1]} . "\n";
+
+$start = 'b';
+$end   = 'ar';
+echo $foo->{$start . $end} . "\n";
+
+$arr = 'arr';
+echo $foo->{$arr[1]} . "\n";
+echo $foo->{$arr}[1] . "\n";
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+I am bar.
+I am bar.
+I am bar.
+I am r.
+I am B.
+]]>
+    </screen>
+   </example>
+  </para>
+
+  <warning>
+   <simpara>
+    कृपया ध्यान दिनुहोस् कि function वा class method भित्र PHP का <link linkend="language.variables.superglobals">Superglobal arrays</link> सँग variable variables प्रयोग गर्न सकिँदैन। Variable <literal>$this</literal> पनि एउटा विशेष variable हो जसलाई dynamically reference गर्न सकिँदैन।
+   </simpara>
+  </warning>
  
+ </sect1>
+
+ <sect1 xml:id="language.variables.external">
+  <title>बाह्य स्रोतबाट आउने Variables (Variables From External Sources)</title>
+
+  <sect2 xml:id="language.variables.external.form">
+   <title>HTML Forms (GET र POST)</title>
+
+   <simpara>
+    जब कुनै form लाई PHP script मा submit गरिन्छ, उक्त form बाट प्राप्त जानकारी स्वतः script का लागि उपलब्ध हुन्छ। यस जानकारीलाई access गर्ने केही तरिकाहरू छन्, उदाहरणका लागि:
+   </simpara>
+
+   <para>
+    <example>
+     <title>एउटा सरल HTML form</title>
+     <programlisting role="html">
+<![CDATA[
+<form action="foo.php" method="post">
+    Name:  <input type="text" name="username" /><br />
+    Email: <input type="text" name="email" /><br />
+    <input type="submit" name="submit" value="Submit me!" />
+</form>
+]]>
+     </programlisting>
+    </example>
+   </para>
+
+   <para>
+    HTML form बाट data access गर्ने दुईवटा मात्र तरिकाहरू छन्। हाल उपलब्ध विधिहरू तल सूचीबद्ध छन्:
+   </para>
+
+   <para>
+    <example>
+     <title>सरल POST HTML form बाट data access गर्ने तरिका</title>
+     <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+echo $_POST['username'];
+echo $_REQUEST['username'];
+]]>
+     </programlisting>
+    </example>
+   </para>
+
+   <para>
+    GET form को प्रयोग पनि मिल्दोजुल्दो छ, तर यसमा सम्बन्धित GET predefined variable प्रयोग गर्न सकिन्छ। GET नियम <literal>QUERY_STRING</literal> (URL मा '?' पछाडिको जानकारी) मा पनि लागू हुन्छ। तसर्थ, उदाहरणका लागि, <literal>http://www.example.com/test.php?id=3</literal> मा GET data समावेश हुन्छ जसलाई <varname>$_GET['id']</varname> मार्फत access गर्न सकिन्छ। <varname>$_REQUEST</varname> पनि हेर्नुहोस्।
+   </para>
+
+   <note>
+    <para>
+     Variable का नाममा भएका dot (थोप्ला) र space हरू underscore मा परिणत हुन्छन्। उदाहरणका लागि <literal>&lt;input name="a.b" /&gt;</literal> script मा <literal>$_REQUEST["a_b"]</literal> बन्दछ।
+    </para>
+   </note>
+
+   <simpara>
+    PHP ले form variables को सन्दर्भमा array हरूलाई पनि बुझ्दछ (<link linkend="faq.html">सम्बन्धित FAQ</link> हेर्नुहोस्)।
+    उदाहरणका लागि, सम्बन्धित variable हरूलाई समूहबद्ध गर्न सकिन्छ, वा multiple select input बाट value हरू प्राप्त गर्न यो सुविधा प्रयोग गर्न सकिन्छ। उदाहरणका लागि, एउटा form लाई आफ्नै script मा post गरौं र submission पछि data प्रदर्शन गरौं:
+   </simpara>
+
+   <para>
+    <example>
+     <title>थप जटिल form variables</title>
+     <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+if ($_POST) {
+    echo '<pre>';
+    echo htmlspecialchars(print_r($_POST, true));
+    echo '</pre>';
+}
+?>
+<form action="" method="post">
+    Name:  <input type="text" name="personal[name]" /><br />
+    Email: <input type="text" name="personal[email]" /><br />
+    Beer: <br />
+    <select multiple name="beer[]">
+        <option value="warthog">Warthog</option>
+        <option value="guinness">Guinness</option>
+        <option value="stuttgarter">Stuttgarter Schwabenbräu</option>
+    </select><br />
+    <input type="submit" value="submit me!" />
+</form>
+]]>
+     </programlisting>
+    </example>
+   </para>
+
+   <note>
+    <simpara>
+     यदि कुनै बाह्य variable को नाम मान्य array syntax बाट सुरु हुन्छ भने, त्यसपछिका पुच्छारका वर्णहरूलाई (trailing characters) कुनै सूचना बिना बेवास्ता गरिन्छ। उदाहरणका लागि, <literal>&lt;input name="foo[bar]baz"&gt;</literal> बन्दछ <literal>$_REQUEST['foo']['bar']</literal>।
+    </simpara>
+   </note>
+ 
+   <sect3 xml:id="language.variables.external.form.submit">
+    <title>IMAGE SUBMIT variable नामहरू</title>
+
+    <simpara>
+     Form submit गर्दा मानक submit button को सट्टा निम्न प्रकारको tag प्रयोग गरेर image (तस्विर) प्रयोग गर्न सकिन्छ:
+    </simpara>
+
+    <informalexample>
+     <programlisting role="html">
+<![CDATA[
+<input type="image" src="image.gif" name="sub" />
+]]>
+     </programlisting>
+    </informalexample>
+
+    <simpara>
+     जब प्रयोगकर्ताले छविमा कतै click गर्छ, तब त्यससँग जोडिएको form दुईवटा अतिरिक्त variable हरू, <varname>sub_x</varname> र <varname>sub_y</varname> सहित server मा पठाइनेछ। यिनीहरूमा प्रयोगकर्ताले छविभित्र click गरेको निर्देशांकहरू (coordinates) समावेश हुन्छन्। अनुभवी विकासकर्ताहरूले याद गर्न सक्छन् कि browser ले पठाउने वास्तविक variable नामहरूमा underscore को सट्टा dot (period) हुन्छ, तर PHP ले त्यो dot लाई स्वतः underscore मा रूपान्तरण गर्दछ।
+    </simpara>
+   </sect3>
+
+  </sect2>
+
+  <sect2 xml:id="language.variables.external.cookies">
+   <title>HTTP Cookies</title>
+
+   <simpara>
+    PHP ले <link xlink:href="&url.rfc;6265">RFC 6265</link> द्वारा परिभाषित HTTP cookies लाई पारदर्शी रूपमा समर्थन गर्दछ। Cookies टाढाको browser मा data भण्डारण गर्ने र यसरी दोहोरिएर आउने प्रयोगकर्ताहरूलाई track वा पहिचान गर्ने संयन्त्र हो। <function>setcookie</function> function प्रयोग गरेर cookie हरू set गर्न सकिन्छ। Cookies HTTP header को एक भाग हुन्, त्यसैले browser मा कुनै पनि output पठाउनुभन्दा अगाडि नै SetCookie function call गर्नुपर्छ। यो <function>header</function> function को जस्तै प्रतिबन्ध हो। Cookie data त्यसपछि उपयुक्त cookie data array हरू, जस्तै <varname>$_COOKIE</varname> र <varname>$_REQUEST</varname> मा उपलब्ध हुन्छ। थप विवरण र उदाहरणहरूका लागि <function>setcookie</function> manual पृष्ठ हेर्नुहोस्।
+   </simpara>
+
+   <note>
+    <simpara>
+     PHP 7.2.34, 7.3.23 र 7.4.11 देखि, सुरक्षा कारणहरूले गर्दा आगमन cookie हरूका <emphasis>नामहरू (names)</emphasis> अब url-decode गरिँदैनन्।
+    </simpara>
+   </note>
+
+   <simpara>
+    यदि एउटै cookie variable मा धेरै value हरू assign गर्नुपर्नेछ भने, तिनीहरूलाई array का रूपमा assign गर्न सकिन्छ। उदाहरणका लागि:
+   </simpara>
+
+   <informalexample>
+    <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+setcookie("MyCookie[foo]", 'Testing 1', time()+3600);
+setcookie("MyCookie[bar]", 'Testing 2', time()+3600);
+]]>
+    </programlisting>
+   </informalexample>
+   
+   <simpara>
+    यसले दुईवटा छुट्टाछुट्टै cookie सिर्जना गर्नेछ, यद्यपि <varname>MyCookie</varname> अब script भित्र एउटै array हुनेछ। यदि धेरै value सहित एउटा मात्र cookie set गर्नुपर्नेछ भने, पहिले value मा <function>serialize</function> वा <function>explode</function> प्रयोग गर्ने विचार गर्नुहोस्।
+   </simpara>
+
+   <simpara>
+    ध्यान दिनुहोस् कि browser मा path वा domain फरक नभएसम्म cookie ले सोही नामको अघिल्लो cookie लाई प्रतिस्थापन (replace) गर्नेछ। तसर्थ, shopping cart application का लागि counter राख्न र अगाडि बढाउन सकिन्छ, अर्थात्:
+   </simpara>
+
+   <example>
+    <title><function>setcookie</function> को उदाहरण</title>
+    <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+if (isset($_COOKIE['count'])) {
+    $count = $_COOKIE['count'] + 1;
+} else {
+    $count = 1;
+}
+setcookie('count', $count, time()+3600);
+setcookie("Cart[$count]", $item, time()+3600);
+]]>
+    </programlisting>
+   </example>
+
+  </sect2>
+
+  <sect2 xml:id="language.variables.external.dot-in-names">
+   <title>आगमन variable नामहरूमा Dots (थोप्लाहरू)</title>
+
+   <para>
+    सामान्यतया, PHP मा script भित्र variable आउँदा तिनीहरूको नाम परिवर्तन गरिँदैन। यद्यपि, यो कुरा ध्यान दिनुपर्छ कि dot (period, full stop) PHP variable को नाममा मान्य वर्ण होइन। यसको कारण हेर्नका लागि यो विचार गर्नुहोस्:
+    <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+$varname.ext;  /* अमान्य variable नाम */
+]]>
+    </programlisting>
+    अब, parser ले के देख्छ भने <varname>$varname</varname> नामको variable, त्यसपछि string concatenation operator, र त्यसपछि कुनै परिचित key वा reserved word सँग नमिल्ने unquoted barestring 'ext'। स्पष्ट छ, यसले अपेक्षित परिणाम दिँदैन।
+   </para>
+
+   <para>
+    यस कारणले गर्दा, यो ध्यान दिनु महत्त्वपूर्ण छ कि PHP ले बाहिरबाट आउने variable नामहरूमा भएका कुनै पनि dot (थोप्ला) लाई स्वतः underscore मा परिणत गर्नेछ।
+   </para>
+
+  </sect2>
+
+  <sect2 xml:id="language.variables.determining-type-of">
+   <title>Variable को type निर्धारण गर्ने तरिका</title>
+
+   <para>
+    PHP ले variable को type निर्धारण गर्ने र आवश्यक पर्दा (सामान्यतया) आफैं रूपान्तरण गर्ने भएकोले, कुनै पनि समयमा दिइएको variable कुन type को हो भन्ने कुरा सधैं स्पष्ट नहुन सक्छ। PHP मा variable कुन type को हो भनेर पत्ता लगाउने धेरै function हरू समावेश छन्, जस्तै: <function>gettype</function>, <function>is_array</function>, <function>is_float</function>, <function>is_int</function>, <function>is_object</function>, र <function>is_string</function>। <link linkend="language.types">Types</link> सम्बन्धी अध्याय पनि हेर्नुहोस्।
+   </para>
+   <para>
+    HTTP एउटा text protocol भएकोले, <link linkend="language.variables.superglobals">Superglobal arrays</link> (जस्तै <varname>$_POST</varname> र <varname>$_GET</varname>) मा आउने अधिकांश वा सबै सामग्री string कै रूपमा रहनेछन्। PHP ले value हरूलाई निश्चित type मा आफैं रूपान्तरण गर्ने प्रयास गर्दैन। तलको उदाहरणमा, <varname>$_GET["var1"]</varname> मा string "null" हुनेछ र <varname>$_GET["var2"]</varname> मा string "123" हुनेछ।
+    <programlisting>
+<![CDATA[
+/index.php?var1=null&var2=123
+]]>
+     </programlisting>
+   </para>
+  </sect2>
+
+  <sect2 xml:id="language.variables.external.changelog">
+   &reftitle.changelog;
+
+   <para>
+    <informaltable>
+     <tgroup cols="2">
+      <thead>
+       <row>
+        <entry>&Version;</entry>
+        <entry>&Description;</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>7.2.34, 7.3.23, 7.4.11</entry>
+        <entry>
+         सुरक्षा कारणहरूले गर्दा आगमन cookie हरूका <emphasis>नामहरू</emphasis> अब url-decode गरिँदैनन्।
+        </entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </para>
+  </sect2>
+
+ </sect1>
+
+</chapter>
 <!-- Keep this comment at the end of the file
 Local variables:
 mode: sgml

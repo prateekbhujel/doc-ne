@@ -27,9 +27,8 @@ foreach ($arr as $key => $value) {
     if (0 === ($key % 2)) { // जोर (even) key भएका सदस्यहरूलाई skip गर्नुहोस्
         continue;
     }
-    echo "$value\n";
+    echo $value . "\n";
 }
-?>
 ]]>
    </programlisting>
    &examples.outputs;
