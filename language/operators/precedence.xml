@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 7c915c0c28b8e2e4306333c64602ee4800c73754 Maintainer: prateekbhujel Status: ready -->
+<!-- EN-Revision: 7c915c0c28b8e2e4306333c64602ee4800c73754 Maintainer: prateekbhujel Status: draft -->
 <sect1 xml:id="language.operators.precedence">
  <title>Operator Precedence</title>
  <titleabbrev>Operator Precedence</titleabbrev>

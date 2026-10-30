@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: f0aab5b5f496704a2c21e4960c9f620e19f6d3c4 Maintainer: prateekbhujel Status: ready -->
+<!-- EN-Revision: f0aab5b5f496704a2c21e4960c9f620e19f6d3c4 Maintainer: prateekbhujel Status: draft -->
 
 <sect1 xml:id="control-structures.match" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>match</title>

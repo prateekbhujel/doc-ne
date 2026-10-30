@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: ready -->
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
 
 <sect1 xml:id="function.require" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>require</title>

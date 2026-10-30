@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 72ea6871bb7b005110e6cbc42f17970c5a985826 Maintainer: prateekbhujel Status: ready -->
+<!-- EN-Revision: 72ea6871bb7b005110e6cbc42f17970c5a985826 Maintainer: prateekbhujel Status: draft -->
 
 <sect1 xml:id="control-structures.alternative-syntax"  xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>Alternative syntax for control structures</title>

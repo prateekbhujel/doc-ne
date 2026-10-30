@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 8c273ad6577a6b4d6d3adea73502a4516ca2fe0c Maintainer: prateekbhujel Status: ready -->
+<!-- EN-Revision: 8c273ad6577a6b4d6d3adea73502a4516ca2fe0c Maintainer: prateekbhujel Status: draft -->
 
 <sect1 xml:id="control-structures.for" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>for</title>
