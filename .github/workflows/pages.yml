@@ -1,0 +1,53 @@
+name: Deploy Documentation to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout doc-ne
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: libxml, xml, sqlite3, pdo_sqlite, mbstring
+          coverage: none
+
+      - name: Build PHP Manual (Nepali) with PhD
+        run: |
+          mkdir -p /tmp/phpdoc-build
+          git clone --depth 50 https://github.com/php/doc-base.git /tmp/phpdoc-build/doc-base
+          git clone --depth 50 https://github.com/php/phd.git /tmp/phpdoc-build/phd
+          git clone --depth 1 https://github.com/php/doc-en.git /tmp/phpdoc-build/en
+          PHPDOC_BUILD_DIR=/tmp/phpdoc-build php tools/build.php
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: preview/php-chunked-xhtml
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

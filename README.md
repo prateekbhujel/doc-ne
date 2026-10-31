@@ -14,9 +14,12 @@
   <a href="GLOSSARY.md">शब्दावली (Glossary)</a>
   <span> | </span>
   <a href="STATUS.md">अनुवाद स्थिति (Status)</a>
+  <span> | </span>
+  <a href="https://prateekbhujel.github.io/doc-ne/"><strong>प्रत्यक्ष पूर्वावलोकन (Live Preview)</strong></a>
 </p>
 
 <p align="center">
+  <a href="https://prateekbhujel.github.io/doc-ne/"><img src="https://img.shields.io/badge/docs-live%20preview-blue.svg" alt="Live Docs"></a>
   <a href="https://github.com/prateekbhujel/doc-ne/actions/workflows/validate.yml"><img src="https://github.com/prateekbhujel/doc-ne/actions/workflows/validate.yml/badge.svg" alt="Validation CI"></a>
   <a href="STATUS.md"><img src="https://img.shields.io/badge/status-active%20translation-brightgreen.svg" alt="Status"></a>
   <a href="https://creativecommons.org/licenses/by/3.0/"><img src="https://img.shields.io/badge/license-CC--BY%203.0-orange.svg" alt="License: CC-BY 3.0"></a>

@@ -9,7 +9,7 @@ declare(strict_types=1);
  */
 
 $docNeDir = realpath(__DIR__ . '/..');
-$buildBase = '/Users/pratikbhujel/phpdoc-build';
+$buildBase = getenv('PHPDOC_BUILD_DIR') ?: ($argv[1] ?? (is_dir('/Users/pratikbhujel/phpdoc-build') ? '/Users/pratikbhujel/phpdoc-build' : sys_get_temp_dir() . '/phpdoc-build'));
 
 echo "=== PHP Manual [ne] Build Runner ===\n";
 echo "Source: {$docNeDir}\n";
