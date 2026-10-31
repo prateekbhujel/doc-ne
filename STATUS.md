@@ -1,8 +1,8 @@
 # PHP Manual — नेपाली Translation Status Report
 
 - **Total Translated Files**: 46
-- **Human Proofread (`ready`)**: 20
-- **Pending Review (`draft`)**: 26
+- **Human Proofread (`ready`)**: 21
+- **Pending Review (`draft`)**: 25
 - **Approximate Words Translated**: ~52117
 
 | # | File | Status | EN-Rev | Approx Words |
@@ -52,4 +52,4 @@
 | 43 | `language/types/null.xml` | `ready` | `7132d883` | 243 |
 | 44 | `language/types/type-system.xml` | `ready` | `7132d883` | 1086 |
 | 45 | `language/types/void.xml` | `ready` | `fff1bba9` | 629 |
-| 46 | `language/variables.xml` | `draft` | `cc96728a` | 9200 |
+| 46 | `language/variables.xml` | `ready` | `cc96728a` | 9200 |

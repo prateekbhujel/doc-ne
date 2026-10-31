@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: cc96728a01c9429c0e4cf06c746ec26385ca4e7e Maintainer: prateekbhujel Status: draft -->
+<!-- EN-Revision: cc96728a01c9429c0e4cf06c746ec26385ca4e7e Maintainer: prateekbhujel Status: ready -->
 <chapter xml:id="language.variables" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink"
  annotations="interactive">
  <title>Variables</title>
