@@ -1,0 +1,1608 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 594c8c0a0188faae493b7070b3c1e331678e1655 Maintainer: prateekbhujel Status: ready -->
+<chapter xml:id="language.functions" xmlns="http://docbook.org/ns/docbook" annotations="interactive">
+ <title>Functions (फंक्सनहरू)</title>
+
+ <sect1 xml:id="functions.user-defined">
+  <title>User-defined functions (प्रयोगकर्ता-परिभाषित फंक्सनहरू)</title>
+
+  <para>
+   कुनै function लाई <literal>function</literal> किवर्ड, यसको नाम, कोष्ठक भित्र अल्पविराम (<literal>,</literal>) द्वारा छुट्याइएका parameters को सूची (जुन खाली पनि हुन सक्छ), र त्यसपछि घुम्रेको कोष्ठक (curly braces) भित्र function को body राखेर निम्न अनुसार परिभाषित गरिन्छ:
+  </para>
+  <example>
+   <title><literal>foo</literal> नामको नयाँ function घोषणा गर्ने उदाहरण</title>
+   <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+function foo($arg_1, $arg_2, /* ..., */ $arg_n)
+{
+    echo "Example function.
+";
+    return $retval;
+}
+?>
+]]>
+   </programlisting>
+  </example>
+  <note>
+   <para>
+    PHP 8.0.0 देखि, parameters को सूचीको अन्त्यमा trailing comma राख्न सकिन्छ:
+    <informalexample>
+     <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+function foo($arg_1, $arg_2,) { }
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+  </note>
+  
+  <simpara>
+   कुनै पनि मान्य PHP कोड function को body भित्र देखा पर्न सक्छ, यहाँसम्म कि अन्य functions र <link linkend="language.oop5.basic.class">class</link> का परिभाषाहरू पनि।
+  </simpara>
+  <para>
+   Function का नामहरूले PHP मा अन्य लेबलहरू जस्तै समान नियमहरू पालना गर्दछन्। मान्य function को नाम अक्षर वा underscore बाट सुरु हुन्छ, जसको पछाडि जतिसुकै अक्षर, सङ्ख्या वा underscore हरू आउन सक्छन्। Regular expression को रूपमा, यसलाई यसरी व्यक्त गर्न सकिन्छ:
+   <code>^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$</code>।
+  </para>
+  &tip.userlandnaming;
+  <simpara>
+   तलका दुई उदाहरणहरूमा देखाइए झैँ कुनै function लाई सर्तसहित (conditionally) परिभाषित गरिएको अवस्थामा <emphasis>बाहेक</emphasis>, function लाई सन्दर्भ गर्नुअघि परिभाषित गर्न आवश्यक छैन।
+  </simpara>
+  <para>
+   जब कुनै function लाई देखाइएका दुई उदाहरणहरू जस्तै सर्तसहितको तरिकामा परिभाषित गरिन्छ, यसलाई कल गर्नु <emphasis>अघि</emphasis> यसको परिभाषा प्रक्रिया हुनुपर्छ।
+  </para>
+  <para>
+   <example>
+    <title>सर्तसहितका functions (Conditional functions)</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$makefoo = true;
+
+/* यहाँबाट हामी foo() कल गर्न सक्दैनौँ
+   किनभने यो अझै अस्तित्वमा छैन,
+   तर हामी bar() कल गर्न सक्छौँ */
+if (function_exists('foo')) {
+    foo();
+} else {
+    echo "Function foo does not exist (yet).
+";
+}
+
+bar();
+
+if ($makefoo) {
+  function foo()
+  {
+    echo "I don't exist until program execution reaches me.
+";
+  }
+}
+
+/* अब हामी सुरक्षित रूपमा foo() कल गर्न सक्छौँ
+   किनभने $makefoo को मूल्याङ्कन true भएको थियो */
+
+if ($makefoo) foo();
+
+function bar() 
+{
+  echo "I exist immediately upon program start.
+";
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>Functions भित्रका functions</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function foo() 
+{
+  function bar() 
+  {
+    echo "I don't exist until foo() is called.
+";
+  }
+}
+
+/* हामी bar() अहिले नै कल गर्न सक्दैनौँ
+   किनभने यो अझै अस्तित्वमा छैन। */
+if (function_exists('bar')) {
+    bar();
+}
+
+foo();
+
+/* अब हामी bar() कल गर्न सक्छौँ,
+   foo() को प्रशोधनले यसलाई पहुँचयोग्य बनाएको छ। */
+
+bar();
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   PHP मा सबै functions र classes को global scope हुन्छ - तिनीहरूलाई कुनै function भित्र परिभाषित गरिएको भए तापनि बाहिरबाट कल गर्न सकिन्छ र यसको उल्टो पनि।
+  </para>
+  <simpara>
+   PHP ले function overloading लाई समर्थन गर्दैन, न त पहिले घोषित functions लाई undefine वा पुन: परिभाषित गर्न सम्भव छ।
+  </simpara>
+  <note>
+   <simpara>
+    ASCII क्यारेक्टरहरू <literal>A</literal> देखि <literal>Z</literal> सम्मका लागि function का नामहरू case-insensitive हुन्छन्, यद्यपि functions लाई तिनीहरूको घोषणामा देखिए झैँ कल गर्नु सामान्यतया राम्रो अभ्यास मानिन्छ।
+   </simpara>
+  </note>   
+  <simpara>
+   Functions मा <link linkend="functions.variable-arg-list">चल सङ्ख्याका arguments (variable number of arguments)</link> र <link linkend="functions.arguments.default">default arguments</link> दुवै समर्थित छन्। थप जानकारीका लागि <function>func_num_args</function>, <function>func_get_arg</function>, र <function>func_get_args</function> का लागि function सन्दर्भहरू पनि हेर्नुहोस्।
+  </simpara>
+  
+  <para>
+   PHP मा recursive functions कल गर्न सम्भव छ।
+   <example>
+    <title>Recursive functions (पुनरावर्ती फंक्सनहरू)</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function recursion($a)
+{
+    if ($a < 20) {
+        echo "$a
+";
+        recursion($a + 1);
+    }
+}
+
+recursion(17);
+?>
+]]>
+    </programlisting>
+   </example>
+  <note>
+   <simpara>
+    १००-२०० भन्दा बढी recursion levels भएका recursive function/method कलहरूले स्ट्याक क्र्यास (stack smash) गर्न सक्छन् र वर्तमान स्क्रिप्ट समाप्त हुन सक्छ। विशेष गरी, अनन्त recursion लाई एक प्रोग्रामिङ त्रुटि मानिन्छ।
+   </simpara>
+  </note>
+  </para>
+
+ </sect1>
+
+ <sect1 xml:id="functions.arguments">
+  <title>Function parameters and arguments (Function का parameters र arguments)</title>
+
+  <simpara>
+   जानकारीलाई argument list मार्फत functions मा पठाउन सकिन्छ, जुन अल्पविरामद्वारा छुट्याइएका expressions को सूची हो। Arguments लाई बायाँबाट दायाँ क्रममा मूल्याङ्कन गरिन्छ, function कल हुनुअघि नै (eager evaluation)।
+  </simpara>
+  <para>
+   PHP ले reference द्वारा arguments पठाउन (<link
+   linkend="functions.arguments.by-reference">by reference</link>), <link
+   linkend="functions.arguments.default">default argument मानहरू</link>, र <link
+   linkend="functions.variable-arg-list">variable-length argument lists</link> समर्थन गर्दछ।
+  </para>
+  <para>
+   PHP 8.0.0 देखि, function parameters को सूचीमा trailing comma समावेश हुन सक्छ, जसलाई बेवास्ता गरिनेछ। यो विशेष गरी उपयोगी हुन्छ जब arguments को सूची लामो हुन्छ वा चर नामहरू लामो हुन्छन्, जसले गर्दा arguments लाई ठाडो रूपमा ढाँचाबद्ध गर्न सहज हुन्छ:
+  </para>
+  <example>
+   <title>Trailing comma सहितको Function parameter सूची</title>
+   <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+function takes_many_args(
+    $first_arg,
+    $second_arg,
+    $a_very_long_argument_name,
+    $arg_with_default = 5,
+    $again = 'a default string', // यो trailing comma 8.0.0 भन्दा पहिले अनुमति थिएन।
+)
+{
+    // ...
+}
+?>
+]]>
+   </programlisting>
+  </example>
+  <simpara>
+   PHP 8.0.0 देखि, <link linkend="functions.named-arguments">Named Arguments</link> को प्रयोगलाई पनि समर्थन गरिएको छ।
+  </simpara>
+
+  <sect2 xml:id="functions.arguments.by-reference">
+   <title>Passing arguments by reference (Reference द्वारा arguments पठाउने)</title>
+
+   <simpara>
+    पूर्वनिर्धारित रूपमा, function arguments लाई मानद्वारा (by value) पठाइन्छ (ताकि यदि function भित्र argument को मान परिवर्तन गरियो भने, function बाहिर त्यो परिवर्तन हुँदैन)। यदि कुनै function लाई यसको arguments परिमार्जन गर्न अनुमति दिन चाहनुहुन्छ भने, तिनीहरूलाई reference द्वारा पास गर्नुपर्छ।
+   </simpara>
+   <para>
+    कुनै function को argument सधैँ reference द्वारा पास भएको बनाउनका लागि function को परिभाषामा argument को नामको अगाडि एम्पर्स्यान्ड (&amp;) थप्नुहोस्:
+   </para>
+   <para>
+    <example>
+     <title>Reference द्वारा parameters पास गर्ने उदाहरण</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function add_some_extra(&$string)
+{
+    $string .= 'and something extra.';
+}
+$str = 'This is a string, ';
+add_some_extra($str);
+echo $str;    // आउटपुट: 'This is a string, and something extra.'
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <simpara>
+    Reference द्वारा पास गर्नुपर्ने parameter मा variable बाहेक कुनै value पास गर्दा त्रुटि हुन्छ।
+   </simpara>
+  </sect2>
+
+  <sect2 xml:id="functions.arguments.default">
+   <title>Default parameter values (पूर्वनिर्धारित parameter मानहरू)</title>
+
+   <para>
+    कुनै function ले scalar मानहरू, arrays, &null;, र PHP 8.1.0 देखि <link linkend="language.oop5.basic.new">new</link> सिन्ट्याक्स प्रयोग गरी objects लाई पूर्वनिर्धारित (default) मानको रूपमा प्रयोग गर्न सक्छ।
+   </para>
+   <para>
+    <example>
+     <title>Functions मा default parameters को प्रयोग</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function makecoffee($type = "cappuccino")
+{
+    return "Making a cup of $type.
+";
+}
+echo makecoffee();
+echo makecoffee(null);
+echo makecoffee("espresso");
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+Making a cup of cappuccino.
+Making a cup of .
+Making a cup of espresso.
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    PHP ले arrays र विशेष type &null; लाई default मानहरूको रूपमा प्रयोग गर्न पनि अनुमति दिन्छ:
+   </para>
+   <para>
+    <example>
+     <title>Non-scalar types लाई default मानको रूपमा प्रयोग गर्ने</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function makecoffee($types = array("cappuccino"), $coffeeMaker = NULL)
+{
+    $device = is_null($coffeeMaker) ? "hands" : $coffeeMaker;
+    return "Making a cup of ".join(", ", $types)." with $device.
+";
+}
+echo makecoffee();
+echo makecoffee(array("cappuccino", "lavazza"), "teapot");
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+Making a cup of cappuccino with hands.
+Making a cup of cappuccino, lavazza with teapot.
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    PHP 8.1.0 देखि, default parameter को रूपमा objects प्रयोग गर्न <link linkend="language.oop5.basic.new">new</link> सिन्ट्याक्स प्रयोग गर्न सकिन्छ:
+   </para>
+   <para>
+    <example>
+     <title>Objects लाई default मानको रूपमा प्रयोग गर्ने (PHP 8.1.0 देखि)</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class DefaultCoffeeMaker {
+    public function brew() {
+        return "Making coffee.
+";
+    }
+}
+class FancyCoffeeMaker {
+    public function brew() {
+        return "Crafting a beautiful coffee!
+";
+    }
+}
+function makecoffee($coffeeMaker = new DefaultCoffeeMaker)
+{
+    return $coffeeMaker->brew();
+}
+echo makecoffee();
+echo makecoffee(new FancyCoffeeMaker);
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+Making coffee.
+Crafting a beautiful coffee!
+]]>
+     </screen>
+    </example>
+   </para>
+   <simpara>
+    Default मान एक constant expression हुनुपर्छ, कुनै variable, class member वा function call हुन सक्दैन।
+   </simpara>
+   <para>
+    ध्यान दिनुहोस् कि कुनै पनि optional arguments अनिवार्य arguments पछाडि तोकिनुपर्छ; अन्यथा, कल गर्दा तिनीहरूलाई छोड्न सकिँदैन। निम्न उदाहरण विचार गर्नुहोस्:
+   </para>
+   <para>
+    <example>
+     <title>Function parameters को गलत प्रयोग</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function makeyogurt($container = "bowl", $flavour)
+{
+    return "Making a $container of $flavour yogurt.
+";
+}
+ 
+echo makeyogurt("raspberry"); // "raspberry" $container मा जान्छ; $flavour अपरिभाषित रहन्छ
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+Fatal error: Uncaught ArgumentCountError: Too few arguments to function makeyogurt(), 1 passed in - on line 8 and exactly 2 expected in -:2
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    अब, माथिको कोडलाई तलको सँग तुलना गर्नुहोस्:
+   </para>
+   <para>
+    <example>
+     <title>Function parameters को सही प्रयोग</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function makeyogurt($flavour, $container = "bowl")
+{
+    return "Making a $container of $flavour yogurt.
+";
+}
+ 
+echo makeyogurt("raspberry"); // "raspberry" $flavour मा जान्छ
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+Making a bowl of raspberry yogurt.
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    PHP 8.0.0 देखि, <link linkend="functions.named-arguments">named arguments</link> प्रयोग गरेर धेरै optional parameters लाई छोड्न (skip गर्न) सकिन्छ:
+   </para>
+   <para>
+    <example>
+     <title>Default function parameters को सही प्रयोग</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function makeyogurt($container = "bowl", $flavour = "raspberry", $style = "Greek")
+{
+    return "Making a $container of $flavour $style yogurt.
+";
+}
+
+echo makeyogurt(style: "natural");
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+Making a bowl of raspberry natural yogurt.
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    PHP 8.0.0 देखि, अनिवार्य arguments अघि optional arguments घोषणा गर्नु <emphasis>deprecated</emphasis> भएको छ। यसलाई सामान्यतया default value छोडेर समाधान गर्न सकिन्छ, किनभने यो कहिल्यै प्रयोग हुँदैन। यद्यपि, <literal>Type $param = null</literal> रूपका parameters मा &null; default ले implicit nullable बनाउने अभ्यासलाई अनुमति दिइएको थियो तर यो पनि PHP 8.4.0 देखि deprecated भएको छ, र यसको सट्टा स्पष्ट <link linkend="language.types.declarations.nullable">nullable type</link> प्रयोग गरिनुपर्छ।
+    <example>
+     <title>अनिवार्य parameters पछि optional parameters घोषणा गर्ने</title>
+     <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+function foo($a = [], $b) {}     // Default प्रयोग हुँदैन; PHP 8.0.0 देखि deprecated
+function foo($a, $b) {}          // कार्यात्मक रूपमा समान, कुनै deprecation सूचना छैन
+
+function bar(A $a = null, $b) {} // PHP 8.1.0 देखि, $a अस्पष्ट रूपमा अनिवार्य छ
+                                 // तर अस्पष्ट रूपमा nullable (PHP 8.4.0 देखि deprecated),
+                                 // किनभने default मान null हो
+function bar(?A $a, $b) {}       // सिफारिस गरिएको
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <note>
+    <simpara>
+     PHP 7.1.0 देखि, default मान नतोकिएको parameter छोड्दा <classname>ArgumentCountError</classname> फ्याँकिन्छ; अघिल्ला संस्करणहरूमा यसले Warning जारी गर्दथ्यो।
+    </simpara>
+   </note>
+   <note>
+    <simpara>
+     Reference द्वारा argument अपेक्षा गर्ने parameters मा पनि default मान हुन सक्छ।
+    </simpara>
+   </note>
+  </sect2>
+
+  <sect2 xml:id="functions.variable-arg-list">
+   <title>Variable-length argument lists (चल-लम्बाइका argument सूचीहरू)</title>
+
+   <simpara>
+    PHP ले <literal>...</literal> टोकन समावेश गरेर प्रयोगकर्ता-परिभाषित functions मा variable-length argument lists को समर्थन प्रदान गर्दछ।
+   </simpara>
+   <para>
+    Parameter सूचीहरूमा <literal>...</literal> टोकन समावेश हुन सक्छ जसले संकेत गर्दछ कि function ले arguments को चल सङ्ख्या स्वीकार गर्दछ। Arguments लाई दिइएको variable मा &array; को रूपमा पास गरिनेछ:
+    <example>
+     <title>चल arguments पहुँच गर्न <literal>...</literal> को प्रयोग</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function sum(...$numbers) {
+    $acc = 0;
+    foreach ($numbers as $n) {
+        $acc += $n;
+    }
+    return $acc;
+}
+
+echo sum(1, 2, 3, 4);
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+10
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    Functions कल गर्दा <type>array</type> वा <classname>Traversable</classname> variable वा literal लाई argument सूचीमा अनप्याक (unpack) गर्नका लागि पनि <literal>...</literal> प्रयोग गर्न सकिन्छ:
+    <example>
+     <title>Arguments उपलब्ध गराउन <literal>...</literal> को प्रयोग</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function add($a, $b) {
+    return $a + $b;
+}
+
+echo add(...[1, 2])."
+";
+
+$a = [1, 2];
+echo add(...$a);
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+3
+3
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    तपाईँ <literal>...</literal> को अगाडि सामान्य positional parameters पनि निर्दिष्ट गर्न सक्नुहुन्छ। यस अवस्थामा, <literal>...</literal> सँग मेल नखाने अतिरिक्त arguments मात्र variadic array मा थपिनेछन्।
+   </para>
+   <para>
+    <literal>...</literal> टोकनको अगाडि <link linkend="language.types.declarations">type declaration</link> पनि राख्न सकिन्छ। यदि यो उपस्थित छ भने, <literal>...</literal> ले कब्जा गरेका सबै arguments उक्त प्रकारका हुनुपर्दछ।
+    <example>
+     <title>Type-hinted variable arguments</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function total_intervals($unit, DateInterval ...$intervals) {
+    $time = 0;
+    foreach ($intervals as $interval) {
+        $time += $interval->$unit;
+    }
+    return $time;
+}
+
+$a = new DateInterval('P1D');
+$b = new DateInterval('P2D');
+echo total_intervals('d', $a, $b).' days';
+
+// यो असफल हुनेछ, किनभने null कुनै DateInterval object होइन।
+echo total_intervals('d', null);
+?>
+]]>
+     </programlisting>
+     &example.outputs.8;
+     <screen>
+<![CDATA[
+3 days
+Fatal error: Uncaught TypeError: total_intervals(): Argument #2 must be of type DateInterval, null given, called in - on line 14 and defined in -:2
+Stack trace:
+#0 -(14): total_intervals('d', NULL)
+#1 {main}
+  thrown in - on line 2
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    अन्तमा, <literal>...</literal> को अगाडि एम्पर्स्यान्ड (<literal>&amp;</literal>) राखेर variable arguments लाई <link linkend="functions.arguments.by-reference">reference द्वारा</link> पास गर्न पनि सकिन्छ।
+   </para>
+  </sect2>
+
+  <sect2 xml:id="functions.named-arguments">
+   <title>Named Arguments (नामित Arguments)</title>
+
+   <para>
+    PHP 8.0.0 ले विद्यमान positional parameters को पूरकको रूपमा Named Arguments प्रस्तुत गर्‍यो। Named arguments ले function मा positional parameter को सट्टा parameter को नामको आधारमा argument पास गर्न अनुमति दिन्छ। यसले argument को अर्थ स्वयं-दस्तावेजीकृत बनाउँछ, arguments लाई क्रम-मुक्त बनाउँछ र default मानहरू भएका optional arguments लाई सहजै छोड्न अनुमति दिन्छ।
+   </para>
+   <para>
+    Named arguments लाई parameter नामको पछाडि colon (:) राखेर मान प्रदान गरिन्छ। आरक्षित (reserved) किवर्डहरूलाई पनि parameter नामको रूपमा प्रयोग गर्न सकिन्छ। Parameter नाम एक साधारण पहिचानकर्ता हुनुपर्छ, गतिशील रूपमा गणना गर्न सकिँदैन।
+   </para>
+   <example>
+    <title>Named arguments सिन्ट्याक्स</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+myFunction(paramName: $value);
+
+array_foobar(array: $value);
+
+// समर्थित छैन
+function_name($variableStoringParamName: $value);
+?>
+]]>
+    </programlisting>
+   </example>
+   <example>
+    <title>Positional arguments बनाम named arguments</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Positional arguments प्रयोग गरेर:
+array_fill(0, 100, 50);
+
+// Named arguments प्रयोग गरेर:
+array_fill(start_index: 0, count: 100, value: 50);
+?>
+]]>
+    </programlisting>
+   </example>
+   <para>
+    Arguments पास गरिएको क्रमले कुनै फरक पार्दैन।
+   </para>
+   <example>
+    <title>फरक क्रममा parameters प्रयोग गरिएको उदाहरण</title>
+    <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+array_fill(value: 50, count: 100, start_index: 0);
+?>
+]]>
+    </programlisting>
+   </example>
+   <para>
+    Named arguments लाई positional arguments सँग मिलाएर पनि प्रयोग गर्न सकिन्छ। यस अवस्थामा, named arguments सधैँ positional arguments को पछाडि आउनुपर्दछ:
+   </para>
+   <example>
+    <title>Positional र named arguments मिलाउने उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+htmlspecialchars($string, double_encode: false);
+// यो निम्न सँग समान हुन्छ:
+htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401, 'UTF-8', false);
+?>
+]]>
+    </programlisting>
+   </example>
+   <para>
+    एउटै parameter लाई दुई पटक पास गर्दा (positional र named दुवै मार्फत) त्रुटि हुन्छ:
+   </para>
+   <example>
+    <title>एउटै parameter दुई पटक पास गर्दा हुने त्रुटि</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function foo($param) {}
+
+foo(param: 1, param: 2);
+// Fatal error: Named parameter $param overwrites previous argument
+
+foo(1, param: 2);
+// Fatal error: Named parameter $param overwrites previous argument
+?>
+]]>
+    </programlisting>
+   </example>
+   <para>
+    PHP 8.1.0 देखि, arguments अनप्याक गरेपछि named arguments प्रयोग गर्न सम्भव छ। Named argument ले पहिले नै अनप्याक गरिएको argument लाई <emphasis>ओभरराइट गर्नु हुँदैन</emphasis>।
+   </para>
+   <example>
+    <title>Unpacking पछि named arguments प्रयोग गर्ने उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function foo($a, $b, $c = 3, $d = 4) {
+  return $a + $b + $c + $d;
+}
+
+var_dump(foo(...[1, 2], d: 40)); // 46
+var_dump(foo(...['b' => 2, 'a' => 1], d: 40)); // 46
+
+var_dump(foo(...[1, 2], b: 20)); // Fatal error: Named parameter $b overwrites previous argument
+?>
+]]>
+    </programlisting>
+   </example>
+   <simpara>
+    केही आन्तरिक functions ले वैकल्पिक हस्ताक्षर (alternative signature) दस्तावेज गर्दछन्, जस्तै <function>session_set_save_handler</function>, जसका parameter नामहरू function भित्र अवस्थित हुँदैनन्। यी नामहरूलाई named arguments को रूपमा प्रयोग गर्न सकिँदैन र यसले त्रुटि निम्त्याउँछ।
+   </simpara>
+  </sect2>
+ </sect1>
+
+ <sect1 xml:id="functions.returning-values">
+  <title>Returning values (मानहरू फर्काउने)</title>
+
+  <para>
+   वैकल्पिक <function>return</function> statement प्रयोग गरेर मानहरू फर्काइन्छ। Arrays र objects लगायत कुनै पनि type फर्काउन सकिन्छ। यसले function को execution तुरुन्तै समाप्त गर्दछ र कल गरिएको रेखामा नियन्त्रण फिर्ता पठाउँछ। थप जानकारीका लागि <function>return</function> हेर्नुहोस्।
+  </para>
+
+  <note>
+   <para>
+    यदि <function>return</function> छोडियो भने &null; मान फर्काइनेछ।
+   </para>
+  </note>
+
+  <sect2>
+   <title>Use of return (Return को प्रयोग)</title>
+   <para>
+    <example>
+     <title><function>return</function> को प्रयोग</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function square($num)
+{
+    return $num * $num;
+}
+echo square(4);   // '16' आउटपुट गर्दछ।
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+
+   <para>
+    कुनै function ले एकभन्दा बढी मानहरू फर्काउन सक्दैन, तर array फर्काएर समान नतिजा प्राप्त गर्न सकिन्छ।
+   </para>
+   <para>
+    <example>
+     <title>धेरै मानहरू प्राप्त गर्न array फर्काउने उदाहरण</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function small_numbers()
+{
+    return [0, 1, 2];
+}
+// Array destructuring ले array का प्रत्येक सदस्यलाई व्यक्तिगत रूपमा सङ्कलन गर्दछ
+[$zero, $one, $two] = small_numbers();
+var_dump($zero, $one, $two);
+
+// 7.1.0 भन्दा पहिले, list() construct प्रयोग गर्नु मात्र एकमात्र विकल्प थियो
+list($zero, $one, $two) = small_numbers();
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <para>
+    Function बाट reference फर्काउनका लागि function को घोषणा र फर्काइएको मानलाई variable मा assign गर्दा दुवै ठाउँमा reference operator &amp; प्रयोग गर्नुहोस्:
+   </para>
+   <para>
+    <example>
+     <title>Function बाट reference फर्काउने उदाहरण</title>
+     <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+function &returns_reference()
+{
+    return $someref;
+}
+
+$newref =& returns_reference();
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <simpara>
+    References सम्बन्धी थप जानकारीका लागि कृपया <link
+    linkend="language.references">References Explained</link> हेर्नुहोस्।
+   </simpara>
+  </sect2>
+ </sect1>
+
+ <sect1 xml:id="functions.variable-functions">
+  <title>Variable functions (चल फंक्सनहरू)</title>
+
+  <para>
+   PHP ले variable functions को अवधारणालाई समर्थन गर्दछ। यसको अर्थ यदि कुनै variable को नामको पछाडि कोष्ठकहरू जोडिएका छन् भने, PHP ले उक्त variable को मान जे हुन्छ त्यही नामको function खोज्नेछ, र त्यसलाई चलाउने प्रयास गर्नेछ। अन्य कुराहरूका अतिरिक्त, यसलाई callbacks, function tables र अन्य धेरै लागू गर्न प्रयोग गर्न सकिन्छ।
+  </para>
+  <para>
+   Variable functions ले <function>echo</function>, <function>print</function>,
+   <function>unset</function>, <function>isset</function>,
+   <function>empty</function>, <function>include</function>,
+   <function>require</function> जस्ता language constructs सँग काम गर्दैन। यी संरचनाहरूलाई variable functions को रूपमा प्रयोग गर्न wrapper functions प्रयोग गर्नुहोस्।
+  </para>
+  <para>
+   <example>
+    <title>Variable function को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function foo() {
+    echo "In foo()
+";
+}
+
+function bar($arg = '')
+{
+    echo "In bar(); argument was '$arg'.
+";
+}
+
+// यो echo को वरिपरि बनाइएको wrapper function हो
+function echoit($string)
+{
+    echo $string;
+}
+
+$func = 'foo';
+$func();        // यसले foo() कल गर्छ
+
+$func = 'bar';
+$func('test');  // यसले bar() कल गर्छ
+
+$func = 'echoit';
+$func('test');  // यसले echoit() कल गर्छ
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   Object methods लाई पनि variable functions सिन्ट्याक्स मार्फत कल गर्न सकिन्छ।
+   <example>
+    <title>Variable method को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Foo
+{
+    function Variable()
+    {
+        $name = 'Bar';
+        $this->$name(); // यसले Bar() method कल गर्छ
+    }
+    
+    function Bar()
+    {
+        echo "This is Bar";
+    }
+}
+
+$foo = new Foo();
+$funcname = "Variable";
+$foo->$funcname();  // यसले $foo->Variable() कल गर्छ
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   Static methods कल गर्दा, function call स्ट्याटिक प्रोपर्टी अपरेटर भन्दा बलियो हुन्छ:
+   <example>
+    <title>Static properties सहितको variable method उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Foo
+{
+    static $variable = 'static property';
+    static function Variable()
+    {
+        echo "Method Variable called
+";
+    }
+}
+
+echo Foo::$variable ."
+"; // यसले 'static property' प्रिन्ट गर्दछ। यसलाई यस scope मा $variable चाहिन्छ।
+$variable = "Variable";
+Foo::$variable();  // यसले यस scope मा $variable पढेर $foo->Variable() कल गर्छ।
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+static property
+Method Variable called
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>जटिल Callables (Complex callables)</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Foo
+{
+    static function bar()
+    {
+        echo "bar
+";
+    }
+    function baz()
+    {
+        echo "baz
+";
+    }
+}
+
+$func = array("Foo", "bar");
+$func(); // "bar" प्रिन्ट गर्दछ
+$func = array(new Foo, "baz");
+$func(); // "baz" प्रिन्ट गर्दछ
+$func = "Foo::bar";
+$func(); // "bar" प्रिन्ट गर्दछ
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+
+  <sect2 role="seealso">
+   &reftitle.seealso;
+   <para>
+    <simplelist>
+     <member><function>is_callable</function></member>
+     <member><function>call_user_func</function></member>
+     <member><function>function_exists</function></member>
+     <member><link linkend="language.variables.variable">variable variables</link></member>
+    </simplelist>
+   </para>
+  </sect2>
+ </sect1>
+
+ <sect1 xml:id="functions.internal">
+  <title>Internal (built-in) functions (आन्तरिक फंक्सनहरू)</title>
+  
+  <para>
+   PHP थुप्रै मानक functions र constructs का साथ आउँछ। त्यस्ता functions हरू पनि छन् जसलाई विशिष्ट PHP extensions कम्पाइल गरिएको हुनु आवश्यक पर्दछ, अन्यथा घातक "undefined function" त्रुटिहरू देखा पर्नेछन्। उदाहरणका लागि, <link linkend="ref.image">image</link> functions जस्तै <function>imagecreatetruecolor</function> प्रयोग गर्नका लागि PHP लाई <productname>GD</productname> समर्थनका साथ कम्पाइल गरिएको हुनुपर्छ। वा, <function>mysqli_connect</function> प्रयोग गर्न PHP लाई <link linkend="book.mysqli">MySQLi</link> समर्थनका साथ कम्पाइल गरिएको हुनुपर्छ। PHP को प्रत्येक संस्करणमा समावेश गरिएका धेरै कोर functions छन्, जस्तै <link linkend="ref.strings">string</link> र <link linkend="ref.var">variable</link> functions। <function>phpinfo</function> वा <function>get_loaded_extensions</function> को कलले PHP मा कुन-कुन extensions लोड भएका छन् भनी देखाउनेछ। यो पनि याद गर्नुहोस् कि धेरै extensions पूर्वनिर्धारित रूपमा सक्षम हुन्छन् र PHP म्यानुअल extension अनुसार विभाजित गरिएको छ। PHP कसरी सेटअप गर्ने भन्ने जानकारीका लागि <link linkend="configuration">configuration</link>, <link linkend="install">installation</link>, र व्यक्तिगत extension सम्बन्धी अध्यायहरू हेर्नुहोस्।
+  </para>
+  <para>
+   Function को prototype पढ्ने र बुझ्ने तरिका म्यानुअलको <link linkend="about.prototypes">function परिभाषा कसरी पढ्ने</link> शीर्षकको खण्डमा वर्णन गरिएको छ। कुनै function ले के फर्काउँछ वा function ले सिधै पास गरिएको मानमा काम गर्छ कि गर्दैन भन्ने कुरा महसुस गर्नु महत्त्वपूर्ण छ। उदाहरणका लागि, <function>str_replace</function> ले परिमार्जित string फर्काउँछ जबकि <function>usort</function> ले पास गरिएको वास्तविक variable मा नै काम गर्दछ। प्रत्येक म्यानुअल पृष्ठमा function parameters, व्यवहार परिवर्तनहरू, सफलता र असफलता दुवैका लागि return values, र उपलब्धता सम्बन्धी विशिष्ट जानकारी पनि हुन्छ। यी महत्त्वपूर्ण भिन्नताहरू थाहा पाउनु सही PHP कोड लेख्नका लागि अत्यन्त महत्त्वपूर्ण छ।
+  </para>
+  <note>
+   <simpara>
+    यदि कुनै function लाई दिइएको parameters यसले अपेक्षा गरे अनुसारको छैन भने, जस्तै <type>string</type> अपेक्षा गरिएको ठाउँमा <type>array</type> पास गर्दा, function को return value अनिश्चित हुन्छ। यस अवस्थामा यसले सम्भवतः &null; फर्काउनेछ तर यो केवल एक परम्परा हो, र यसमा भर पर्न सकिँदैन। PHP 8.0.0 देखि, यस अवस्थामा <classname>TypeError</classname> exception फ्याँकिन्छ।
+   </simpara>
+  </note>
+  <note>
+   <para>
+    Coercive मोडमा built-in functions का लागि scalar types पूर्वनिर्धारित रूपमा nullable हुन्छन्। PHP 8.1.0 देखि, nullable घोषित नगरिएको internal function parameter मा &null; पास गर्न निरुत्साहित गरिएको छ र user-defined functions को व्यवहारसँग मिलाउन coercive मोडमा deprecation सूचना जारी गरिन्छ, जहाँ scalar types लाई स्पष्ट रूपमा nullable चिन्हित गर्न आवश्यक हुन्छ।
+   </para>
+
+   <para>
+    उदाहरणका लागि, <function>strlen</function> function ले <literal>$string</literal> parameter non-nullable &string; हुने अपेक्षा गर्दछ। ऐतिहासिक कारणहरूले गर्दा, PHP ले coercive मोडमा यस parameter का लागि &null; पास गर्न अनुमति दिन्छ, र parameter लाई अस्पष्ट रूपमा <type>string</type> मा cast गरिन्छ, जसको परिणामस्वरूप <literal>""</literal> मान हुन्छ। यसको विपरीत, strict मोडमा <classname>TypeError</classname> जारी गरिन्छ।
+   </para>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+var_dump(strlen(null));
+// PHP 8.1.0 देखि: "Deprecated: Passing null to parameter #1 ($string) of type string is deprecated"
+// int(0)
+
+var_dump(str_contains("foobar", null));
+// PHP 8.1.0 देखि: "Deprecated: Passing null to parameter #2 ($needle) of type string is deprecated"
+// bool(true)
+?>
+]]>
+    </programlisting>
+   </informalexample>
+  </note>
+
+  <sect2 role="seealso">
+   &reftitle.seealso;
+   <para>
+    <simplelist>
+     <member><function>function_exists</function></member>
+     <member><link linkend="funcref">the function reference</link></member>
+     <member><function>get_extension_funcs</function></member>
+     <member><function>dl</function></member>
+    </simplelist>
+   </para>
+  </sect2>
+ </sect1>
+
+ <sect1 xml:id="functions.anonymous">
+  <title>Anonymous functions (अनाम फंक्सनहरू)</title>
+
+  <simpara>
+   Anonymous functions, जसलाई <literal>closures</literal> पनि भनिन्छ, कुनै निर्दिष्ट नाम नभएका functions निर्माण गर्न अनुमति दिन्छ। तिनीहरू <type>callable</type> parameters को मानको रूपमा सबैभन्दा बढी उपयोगी हुन्छन्, तर तिनीहरूका अन्य धेरै प्रयोगहरू पनि छन्।
+  </simpara>
+  <simpara>
+   Anonymous functions लाई <link linkend="class.closure"><classname>Closure</classname></link> class प्रयोग गरी कार्यान्वयन गरिएको छ।
+  </simpara>
+
+  <example>
+   <title>Anonymous function को उदाहरण</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+echo preg_replace_callback('~-([a-z])~', function ($match) {
+    return strtoupper($match[1]);
+}, 'hello-world');
+// helloWorld आउटपुट गर्दछ
+?>
+]]>
+   </programlisting>
+  </example>
+
+  <simpara>
+   Closures लाई variables को मानको रूपमा पनि प्रयोग गर्न सकिन्छ; PHP ले स्वचालित रूपमा त्यस्ता expressions लाई <classname>Closure</classname> आन्तरिक class को instances मा रूपान्तरण गर्दछ। Variable मा closure तोक्न अन्य कुनै पनि assignment जस्तै सिन्ट्याक्स प्रयोग गरिन्छ, जसमा अन्त्यमा semicolon समावेश हुन्छ:
+  </simpara>
+
+  <example>
+   <title>Anonymous function variable assignment को उदाहरण</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$greet = function($name) {
+    printf("Hello %s
+", $name);
+};
+
+$greet('World');
+$greet('PHP');
+?>
+]]>
+   </programlisting>
+  </example>
+  
+  <simpara>
+   Closures ले parent scope बाट variables पनि प्राप्त (inherit) गर्न सक्छन्। त्यस्ता कुनै पनि variables लाई <literal>use</literal> भाषा संरचनामा पास गरिनुपर्छ। PHP 7.1 देखि, यी variables मा &link.superglobals;, <varname>$this</varname>, वा parameter सँग समान नाम भएका variables समावेश हुनु हुँदैन। Function को return type declaration लाई <literal>use</literal> खण्डको <emphasis>पछाडि</emphasis> राखिनुपर्छ।
+  </simpara>
+
+  <example>
+   <title>Parent scope बाट variables इनहेरिट गर्ने उदाहरण</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// Parent scope मा परिभाषित गरिएको variable
+$message = 'hello';
+
+// "use" खण्ड नभएका कारण $message इनहेरिट हुँदैन र अपरिभाषित रहन्छ
+$example = function () {
+    var_dump($message);
+};
+$example();
+
+// "use" खण्डका कारण $message parent scope बाट इनहेरिट हुन्छ
+$example = function () use ($message) {
+    var_dump($message);
+};
+$example();
+
+// इनहेरिट गरिएको variable को मान function कल गर्दाको नभई परिभाषित गर्दाको समयको हुन्छ
+$message = 'world';
+$example();
+
+// Reset $message
+$message = 'hello';
+
+// Reference द्वारा इनहेरिट गर्ने: closure परिभाषित भएपछि parent scope मा गरिएको परिवर्तन यसभित्र देखिन्छ
+$example = function () use (&$message) {
+    var_dump($message);
+};
+$example();
+
+$message = 'world';
+$example();
+
+// Closures ले नियमित arguments पनि स्वीकार गर्न सक्छन्
+$example = function ($arg) use ($message) {
+    var_dump($arg . ' ' . $message);
+};
+$example("hello");
+
+// Closures ले अन्य कुनै पनि function जस्तै मानहरू फर्काउन सक्छन्; return type घोषणा use खण्ड पछि आउँछ
+$example = function () use ($message): array {
+    return ["hello", $message];
+};
+var_dump($example());
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+Warning: Undefined variable $message in script on line 8
+NULL
+string(5) "hello"
+string(5) "hello"
+string(5) "hello"
+string(5) "world"
+string(11) "hello world"
+array(2) {
+  [0]=>
+  string(5) "hello"
+  [1]=>
+  string(5) "world"
+}
+]]>
+   </screen>
+  </example>
+
+  <para>
+   PHP 8.0.0 देखि, scope-inherited variables को सूचीमा अन्तिममा trailing comma समावेश हुन सक्छ, जसलाई बेवास्ता गरिनेछ।
+  </para>
+  <simpara>
+   Parent scope बाट variables इनहेरिट गर्नु global variables प्रयोग गर्नु जस्तो <emphasis>होइन</emphasis>। Global variables ग्लोबल स्कोपमा अवस्थित हुन्छन्, जुन जुनसुकै function चलिरहेको भए पनि समान हुन्छ। Closure को parent scope भनेको त्यो function हो जसमा closure घोषित गरिएको थियो (अनिवार्य रूपमा यो कल गरिएको function होइन)। निम्न उदाहरण हेर्नुहोस्:
+  </simpara>
+
+  <example>
+   <title>Closures र scoping</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// आधारभूत सपिङ कार्ट जसमा थपिएका उत्पादनहरूको सूची र प्रत्येक उत्पादनको मात्रा हुन्छ।
+// यसमा एक विधि समावेश छ जसले closure लाई callback को रूपमा प्रयोग गरी कार्टमा भएका वस्तुहरूको कुल मूल्य गणना गर्दछ।
+class Cart
+{
+    const PRICE_BUTTER  = 1.00;
+    const PRICE_MILK    = 3.00;
+    const PRICE_EGGS    = 6.95;
+
+    protected $products = array();
+    
+    public function add($product, $quantity)
+    {
+        $this->products[$product] = ($this->products[$product] ?? 0) + $quantity;
+    }
+    
+    public function getTotal($tax)
+    {
+        $total = 0.00;
+        
+        $callback =
+            function ($quantity, $product) use ($tax, &$total)
+            {
+                $pricePerItem = constant(__CLASS__ . "::PRICE_" .
+                    strtoupper($product));
+                $total += ($pricePerItem * $quantity) * ($tax + 1.0);
+            };
+        
+        array_walk($this->products, $callback);
+        return round($total, 2);
+    }
+}
+
+$my_cart = new Cart;
+
+// कार्टमा केही वस्तुहरू थप्ने
+$my_cart->add('butter', 1);
+$my_cart->add('milk', 3);
+$my_cart->add('eggs', 6);
+
+// ५% बिक्री कर सहित कुल रकम प्रिन्ट गर्ने
+print $my_cart->getTotal(0.05) . "
+";
+// नतिजा 54.29 हो
+?>
+]]>
+   </programlisting>
+  </example>
+
+  <example>
+   <title><literal>$this</literal> को स्वचालित बाइन्डिङ</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class Test
+{
+    public function testing()
+    {
+        return function() {
+            var_dump($this);
+        };
+    }
+}
+
+$object = new Test;
+$function = $object->testing();
+$function();
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+object(Test)#1 (0) {
+}
+]]>
+   </screen>
+  </example>
+
+  <para>
+   जब कुनै class को सन्दर्भमा घोषणा गरिन्छ, वर्तमान class स्वतः यसमा बाँधिन्छ (bound हुन्छ), जसले गर्दा function को scope भित्र <literal>$this</literal> उपलब्ध हुन्छ। यदि वर्तमान class को यो स्वचालित बाइन्डिङ नचाहिएको हो भने, यसको सट्टा <link linkend="functions.anonymous-functions.static">static anonymous functions</link> प्रयोग गर्न सकिन्छ।
+  </para>
+
+  <sect2 xml:id="functions.anonymous-functions.static">
+   <title>Static anonymous functions (स्थिर अनाम फंक्सनहरू)</title>
+   <para>
+    Anonymous functions लाई statically घोषणा गर्न सकिन्छ। यसले तिनीहरूलाई वर्तमान class स्वचालित रूपमा बाँधिनबाट रोक्छ। रनटाइममा पनि objects लाई तिनीहरूमा बाँध्न सकिँदैन।
+   </para>
+   <para>
+    <example>
+     <title>Static anonymous function भित्र <literal>$this</literal> प्रयोग गर्ने प्रयास</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+class Foo
+{
+    function __construct()
+    {
+        $func = static function() {
+            var_dump($this);
+        };
+        $func();
+    }
+};
+new Foo();
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+Fatal error: Uncaught Error: Using $this when not in object context in script:7
+Stack trace:
+#0 script(9): Foo::{closure:Foo::__construct():6}()
+#1 script(12): Foo->__construct()
+#2 {main}
+  thrown in script on line 7
+]]>
+     </screen>
+    </example>
+   </para>
+
+   <para>
+    <example>
+     <title>Static anonymous function मा object बाँध्ने प्रयास</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$func = static function() {
+    // function body
+};
+$func = $func->bindTo(new stdClass);
+$func();
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+Warning: Cannot bind an instance to a static closure, this will be an error in PHP 9 in script on line 5
+
+Fatal error: Uncaught Error: Value of type null is not callable in script:6
+Stack trace:
+#0 {main}
+  thrown in script on line 6
+]]>
+     </screen>
+    </example>
+   </para>
+  </sect2>
+  
+  <sect2 role="changelog">
+   &reftitle.changelog;
+   <para>
+    <informaltable>
+     <tgroup cols="2">
+      <thead>
+       <row>
+        <entry>&Version;</entry>
+        <entry>&Description;</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>8.5.0</entry>
+        <entry>
+         Closures लाई अब constant expressions मा प्रयोग गर्न सकिन्छ (जस्तै default property मानहरू, attribute parameters, constants)।
+        </entry>
+       </row>
+       <row>
+        <entry>8.3.0</entry>
+        <entry>
+         <link linkend="language.oop5.magic">Magic methods</link> बाट सिर्जना गरिएका Closures ले named parameters स्वीकार गर्न सक्छन्।
+        </entry>
+       </row>
+       <row>
+        <entry>7.1.0</entry>
+        <entry>
+         Anonymous functions ले &link.superglobals;, <varname>$this</varname>, वा parameter सँग समान नाम भएको कुनै पनि variable लाई close over गर्न सक्दैन।
+        </entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </para>
+  </sect2>
+
+  <sect2 role="notes">
+   &reftitle.notes;
+   <note>
+    <simpara>
+     Closure भित्रबाट <function>func_num_args</function>, <function>func_get_arg</function>, र <function>func_get_args</function> प्रयोग गर्न सम्भव छ।
+    </simpara>
+   </note>
+  </sect2>
+
+ </sect1>
+
+ <sect1 xml:id="functions.arrow">
+  <title>Arrow Functions (एरो फंक्सनहरू)</title>
+
+  <simpara>
+   <link linkend="functions.anonymous">Anonymous functions</link> का लागि अझ संक्षिप्त सिन्ट्याक्सको रूपमा PHP 7.4 मा Arrow functions प्रस्तुत गरिएको थियो।
+  </simpara>
+  <simpara>
+   Anonymous functions र arrow functions दुवै <classname>Closure</classname> class प्रयोग गरी कार्यान्वयन गरिएको छ।
+  </simpara>
+
+  <simpara>
+   Arrow functions को आधारभूत रूप <code>fn (argument_list) =&gt; expr</code> हुन्छ।
+  </simpara>
+
+  <simpara>
+   Arrow functions ले <link linkend="functions.anonymous">anonymous functions</link> जस्तै समान सुविधाहरू समर्थन गर्दछ, केवल यो बाहेक कि parent scope बाट variables को प्रयोग सधैँ स्वचालित हुन्छ।
+  </simpara>
+
+  <simpara>
+   जब expression मा प्रयोग गरिएको variable, parent scope मा परिभाषित हुन्छ, यो स्पष्ट रूपमा मानद्वारा (by-value) क्याप्चर हुन्छ। निम्न उदाहरणमा, functions <varname>$fn1</varname> र <varname>$fn2</varname> ले समान रूपमा व्यवहार गर्दछ।
+  </simpara>
+
+  <para>
+   <example>
+    <title>Arrow functions ले variables लाई स्वचालित रूपमा value द्वारा क्याप्चर गर्दछ</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$y = 1;
+
+$fn1 = fn($x) => $x + $y;
+// value द्वारा $y प्रयोग गरे समान:
+$fn2 = function ($x) use ($y) {
+    return $x + $y;
+};
+
+var_export($fn1(3));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+4
+]]>
+     </screen>
+   </example>
+  </para>
+  <simpara>
+   Arrow functions नेस्टेड भएको अवस्थामा पनि यसले काम गर्छ:
+  </simpara>
+  <para>
+   <example>
+    <title>नेस्टेड भएको अवस्थामा पनि Arrow functions ले variables स्वचालित रूपमा value द्वारा क्याप्चर गर्दछ</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$z = 1;
+$fn = fn($x) => fn($y) => $x * $y + $z;
+// 51 आउटपुट गर्दछ
+var_export($fn(5)(10));
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <simpara>
+   Anonymous functions जस्तै, arrow function सिन्ट्याक्सले parameter र return types, default मानहरू, variadics, साथै reference द्वारा पास गर्ने र फर्काउने लगायत स्वेच्छाचारी function signatures लाई अनुमति दिन्छ।
+   निम्न सबै arrow functions का मान्य उदाहरणहरू हुन्:
+  </simpara>
+  <para>
+   <example>
+    <title>Arrow functions का उदाहरणहरू</title>
+    <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+fn(array $x) => $x;
+static fn($x): int => $x;
+fn($x = 42) => $x;
+fn(&$x) => $x;
+fn&($x) => $x;
+fn($x, ...$rest) => $rest;
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <simpara>
+   Arrow functions ले by-value variable बाइन्डिङ प्रयोग गर्दछ। यो arrow function भित्र प्रयोग गरिने प्रत्येक variable <varname>$x</varname> का लागि <code>use($x)</code> गरे सरह हो। By-value बाइन्डिङको अर्थ बाहिरी scope बाट कुनै पनि मान परिमार्जन गर्न सम्भव छैन। By-ref बाइन्डिङका लागि यसको सट्टा <link linkend="functions.anonymous">anonymous functions</link> प्रयोग गर्न सकिन्छ।
+  </simpara>
+  <para>
+   <example>
+    <title>बाहिरी scope का मानहरूलाई arrow functions द्वारा परिमार्जन गर्न सकिँदैन</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$x = 1;
+$fn = fn() => $x++; // कुनै प्रभाव हुँदैन
+$fn();
+var_export($x);  // 1 आउटपुट गर्दछ
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  
+  <sect2 role="changelog">
+   &reftitle.changelog;
+   <para>
+    <informaltable>
+     <tgroup cols="2">
+      <thead>
+       <row>
+        <entry>&Version;</entry>
+        <entry>&Description;</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>7.4.0</entry>
+        <entry>
+         Arrow functions उपलब्ध भयो।
+        </entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </para>
+  </sect2>
+
+  <sect2 role="notes">
+   &reftitle.notes;
+   <note>
+    <simpara>
+     Arrow function भित्रबाट <function>func_num_args</function>, <function>func_get_arg</function>, र <function>func_get_args</function> प्रयोग गर्न सम्भव छ।
+    </simpara>
+   </note>
+  </sect2>
+ </sect1>
+
+ <sect1 xml:id="functions.first_class_callable_syntax">
+  <title>First class callable syntax (फर्स्ट क्लास कलयोग्य सिन्ट्याक्स)</title>
+
+  <para>
+   First class callable syntax लाई <link linkend="language.types.callable">callable</link> बाट <link linkend="functions.anonymous">anonymous functions</link> सिर्जना गर्ने तरिकाको रूपमा PHP 8.1.0 देखि प्रस्तुत गरिएको छ।
+   यसले strings र arrays प्रयोग गर्ने विद्यमान callable सिन्ट्याक्सलाई विस्थापित गर्दछ।
+   यस सिन्ट्याक्सको फाइदा यो हो कि यो static analysis को लागि पहुँचयोग्य छ, र callable प्राप्त गरिएको बिन्दुको scope प्रयोग गर्दछ।
+  </para>
+
+  <para>
+   Callable बाट <classname>Closure</classname> object सिर्जना गर्न <code>CallableExpr(...)</code> सिन्ट्याक्स प्रयोग गरिन्छ। <code>CallableExpr</code> ले PHP व्याकरणमा सिधै कल गर्न सकिने कुनै पनि expression लाई स्वीकार गर्दछ:
+   <example>
+    <title>सरल first class callable syntax</title>
+    <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+class Foo {
+   public function method() {}
+   public static function staticmethod() {}
+   public function __invoke() {}
+}
+
+$obj = new Foo();
+$classStr = 'Foo';
+$methodStr = 'method';
+$staticmethodStr = 'staticmethod';
+
+
+$f1 = strlen(...);
+$f2 = $obj(...);  // invokable object
+$f3 = $obj->method(...);
+$f4 = $obj->$methodStr(...);
+$f5 = Foo::staticmethod(...);
+$f6 = $classStr::$staticmethodStr(...);
+
+// पारम्परिक callable (string, array प्रयोग गरेर)
+$f7 = 'strlen'(...);
+$f8 = [$obj, 'method'](...);
+$f9 = [Foo::class, 'staticmethod'](...);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+
+  <note>
+   <para>
+     <code>...</code> सिन्ट्याक्सको भाग हो, कुनै त्रुटि वा छुटाइएको अंश होइन।
+   </para>
+  </note>
+
+  <para>
+   <code>CallableExpr(...)</code> को सिमान्टिक्स <methodname>Closure::fromCallable</methodname> सँग समान छ।
+   अर्थात्, strings र arrays प्रयोग गर्ने callable जस्तो नभई, <code>CallableExpr(...)</code> ले यो सिर्जना गरिएको बिन्दुको scope लाई सम्मान गर्दछ:
+   <example>
+    <title><code>CallableExpr(...)</code> र पारम्परिक callable को Scope तुलना</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Foo {
+    public function getPrivateMethod() {
+        return [$this, 'privateMethod'];
+    }
+
+    private function privateMethod() {
+        echo __METHOD__, "
+";
+    }
+}
+
+$foo = new Foo;
+$privateMethod = $foo->getPrivateMethod();
+$privateMethod();
+// Fatal error: Call to private method Foo::privateMethod() from global scope
+// किनभने कल Foo को बाहिरबाट गरिएको छ र यस बिन्दुबाट दृश्यता (visibility) जाँचिनेछ।
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class Foo1 {
+    public function getPrivateMethod() {
+        // Callable प्राप्त भएको स्कोप प्रयोग गर्दछ।
+        return $this->privateMethod(...); // Closure::fromCallable([$this, 'privateMethod']) सँग समान
+    }
+
+    private function privateMethod() {
+        echo __METHOD__, "
+";
+    }
+}
+
+$foo1 = new Foo1;
+$privateMethod = $foo1->getPrivateMethod();
+$privateMethod();  // Foo1::privateMethod
+?>
+]]>
+   </programlisting>
+  </informalexample>
+
+  <note>
+   <para>
+    यस सिन्ट्याक्सद्वारा Object सिर्जना (जस्तै <code>new Foo(...)</code>) समर्थित छैन, किनभने <code>new Foo()</code> सिन्ट्याक्सलाई call मानिँदैन।
+   </para>
+  </note>
+
+  <note>
+   <para>
+    First-class callable syntax लाई <link linkend="language.oop5.basic.nullsafe">nullsafe operator</link> सँग मिलाउन सकिँदैन। निम्न दुवैले compile-time त्रुटि निम्त्याउँछन्:
+    <informalexample>
+     <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+$obj?->method(...);
+$obj?->prop->method(...);
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+  </note>
+
+  <sect2 role="changelog">
+   &reftitle.changelog;
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>8.5.0</entry>
+       <entry>
+        First-class callables लाई अब constant expressions मा प्रयोग गर्न सकिन्छ
+        (जस्तै default property मानहरू, attribute parameters, constants)।
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </sect2>
+ </sect1>
+
+</chapter>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

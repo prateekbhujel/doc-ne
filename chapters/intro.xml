@@ -37,7 +37,7 @@
     </example>
    </para>
    <para>
-    C वा Perl जस्ता भाषाहरूमा जस्तो HTML output निकाल्न धेरै command लेख्नुको साटो, PHP pages भित्र HTML सँगै code राखिन्छ जसले केही कार्य सम्पादन गर्छ (यस उदाहरणमा, <computeroutput>Hi, I'm a PHP script!</computeroutput> प्रिन्ट गर्छ)।
+    C वा Perl जस्ता भाषाहरूमा जस्तो HTML output निकाल्न धेरै command लेख्नुको साटो, PHP pages भित्र HTML सँगै code राखिन्छ जसले <replaceable>केही कार्य</replaceable> सम्पादन गर्छ (यस उदाहरणमा, <computeroutput>Hi, I'm a PHP script!</computeroutput> प्रिन्ट गर्छ)।
     PHP code लाई विशेष <link linkend="language.basic-syntax.phpmode">सुरुवात र अन्त्य जनाउने निर्देशिका <code>&lt;?php</code> र <code>?&gt;</code></link> भित्र राखिन्छ, जसले गर्दा आवश्यकता अनुसार <quote>PHP mode</quote> भित्र प्रवेश गर्न र बाहिरिन सकिन्छ।
    </para>
    <para>

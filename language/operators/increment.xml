@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 4bf52f20bcb7f0f7dee5e8e1f6e8afc7126f06ce Maintainer: prateekbhujel Status: draft -->
+<!-- EN-Revision: 4bf52f20bcb7f0f7dee5e8e1f6e8afc7126f06ce Maintainer: prateekbhujel Status: ready -->
 <sect1 xml:id="language.operators.increment">
  <title>Incrementing/Decrementing Operators</title>
  <titleabbrev>Increment and Decrement</titleabbrev>

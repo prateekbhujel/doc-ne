@@ -12,6 +12,9 @@
  <para>
   PHP का सबै operators को पूर्ण सूची <link linkend="language.operators.precedence">Operator Precedence</link> खण्डमा दिइएको छ। त्यस खण्डमा धेरै operators सँगै आउँदा कुन पहिला मूल्याङ्कन हुन्छ भन्ने precedence र associativity नियमहरूको पनि व्याख्या गरिएको छ।
  </para>
+ <simpara>
+  वस्तुहरू (objects) का लागि केही अपरेटरहरूलाई overloading गर्न अनुमति दिने एउटा PECL extension उपलब्ध छ। थप जानकारीका लागि <link linkend="book.operator">Operator Overloading for Objects</link> खण्ड हेर्नुहोस्।
+ </simpara>
 
  &language.operators.precedence;
  &language.operators.arithmetic;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: e674990649cd2b111b8dd1175a7a1befcc621635 Maintainer: prateekbhujel Status: draft -->
+<!-- EN-Revision: e674990649cd2b111b8dd1175a7a1befcc621635 Maintainer: prateekbhujel Status: ready -->
 
 <sect1 xml:id="control-structures.do.while" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>do-while</title>
@@ -34,8 +34,8 @@ do {
    माथिको loop ठ्याक्कै एक पटक चल्नेछ, किनकि पहिलो iteration पछि truth expression जाँच गर्दा त्यसको नतिजा &false; आउँछ (<varname>$i</varname> को मान 0 भन्दा ठूलो छैन) र loop समाप्त हुन्छ।
  </simpara>
  <para>
-  C का अनुभवी प्रयोगकर्ताहरूलाई code block को बीचैमा execution रोक्नका लागि <literal>do-while</literal> (0) भित्र कोड राखेर <link
-  linkend="control-structures.break"><literal>break</literal></link> statement प्रयोग गर्ने बानी हुन सक्छ। तलको code ले यसको उदाहरण देखाउँछ:
+  code block को बीचैमा execution रोक्नका लागि <literal>do-while</literal> loop प्रयोग गर्न सम्भव छ, जसका लागि तिनलाई <literal>do-while</literal> (0) भित्र राखेर <link
+  linkend="control-structures.break"><literal>break</literal></link> statement प्रयोग गरिन्छ। तलको code ले यसको उदाहरण देखाउँछ:
   <informalexample>
    <programlisting role="php">
 <![CDATA[

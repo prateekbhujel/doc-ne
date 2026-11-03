@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: ready -->
 <sect1 xml:id="language.operators.assignment">
- <title>Assignment Operators</title>
+ <title>Assignment Operators (तोक्ने अपरेटरहरू)</title>
  <titleabbrev>Assignment</titleabbrev>
  <simpara>
-  आधारभूत assignment operator <literal>=</literal> हो। यसलाई "बराबर" (equal to) भनेर नसोच्नुहोस्। यसको वास्तविक अर्थ दायाँपट्टिको expression को मान बायाँपट्टिको variable मा सेट गरिन्छ (set to) भन्ने हो।
+  आधारभूत assignment operator "=" हो। तपाईंको पहिलो सोचाइ यसलाई "equal to" (बराबर) सम्झने हुन सक्छ। त्यसो नसम्झनुहोस्। यसको वास्तविक अर्थ बाँया तर्फको operand लाई दायाँ तर्फको expression को मानमा तोक्ने (अर्थात् "मान सेट गर्ने") हो।
  </simpara>
  <para>
-  Assignment expression को मान नै त्यसमा assign गरिएको मान हुन्छ। अर्थात् "<literal>$a = 3</literal>" को मान ३ हुन्छ। यसले गर्दा यस्ता कार्यहरू गर्न सकिन्छ:
+  Assignment expression को मान भनेको तोकिएको मान (assigned value) नै हो। अर्थात्, "<literal>$a = 3</literal>" को मान ३ हुन्छ। यसले तपाईंलाई केही रोचक कामहरू गर्न अनुमति दिन्छ:
   <example>
-   <title>Nested Assignments</title>
+   <title>Nested Assignments (खप्टिएका Assignments)</title>
    <programlisting role="php">
 <![CDATA[
 <?php
-$a = ($b = 4) + 5; // $a अब ९ हुन्छ, र $b मा ४ सेट हुन्छ।
+$a = ($b = 4) + 5; // $a अब ९ सँग बराबर हुन्छ, र $b लाई ४ मा सेट गरिएको छ।
 var_dump($a);
 ?>
 ]]>
@@ -21,16 +21,16 @@ var_dump($a);
   </example>
  </para>
  <para>
-  आधारभूत assignment operator का साथै <link linkend="language.operators">binary arithmetic</link>, array union र string operators का लागि "combined operators" पनि उपलब्ध छन्, जसले variable को हालको मान प्रयोग गरेर गणना गर्छ र नतिजालाई त्यही variable मा पुनः सेट गर्छ:
+  आधारभूत assignment operator का अतिरिक्त, सबै <link linkend="language.operators">binary arithmetic</link>, array union र string operators का लागि "combined operators" छन् जसले तपाईंलाई कुनै expression मा मान प्रयोग गर्न र त्यसपछि त्यसको मानलाई सोही expression को नतिजामा तोक्न अनुमति दिन्छ। उदाहरणका लागि:
   <example>
-   <title>Combined Assignments</title>
+   <title>Combined Assignments (संयुक्त Assignments)</title>
    <programlisting role="php">
 <![CDATA[
 <?php
 $a = 3;
-$a += 5; // $a मा ८ सेट हुन्छ; अर्थात् $a = $a + 5; जस्तै
+$a += 5; // $a लाई ८ मा सेट गर्दछ, मानौँ हामीले यसो भनेका थियौँ: $a = $a + 5;
 $b = "Hello ";
-$b .= "There!"; // $b मा "Hello There!" सेट हुन्छ; अर्थात् $b = $b . "There!";
+$b .= "There!"; // $b लाई "Hello There!" मा सेट गर्दछ, जसरी $b = $b . "There!"; ले गर्दछ
 
 var_dump($a, $b);
 ?>
@@ -38,11 +38,20 @@ var_dump($a, $b);
    </programlisting>
   </example>
  </para>
+ <para>
+  ध्यान दिनुहोस् कि assignment ले मूल variable लाई नयाँमा प्रतिलिपि गर्दछ (assignment by value), त्यसैले एउटामा गरिएको परिवर्तनले अर्कोलाई असर गर्दैन। कडा loop (tight loop) भित्र ठूलो array प्रतिलिपि गर्नुपर्ने अवस्थामा पनि यसको सान्दर्भिकता हुन सक्छ।
+ </para>
+ <para>
+  PHP भित्र सामान्य assignment by value व्यवहारको एक अपवाद <type>object</type>s सँग हुन्छ, जुन reference द्वारा तोकिन्छ।
+  वस्तुहरू (Objects) लाई स्पष्ट रूपमा <link
+  linkend="language.oop5.cloning">clone</link> किवर्ड मार्फत प्रतिलिपि गर्न सकिन्छ।
+ </para>
 
  <sect2 xml:id="language.operators.assignment.reference">
-  <title>Reference द्वारा Assignment (Assignment by Reference)</title>
+  <title>Assignment by Reference (Reference द्वारा Assignment)</title>
   <para>
-   "<computeroutput>$var = &amp;$othervar;</computeroutput>" सिन्ट्याक्स प्रयोग गरेर reference द्वारा assign गर्न पनि सकिन्छ। यसको अर्थ दुवै variables ले स्मृतिमा एउटै data लाई संकेत गर्छन्, र कहीँ पनि कुनै data copy हुँदैन।
+   "<computeroutput>$var = &amp;$othervar;</computeroutput>" सिन्ट्याक्स प्रयोग गरेर Reference द्वारा assignment पनि समर्थित छ।
+   Reference द्वारा assignment को अर्थ दुवै variables ले एउटै डेटालाई इङ्गित गर्दछन्, र कतै पनि केही प्रतिलिपि हुँदैन।
   </para>
   <para>
    <example>
@@ -51,24 +60,55 @@ var_dump($a, $b);
 <![CDATA[
 <?php
 $a = 3;
-$b = &$a; // $b ले $a लाई reference गर्छ
+$b = &$a; // $b ले $a को reference लिन्छ
 
-print "$a\n"; // 3 प्रिन्ट गर्छ
-print "$b\n"; // 3 प्रिन्ट गर्छ
+print "$a\n"; // ३ प्रिन्ट गर्छ
+print "$b\n"; // ३ प्रिन्ट गर्छ
 
-$a = 4; // $a परिवर्तन गरौँ
+$a = 4; // $a परिवर्तन गर्छौँ
 
-print "$a\n"; // 4 प्रिन्ट गर्छ
-print "$b\n"; // यो पनि 4 नै प्रिन्ट हुन्छ किनभने $b ले $a लाई संकेत गरिरहेको छ
+print "$a\n"; // ४ प्रिन्ट गर्छ
+print "$b\n"; // ४ पनि प्रिन्ट गर्छ, किनभने $b ले $a को reference राखेको छ, जुन
+              // परिवर्तन गरिएको छ
 ?>
 ]]>
     </programlisting>
    </example>
   </para>
+  <para>
+   <link linkend="language.oop5.basic.new">new</link>
+   अपरेटरले स्वचालित रूपमा reference फर्काउँछ, त्यसैले
+   <link linkend="language.oop5.basic.new">new</link> को नतिजालाई reference द्वारा assign गर्नु त्रुटि (error) हो।
+  </para>
+  <para>
+   <example>
+    <title>new Operator By-Reference</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class C {}
+
+$o = &new C;
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Parse error: syntax error, unexpected token ";", expecting "("
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   References र तिनीहरूका सम्भावित प्रयोगहरूको बारेमा थप जानकारी म्यानुअलको
+   <link linkend="language.references">References Explained</link>
+   खण्डमा पाउन सकिन्छ।
+  </para>
  </sect2>
 
  <sect2 xml:id="language.operators.assignment.arithmetic">
-  <title>Arithmetic Assignment Operators</title>
+  <title>Arithmetic Assignment Operators (अङ्कगणितीय Assignment अपरेटरहरू)</title>
   <informaltable>
    <tgroup cols="3">
     <thead>
@@ -82,32 +122,74 @@ print "$b\n"; // यो पनि 4 नै प्रिन्ट हुन्छ
      <row>
       <entry>$a += $b</entry>
       <entry>$a = $a + $b</entry>
-      <entry>Addition</entry>
+      <entry>Addition (जोड)</entry>
      </row>
      <row>
       <entry>$a -= $b</entry>
       <entry>$a = $a - $b</entry>
-      <entry>Subtraction</entry>
+      <entry>Subtraction (घटाउ)</entry>
      </row>
      <row>
       <entry>$a *= $b</entry>
       <entry>$a = $a * $b</entry>
-      <entry>Multiplication</entry>
+      <entry>Multiplication (गुणन)</entry>
      </row>
      <row>
       <entry>$a /= $b</entry>
       <entry>$a = $a / $b</entry>
-      <entry>Division</entry>
+      <entry>Division (भाग)</entry>
      </row>
      <row>
       <entry>$a %= $b</entry>
       <entry>$a = $a % $b</entry>
-      <entry>Modulus</entry>
+      <entry>Modulus (शेष)</entry>
      </row>
      <row>
       <entry>$a **= $b</entry>
       <entry>$a = $a ** $b</entry>
-      <entry>Exponentiation</entry>
+      <entry>Exponentiation (घाताङ्क)</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </sect2>
+
+ <sect2 xml:id="language.operators.assignment.bitwise">
+  <title>Bitwise Assignment Operators (बिटवाइज Assignment अपरेटरहरू)</title>
+  <informaltable>
+   <tgroup cols="3">
+    <thead>
+     <row>
+      <entry>उदाहरण (Example)</entry>
+      <entry>बराबर (Equivalent)</entry>
+      <entry>कार्य (Operation)</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>$a &amp;= $b</entry>
+      <entry>$a = $a &amp; $b</entry>
+      <entry>Bitwise And</entry>
+     </row>
+     <row>
+      <entry>$a |= $b</entry>
+      <entry>$a = $a | $b</entry>
+      <entry>Bitwise Or</entry>
+     </row>
+     <row>
+      <entry>$a ^= $b</entry>
+      <entry>$a = $a ^ $b</entry>
+      <entry>Bitwise Xor</entry>
+     </row>
+     <row>
+      <entry>$a &lt;&lt;= $b</entry>
+      <entry>$a = $a &lt;&lt; $b</entry>
+      <entry>Left Shift</entry>
+     </row>
+     <row>
+      <entry>$a &gt;&gt;= $b</entry>
+      <entry>$a = $a &gt;&gt; $b</entry>
+      <entry>Right Shift</entry>
      </row>
     </tbody>
    </tgroup>
@@ -129,7 +211,7 @@ print "$b\n"; // यो पनि 4 नै प्रिन्ट हुन्छ
      <row>
       <entry>$a .= $b</entry>
       <entry>$a = $a . $b</entry>
-      <entry>String Concatenation</entry>
+      <entry>String Concatenation (स्ट्रिङ जोड्ने)</entry>
      </row>
      <row>
       <entry>$a ??= $b</entry>
@@ -152,3 +234,23 @@ print "$b\n"; // यो पनि 4 नै प्रिन्ट हुन्छ
   </para>
  </sect2>
 </sect1>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

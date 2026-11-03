@@ -6,13 +6,13 @@
     Expressions हरू PHP का सबैभन्दा महत्वपूर्ण निर्माण खण्ड (building blocks) हुन्। PHP मा तपाईँले लेख्ने प्रायः सबै कुरा expression नै हो। Expression लाई सबैभन्दा सरल र सटीक रूपमा परिभाषित गर्दा: "कुनै पनि कुरा जसको एउटा value (मान) हुन्छ, त्यो expression हो"।
    </simpara>
    <simpara>
-    Expressions को सबैभन्दा आधारभूत रूप constants र variables हुन्। जब तपाईँ <code>$a = 5</code> लेख्नुहुन्छ, तपाईँले <varname>$a</varname> भित्र <code>5</code> assign गरिरहनुभएको हुन्छ। यहाँ <code>5</code> को मान ५ हो, अर्थात् <code>5</code> एउटा ५ मान भएको expression हो (यस अवस्थामा <code>5</code> एउटा integer constant हो)।
+    Expressions को सबैभन्दा आधारभूत रूप constants र variables हुन्। जब तपाईँ <code>$a = 5</code> लेख्नुहुन्छ, तपाईँले <varname>$a</varname> भित्र <code>5</code> assign गरिरहनुभएको हुन्छ। स्पष्ट रूपमा <code>5</code> को मान ५ हो, अर्थात् <code>5</code> एउटा ५ मान भएको expression हो (यस अवस्थामा <code>5</code> एउटा integer constant हो)।
    </simpara>
    <simpara>
-    यस assignment पछि <varname>$a</varname> को मान पनि ५ नै हुने अपेक्षा गरिन्छ। त्यसैले यदि तपाईँले <code>$b = $a</code> लेख्नुभयो भने, यसले ठ्याक्कै <code>$b = 5</code> लेखे जस्तै काम गर्छ। अर्को शब्दमा, <varname>$a</varname> पनि ५ मान भएको एउटा expression हो।
+    यस assignment पछि तपाईँ <varname>$a</varname> को मान पनि ५ नै हुने अपेक्षा गर्नुहुन्छ, त्यसैले यदि तपाईँले <code>$b = $a</code> लेख्नुभयो भने, यसले ठ्याक्कै <code>$b = 5</code> लेखे जस्तै काम गर्छ। अर्को शब्दमा, <varname>$a</varname> पनि ५ मान भएको एउटा expression हो। यदि सबै कुरा सही तरिकाले काम गर्छ भने, ठ्याक्कै यही हुनेछ।
    </simpara>
    <para>
-    Functions हरू expressions का अलि जटिल उदाहरण हुन्। उदाहरणका लागि, तलको function हेरौँ:
+    Expressions का अलि जटिल उदाहरण functions हुन्। उदाहरणका लागि, निम्न function हेरौँ:
     <informalexample>
      <programlisting role="php" annotations="non-interactive">
 <![CDATA[
@@ -27,19 +27,28 @@ function foo ()
     </informalexample>
    </para>
    <simpara>
-    Functions को अवधारणासँग तपाईँ परिचित हुनुहुन्छ भने, <code>$c = foo()</code> लेख्नु भनेको वास्तवमा <code>$c = 5</code> लेखे सरह नै हो। Functions हरू आफ्नो return value बराबरको मान भएका expressions हुन्। किनभने <code>foo()</code> ले ५ return गर्छ, त्यसैले '<code>foo()</code>' expression को मान ५ हुन्छ।
+    तपाईँ functions को अवधारणासँग परिचित हुनुहुन्छ भनी मान्दा (यदि हुनुहुन्न भने, <link
+    linkend="language.functions">functions</link> सम्बन्धी अध्याय हेर्नुहोस्), <code>$c = foo()</code> लेख्नु भनेको मूलतः <code>$c = 5</code> लेखे सरह नै हो भनी तपाईँले अनुमान गर्नुहुनेछ, र तपाईँ सही हुनुहुन्छ। Functions हरू आफ्नो return value बराबरको मान भएका expressions हुन्। किनभने <code>foo()</code> ले ५ return गर्छ, त्यसैले '<code>foo()</code>' expression को मान ५ हुन्छ। प्रायः functions ले केवल स्थिर मान मात्र नफर्काएर केही गणना (compute) गर्दछन्।
    </simpara>
    <simpara>
-    PHP मा values सधैँ integer मात्र हुनुपर्छ भन्ने छैन। PHP ले चारवटा scalar value types समर्थन गर्दछ: <type>int</type>, <type>float</type>, <type>string</type> र <type>bool</type>। साथै दुईवटा composite types: arrays र objects लाई पनि समर्थन गर्दछ। यी सबैलाई variables मा assign गर्न वा functions बाट return गर्न सकिन्छ।
+    अवश्य पनि, PHP मा मानहरू सधैँ integers मात्र हुनुपर्छ भन्ने छैन, र धेरैजसो अवस्थामा हुँदैनन् पनि। PHP ले चारवटा scalar value types समर्थन गर्दछ: <type>int</type> मानहरू, floating point मानहरू (<type>float</type>), <type>string</type> मानहरू र <type>bool</type> मानहरू (scalar मानहरू त्यस्ता मान हुन् जसलाई उदाहरणका लागि arrays जस्तो साना टुक्राहरूमा 'विभाजित' गर्न सकिँदैन)। PHP ले दुईवटा composite (non-scalar) types: arrays र objects लाई पनि समर्थन गर्दछ। यी प्रत्येक value types लाई variables मा assign गर्न वा functions बाट return गर्न सकिन्छ।
    </simpara>
    <simpara>
-    PHP एक expression-oriented भाषा हो, जसको अर्थ लगभग सबै कुरा expression नै हो। उदाहरणका लागि <code>$a = 5</code> लाई फेरि हेरौँ। यहाँ integer constant <code>5</code>, र मान ५ मा अपडेट भइरहेको <varname>$a</varname> गरी दुईवटा कुरा छन्। तर वास्तवमा यहाँ अर्को एउटा मान पनि संलग्न छ, र त्यो स्वयम् assignment को मान हो। Assignment आफैँमा assign गरिएको मान (यस अवस्थामा ५) बराबरको expression बन्छ। यसको व्यवहारिक अर्थ के हो भने <code>$a = 5</code> आफैँमा ५ मान भएको एउटा expression हो। त्यसैले <code>$b = ($a = 5)</code> लेख्नु भनेको <code>$a = 5; $b = 5;</code> लेखे जस्तै हो।
+    अन्य धेरै भाषाहरू जस्तै PHP ले expressions लाई अझ धेरै अगाडि लैजान्छ। PHP एक expression-oriented भाषा हो, जसको अर्थ लगभग सबै कुरा expression नै हो। हामीले पहिले नै चर्चा गरेको उदाहरण <code>$a = 5</code> लाई विचार गरौँ। यहाँ दुईवटा मानहरू संलग्न छन् भनी सजिलै देख्न सकिन्छ, integer constant <code>5</code> को मान, र ५ मा अद्यावधिक भइरहेको <varname>$a</varname> को मान। तर वास्तविकता के हो भने यहाँ अर्को एउटा अतिरिक्त मान पनि संलग्न छ, र त्यो स्वयम् assignment को मान हो। Assignment आफैँमा assign गरिएको मान (यस अवस्थामा ५) मा मूल्याङ्कन हुन्छ। व्यवहारमा, यसको अर्थ के हो भने <code>$a = 5</code> ले जे गरे पनि, यो ५ मान भएको एउटा expression हो। त्यसैले <code>$b = ($a = 5)</code> लेख्नु भनेको <code>$a = 5; $b = 5;</code> लेखे जस्तै हो (semicolon ले statement को अन्त्य जनाउँछ)। Assignment हरू दायाँबाट बायाँ क्रममा parse हुने भएकाले, तपाईँ <code>$b = $a = 5</code> पनि लेख्न सक्नुहुन्छ।
    </simpara>
    <simpara>
-    Expression-orientation को अर्को राम्रो उदाहरण pre- र post-increment तथा decrement हुन्। <code>$variable++</code> र <code>$variable--</code> जस्ता <link linkend="language.operators.increment">increment र decrement operators</link> सँग तपाईँ परिचित हुनुहुन्छ होला। दुवैले variable को मान बढाउँछन्, तर फरक केवल expression को मानमा हुन्छ। <code>++$variable</code> (pre-increment) ले मान बढाइसकेपछिको नयाँ मान दिन्छ, जबकि <code>$variable++</code> (post-increment) ले मान बढ्नुभन्दा अगाडिको पुरानो मान दिन्छ।
+    Expression orientation को अर्को राम्रो उदाहरण pre- र post-increment तथा decrement हुन्। PHP र अन्य धेरै भाषाहरूका प्रयोगकर्ताहरू <code>variable++</code> र <code>variable--</code> को सङ्केतसँग परिचित हुन सक्छन्। यी <link linkend="language.operators.increment">increment र decrement operators</link> हुन्। C भाषामा जस्तै PHP मा पनि दुई प्रकारका increment छन् - pre-increment र post-increment। Pre-increment र post-increment दुवैले मूलतः variable लाई बढाउँछन्, र variable मा पर्ने प्रभाव समान हुन्छ। फरक केवल increment expression को मानमा हुन्छ। Pre-increment, जसलाई <code>++$variable</code> लेखिन्छ, बढेको मानमा मूल्याङ्कन हुन्छ (PHP ले variable को मान पढ्नुअघि नै त्यसलाई बढाउँछ, त्यसैले 'pre-increment' नाम दिइएको हो)। Post-increment, जसलाई <code>$variable++</code> लेखिन्छ, variable बढ्नुभन्दा अघिको <varname>$variable</varname> को मूल मानमा मूल्याङ्कन हुन्छ (PHP ले variable को मान पढिसकेपछि मात्र त्यसलाई बढाउँछ, त्यसैले 'post-increment' नाम दिइएको हो)।
+   </simpara>
+   <simpara>
+    Expressions को एक धेरै सामान्य प्रकार <link
+    linkend="language.operators.comparison">comparison</link>
+    (तुलना) expressions हुन्। यी expressions &false; वा &true; मा मूल्याङ्कन हुन्छन्। PHP ले &gt; (भन्दा ठूलो), &gt;= (भन्दा ठूलो वा बराबर), == (बराबर), != (बराबर छैन), &lt; (भन्दा सानो) र &lt;= (भन्दा सानो वा बराबर) समर्थन गर्दछ। यस भाषाले strict equivalence operators को सेट पनि समर्थन गर्दछ: === (बराबर र एउटै type) र !== (बराबर छैन वा एउटै type होइन)। यी expressions प्रायः conditional execution, जस्तै <code>if</code> statements भित्र प्रयोग गरिन्छ।
+   </simpara>
+   <simpara>
+    हामीले यहाँ छलफल गर्ने expressions को अन्तिम उदाहरण combined operator-assignment expressions हुन्। तपाईँलाई पहिले नै थाहा छ कि यदि तपाईँ <varname>$a</varname> लाई १ ले बढाउन चाहनुहुन्छ भने, तपाईँ सजिलै <code>$a++</code> वा <code>++$a</code> लेख्न सक्नुहुन्छ। तर यदि तपाईँ यसमा एकभन्दा बढी, उदाहरणका लागि ३ थप्न चाहनुहुन्छ भने के गर्ने? तपाईँले <code>$a++</code> धेरै पटक लेख्न सक्नुहुन्छ, तर यो स्पष्ट रूपमा धेरै प्रभावकारी वा सहज तरिका होइन। यसको धेरै सामान्य अभ्यास <code>$a = $a + 3</code> लेख्नु हो। <code>$a + 3</code> ले <varname>$a</varname> को मानमा ३ जोडेर मूल्याङ्कन गर्दछ, र पुन: <varname>$a</varname> मा assign गरिन्छ, जसको परिणामस्वरूप <varname>$a</varname> ३ ले बढ्छ। C जस्ता अन्य भाषाहरूमा जस्तै PHP मा पनि तपाईँ यसलाई छोटो तरिकाले लेख्न सक्नुहुन्छ, जुन समयसँगै स्पष्ट र बुझ्न छिटो पनि बन्दै जान्छ। <varname>$a</varname> को वर्तमान मानमा ३ थप्ने कार्यलाई <code>$a += 3</code> लेख्न सकिन्छ। यसको ठ्याक्कै अर्थ हुन्छ "<varname>$a</varname> को मान लिनुहोस्, त्यसमा ३ थप्नुहोस्, र त्यसलाई पुन: <varname>$a</varname> मा assign गर्नुहोस्"। छोटो र स्पष्ट हुनुका साथै, यसको परिणामस्वरूप कार्यसम्पादन (execution) पनि छिटो हुन्छ। <code>$a += 3</code> को मान, नियमित assignment को मान जस्तै, assign गरिएको मान नै हो। याद गर्नुहोस् कि यो ३ होइन, बरु <varname>$a</varname> मा ३ जोडिएको संयुक्त मान हो (यो त्यही मान हो जुन <varname>$a</varname> मा assign गरिएको छ)। यस operator-assignment मोडमा कुनै पनि दुई-स्थानको अपरेटर (two-place operator) प्रयोग गर्न सकिन्छ, उदाहरणका लागि <code>$a -= 5</code> (<varname>$a</varname> को मानबाट ५ घटाउने), <code>$b *= 7</code> (<varname>$b</varname> को मानलाई ७ ले गुणन गर्ने), आदि।
    </simpara>
    <para>
-    Ternary conditional operator पनि एउटा महत्वपूर्ण expression हो:
+    यदि तपाईँले अन्य भाषाहरूमा देख्नुभएको छैन भने अनौठो लाग्न सक्ने अर्को एउटा expression छ, त्यो हो ternary conditional operator:
    </para>
    <para>
     <informalexample>
@@ -53,10 +62,10 @@ $first ? $second : $third
     </informalexample>
    </para>
    <para>
-    यदि पहिलो subexpression को मान &true; भएमा दोस्रो subexpression मूल्याङ्कन हुन्छ, अन्यथा तेस्रो subexpression मूल्याङ्कन हुन्छ।
+    यदि पहिलो subexpression को मान &true; (शून्य बाहेक) हुन्छ भने, दोस्रो subexpression मूल्याङ्कन हुन्छ, र त्यो नै यस conditional expression को नतिजा हुन्छ। अन्यथा, तेस्रो subexpression मूल्याङ्कन हुन्छ, र त्यो नै यसको मान हुन्छ।
    </para>
    <para>
-    Pre- र post-increment तथा expressions बुझ्न तलको उदाहरण उपयोगी हुनेछ:
+    निम्न उदाहरणले तपाईँलाई pre- र post-increment तथा सामान्य रूपमा expressions लाई अझ राम्ररी बुझ्न मद्दत गर्नेछ:
    </para>
    <para>
     <informalexample>
@@ -68,20 +77,24 @@ function double($i)
     return $i * 2;
 }
 
-$b = $a = 5;        /* $a र $b मा मान ५ assign गरौँ */
-$c = $a++;          /* post-increment: $c मा $a को पुरानो मान (५) जान्छ */
+$b = $a = 5;        /* $a र $b variables मा पाँच मान assign गरौँ */
+$c = $a++;          /* post-increment: $a को मूल मान (५) लाई $c मा assign गर्दछ */
 print "a = {$a}; b = {$b}; c = {$c}" . PHP_EOL;
 
-$e = $d = ++$b;     /* pre-increment: $d र $e मा बढेको मान (६) जान्छ */
+$e = $d = ++$b;     /* pre-increment: $b को बढेको मान (६) लाई $d र $e मा assign गर्दछ */
 print "b = {$b}; d = {$d}; e = {$e}" . PHP_EOL;
 
-$f = double($d++);  /* $d बढ्नु अघिको मान लिएर 2*6 = 12 भई $f मा जान्छ */
+/* यस बिन्दुमा, $d र $e दुवै ६ सँग बराबर छन् */
+
+$f = double($d++);  /* increment हुनुअघि $d को दोब्बर मान, 2*6 = 12 लाई $f मा assign गर्दछ */
 print "d = {$d}; f = {$f}" . PHP_EOL;
 
-$g = double(++$e);  /* $e बढेपछिको मान लिएर 2*7 = 14 भई $g मा जान्छ */
+$g = double(++$e);  /* increment भएपछिको $e को दोब्बर मान, 2*7 = 14 लाई $g मा assign गर्दछ */
 print "e = {$e}; g = {$g}" . PHP_EOL;
 
-$h = $g += 10;      /* $g मा १० थपिएर २४ हुन्छ, र त्यो assignment को मान $h मा जान्छ */
+$h = $g += 10;      /* पहिले, $g लाई १० ले बढाइन्छ र यसको मान २४ हुन्छ। 
+                       त्यसपछि assignment को मान (२४) लाई $h मा assign गरिन्छ, 
+                       र $h को मान पनि २४ नै हुन्छ। */
 print "g = {$g}; h = {$h}" . PHP_EOL;
 ?>
 ]]>
@@ -89,10 +102,19 @@ print "g = {$g}; h = {$h}" . PHP_EOL;
     </informalexample>
    </para>
    <simpara>
-    केही expressions लाई statements मान्न सकिन्छ। कुनै expression पछाडि semicolon (<literal>;</literal>) राखेपछि त्यो statement बन्छ। <code>$b = $a = 5;</code> मा <code>$a = 5</code> मान्य expression हो, तर आफैँमा statement होइन। पूरै <code>$b = $a = 5;</code> भने मान्य statement हो।
+    केही expressions लाई statements मान्न सकिन्छ। यस अवस्थामा, statement को रूप '<code>expr ;</code>' हुन्छ, अर्थात् expression पछाडि semicolon। <code>$b = $a = 5;</code> मा <code>$a = 5</code> एक मान्य expression हो, तर यो आफैँमा statement होइन। यद्यपि, <code>$b = $a = 5;</code> भने एक मान्य statement हो।
    </simpara>
    <simpara>
-    यस म्यानुअलमा जहाँ पनि मान्य PHP expression जनाउनुपर्दा हामी <varname>expr</varname> लेख्नेछौँ।
+    उल्लेख गर्न योग्य एउटा अन्तिम कुरा expressions को truth value (सत्य मान) हो। धेरै घटनाहरूमा, मुख्यतया conditional execution र loops मा, तपाईँलाई expression को विशिष्ट मानमा चासो हुँदैन, बरु केवल यसको अर्थ &true; वा &false; हो कि होइन भन्ने कुरामा मात्र चासो हुन्छ।
+    
+    <!-- (PHP doesn't have a
+    dedicated boolean type) : WRONG, PHP does. -->
+    
+    Constants &true; र &false; (case-insensitive) दुई सम्भावित boolean मानहरू हुन्। आवश्यक पर्दा, कुनै expression स्वचालित रूपमा boolean मा रूपान्तरण हुन्छ। यो कसरी हुन्छ भन्ने विवरणका लागि 
+    <link linkend="language.types.typecasting">type-casting सम्बन्धी खण्ड</link> हेर्नुहोस्।
+   </simpara>
+   <simpara>
+    PHP ले expressions को एक पूर्ण र शक्तिशाली कार्यान्वयन प्रदान गर्दछ, र यसलाई पूर्ण रूपमा दस्तावेज गर्नु यस म्यानुअलको दायराभन्दा बाहिर जान्छ। माथिका उदाहरणहरूले तपाईँलाई expressions के हुन् र तपाईँ कसरी उपयोगी expressions निर्माण गर्न सक्नुहुन्छ भन्ने राम्रो विचार दिनुपर्छ। यस म्यानुअलको बाँकी भागभरि हामी कुनै पनि मान्य PHP expression जनाउन <varname>expr</varname> लेख्नेछौँ।
    </simpara>
   </chapter>
  

@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- EN-Revision: cd7a4b94a4cf282d8fd70803f0e2fdd159557444 Maintainer: prateekbhujel Status: ready -->
  <chapter xml:id="tutorial" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <info><title>एउटा सरल ट्युटोरियल (A simple tutorial)</title></info>
+  <info><title>A simple tutorial (एक सरल ट्युटोरियल)</title></info>
 
   <para>
-   यहाँ हामी छोटो र सरल ट्युटोरियल मार्फत PHP का आधारभूत कुराहरू देखाउन चाहन्छौँ। यो पाठ मुख्यतया PHP मार्फत dynamic web page सिर्जना गर्नेसँग सम्बन्धित छ, यद्यपि PHP केवल web page बनाउनमा मात्र सीमित छैन। थप जानकारीका लागि <link linkend="intro-whatcando">PHP ले के गर्न सक्छ?</link> शीर्षकको खण्ड हेर्नुहोस्।
+   यहाँ हामी एक छोटो र सरल ट्युटोरियलमा PHP का एकदमै आधारभूत कुराहरू देखाउन चाहन्छौँ। यद्यपि PHP केवल वेब पृष्ठहरू बनाउन मात्र सक्षम छैन, तर यो पाठले PHP मार्फत dynamic web page निर्माण गर्ने कुरासँग मात्र सरोकार राख्दछ। थप जानकारीका लागि <link linkend="intro-whatcando">PHP ले के गर्न सक्छ?</link> शीर्षकको खण्ड हेर्नुहोस्।
   </para>
   <para>
-   PHP प्रयोग गरिएका web pages हरूलाई पनि साधारण HTML pages जस्तै व्यवहार गरिन्छ र तपाईँले तिनलाई सामान्य HTML पृष्ठहरू बनाउने र सम्पादन गर्ने तरिकाले नै तयार गर्न सक्नुहुन्छ।
+   PHP-सक्षम वेब पृष्ठहरूलाई सामान्य HTML पृष्ठहरू जस्तै व्यवहार गरिन्छ र तपाईँले सामान्य HTML पृष्ठहरू बनाउने र सम्पादन गर्ने तरिकाले नै यिनीहरूलाई बनाउन र सम्पादन गर्न सक्नुहुन्छ।
   </para>
 
   <section xml:id="tutorial.firstpage">
-   <info><title>तपाईँको पहिलो PHP पृष्ठ</title></info>
+   <info><title>तपाईँको पहिलो PHP-सक्षम पृष्ठ (Your first PHP-enabled page)</title></info>
    <simpara>
-    यो ट्युटोरियलमा तपाईँको computer मा PHP पहिले नै install भइसकेको छ भनी मानिएको छ। स्थापना सम्बन्धी जानकारी <link xlink:href="&url.php.downloads;">download पृष्ठ</link> मा फेला पार्न सकिन्छ।
+    यो ट्युटोरियलले तपाईँको कम्प्युटरमा PHP पहिले नै स्थापना (install) भइसकेको मान्दछ।
+    स्थापना सम्बन्धी निर्देशनहरू <link xlink:href="&url.php.downloads;">डाउनलोड पृष्ठ</link> मा पाउन सकिन्छ।
    </simpara>
    <para>
-    तल दिइएको सामग्रीसहित <filename>hello.php</filename> नामको एउटा file बनाउनुहोस्:
+    निम्न सामग्री सहित <filename>hello.php</filename> नामको फाइल बनाउनुहोस्:
    </para>
    <para>
     <example>
@@ -31,7 +32,7 @@ echo "Hello World!";
 ]]>
      </programlisting>
      <simpara>
-      आफ्नो terminal प्रयोग गरेर यो file भएको directory मा जानुहोस् र निम्न command चलाएर development server सुरु गर्नुहोस्:
+      आफ्नो टर्मिनल प्रयोग गरी यो फाइल भएको डाइरेक्टरीमा जानुहोस् र निम्न आदेश (command) मार्फत development server सुरु गर्नुहोस्:
      </simpara>
      <programlisting role="shell">
 <![CDATA[
@@ -39,10 +40,12 @@ php -S localhost:8000
 ]]>
      </programlisting>
      <simpara>
-      आफ्नो browser खोल्नुहोस् र web server को URL को अन्त्यमा <literal>/hello.php</literal> जोडेर खोल्नुहोस्। माथि चलाइएको command अनुसार त्यो URL <literal>http://localhost:8000/hello.php</literal> हुनेछ। यदि सबै कुरा सही तरिकाले configure गरिएको छ भने, यो file लाई PHP ले parse गर्नेछ र browser मा "Hello World!" output देखिनेछ।
+      आफ्नो ब्राउजर प्रयोग गरी वेब सर्भरको URL मार्फत फाइल खोल्नुहोस्, जसको अन्त्यमा <literal>/hello.php</literal> फाइल सन्दर्भ हुन्छ।
+      माथि चलाइएको कमान्ड अनुसार, URL <literal>http://localhost:8000/hello.php</literal> हुनेछ।
+      यदि सबै कुरा सही रूपमा कन्फिगर गरिएको छ भने, यो फाइल PHP द्वारा parse गरिनेछ र तपाईँले आफ्नो ब्राउजरमा "Hello World!" आउटपुट देख्नुहुनेछ।
      </simpara>
      <simpara>
-      PHP लाई सामान्य HTML web page भित्र पनि embed गर्न सकिन्छ। यसको अर्थ तपाईँले तलको उदाहरणमा देखाइए जस्तै HTML document भित्रै PHP statements हरू लेख्न सक्नुहुन्छ:
+      PHP लाई सामान्य HTML वेब पृष्ठ भित्र embed गर्न सकिन्छ। यसको अर्थ तपाईँ आफ्नो HTML कागजात भित्रै PHP statements लेख्न सक्नुहुन्छ, जसरी निम्न उदाहरणमा देखाइएको छ:
      </simpara>
      <programlisting role="php">
 <![CDATA[
@@ -58,7 +61,7 @@ php -S localhost:8000
 ]]>
      </programlisting>
      <simpara>
-      यसको नतिजा यस्तो output आउनेछ:
+      यसको परिणामस्वरूप निम्न आउटपुट प्राप्त हुनेछ:
      </simpara>
      <screen role="html">
 <![CDATA[
@@ -76,40 +79,40 @@ php -S localhost:8000
     </example>
    </para>
    <para>
-    यो program एकदमै सरल छ र यस्तो सामान्य पृष्ठ बनाउन वास्तवमा PHP नै प्रयोग गर्नुपर्ने आवश्यकता पनि थिएन। यसले गरेको एक मात्र काम PHP को <function>echo</function> statement प्रयोग गरेर <literal>Hello World</literal> देखाउनु हो। याद गर्नुहोस् कि यो file कुनै पनि हिसाबले <emphasis>executable हुनु जरुरी छैन</emphasis>। तपाईँले ".php" extension प्रयोग गर्नुभएको कारणले नै server ले यो file लाई PHP मार्फत interpret गर्नुपर्छ भन्ने थाहा पाउँछ, किनभने server लाई ".php" फाइलहरू PHP मा पठाउन configure गरिएको हुन्छ। यसलाई एउटा सामान्य HTML file को रूपमा सोच्नुहोस् जसमा धेरै रोचक कामहरू गर्न सक्ने विशेष tag हरू उपलब्ध छन्।
+    यो प्रोग्राम अत्यन्त सरल छ र यस्तो पृष्ठ बनाउन तपाईँलाई वास्तवमा PHP प्रयोग गर्न आवश्यक नै थिएन। यसले गर्ने भनेको PHP को <function>echo</function> statement प्रयोग गरी: <literal>Hello World</literal> देखाउने मात्र हो। ध्यान दिनुहोस् कि यो फाइल <emphasis>executable (कार्यान्वयन योग्य) हुन आवश्यक छैन</emphasis> वा कुनै पनि हिसाबले विशेष हुनुपर्दैन। तपाईँले ".php" एक्सटेन्सन प्रयोग गर्नुभएकाले सर्भरले यो फाइल PHP द्वारा व्याख्या गरिनुपर्छ भन्ने थाहा पाउँछ, किनभने सर्भरलाई PHP मा पठाउन कन्फिगर गरिएको हुन्छ। यसलाई एउटा सामान्य HTML फाइलको रूपमा सोच्नुहोस् जसमा तपाईँका लागि धेरै रोचक कामहरू गर्न सक्ने विशेष ट्यागहरूको सेट उपलब्ध छ।
    </para>
 
    <simpara>
-    यस उदाहरणको मुख्य उद्देश्य विशेष PHP tag को ढाँचा देखाउनु हो। यस उदाहरणमा हामीले PHP tag को सुरुवात जनाउन <literal>&lt;?php</literal> प्रयोग गर्यौँ। त्यसपछि PHP statement राखेर अन्त्यमा closing tag <literal>?&gt;</literal> थपेर PHP mode बाट बाहिरियौँ। यसरी तपाईँले HTML file भित्र जहाँ चाहनुहुन्छ त्यहीँ PHP mode भित्र पस्न र बाहिरिन सक्नुहुन्छ। थप विवरणका लागि <link linkend="language.basic-syntax">आधारभूत PHP syntax</link> सम्बन्धी म्यानुअल खण्ड पढ्नुहोस्।
+    यस उदाहरणको मुख्य उद्देश्य विशेष PHP tag ढाँचा देखाउनु हो। यस उदाहरणमा हामीले PHP tag को सुरुवात जनाउन <literal>&lt;?php</literal> प्रयोग गर्यौँ। त्यसपछि हामीले PHP statement राख्यौँ र बन्द गर्ने ट्याग, <literal>?&gt;</literal> थपेर PHP mode बाट बाहिरियौँ। तपाईँ HTML फाइल भित्र जहाँ चाहनुहुन्छ त्यहीँ यसरी नै PHP mode भित्र प्रवेश गर्न र बाहिरिन सक्नुहुन्छ। थप विवरणका लागि <link linkend="language.basic-syntax">आधारभूत PHP सिन्ट्याक्स (basic PHP syntax)</link> सम्बन्धी म्यानुअल खण्ड पढ्नुहोस्।
    </simpara>
 
    <note>
     <info><title>Line Feeds (नयाँ लाइन) सम्बन्धी नोट</title></info>
     <simpara>
-     HTML मा line feed (नयाँ लाइन) को खासै अर्थ हुँदैन; तथापि, कोड सफा र आकर्षक देखाउन line feed राख्नु राम्रो मानिन्छ। Closing tag <literal>?&gt;</literal> लगत्तै आउने नयाँ लाइनलाई PHP ले स्वतः हटाइदिन्छ। धेरै PHP blocks वा कुनै output नदिने include files हरू प्रयोग गर्दा यो सुविधा एकदमै उपयोगी हुन्छ। तर कहिलेकाहीँ यसले केही अलमल पनि पार्न सक्छ। Closing tag <literal>?&gt;</literal> पछाडि एउटा space राखेर space र line feed दुवै output गराउन सकिन्छ, अथवा PHP block भित्रको अन्तिम echo/print बाट स्पष्ट रूपमा line feed पठाउन सकिन्छ।
+     HTML मा Line feeds (नयाँ लाइन) को खासै अर्थ हुँदैन; यद्यपि, नयाँ लाइनहरू राखेर आफ्नो HTML लाई सफा र चिटिक्क बनाउनु अझै पनि राम्रो विचार हो। बन्द हुने <literal>?&gt;</literal> को तुरुन्तै पछाडि आउने line feed लाई PHP द्वारा हटाइनेछ। जब तपाईँ PHP का धेरै ब्लकहरू वा कुनै पनि कुरा आउटपुट नगर्ने PHP समावेश भएका include फाइलहरू राख्दै हुनुहुन्छ भने यो अत्यन्त उपयोगी हुन सक्छ। तर साथसाथै यो अलि अन्योलपूर्ण पनि हुन सक्छ। स्पेस र लाइन फिड आउटपुट गर्न बाध्य पार्न तपाईँले बन्द हुने <literal>?&gt;</literal> पछाडि एउटा स्पेस राख्न सक्नुहुन्छ, वा तपाईँले आफ्नो PHP ब्लक भित्रको अन्तिम echo/print बाट स्पष्ट लाइन फिड राख्न सक्नुहुन्छ।
     </simpara>
    </note>
 
    <note>
     <info><title>Text Editors सम्बन्धी नोट</title></info>
     <simpara>
-     PHP files हरू सिर्जना गर्न, सम्पादन गर्न र व्यवस्थापन गर्न तपाईँले प्रयोग गर्न सक्ने धेरै text editors र Integrated Development Environments (IDEs) उपलब्ध छन्। यी उपकरणहरूको सूची <link xlink:href="&url.phpeditorlist;">PHP Editors List</link> मा राखिएको छ। Syntax highlighting भएको editor प्रयोग गर्दा कोडिङ गर्न निकै सजिलो हुन्छ।
+     PHP फाइलहरू सिर्जना गर्न, सम्पादन गर्न र व्यवस्थापन गर्न प्रयोग गर्न सकिने थुप्रै text editors र Integrated Development Environments (IDEs) छन्। यी उपकरणहरूको आंशिक सूची <link xlink:href="&url.phpeditorlist;">PHP Editors List</link> मा राखिएको छ। यदि तपाईँ कुनै सम्पादक सिफारिस गर्न चाहनुहुन्छ भने, कृपया माथिको पृष्ठमा जानुहोस् र पृष्ठ मर्मतकर्तालाई सूचीमा त्यो सम्पादक थप्न अनुरोध गर्नुहोस्। सिन्ट्याक्स हाइलाइटिङ भएको सम्पादक हुनु उपयोगी हुन सक्छ।
     </simpara>
    </note>
 
    <note>
     <info><title>Word Processors सम्बन्धी नोट</title></info>
     <simpara>
-     Microsoft Word, LibreOffice Writer जस्ता Word processors हरू PHP files सम्पादन गर्नका लागि उपयुक्त हुँदैनन्। यदि यो परीक्षणका लागि त्यस्ता सफ्टवेयर प्रयोग गर्नैपरेमा, file लाई अनिवार्य रूपमा <emphasis>plain text</emphasis> को रूपमा save गर्नुपर्छ, अन्यथा PHP ले त्यो script पढ्न र चलाउन सक्ने छैन।
+     StarOffice Writer, Microsoft Word र AbiWord जस्ता वर्ड प्रोसेसरहरू PHP फाइलहरू सम्पादन गर्नका लागि उपयुक्त छैनन्। यदि तपाईँ यस परीक्षण स्क्रिप्टका लागि यिनीहरू मध्ये कुनै प्रयोग गर्न चाहनुहुन्छ भने, तपाईँले फाइललाई <emphasis>plain text (सादा पाठ)</emphasis> को रूपमा सुरक्षित गर्नुपर्छ, अन्यथा PHP ले स्क्रिप्ट पढ्न र चलाउन सक्ने छैन।
     </simpara>
    </note>
 
    <simpara>
-    सफलतापूर्वक एउटा PHP script चलाइसकेपछि, अब सबैभन्दा प्रख्यात PHP script बनाउने पालो आएको छ! <function>phpinfo</function> function लाई call गर्नुहोस् र तपाईँले आफ्नो system र setup बारे धेरै उपयोगी जानकारी देख्न पाउनुहुनेछ; जस्तै उपलब्ध <link linkend="language.variables.predefined">predefined variables</link>, load भएका PHP modules, र <link linkend="configuration">configuration</link> settings। केही समय निकालेर यो महत्वपूर्ण जानकारीको समीक्षा गर्नुहोस्।
+    अब तपाईँले सफलतापूर्वक काम गर्ने PHP script बनाइसक्नुभएको छ, अब सबैभन्दा प्रसिद्ध PHP script बनाउने समय आएको छ! <function>phpinfo</function> function लाई कल गर्नुहोस् र तपाईँले आफ्नो प्रणाली र सेटअपको बारेमा धेरै उपयोगी जानकारी देख्नुहुनेछ, जस्तै उपलब्ध <link linkend="language.variables.predefined">पूर्वनिर्धारित variables</link>, लोड गरिएका PHP modules, र <link linkend="configuration">configuration</link> सेटिङहरू। केही समय निकालेर यो महत्त्वपूर्ण जानकारीको समीक्षा गर्नुहोस्।
    </simpara>
    <para>
     <example>
-     <info><title>PHP बाट system सम्बन्धी जानकारी प्राप्त गर्ने</title></info>
+     <info><title>PHP बाट system सम्बन्धी जानकारी प्राप्त गर्ने (Get system information from PHP)</title></info>
      <programlisting role="php">
 <![CDATA[
 <?php
@@ -126,132 +129,238 @@ phpinfo();
   <section xml:id="tutorial.useful">
    <info><title>केही उपयोगी कार्य (Something Useful)</title></info>
    <para>
-    अब केही अझ उपयोगी काम गरौँ। हामी प्रयोगकर्ताले कुन browser प्रयोग गरिरहेको छ भनेर जाँच गर्नेछौँ।
-    त्यसका लागि browser ले HTTP request को भागको रूपमा पठाउने user agent string जाँच गर्छौँ। यो जानकारी एउटा <link linkend="language.variables">variable</link> भित्र store हुन्छ। PHP मा variables सधैँ dollar चिन्ह (<literal>$</literal>) बाट सुरु हुन्छन्। अहिले हामीलाई चाहिएको variable <varname>$_SERVER['HTTP_USER_AGENT']</varname> हो।
+    अब केही अझ उपयोगी कार्य गरौँ। हामी आगन्तुकले कस्तो प्रकारको ब्राउजर प्रयोग गरिरहेको छ भनी जाँच गर्न गइरहेका छौँ।
+    त्यसका लागि, हामी HTTP request को भागको रूपमा ब्राउजरले पठाउने user agent string जाँच गर्छौँ। यो जानकारी एउटा <link linkend="language.variables">variable</link> मा भण्डारण हुन्छ। PHP मा variables सधैँ डलर चिन्ह ($) बाट सुरु हुन्छन्। हामीलाई अहिले चासो भएको variable <varname>$_SERVER['HTTP_USER_AGENT']</varname> हो।
    </para>
    <note>
-    <info><title>Superglobal Variables</title></info>
     <para>
-     <varname>$_SERVER</varname> एउटा विशेष प्रकारको पूर्वपरिभाषित PHP variable हो जसलाई <link linkend="language.variables.superglobals">superglobal</link> भनिन्छ। यी variables हरू script को जुनसुकै स्थान (scope) बाट पनि सिधै प्रयोग गर्न सकिन्छ।
+     <varname>$_SERVER</varname> एक विशेष आरक्षित (reserved) PHP variable हो जसमा सबै वेब सर्भर सम्बन्धी जानकारी समावेश हुन्छ। यसलाई superglobal को रूपमा चिनिन्छ। थप जानकारीका लागि <link linkend="language.variables.superglobals">superglobals</link> सम्बन्धी सम्बन्धित म्यानुअल पृष्ठ हेर्नुहोस्।
     </para>
    </note>
    <para>
-    त्यो variable display गर्न तपाईँले यस्तो कोड लेख्न सक्नुहुन्छ:
+    यो variable प्रदर्शन गर्न, तपाईँले सजिलै निम्न कार्य गर्न सक्नुहुन्छ:
    </para>
    <para>
     <example>
-     <info><title>User agent प्रिन्ट गर्ने</title></info>
+     <info><title>Variable (Array element) प्रिन्ट गर्ने</title></info>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+echo $_SERVER['HTTP_USER_AGENT'];
+
+?>
+]]>
+    </programlisting>
+    <para>
+     यस script को सम्भावित output निम्न हुन सक्छ:
+    </para>
+    <screen role="html">
+<![CDATA[
+Mozilla/5.0 (Linux) Firefox/112.0
+]]>
+    </screen>
+   </example>
+   </para>
+   <simpara>
+    PHP मा धेरै <link linkend="language.types">types</link> का variables उपलब्ध छन्। माथिको उदाहरणमा हामीले एउटा <link linkend="language.types.array">Array</link> variable बाट एउटा element प्रिन्ट गर्यौँ। Arrays धेरै उपयोगी हुन सक्छन्।
+   </simpara>
+   <para>
+    <varname>$_SERVER</varname> केवल एउटा यस्तो variable हो जुन PHP ले स्वचालित रूपमा तपाईँका लागि उपलब्ध गराउँछ। यसको सूची म्यानुअलको <link linkend="reserved.variables">Reserved Variables</link> खण्डमा हेर्न सकिन्छ वा अघिल्लो खण्डको उदाहरणमा प्रयोग गरिएको <function>phpinfo</function> function को आउटपुट हेरेर तिनीहरूको पूर्ण सूची प्राप्त गर्न सक्नुहुन्छ।
+   </para>
+   <para>
+    तपाईँ एउटै PHP ट्याग भित्र धेरै PHP statements राख्न सक्नुहुन्छ र एउटा मात्र echo भन्दा धेरै काम गर्ने साना कोड ब्लकहरू सिर्जना गर्न सक्नुहुन्छ।
+    उदाहरणका लागि, यदि तपाईँ Firefox ब्राउजर हो कि होइन भनी जाँच गर्न चाहनुहुन्छ भने यसो गर्न सक्नुहुन्छ:
+   </para>
+   <para>
+    <example>
+     <info><title><link linkend="language.control-structures">control structures</link> र <link linkend="language.functions">functions</link> प्रयोग गरिएको उदाहरण</title></info>
      <programlisting role="php">
 <![CDATA[
 <?php
-echo $_SERVER['HTTP_USER_AGENT'];
+
+if (str_contains($_SERVER['HTTP_USER_AGENT'], 'Firefox')) {
+    echo 'You are using Firefox.';
+}
+
 ?>
 ]]>
      </programlisting>
-     <simpara>
+     <para>
       यस script को सम्भावित output:
-     </simpara>
+     </para>
      <screen role="html">
-Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+<![CDATA[
+You are using Firefox.
+]]>
      </screen>
     </example>
    </para>
    <para>
-    PHP मा धेरै <link linkend="language.types">types</link> का variables हुन्छन्। माथिको उदाहरणमा हामीले <link linkend="language.types.string">string</link> प्रिन्ट गर्यौँ। Strings ले अक्षरहरूलाई सङ्ग्रह गर्न सक्छ।
+    यहाँ हामी दुई नयाँ अवधारणाहरू परिचय गराउँछौँ। हामीसँग <link linkend="control-structures.if">if</link> statement छ। यदि तपाईँ C भाषाले प्रयोग गर्ने आधारभूत सिन्ट्याक्ससँग परिचित हुनुहुन्छ भने, यो तपाईँलाई तार्किक लाग्नुपर्छ। अन्यथा, तपाईँले प्रारम्भिक PHP पुस्तक लिएर पहिलो दुई अध्यायहरू पढ्नुपर्छ, वा म्यानुअलको <link linkend="langref">Language Reference</link> भाग पढ्नुपर्छ।
    </para>
+   <simpara>
+    हामीले प्रस्तुत गरेको दोस्रो अवधारणा <function>str_contains</function> function call थियो। <function>str_contains</function> PHP मा बनेको एक आन्तरिक function हो जसले कुनै दिइएको string भित्र अर्को string समावेश छ कि छैन भनी निर्धारण गर्दछ। यस अवस्थामा हामी <varname>$_SERVER['HTTP_USER_AGENT']</varname> (तथाकथित haystack) भित्र <literal>'Firefox'</literal> (तथाकथित needle) खोज्दैछौँ। यदि haystack भित्र needle भेटियो भने function ले &true; फर्काउँछ। अन्यथा, यसले &false; फर्काउँछ। यदि यसले &true; फर्काउँछ भने, <link linkend="control-structures.if">if</link> expression &true; मा मूल्याङ्कन हुन्छ र यसको {braces} भित्रको कोड कार्यान्वयन हुन्छ। अन्यथा, कोड चल्दैन। <link linkend="control-structures.if">if</link>, <link linkend="control-structures.else">else</link>, र <function>strtoupper</function> तथा <function>strlen</function> जस्ता अन्य functions का साथ समान उदाहरणहरू बनाउन स्वतन्त्र महसुस गर्नुहोस्। प्रत्येक सम्बन्धित म्यानुअल पृष्ठमा उदाहरणहरू पनि छन्। यदि तपाईँ functions कसरी प्रयोग गर्ने भन्ने बारे अनिश्चित हुनुहुन्छ भने, <link linkend="about.prototypes">function परिभाषा कसरी पढ्ने</link> सम्बन्धी म्यानुअल पृष्ठ र <link linkend="language.functions">PHP functions</link> सम्बन्धी खण्ड दुवै पढ्न चाहनुहुनेछ।
+   </simpara>
    <para>
-    अब <function>str_contains</function> प्रयोग गरेर प्रयोगकर्ताले Google Chrome प्रयोग गरिरहेको छ कि छैन जाँच गरौँ:
+    हामी यसलाई अझ एक कदम अगाडि बढाउन सक्छौँ र देखाउन सक्छौँ कि कसरी तपाईँ PHP ब्लकको बीचमा पनि PHP मोड भित्र र बाहिर जान सक्नुहुन्छ:
    </para>
    <para>
     <example>
-     <info><title><function>str_contains</function> को प्रयोग</title></info>
+     <info><title>HTML र PHP दुवै मोडहरू मिलाउने उदाहरण (Mixing both HTML and PHP modes)</title></info>
      <programlisting role="php">
 <![CDATA[
 <?php
-if (str_contains($_SERVER['HTTP_USER_AGENT'], 'Chrome')) {
-    echo 'तपाईँले Google Chrome प्रयोग गरिरहनुभएको छ।';
+if (str_contains($_SERVER['HTTP_USER_AGENT'], 'Firefox')) {
+    ?>
+    <h3>str_contains() returned true</h3>
+    <p>You are using Firefox</p>
+    <?php
+} else {
+    ?>
+    <h3>str_contains() returned false</h3>
+    <p>You are not using Firefox</p>
+    <?php
 }
 ?>
 ]]>
      </programlisting>
+     <para>
+      यस script को सम्भावित output:
+     </para>
+     <screen role="html">
+<![CDATA[
+<h3>str_contains() returned true</h3>
+<p>You are using Firefox</p>
+]]>
+     </screen>
     </example>
    </para>
-   <para>
-    यहाँ हामीले <link linkend="language.control-structures">control structure</link> (<link linkend="control-structures.if">if statement</link>) प्रयोग गर्यौँ। यदि condition सत्य (true) भयो भने मात्र भित्रको कोड चल्छ।
-   </para>
+   <simpara>
+    केही आउटपुट गर्न PHP echo statement प्रयोग गर्नुको सट्टा, हामी PHP मोडबाट बाहिर निस्कियौँ र सीधा HTML पठायौँ। यहाँ ध्यान दिनुपर्ने महत्त्वपूर्ण र शक्तिशाली कुरा के हो भने स्क्रिप्टको तार्किक प्रवाह अक्षुण्ण रहन्छ। <function>str_contains</function> को नतिजाको आधारमा दर्शकलाई ती HTML ब्लकहरू मध्ये एउटा मात्र पठाइनेछ। अर्को शब्दमा, यो <literal>Firefox</literal> स्ट्रिङ भेटियो वा भेटिएन भन्ने कुरामा निर्भर गर्दछ।
+   </simpara>
   </section>
 
   <section xml:id="tutorial.forms">
    <info><title>Forms सँग काम गर्ने (Dealing with Forms)</title></info>
-   <para>
-    PHP को सबैभन्दा शक्तिशाली विशेषताहरू मध्ये एक HTML form हरूलाई सजिलै handle गर्नु हो। तलको सामान्य HTML form हेरौँ:
-   </para>
+   <simpara>
+    PHP को सबैभन्दा शक्तिशाली विशेषताहरू मध्ये एक HTML forms लाई यसले सम्हाल्ने तरिका हो। बुझ्न महत्त्वपूर्ण आधारभूत अवधारणा के हो भने कुनै पनि form element तपाईँको PHP script मा स्वचालित रूपमा उपलब्ध हुनेछ। PHP सँग forms प्रयोग गर्ने बारे थप जानकारी र उदाहरणहरूका लागि कृपया <link linkend="language.variables.external">बाह्य स्रोतहरूबाट Variables (Variables from external sources)</link> सम्बन्धी म्यानुअल खण्ड पढ्नुहोस्। यहाँ एउटा उदाहरण HTML form दिइएको छ:
+   </simpara>
    <para>
     <example>
-     <info><title>सरल HTML Form</title></info>
+     <info><title>एक सरल HTML Form (A simple HTML form)</title></info>
      <programlisting role="html">
 <![CDATA[
 <form action="action.php" method="post">
- <label for="name">तपाईँको नाम:</label>
- <input name="name" id="name" type="text">
+    <label for="name">Your name:</label>
+    <input name="name" id="name" type="text">
 
- <label for="age">तपाईँको उमेर:</label>
- <input name="age" id="age" type="number">
+    <label for="age">Your age:</label>
+    <input name="age" id="age" type="number">
 
- <button type="submit">पठाउनुहोस्</button>
+    <button type="submit">Submit</button>
 </form>
 ]]>
      </programlisting>
     </example>
    </para>
    <para>
-    जब प्रयोगकर्ताले यो form submit गर्छ, form को data <filename>action.php</filename> मा पठाइन्छ। त्यसलाई PHP मा यसरी प्राप्त गर्न सकिन्छ:
+    यस form मा कुनै विशेष कुरा छैन। यो कुनै पनि प्रकारका विशेष ट्यागहरू नभएको एक सीधा HTML form हो। जब प्रयोगकर्ताले यो फारम भर्छ र submit बटन थिच्छ, <filename>action.php</filename> पृष्ठ कल गरिन्छ। यस फाइलमा तपाईँले यस्तो केही लेख्न सक्नुहुन्छ:
    </para>
    <para>
     <example>
-     <info><title>Form data display गर्ने</title></info>
+     <info><title>हाम्रो form बाट प्राप्त data प्रिन्ट गर्ने (Printing data from our form)</title></info>
      <programlisting role="php">
 <![CDATA[
-नमस्ते <?php echo htmlspecialchars($_POST['name']); ?>।
-तपाईँ <?php echo (int)$_POST['age']; ?> वर्षको हुनुभयो।
+Hi <?php echo htmlspecialchars($_POST['name']); ?>.
+You are <?php echo (int) $_POST['age']; ?> years old.
 ]]>
      </programlisting>
-     <simpara>
+     <para>
       यस script को सम्भावित output:
-     </simpara>
+     </para>
      <screen role="html">
 <![CDATA[
-नमस्ते Pratik।
-तपाईँ 25 वर्षको हुनुभयो।
+Hi Joe. You are 22 years old.
 ]]>
      </screen>
     </example>
    </para>
    <simpara>
-    <function>htmlspecialchars</function> ले HTML मा विशेष अर्थ राख्ने क्यारेक्टरहरूलाई सुरक्षित बनाउँछ ताकि Cross-Site Scripting (XSS) आक्रमण हुन नपाओस्। उमेरको लागि हामीले त्यसलाई <type>int</type> मा cast गर्यौँ। PHP मा <varname>$_POST['name']</varname> र <varname>$_POST['age']</varname> variables हरू स्वतः उपलब्ध हुन्छन्। Form को method POST भएकाले data <varname>$_POST</varname> superglobal मा बस्छ। यदि method GET भएको भए data <varname>$_GET</varname> मा बस्ने थियो। स्रोतको चिन्ता नगरी GET, POST र COOKIE data एकै ठाउँमा हेर्न <varname>$_REQUEST</varname> पनि प्रयोग गर्न सकिन्छ।
+    <function>htmlspecialchars</function> र <literal>(int)</literal> भागहरू बाहेक, यसले के गर्छ भन्ने कुरा स्पष्ट हुनुपर्छ। <function>htmlspecialchars</function> ले HTML मा विशेष अर्थ राख्ने कुनै पनि क्यारेक्टरहरूलाई राम्रोसँग encode गरिएको सुनिश्चित गर्दछ ताकि मानिसहरूले तपाईँको पृष्ठमा HTML ट्यागहरू वा JavaScript इन्जेक्ट (XSS आक्रमण) गर्न नसकून्। उमेर फिल्डको लागि, किनभने हामीलाई थाहा छ कि यो एक सङ्ख्या हो, हामी यसलाई केवल <type>int</type> मा <link linkend="language.types.typecasting">रूपान्तरण (convert)</link> गर्न सक्छौँ जसले कुनै पनि अनावश्यक क्यारेक्टरहरूलाई स्वतः हटाउनेछ। <link linkend="ref.filter">filter</link> extension प्रयोग गरेर तपाईँले PHP लाई स्वचालित रूपमा यो गर्न लगाउन पनि सक्नुहुन्छ। <varname>$_POST['name']</varname> र <varname>$_POST['age']</varname> variables हरू PHP द्वारा तपाईँका लागि स्वतः सेट गरिन्छ। पहिले हामीले <varname>$_SERVER</varname> superglobal प्रयोग गरेका थियौँ; माथि हामीले भर्खरै <varname>$_POST</varname> superglobal प्रस्तुत गर्यौँ जसमा सबै POST डाटा समावेश हुन्छ। हाम्रो फारमको <emphasis>method</emphasis> कसरी POST हो ध्यान दिनुहोस्। यदि हामीले method <emphasis>GET</emphasis> प्रयोग गरेका थियौँ भने हाम्रो फारमको जानकारी यसको सट्टा <varname>$_GET</varname> superglobal मा रहने थियो। यदि तपाईँलाई आफ्नो अनुरोध डाटाको स्रोतको बारेमा चासो छैन भने तपाईँ <varname>$_REQUEST</varname> superglobal पनि प्रयोग गर्न सक्नुहुन्छ। यसमा GET, POST र COOKIE डाटाको मर्ज गरिएको जानकारी समावेश हुन्छ।
    </simpara>
   </section>
 
   <section xml:id="tutorial.whatsnext">
    <info><title>अब के गर्ने? (What's next?)</title></info>
    <simpara>
-    यो प्रारम्भिक ज्ञानसँगै अब तपाईँले PHP म्यानुअलका अधिकांश खण्डहरू सजिलै बुझ्न सक्नुहुनेछ।
+    तपाईँको नयाँ ज्ञानको साथ अब तपाईँले म्यानुअलका अधिकांश भागहरू बुझ्न सक्षम हुनुपर्छ।
    </simpara>
    <para>
-    विशेष गरी तपाईँ निम्न विशेषताहरू अध्ययन गर्न सक्नुहुन्छ:
+    विशेष गरी तपाईँ निम्न सुविधाहरू अन्वेषण गर्न चाहन सक्नुहुन्छ:
     <simplelist>
-     <member><link linkend="book.filesystem">filesystem functions</link> प्रयोग गरी files पढ्ने र लेख्ने</member>
-     <member><link linkend="features.file-upload">File uploads व्यवस्थापन गर्ने</link></member>
-     <member><link linkend="book.curl">Curl</link> मार्फत remote pages र files प्राप्त गर्ने</member>
+     <member><link linkend="book.filesystem">filesystem functions</link> को साथ फाइलहरू पढ्ने र लेख्ने</member>
+     <member><link linkend="features.file-upload">फाइल अपलोडहरू ह्यान्डल गर्ने (Handling file uploads)</link></member>
+     <member><link linkend="book.curl">Curl</link> मार्फत रिमोट पृष्ठहरू र फाइलहरू ल्याउने</member>
      <member>
-      <link linkend="book.pdo">PDO</link> मार्फत database मा data सुरक्षित गर्ने र विश्लेषण गर्ने
-      (अलग server बिना नै <link linkend="ref.pdo-sqlite">SQLite</link> प्रयोग गर्न सकिन्छ)
+      <link linkend="book.pdo">PDO</link> मार्फत डाटाबेसमा डाटा भण्डारण र विश्लेषण गर्ने
+      (अलग डाटाबेस सर्भर नचलाई <link linkend="ref.pdo-sqlite">SQLite</link> प्रयोग गर्न सकिन्छ)
      </member>
-     <member><link linkend="book.session">Sessions</link> मार्फत विभिन्न requests बीच data सुरक्षित राख्ने</member>
+     <member><link linkend="book.session">Sessions</link> को साथ विभिन्न requests का बीच डाटा कायम राख्ने</member>
     </simplelist>
    </para>
    <simpara>
-    <link xlink:href="&url.packagist;">Packagist repository</link> मा विभिन्न प्रयोजनका लागि उपयोगी libraries र <link xlink:href="&url.packagist;/search/?tags=framework">frameworks</link> उपलब्ध छन्, जसलाई <link linkend="install.composer.intro">Composer package manager</link> मार्फत सिधै install गर्न सकिन्छ।
+    <link xlink:href="&url.packagist;">Packagist repository</link> मा प्रत्येक अवसरका लागि पुस्तकालयहरू र <link xlink:href="&url.packagist;/search/?tags=framework">frameworks</link> को खजाना छ, जुन सबै <link linkend="install.composer.intro">Composer package manager</link> मार्फत स्थापना गर्न सकिन्छ।
+   </simpara>
+   <simpara>
+    सामुदायिक मद्दत र सल्लाहका लागि, <link xlink:href="&url.php.support;">Help पृष्ठ</link> हेर्नुहोस्।
+   </simpara>
+   <simpara>
+    विभिन्न प्रकारका पोडकास्टहरू, प्रस्तुतिहरू र अन्य भिडियोहरूका लागि, <link xlink:href="&url.phpctv;">सामुदायिक PeerTube</link> हेर्नुहोस्।
+   </simpara>
+   <simpara>
+    तपाईँलाई मद्दत गर्ने अन्य सामुदायिक स्रोतहरूमा "awesome lists" (लिङ्कहरूको क्युरेट गरिएको डाइरेक्टरी) र "developer roadmaps" (सम्बन्धित विषयहरूको सूची) समावेश छन्।
+   </simpara>
+   <para>
+    जब तपाईँ कहाँबाट सुरु गर्ने भन्ने कुनै विचार नभई अड्किनुहुन्छ, आफ्नो परियोजना वा समस्यालाई साना भागहरूमा विभाजन गर्ने प्रयास गर्नुहोस्, जसले गर्दा तपाईँलाई के गर्न पहिले नै थाहा छ र के सिक्न आवश्यक छ भनी सजिलै देख्न मद्दत मिल्छ। सूची तपाईँलाई आवश्यक भए जति गहिरो / विस्तृत हुन सक्छ। उदाहरणका लागि, ब्लग निर्माणलाई निम्न भागहरूमा विभाजन गर्न सकिन्छ:
+    <itemizedlist>
+     <listitem>
+      <simpara>पृष्ठहरू सूचीकृत र अवलोकन गर्ने</simpara>
+      <itemizedlist>
+       <listitem>
+        <simpara>डाटाबेसबाट रेकर्डहरू (पृष्ठहरू) पढ्ने</simpara>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+     <listitem>
+      <simpara>पृष्ठहरू सिर्जना गर्ने</simpara>
+      <itemizedlist>
+       <listitem>
+        <simpara>फारम सबमिशन ह्यान्डल गर्ने</simpara>
+       </listitem>
+       <listitem>
+        <simpara>डाटाबेसमा रेकर्डहरू (पृष्ठहरू) लेख्ने</simpara>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+     <listitem>
+      <simpara>एडमिन लगइन</simpara>
+      <itemizedlist>
+       <listitem>
+        <simpara>डाटाबेसबाट रेकर्डहरू (प्रयोगकर्ताहरू) पढ्ने</simpara>
+       </listitem>
+       <listitem>
+        <simpara>पासवर्डहरू ह्यान्डल गर्ने</simpara>
+       </listitem>
+       <listitem>
+        <simpara>Requests / पृष्ठहरू बीच डाटा (प्रयोगकर्ता लगइन) कायम राख्ने (sessions)</simpara>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </itemizedlist>
+   </para>
+   <simpara>
+    यदि तपाईँले निर्माण गर्न चाहेको कुनै विशेष कुरा छैन भने, तपाईँ katas, चुनौतीहरू (challenges) र "code golf" जस्ता कोडिङ अभ्यासहरू खोज्ने प्रयास गर्न सक्नुहुन्छ। विशेष गरी PHP मा लक्षित नभए पनि, धेरैजसो पूरा गर्न सकिनेछन् र सम्भवतः तपाईँको ज्ञान र सोचलाई चुनौती दिनेछन्।
    </simpara>
   </section>
  </chapter>

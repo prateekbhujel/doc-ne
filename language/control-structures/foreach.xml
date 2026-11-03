@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 0d9947f2b1f0997cd8ddf80227b632dd5d3f2f92 Maintainer: prateekbhujel Status: draft -->
+<!-- EN-Revision: 0d9947f2b1f0997cd8ddf80227b632dd5d3f2f92 Maintainer: prateekbhujel Status: ready -->
 <sect1 xml:id="control-structures.foreach" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>foreach</title>
  <?phpdoc print-version-for="foreach"?>

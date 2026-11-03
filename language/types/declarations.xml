@@ -4,18 +4,19 @@
  <title>Type declarations (प्रकार घोषणाहरू)</title>
 
  <para>
-  Type declarations लाई function arguments, return values, PHP 7.4.0 देखि class properties, र PHP 8.3.0 देखि class constants मा थप्न सकिन्छ।
-  यसले function वा method call भएको बेला प्राप्त हुने value तोकिएको type को नै हो भनी सुनिश्चित गर्छ, अन्यथा <classname>TypeError</classname> आउँछ।
+  Type declarations लाई function का arguments, return values, PHP 7.4.0 देखि class properties, र PHP 8.3.0 देखि class constants मा थप्न सकिन्छ।
+  यसले call गर्दाको समयमा दिइएको मान तोकिएको type को हो भन्ने सुनिश्चित गर्छ, अन्यथा <classname>TypeError</classname> फ्याँकिन्छ।
  </para>
 
  <simpara>
-  <type>resource</type> बाहेक PHP ले समर्थन गर्ने अन्य हरेक प्रकारका types लाई user-land type declaration भित्र प्रयोग गर्न सकिन्छ।
-  यस पृष्ठमा विभिन्न types कहिले उपलब्ध भए भन्ने Changelog र type declarations मा तिनको प्रयोग सम्बन्धी विवरण समावेश गरिएको छ।
+  <type>resource</type> बाहेक PHP ले समर्थन गर्ने प्रत्येक एकल type लाई user-land type declaration भित्र प्रयोग गर्न सकिन्छ।
+  यस पृष्ठमा विभिन्न types को उपलब्धताको changelog र type declarations मा तिनको प्रयोग सम्बन्धी कागजात समावेश छ।
  </simpara>
 
  <note>
   <para>
-   जब कुनै class ले कुनै interface को method लागू गर्छ वा parent class मा पहिले नै परिभाषित method लाई reimplement गर्छ, त्यो नयाँ method पुरानो परिभाषासँग मिल्दोजुल्दो (compatible) हुनुपर्छ। यदि method ले <link linkend="language.oop5.variance">variance</link> नियमहरू पालना गर्छ भने त्यो compatible मानिन्छ।
+   जब कुनै class ले interface को method कार्यान्वयन गर्छ वा parent class ले पहिले नै परिभाषित गरिसकेको method लाई पुन: कार्यान्वयन गर्छ, त्यो पूर्वोक्त परिभाषासँग उपयुक्त (compatible) हुनुपर्छ।
+   यदि कुनै method ले <link linkend="language.oop5.variance">variance</link> का नियमहरू पालना गर्छ भने त्यो compatible मानिन्छ।
   </para>
  </note>
 
@@ -33,91 +34,91 @@
      <row>
       <entry>8.3.0</entry>
       <entry>
-       Class, interface, trait, र enum constants का लागि typing समर्थन थपियो।
+       Class, interface, trait, र enum constant typing को लागि समर्थन थपिएको छ।
       </entry>
      </row>
      <row>
       <entry>8.2.0</entry>
       <entry>
-       <acronym>DNF</acronym> types को समर्थन थपियो।
+       <acronym>DNF</acronym> types को लागि समर्थन थपिएको छ।
       </entry>
      </row>
      <row>
       <entry>8.2.0</entry>
       <entry>
-       Literal type <type>true</type> को समर्थन थपियो।
+       Literal type <type>true</type> को लागि समर्थन थपिएको छ।
       </entry>
      </row>
      <row>
       <entry>8.2.0</entry>
       <entry>
-       <type>null</type> र <type>false</type> types लाई अब एक्लै (standalone) प्रयोग गर्न सकिन्छ।
+       Types <type>null</type> र <type>false</type> लाई अब स्वतन्त्र (standalone) रूपमा प्रयोग गर्न सकिन्छ।
       </entry>
      </row>
      <row>
       <entry>8.1.0</entry>
       <entry>
-       Intersection types को समर्थन थपियो।
+       Intersection types को लागि समर्थन थपिएको छ।
       </entry>
      </row>
      <row>
       <entry>8.1.0</entry>
       <entry>
-       <type>void</type> function बाट reference द्वारा return गर्ने कार्य deprecated गरियो।
+       <type>void</type> function बाट reference द्वारा फर्काउनु अब deprecated भएको छ।
       </entry>
      </row>
      <row>
       <entry>8.1.0</entry>
       <entry>
-       Return-only type <type>never</type> को समर्थन थपियो।
+       Return-only type <type>never</type> को लागि समर्थन थपिएको छ।
       </entry>
      </row>
      <row>
       <entry>8.0.0</entry>
       <entry>
-       <type>mixed</type> को समर्थन थपियो।
+       <type>mixed</type> को लागि समर्थन थपिएको छ।
       </entry>
      </row>
      <row>
       <entry>8.0.0</entry>
       <entry>
-       Return-only type <type>static</type> को समर्थन थपियो।
+       Return-only type <type>static</type> को लागि समर्थन थपिएको छ।
       </entry>
      </row>
      <row>
       <entry>8.0.0</entry>
       <entry>
-       Union types को समर्थन थपियो।
+       Union types को लागि समर्थन थपिएको छ।
       </entry>
      </row>
      <row>
       <entry>7.4.0</entry>
       <entry>
-       Class properties का लागि typing समर्थन थपियो।
+       Class properties typing को लागि समर्थन थपिएको छ।
       </entry>
      </row>
      <row>
       <entry>7.2.0</entry>
       <entry>
-       <type>object</type> को समर्थन थपियो।
+       <type>object</type> को लागि समर्थन थपिएको छ।
       </entry>
      </row>
      <row>
       <entry>7.1.0</entry>
       <entry>
-       <type>iterable</type> को समर्थन थपियो।
+       <type>iterable</type> को लागि समर्थन थपिएको छ।
       </entry>
      </row>
      <row>
       <entry>7.1.0</entry>
       <entry>
-       <type>void</type> को समर्थन थपियो।
+       <type>void</type> को लागि समर्थन थपिएको छ।
       </entry>
      </row>
      <row>
       <entry>7.1.0</entry>
       <entry>
-       Nullable types को समर्थन थपियो।
+       Nullable types को लागि समर्थन थपिएको छ।
       </entry>
      </row>
     </tbody>
@@ -126,17 +127,20 @@
  </sect2>
 
  <sect2 xml:id="language.types.declarations.base">
-  <title>Atomic Types प्रयोग सम्बन्धी नोटहरू</title>
+  <title>Atomic Types Usage Notes (Atomic Types प्रयोग सम्बन्धी नोटहरू)</title>
 
   <simpara>
-   Atomic types को व्यवहार सरल हुन्छ, तर केही साना पक्षहरूमा ध्यान दिनुपर्छ जुन यस खण्डमा व्याख्या गरिएको छ।
+   Atomic types को व्यवहार सरल हुन्छ जसमा केही साना सावधानीहरू छन्, जुन यस खण्डमा वर्णन गरिएको छ।
   </simpara>
 
   <sect3 xml:id="language.types.declarations.base.scalar">
    <title>Scalar types</title>
    <warning>
     <para>
-     Scalar types (<type>bool</type>, <type>int</type>, <type>float</type>, <type>string</type>) का नामका aliases लाई समर्थन गरिँदैन। त्यसको साटो, तिनलाई class वा interface को नाम मानिन्छ। उदाहरणका लागि, type declaration मा <literal>boolean</literal> प्रयोग गर्दा value <type>bool</type> नभई <literal>boolean</literal> नामको class वा interface को &instanceof; हुनुपर्नेछ।
+     Scalar types (<type>bool</type>, <type>int</type>,
+     <type>float</type>, <type>string</type>) का लागि name aliases समर्थित छैनन्।
+     बरु, तिनीहरूलाई class वा interface का नामहरूको रूपमा व्यवहार गरिन्छ।
+     उदाहरणका लागि, type declaration को रूपमा <literal>boolean</literal> प्रयोग गर्दा मान <type>bool</type> type को हुनुको सट्टा <literal>boolean</literal> class वा interface को &instanceof; हुन आवश्यक पर्दछ:
     </para>
     <informalexample>
      <programlisting role="php">
@@ -167,7 +171,18 @@ Stack trace:
    <title>void</title>
    <note>
     <para>
-     PHP 8.1.0 देखि <type>void</type> function बाट reference द्वारा return गर्ने कार्यलाई deprecated गरिएको छ, किनभने यस्तो function आफैँमा विरोधाभासपूर्ण हुन्छ।
+     <type>void</type> function बाट reference द्वारा फर्काउनु PHP 8.1.0 देखि deprecated गरिएको छ, किनभने यस्तो function विरोधाभासी हुन्छ।
+     पहिले, कल गर्दा यसले निम्न <constant>E_NOTICE</constant> जारी गर्दथ्यो:
+     <computeroutput>Only variable references should be returned by reference</computeroutput>।
+     <informalexample>
+      <programlisting role="php">
+<![CDATA[
+<?php
+function &test(): void {}
+?>
+]]>
+      </programlisting>
+     </informalexample>
     </para>
    </note>
   </sect3>
@@ -175,24 +190,25 @@ Stack trace:
   <sect3 xml:id="language.types.declarations.base.function">
    <title>Callable types</title>
    <para>
-    यो type लाई class property type declaration को रूपमा प्रयोग गर्न सकिँदैन।
+    यस type लाई class property type declaration को रूपमा प्रयोग गर्न सकिँदैन।
    </para>
 
    <note>
     <simpara>
-     यसमा function को signature तोक्न सम्भव छैन।
+     Function को signature निर्दिष्ट गर्न सम्भव छैन।
     </simpara>
    </note>
   </sect3>
 
   <sect3 xml:id="language.types.declarations.references">
-   <title>Pass-by-reference Parameters मा Type Declarations</title>
+   <title>Type declarations on pass-by-reference Parameters</title>
 
    <simpara>
-    यदि pass-by-reference parameter मा type declaration छ भने, variable को type <emphasis>केवल</emphasis> function सुरु हुने बेलामा मात्र जाँच गरिन्छ, function समाप्त हुँदा होइन। यसको अर्थ function ले reference द्वारा पठाइएको variable को type परिवर्तन गर्न सक्छ।
+    यदि pass-by-reference parameter मा type declaration छ भने, variable को type call को सुरुमा function प्रवेश गर्दा <emphasis>मात्र</emphasis> जाँच गरिन्छ, तर function फर्कँदा होइन।
+    यसको अर्थ function ले reference द्वारा पठाइएको variable को type परिवर्तन गर्न सक्छ।
    </simpara>
    <example>
-    <title>Typed pass-by-reference Parameters को उदाहरण</title>
+    <title>Typed pass-by-reference Parameters</title>
     <programlisting role="php">
 <![CDATA[
 <?php
@@ -224,52 +240,408 @@ Stack trace:
  </sect2>
 
  <sect2 xml:id="language.types.declarations.composite">
-  <title>Composite Types प्रयोग सम्बन्धी नोटहरू</title>
+  <title>Composite Types Usage Notes (Composite Types प्रयोग सम्बन्धी नोटहरू)</title>
   <para>
-   Composite type declarations मा केही प्रतिबन्धहरू लागू हुन्छन् र सामान्य बगहरू रोक्नका लागि compile time मा redundancy जाँच गरिन्छ।
+   Composite type declarations केही प्रतिबन्धहरूको अधीनमा हुन्छन् र साधारण बगहरू रोक्नको लागि compile समयमा redundancy जाँच गर्दछन्।
   </para>
+
+  <caution>
+   <simpara>
+    PHP 8.2.0 र <acronym>DNF</acronym> types को आगमन भन्दा पहिले, intersection types लाई union types सँग मिलाउन सम्भव थिएन।
+   </simpara>
+  </caution>
 
   <sect3 xml:id="language.types.declarations.composite.union">
    <title>Union types</title>
    <warning>
     <simpara>
-     दुईवटा singleton types <type>false</type> र <type>true</type> लाई union type मा सँगै राख्न सकिँदैन। त्यसको साटो <type>bool</type> प्रयोग गर्नुहोस्।
+     दुई singleton types <type>false</type> र <type>true</type> लाई union type मा सँगै मिलाउन सम्भव छैन।
+     यसको सट्टा <type>bool</type> प्रयोग गर्नुहोस्।
     </simpara>
    </warning>
+
+   <caution>
+    <simpara>
+     PHP 8.2.0 भन्दा पहिले, <type>false</type> र <type>null</type> लाई standalone types को रूपमा प्रयोग गर्न नसकिने भएकाले यी types मात्र मिलेर बनेको union type लाई अनुमति थिएन। यसमा निम्न types समावेश छन्:
+     <type>false</type>, <literal>false|null</literal>,
+     र <literal>?false</literal>।
+    </simpara>
+   </caution>
 
    <sect4 xml:id="language.types.declarations.nullable">
     <title>Nullable type syntactic sugar</title>
 
     <para>
-     कुनै एकल आधारभूत type declaration को अगाडि प्रश्नचिन्ह (<literal>?</literal>) राखेर त्यसलाई nullable बनाउन सकिन्छ। त्यसैले <literal>?T</literal> र <literal>T|null</literal> ठ्याक्कै एउटै हुन्।
+     कुनै एकल आधारभूत type declaration लाई त्यसको अगाडि प्रश्नचिन्ह (<literal>?</literal>) राखेर nullable चिन्हित गर्न सकिन्छ।
+     यसरी <literal>?T</literal> र <literal>T|null</literal> समान हुन्छन्।
     </para>
 
     <note>
      <simpara>
-      यो सिन्ट्याक्स PHP 7.1.0 देखि समर्थित छ।
+      यो सिन्ट्याक्स PHP 7.1.0 देखि समर्थित छ, र सामान्यीकृत union types समर्थन भन्दा अघिको हो।
      </simpara>
+    </note>
+
+    <note>
+     <simpara>
+      &null; लाई default value बनाएर पनि arguments लाई nullable बनाउन सम्भव छ।
+      यसो गर्न सिफारिस गरिँदैन किनभने यदि child class मा default मान परिवर्तन गरियो भने type compatibility उल्लंघन हुनेछ किनभने type declaration मा <type>null</type> थप्न आवश्यक पर्नेछ।
+      यो व्यवहार PHP 8.4 देखि deprecated पनि गरिएको छ।
+     </simpara>
+     <example>
+      <title>Arguments लाई nullable बनाउने पुरानो तरिका (Old way to make arguments nullable)</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+class C {}
+
+function f(C $c = null) {
+    var_dump($c);
+}
+
+f(new C);
+f(null);
+?>
+]]>
+      </programlisting>
+      &example.outputs;
+      <screen>
+<![CDATA[
+object(C)#1 (0) {
+}
+NULL
+]]>
+      </screen>
+     </example>
     </note>
    </sect4>
   </sect3>
+
+  <sect3 xml:id="language.types.declarations.composite.redundant">
+   <title>Duplicate and redundant types (दोहोरिएका र अनावश्यक types)</title>
+   <para>
+    Composite type declarations मा साधारण बगहरू पत्ता लगाउन, class loading नगरीकन पत्ता लगाउन सकिने अनावश्यक types को परिणामस्वरूप compile-time त्रुटि (error) हुनेछ। यसमा निम्न समावेश छन्:
+
+    <itemizedlist>
+     <listitem>
+      <simpara>
+       प्रत्येक name-resolved type एक पटक मात्र देखा पर्न सक्छ। <literal>int|string|INT</literal> वा
+       <literal>Countable&amp;Traversable&amp;COUNTABLE</literal> जस्ता types ले त्रुटि निम्त्याउँछन्।
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <type>mixed</type> वा <type>never</type> प्रयोग गर्दा त्रुटि हुन्छ।
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>Union types का लागि:</simpara>
+      <itemizedlist>
+       <listitem>
+        <simpara>
+         यदि <type>bool</type> प्रयोग गरिएको छ भने, <type>false</type> वा <type>true</type> थप प्रयोग गर्न सकिँदैन।
+        </simpara>
+       </listitem>
+       <listitem>
+        <simpara>
+         यदि <type>object</type> प्रयोग गरिएको छ भने, class types थप प्रयोग गर्न सकिँदैन।
+        </simpara>
+       </listitem>
+       <listitem>
+        <simpara>
+         यदि <type>iterable</type> प्रयोग गरिएको छ भने, <type>array</type>
+         र <classname>Traversable</classname> थप प्रयोग गर्न सकिँदैन।
+        </simpara>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+     <listitem>
+      <simpara>Intersection types का लागि:</simpara>
+      <itemizedlist>
+       <listitem>
+        <simpara>
+         Class-type नभएको type प्रयोग गर्दा त्रुटि हुन्छ।
+        </simpara>
+       </listitem>
+       <listitem>
+        <simpara>
+         <type>self</type>, <type>parent</type>, वा
+         <type>static</type> मध्ये कुनै एक प्रयोग गर्दा त्रुटि हुन्छ।
+        </simpara>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+     <listitem>
+      <simpara><acronym>DNF</acronym> types का लागि:</simpara>
+      <itemizedlist>
+       <listitem>
+        <simpara>
+         यदि अधिक सामान्य (generic) type प्रयोग गरिएको छ भने, बढी प्रतिबन्धात्मक type अनावश्यक (redundant) हुन्छ।
+        </simpara>
+       </listitem>
+       <listitem>
+        <simpara>
+         दुई समान intersection types प्रयोग गर्दा त्रुटि हुन्छ।
+        </simpara>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </itemizedlist>
+   </para>
+
+   <note>
+    <simpara>
+     यसले type “न्यूनतम” (minimal) छ भनी ग्यारेन्टी गर्दैन, किनभने त्यसो गर्नका लागि प्रयोग गरिएका सबै class types लोड गर्नुपर्ने हुन्छ।
+    </simpara>
+   </note>
+
+   <para>
+    उदाहरणका लागि, यदि <literal>A</literal> र <literal>B</literal> class aliases हुन् भने, <literal>A|B</literal> एक कानुनी union type रहन्छ, यद्यपि यसलाई घटाएर <literal>A</literal> वा <literal>B</literal> मा सीमित गर्न सकिन्थ्यो।
+    त्यस्तै गरी, यदि class <code>B extends A {}</code> छ भने, <literal>A|B</literal> पनि एक कानुनी union type हो, यद्यपि यसलाई केवल <literal>A</literal> मा घटाउन सकिन्थ्यो।
+
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+function foo(): int|INT {} // Disallowed (अनुमति छैन)
+function foo(): bool|false {} // Disallowed (अनुमति छैन)
+function foo(): int&Traversable {} // Disallowed (अनुमति छैन)
+function foo(): self&Traversable {} // Disallowed (अनुमति छैन)
+
+use A as B;
+function foo(): A|B {} // Disallowed ("use" name resolution को भाग हो)
+function foo(): A&B {} // Disallowed ("use" name resolution को भाग हो)
+
+class_alias('X', 'Y');
+function foo(): X|Y {} // Allowed (redundancy रनटाइममा मात्र थाहा हुन्छ)
+function foo(): X&Y {} // Allowed (redundancy रनटाइममा मात्र थाहा हुन्छ)
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+  </sect3>
  </sect2>
 
+ <sect2 xml:id="language.types.declarations.examples">
+  &reftitle.examples;
+  <example>
+   <title>आधारभूत class type declaration (Basic class type declaration)</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class C {}
+class D extends C {}
+
+// यसले C लाई विस्तार गर्दैन।
+class E {}
+
+function f(C $c) {
+    echo get_class($c)."\n";
+}
+
+f(new C);
+f(new D);
+f(new E);
+?>
+]]>
+   </programlisting>
+   &example.outputs.8;
+   <screen>
+<![CDATA[
+C
+D
+
+Fatal error: Uncaught TypeError: f(): Argument #1 ($c) must be of type C, E given, called in /in/gLonb on line 14 and defined in /in/gLonb:8
+Stack trace:
+#0 -(14): f(Object(E))
+#1 {main}
+  thrown in - on line 8
+]]>
+   </screen>
+  </example>
+
+  <example>
+   <title>आधारभूत interface type declaration (Basic interface type declaration)</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+interface I { public function f(); }
+class C implements I { public function f() {} }
+
+// यसले I लाई कार्यान्वयन गर्दैन।
+class E {}
+
+function f(I $i) {
+    echo get_class($i)."\n";
+}
+
+f(new C);
+f(new E);
+?>
+]]>
+   </programlisting>
+   &example.outputs.8;
+   <screen>
+<![CDATA[
+C
+
+Fatal error: Uncaught TypeError: f(): Argument #1 ($i) must be of type I, E given, called in - on line 13 and defined in -:8
+Stack trace:
+#0 -(13): f(Object(E))
+#1 {main}
+  thrown in - on line 8
+]]>
+   </screen>
+  </example>
+
+  <example>
+   <title>आधारभूत return type declaration (Basic return type declaration)</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+function sum($a, $b): float {
+    return $a + $b;
+}
+
+// ध्यान दिनुहोस् कि float फर्काइनेछ।
+var_dump(sum(1, 2));
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+float(3)
+]]>
+   </screen>
+  </example>
+
+  <example>
+   <title>Object फर्काउने उदाहरण (Returning an object)</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class C {}
+
+function getC(): C {
+    return new C;
+}
+
+var_dump(getC());
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+object(C)#1 (0) {
+}
+]]>
+   </screen>
+  </example>
+
+  <example>
+   <title>Nullable argument type declaration</title>
+   <programlisting role="php">
+    <![CDATA[
+<?php
+class C {}
+
+function f(?C $c) {
+    var_dump($c);
+}
+
+f(new C);
+f(null);
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+    <![CDATA[
+object(C)#1 (0) {
+}
+NULL
+]]>
+   </screen>
+  </example>
+
+  <example>
+   <title>Nullable return type declaration</title>
+   <programlisting role="php" annotations="non-interactive">
+    <![CDATA[
+<?php
+function get_item(): ?string {
+    if (isset($_GET['item'])) {
+        return $_GET['item'];
+    } else {
+        return null;
+    }
+}
+?>
+]]>
+   </programlisting>
+  </example>
+
+  <example>
+   <title>Class property type declaration</title>
+   <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+class User {
+    public static string $foo = 'foo';
+
+    public int $id;
+    public string $username;
+
+    public function __construct(int $id, string $username) {
+        $this->id = $id;
+        $this->username = $username;
+    }
+}
+?>
+]]>
+   </programlisting>
+  </example>
+ </sect2>
+
+  <!-- TODO Move this into its own declare page -->
  <sect2 xml:id="language.types.declarations.strict">
   <title>Strict typing (कडा प्रकार जाँच)</title>
 
   <para>
-   डिफल्ट रूपमा, PHP ले गलत type को value लाई सम्भव भएसम्म अपेक्षित scalar type मा परिणत (coerce) गरिदिन्छ। उदाहरणका लागि, <type>string</type> अपेक्षा गरिएको parameter मा <type>int</type> पठाइयो भने त्यसलाई string मा बदलिन्छ।
+   पूर्वनिर्धारित रूपमा, यदि सम्भव छ भने PHP ले गलत type का मानहरूलाई अपेक्षित scalar type declaration मा जबरजस्ती ढाल्नेछ (coerce गर्नेछ)। उदाहरणका लागि, <type>string</type> अपेक्षा गर्ने parameter का लागि <type>int</type> दिइएको function ले <type>string</type> प्रकारको variable प्राप्त गर्नेछ।
   </para>
 
   <para>
-   तर प्रत्येक file का लागि छुट्टाछुट्टै strict mode सक्रिय गर्न सम्भव छ। Strict mode मा type declaration सँग दुरुस्त मिल्ने value मात्र स्वीकार गरिन्छ, अन्यथा <classname>TypeError</classname> आउँछ। यसको एउटा मात्र अपवाद के हो भने, <type>float</type> type declaration ले <type>int</type> value लाई स्वीकार गर्छ।
+   प्रति-फाइलको आधारमा strict mode सक्षम गर्न सम्भव छ। Strict mode मा, type declaration सँग ठ्याक्कै मेल खाने मान मात्र स्वीकार गरिनेछ, अन्यथा <classname>TypeError</classname> फ्याँकिनेछ। यस नियमको एउटै मात्र अपवाद के हो भने <type>int</type> मानले <type>float</type> प्रकारको declaration पार गर्नेछ।
   </para>
 
+  <warning>
+   <simpara>
+    Internal functions भित्रबाट गरिएका function call हरू <literal>strict_types</literal> घोषणाबाट प्रभावित हुने छैनन्।
+   </simpara>
+  </warning>
+
   <para>
-   Strict mode सक्षम गर्नका लागि file को सबैभन्दा सुरुमा &declare; statement सँगै <literal>strict_types</literal> declaration प्रयोग गरिन्छ:
+   Strict mode सक्षम गर्नका लागि, <literal>strict_types</literal> घोषणासँग &declare; statement प्रयोग गरिन्छ:
   </para>
+
+  <note>
+   <para>
+    Strict typing त्यस फाइल भित्र घोषित गरिएका function हरूमा नभई, strict typing सक्षम भएको फाइल <emphasis>भित्रबाट</emphasis> गरिएका function call हरूमा लागू हुन्छ। यदि strict typing सक्षम नभएको फाइलले strict typing भएको फाइलमा परिभाषित गरिएको function लाई कल गर्छ भने, कल गर्नेको प्राथमिकता (coercive typing) लाई सम्मान गरिनेछ र मानलाई जबरजस्ती ढाल्ने (coerced) गरिनेछ।
+   </para>
+  </note>
+
+  <note>
+   <para>
+    Strict typing केवल scalar type declarations का लागि मात्र परिभाषित गरिएको छ।
+   </para>
+  </note>
 
   <example>
-   <title>Arguments का लागि Strict typing</title>
+   <title>Arguments का मानहरूका लागि Strict typing</title>
    <programlisting role="php" annotations="non-interactive">
 <![CDATA[
 <?php
@@ -294,6 +666,61 @@ Stack trace:
 #0 -(9): sum(1.5, 2.5)
 #1 {main}
   thrown in - on line 4
+]]>
+   </screen>
+  </example>
+
+  <example>
+   <title>Argument मानहरूका लागि Coercive typing</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+function sum(int $a, int $b) {
+    return $a + $b;
+}
+
+var_dump(sum(1, 2));
+
+// यी मानहरूलाई integers मा जबरजस्ती ढाल्नेछ (coerced हुनेछ): तलको आउटपुट हेर्नुहोस्!
+var_dump(sum(1.5, 2.5));
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+int(3)
+int(3)
+]]>
+   </screen>
+  </example>
+
+  <example>
+   <title>Return values का लागि Strict typing</title>
+   <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+declare(strict_types=1);
+
+function sum($a, $b): int {
+    return $a + $b;
+}
+
+var_dump(sum(1, 2));
+var_dump(sum(1, 2.5));
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+int(3)
+
+Fatal error: Uncaught TypeError: sum(): Return value must be of type int, float returned in -:5
+Stack trace:
+#0 -(9): sum(1, 2.5)
+#1 {main}
+  thrown in - on line 5
 ]]>
    </screen>
   </example>

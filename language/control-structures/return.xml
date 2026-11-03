@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: ready -->
 
 <sect1 xml:id="function.return" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>return</title>
@@ -34,7 +34,7 @@
  </para>
 
  <para>
-  PHP 7.1.0 देखि, return type तोकिएका functions भित्र बिना argument को return statement लेख्दा <constant>E_COMPILE_ERROR</constant> उत्पन्न हुन्छ; जबसम्म कि return type <type>void</type> नहोस्। <type>void</type> भएको अवस्थामा argument सहितको return statement लेख्दा उक्त error उत्पन्न हुन्छ।
+  PHP 7.1.0 देखि, return type तोकिएका functions भित्र बिना argument को return statement लेख्दा <constant>E_COMPILE_ERROR</constant> उत्पन्न हुन्छ; जबसम्म कि return type <type>void</type> नहोस्, जुन अवस्थामा argument सहितको return statement लेख्दा उक्त error उत्पन्न हुन्छ।
  </para>
 </sect1>
 
