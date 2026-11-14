@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 4fc9f9ea7ba36a383613ede343a0820f5cc46aa2 Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.oop5.variance" xmlns="http://docbook.org/ns/docbook">
+ <title>Covariance र Contravariance</title>
+
+ <para>
+  PHP 7.2.0 मा, child method का parameters मा रहेको type प्रतिबन्ध हटाएर
+  आंशिक contravariance सुरु गरिएको थियो। PHP 7.4.0 देखि भने पूर्ण covariance र
+  contravariance को समर्थन थपिएको छ।
+ </para>
+ <para>
+  Covariance ले child class को method लाई यसको parent class को method को return type
+  भन्दा अझ specific type return गर्न अनुमति दिन्छ। Contravariance ले चाहिँ child
+  method मा parameter type लाई यसको parent को भन्दा कम specific बनाउन अनुमति दिन्छ।
+ </para>
+ <para>
+  निम्न अवस्थामा कुनै type declaration लाई अझ specific मानिन्छ:
+  <itemizedlist>
+   <listitem>
+    <simpara>
+     <link linkend="language.types.type-system.composite.union">union type</link>
+     बाट कुनै type हटाइएको छ
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <link linkend="language.types.type-system.composite.intersection">intersection type</link>
+     मा कुनै type थपिएको छ
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     कुनै class type लाई child class type मा परिवर्तन गरिएको छ
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <type>iterable</type> लाई <type>array</type> वा <classname>Traversable</classname> मा परिवर्तन गरिएको छ
+    </simpara>
+   </listitem>
+  </itemizedlist>
+
+  यसको ठीक उल्टो भएमा कुनै type declaration लाई कम specific मानिन्छ।
+ </para>
+
+ <sect2 xml:id="language.oop5.variance.covariance">
+  <title>Covariance</title>
+
+  <simpara>
+   Covariance ले कसरी काम गर्छ भन्ने देखाउनका लागि एउटा सरल abstract parent class, <varname>Animal</varname>
+   सिर्जना गरिएको छ। <varname>Animal</varname> लाई child classes <varname>Cat</varname>
+   र <varname>Dog</varname> ले extend गर्नेछन्।
+  </simpara>
+
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+abstract class Animal
+{
+    protected string $name;
+
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+
+    abstract public function speak();
+}
+
+class Dog extends Animal
+{
+    public function speak()
+    {
+        echo $this->name . " barks";
+    }
+}
+
+class Cat extends Animal 
+{
+    public function speak()
+    {
+        echo $this->name . " meows";
+    }
+}
+]]>
+   </programlisting>
+  </informalexample>
+
+  <para>
+   ध्यान दिनुहोस् कि यस उदाहरणमा value return गर्ने कुनै पनि method छैन। अब
+   <varname>Animal</varname>, <varname>Cat</varname>, वा <varname>Dog</varname>
+   class type को नयाँ object return गर्ने केही factories थपिनेछन्।
+  </para>
+
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+interface AnimalShelter
+{
+    public function adopt(string $name): Animal;
+}
+
+class CatShelter implements AnimalShelter
+{
+    public function adopt(string $name): Cat // instead of returning class type Animal, it can return class type Cat
+    {
+        return new Cat($name);
+    }
+}
+
+class DogShelter implements AnimalShelter
+{
+    public function adopt(string $name): Dog // instead of returning class type Animal, it can return class type Dog
+    {
+        return new Dog($name);
+    }
+}
+
+$kitty = (new CatShelter)->adopt("Ricky");
+$kitty->speak();
+echo "\n";
+
+$doggy = (new DogShelter)->adopt("Mavrick");
+$doggy->speak();
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+Ricky meows
+Mavrick barks
+]]>
+   </screen>
+  </informalexample>
+  <note>
+   <simpara>
+    PHP 8.5.0 देखि, जब कुनै parent method ले आफ्नो return type का रूपमा <type>static</type>
+    घोषणा गर्छ, तब <modifier>final</modifier> class मा त्यसलाई override गर्ने method ले
+    त्यसको सट्टा <type>self</type> वा उक्त class को आफ्नै type आफ्नो return type का रूपमा
+    घोषणा गर्न सक्छ, किनकि अगाडि extend गर्न नसकिने class मा यी <type>static</type> सरह नै हुन्छन्। विस्तृत जानकारीका लागि
+    <link linkend="migration85.incompatible.core.substitute-final-subclasses">migration
+    guide</link> हेर्नुहोस्।
+   </simpara>
+  </note>
+ </sect2>
+
+ <sect2 xml:id="language.oop5.variance.contravariance">
+  <title>Contravariance</title>
+
+  <para>
+   <varname>Animal</varname>, <varname>Cat</varname>, र <varname>Dog</varname>
+   classes सहितको अघिल्लो उदाहरणलाई निरन्तरता दिँदै, <varname>Food</varname> र
+   <varname>AnimalFood</varname> नामक class समावेश गरिनेछ, र <varname>Animal</varname>
+   abstract class मा <varname>eat(AnimalFood $food)</varname> method थपिनेछ।
+  </para>
+
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+class Food {}
+
+class AnimalFood extends Food {}
+
+abstract class Animal
+{
+    protected string $name;
+
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+
+    public function eat(AnimalFood $food)
+    {
+        echo $this->name . " eats " . get_class($food);
+    }
+}
+]]>
+   </programlisting>
+  </informalexample>
+
+  <para>
+   Contravariance को व्यवहार हेर्नका लागि, कुनै पनि <varname>Food</varname> type को
+   object स्वीकार गर्न मिल्ने गरी <varname>Dog</varname> class मा <varname>eat</varname>
+   method लाई override गरिएको छ। <varname>Cat</varname> class लाई भने जस्ताको तस्तै राखिएको छ।
+  </para>
+
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+class Dog extends Animal
+{
+    public function eat(Food $food) {
+        echo $this->name . " eats " . get_class($food);
+    }
+}
+]]>
+   </programlisting>
+  </informalexample>
+
+  <para>
+   अर्को उदाहरणले contravariance को व्यवहार देखाउनेछ।
+  </para>
+
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+$kitty = (new CatShelter)->adopt("Ricky");
+$catFood = new AnimalFood();
+$kitty->eat($catFood);
+echo "\n";
+
+$doggy = (new DogShelter)->adopt("Mavrick");
+$banana = new Food();
+$doggy->eat($banana);
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+Ricky eats AnimalFood
+Mavrick eats Food
+]]>
+   </screen>
+
+   <para>
+    तर यदि <varname>$kitty</varname> ले <varname>$banana</varname> लाई
+    <methodname>eat</methodname> गर्ने प्रयास गर्‍यो भने के हुन्छ?
+   </para>
+
+   <programlisting role="php">
+<![CDATA[
+$kitty->eat($banana);
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+Fatal error: Uncaught TypeError: Argument 1 passed to Animal::eat() must be an instance of AnimalFood, instance of Food given
+]]>
+   </screen>
+  </informalexample>
+ </sect2>
+ <sect2>
+  <title>Property variance</title>
+  <simpara>
+   डिफल्ट रूपमा, properties न त covariant हुन्छन् न त contravariant नै; त्यसैले ती invariant हुन्छन्।
+   अर्थात्, child class मा तिनको type पटक्कै परिवर्तन गर्न सकिँदैन।
+   यसको कारण के हो भने "get" operations covariant हुनुपर्छ,
+   र "set" operations contravariant हुनुपर्छ।
+   कुनै property ले यी दुवै आवश्यकता पूरा गर्ने एकमात्र तरिका भनेको invariant हुनु हो।
+  </simpara>
+  <simpara>
+   PHP 8.4.0 देखि, (interface वा abstract class मा) abstract properties र
+   <link linkend="language.oop5.property-hooks.virtual">virtual properties</link>
+   थपिएसँगै, केवल get वा set operation मात्र भएको property घोषणा गर्न सम्भव भएको छ।
+   परिणामस्वरूप, केवल "get" operation मात्र आवश्यक पर्ने abstract properties वा virtual
+   properties covariant हुन सक्छन्।
+   त्यसैगरी, केवल "set" operation मात्र आवश्यक पर्ने abstract property वा virtual property
+   contravariant हुन सक्छ।
+  </simpara>
+  <simpara>
+   यद्यपि, एकपटक कुनै property मा get र set दुवै operation भएपछि,
+   त्यसपछिको extension का लागि त्यो न covariant रहन्छ न contravariant नै।
+   अर्थात्, अब त्यो invariant हुन्छ।
+  </simpara>
+  <example>
+   <title>Property type variance</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class Animal {}
+class Dog extends Animal {}
+class Poodle extends Dog {}
+
+interface PetOwner
+{
+    // Only a get operation is required, so this may be covariant.
+    public Animal $pet { get; }
+}
+
+class DogOwner implements PetOwner
+{
+    // This may be a more restrictive type since the "get" side
+    // still returns an Animal.  However, as a native property
+    // children of this class may not change the type anymore.
+    public Dog $pet;
+}
+
+class PoodleOwner extends DogOwner
+{
+    // This is NOT ALLOWED, because DogOwner::$pet has both
+    // get and set operations defined and required.
+    public Poodle $pet;
+}
+?>
+]]>
+   </programlisting>
+  </example>
+ </sect2>
+</sect1>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

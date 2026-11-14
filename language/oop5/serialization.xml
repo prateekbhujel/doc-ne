@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: dff848b17dafaabfb7662ffb5fecfcb04e3b771d Maintainer: prateekbhujel Status: ready -->
+<!-- TODO Rewrite to remove usage of "you" and talk about __serialize/_unserialize -->
+ <sect1 xml:id="language.oop5.serialization" xmlns="http://docbook.org/ns/docbook">
+  <title>Objects लाई serialize गर्ने - sessions मा objects</title>
+  <titleabbrev>Object Serialization</titleabbrev>
+
+  <para>
+   <function>serialize</function> ले PHP मा store गर्न सकिने जुनसुकै value को
+   byte-stream representation समेटिएको string फिर्ता गर्छ।
+   <function>unserialize</function> ले यो string प्रयोग गरेर मूल variable का
+   values पुनः सिर्जना गर्न सक्छ। Object save गर्न serialize प्रयोग गर्दा उक्त
+   object भित्रका सबै variables save हुन्छन्। Object भित्रका methods चाहिँ save
+   हुँदैनन्, केवल class को नाम मात्र save हुन्छ।
+  </para>
+  
+  <simpara>
+   कुनै object लाई <function>unserialize</function> गर्न सक्षम हुन, उक्त object
+   को class परिभाषित भएको हुनु आवश्यक छ। अर्थात्, यदि class A को एउटा object लाई
+   serialize गरियो भने, class A लाई सन्दर्भ गर्ने र त्यसभित्र रहेका variables का
+   सबै values समेट्ने एउटा string प्राप्त हुन्छ। यदि अर्को file मा class A को
+   object लाई unserialize गर्नु छ भने, त्यस file मा पहिले नै class A को परिभाषा
+   उपस्थित हुनुपर्छ। उदाहरणका लागि, class A को class परिभाषालाई एउटा include
+   file मा राखेर उक्त file include गरेर वा <function>spl_autoload_register</function>
+   function को प्रयोग गरेर यसो गर्न सकिन्छ।
+  </simpara>
+  
+  <informalexample>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// A.php:
+  
+  class A {
+      public $one = 1;
+    
+      public function show_one() {
+          echo $this->one;
+      }
+  }
+  
+// page1.php:
+
+  include "A.php";
+  
+  $a = new A;
+  $s = serialize($a);
+  // store $s somewhere where page2.php can find it.
+  file_put_contents('store', $s);
+
+// page2.php:
+  
+  // this is needed for the unserialize to work properly.
+  include "A.php";
+
+  $s = file_get_contents('store');
+  $a = unserialize($s);
+
+  // now use the function show_one() of the $a object.  
+  $a->show_one();
+?>
+]]>
+   </programlisting>
+  </informalexample>
+
+  <simpara>
+   यदि कुनै application ले पछि application भित्रै प्रयोग गर्नका लागि objects लाई
+   serialize गर्छ भने, पूरै application भरि उक्त object को class परिभाषा
+   समावेश (include) गर्न विशेष रूपमा सिफारिस गरिन्छ। यसो नगर्दा कुनै object
+   class परिभाषा बिना नै unserialize हुन सक्छ, जसको परिणामस्वरूप PHP ले उक्त
+   object लाई <classname>__PHP_Incomplete_Class_Name</classname> class दिन्छ;
+   यसमा कुनै methods हुँदैनन् र यसले object लाई अनुपयोगी बनाउँछ।
+  </simpara>
+  
+  <para>
+   त्यसैले माथिको उदाहरणमा <varname>$a</varname> लाई <varname>$_SESSION</varname>
+   superglobal array मा नयाँ key थपेर session को हिस्सा बनाइयो भने,
+   <literal>A.php</literal> file लाई <filename>page1.php</filename> र
+   <filename>page2.php</filename> मा मात्र नभई सबै pages मा include गर्नुपर्छ।
+  </para>
+
+  <para>
+   माथिको सल्लाह बाहेक, <link linkend="object.sleep">__sleep()</link> र
+   <link linkend="object.wakeup">__wakeup()</link> methods प्रयोग गरेर object
+   को serialization र unserialization events मा hook गर्न पनि सकिन्छ भन्ने
+   कुरा ध्यान दिनुहोस्। <link linkend="object.sleep">__sleep()</link> को प्रयोगले
+   object का properties को एउटा हिस्सा (subset) मात्र serialize गर्न पनि अनुमति
+   दिन्छ।
+  </para>
+ </sect1>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

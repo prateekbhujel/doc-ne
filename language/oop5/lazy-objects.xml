@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 17c238517825dfb7ec3edfef5972acd944ffbc1e Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.oop5.lazy-objects" xmlns="http://docbook.org/ns/docbook">
+ <title>Lazy Objects</title>
+
+ <simpara>
+  Lazy object भनेको त्यस्तो object हो जसको initialization त्यसको state observe
+  वा modify नगरिएसम्म स्थगित गरिन्छ। यसका केही प्रयोग उदाहरणहरूमा आवश्यक पर्दा मात्र
+  पूर्ण रूपमा initialize हुने lazy services प्रदान गर्ने dependency injection components,
+  access गर्दा मात्र database बाट आफूलाई hydrate गर्ने lazy entities प्रदान गर्ने
+  <acronym>ORM</acronym>s, वा elements access नगरिएसम्म parsing ढिलाइ गर्ने JSON parser
+  पर्दछन्।
+ </simpara>
+
+ <simpara>
+  दुईवटा lazy object strategies समर्थित छन्: Ghost Objects र Virtual Proxies,
+  जसलाई यसपछि &quot;lazy ghosts&quot; र &quot;lazy proxies&quot; भनिनेछ।
+  यी दुवै strategies मा, lazy object सँग एउटा initializer वा factory जोडिएको हुन्छ,
+  जसलाई उक्त object को state पहिलोपटक observe वा modify गरिँदा स्वतः call गरिन्छ।
+  Abstraction को दृष्टिकोणबाट हेर्दा, lazy ghost objects लाई non-lazy objects बाट
+  छुट्याउन सकिँदैन: ती lazy हुन् भन्ने थाहा नभईकनै तिनलाई प्रयोग गर्न सकिन्छ, जसले गर्दा
+  तिनलाई laziness बारे थाहा नभएको code मा पास गर्न र प्रयोग गर्न मिल्छ। Lazy proxies पनि
+  त्यस्तै transparent हुन्छन्, तर तिनको identity प्रयोग गरिँदा सावधानी अपनाउनुपर्छ, किनकि
+  proxy र त्यसको वास्तविक instance का अलग-अलग identities हुन्छन्।
+ </simpara>
+
+ <note>
+  <title>Version जानकारी</title>
+  <simpara>
+   Lazy objects PHP 8.4 मा सुरु गरिएको थियो।
+  </simpara>
+ </note>
+
+ <sect2 xml:id="language.oop5.lazy-objects.creation">
+  <title>Lazy Objects सिर्जना गर्ने</title>
+
+  <simpara>
+   कुनै पनि user-defined class वा <classname>stdClass</classname> class को lazy
+   instance सिर्जना गर्न (अन्य internal classes समर्थित छैनन्), वा यी classes को
+   कुनै instance लाई lazy बनाउन reset गर्न सम्भव छ। Lazy object सिर्जना गर्ने
+   entry points <methodname>ReflectionClass::newLazyGhost</methodname> र
+   <methodname>ReflectionClass::newLazyProxy</methodname> methods हुन्।
+  </simpara>
+
+  <simpara>
+   यी दुवै methods ले एउटा function स्वीकार गर्छन्, जसलाई object लाई initialization
+   आवश्यक पर्दा call गरिन्छ। प्रत्येक method को reference documentation मा वर्णन गरिए
+   अनुसार, प्रयोगमा रहेको strategy का आधारमा उक्त function को अपेक्षित व्यवहार फरक पर्छ।
+  </simpara>
+
+  <example>
+   <title>Lazy Ghost सिर्जना गर्ने</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class Example
+{
+    public function __construct(public int $prop)
+    {
+        echo __METHOD__, "\n";
+    }
+}
+
+$reflector = new ReflectionClass(Example::class);
+$lazyObject = $reflector->newLazyGhost(function (Example $object) {
+    // Initialize object in-place
+    $object->__construct(1);
+});
+
+var_dump($lazyObject);
+var_dump(get_class($lazyObject));
+
+// Triggers initialization
+var_dump($lazyObject->prop);
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+lazy ghost object(Example)#3 (0) {
+  ["prop"]=>
+  uninitialized(int)
+}
+string(7) "Example"
+Example::__construct
+int(1)
+]]>
+   </screen>
+  </example>
+
+  <example>
+   <title>Lazy Proxy सिर्जना गर्ने</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class Example
+{
+    public function __construct(public int $prop)
+    {
+        echo __METHOD__, "\n";
+    }
+}
+
+$reflector = new ReflectionClass(Example::class);
+$lazyObject = $reflector->newLazyProxy(function (Example $object) {
+    // Create and return the real instance
+    return new Example(1);
+});
+
+var_dump($lazyObject);
+var_dump(get_class($lazyObject));
+
+// Triggers initialization
+var_dump($lazyObject->prop);
+?>
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+lazy proxy object(Example)#3 (0) {
+  ["prop"]=>
+  uninitialized(int)
+}
+string(7) "Example"
+Example::__construct
+int(1)
+]]>
+   </screen>
+  </example>
+
+  <simpara>
+   Lazy object का properties मा गरिने कुनै पनि access ले (<classname>ReflectionProperty</classname>
+   मार्फत समेत) त्यसको initialization लाई trigger गर्छ।
+   यद्यपि, कतिपय properties पहिले नै थाहा हुन सक्छन् र तिनलाई access गर्दा
+   initialization trigger हुनु हुँदैन:
+  </simpara>
+
+  <example>
+   <title>Properties लाई अग्रिम (Eagerly) Initialize गर्ने</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class BlogPost
+{
+    public function __construct(
+        public int $id,
+        public string $title,
+        public string $content,
+    ) { }
+}
+
+$reflector = new ReflectionClass(BlogPost::class);
+
+$post = $reflector->newLazyGhost(function ($post) {
+    $data = fetch_from_store($post->id);
+    $post->__construct($data['id'], $data['title'], $data['content']);
+});
+
+// Without this line, the following call to ReflectionProperty::setValue() would
+// trigger initialization.
+$reflector->getProperty('id')->skipLazyInitialization($post);
+$reflector->getProperty('id')->setValue($post, 123);
+
+// Alternatively, one can use this directly:
+$reflector->getProperty('id')->setRawValueWithoutLazyInitialization($post, 123);
+
+// The id property can be accessed without triggering initialization
+var_dump($post->id);
+?>
+]]>
+   </programlisting>
+  </example>
+
+  <simpara>
+   <methodname>ReflectionProperty::skipLazyInitialization</methodname> र
+   <methodname>ReflectionProperty::setRawValueWithoutLazyInitialization</methodname>
+   methods ले कुनै property access गर्दा lazy-initialization लाई bypass गर्ने तरिकाहरू प्रदान गर्दछन्।
+  </simpara>
+ </sect2>
+
+ <sect2 xml:id="language.oop5.lazy-objects.patterns">
+  <title>Lazy Object Strategies बारे</title>
+
+  <simpara>
+   <emphasis>Lazy ghosts</emphasis> भनेका त्यस्ता objects हुन् जो in-place initialize
+   हुन्छन् र एकपटक initialize भइसकेपछि कहिल्यै lazy नभएको object भन्दा फरक हुँदैनन्।
+   हामीले नै object को instantiation र initialization दुवै नियन्त्रण गर्ने अवस्थामा यो
+   strategy उपयुक्त हुन्छ; यदि यीमध्ये कुनै एक अर्को पक्षद्वारा व्यवस्थित छ भने यो उपयुक्त हुँदैन।
+  </simpara>
+
+  <simpara>
+   <emphasis>Lazy proxies</emphasis> एकपटक initialize भइसकेपछि वास्तविक instance का
+   लागि proxy का रूपमा काम गर्छन्: initialized lazy proxy मा गरिने जुनसुकै operation
+   वास्तविक instance तर्फ forward गरिन्छ। वास्तविक instance सिर्जना गर्ने काम अर्को पक्षलाई
+   जिम्मा दिन सकिन्छ, जसले गर्दा lazy ghosts उपयुक्त नहुने अवस्थामा यो strategy उपयोगी
+   हुन्छ। यद्यपि lazy proxies पनि lazy ghosts जत्तिकै transparent हुन्छन्, तिनको identity
+   प्रयोग गरिँदा सावधानी अपनाउनुपर्छ, किनकि proxy र त्यसको वास्तविक instance का अलग-अलग
+   identities हुन्छन्।
+  </simpara>
+ </sect2>
+
+ <sect2 xml:id="language.oop5.lazy-objects.lifecycle">
+  <title>Lazy Objects को Lifecycle</title>
+
+  <simpara>
+   Objects लाई instantiation को समयमा
+   <methodname>ReflectionClass::newLazyGhost</methodname> वा
+   <methodname>ReflectionClass::newLazyProxy</methodname> प्रयोग गरेर, वा
+   instantiation पछि
+   <methodname>ReflectionClass::resetAsLazyGhost</methodname> वा
+   <methodname>ReflectionClass::resetAsLazyProxy</methodname> प्रयोग गरेर lazy
+   बनाउन सकिन्छ। यसपछि, एउटा lazy object निम्नमध्ये कुनै एक operation मार्फत
+   initialized बन्न सक्छ:
+  </simpara>
+
+  <simplelist>
+   <member>
+    स्वचालित initialization trigger गर्ने तरिकाले object सँग अन्तरक्रिया गरेर।
+    <link linkend="language.oop5.lazy-objects.initialization-triggers">Initialization
+    triggers</link> हेर्नुहोस्।
+   </member>
+   <member>
+    <methodname>ReflectionProperty::skipLazyInitialization</methodname> वा
+    <methodname>ReflectionProperty::setRawValueWithoutLazyInitialization</methodname>
+    प्रयोग गरेर यसका सबै properties लाई non-lazy का रूपमा चिन्हित गरेर।
+   </member>
+   <member>
+    स्पष्ट रूपमा <methodname>ReflectionClass::initializeLazyObject</methodname>
+    वा <methodname>ReflectionClass::markLazyObjectAsInitialized</methodname> call गरेर।
+   </member>
+  </simplelist>
+
+  <simpara>
+   सबै properties लाई non-lazy का रूपमा चिन्हित गरिँदा lazy objects स्वतः initialized हुने भएकाले,
+   कुनै पनि property लाई lazy का रूपमा चिन्हित गर्न नसकिएमा माथिका methods ले object लाई
+   lazy का रूपमा चिन्हित गर्ने छैनन्।
+  </simpara>
+ </sect2>
+
+ <sect2 xml:id="language.oop5.lazy-objects.initialization-triggers">
+  <title>Initialization Triggers</title>
+
+  <simpara>
+   Lazy objects लाई तिनका प्रयोगकर्ताहरू (consumers) प्रति पूर्ण रूपमा transparent हुने गरी
+   डिजाइन गरिएको छ, त्यसैले object को state observe वा modify गर्ने सामान्य operations
+   ले उक्त operation सम्पन्न हुनुअघि नै स्वतः initialization trigger गर्नेछन्। यसमा
+   निम्न operations समावेश छन्, तर यतिमा मात्र सीमित छैनन्:
+  </simpara>
+
+  <simplelist>
+   <member>
+    Property लाई read वा write गर्नु।
+   </member>
+   <member>
+    Property set गरिएको छ कि छैन जाँच्नु वा त्यसलाई unset गर्नु।
+   </member>
+   <member>
+    <methodname>ReflectionProperty::getValue</methodname>,
+    <methodname>ReflectionProperty::getRawValue</methodname>,
+    <methodname>ReflectionProperty::setValue</methodname>,
+    वा <methodname>ReflectionProperty::setRawValue</methodname> मार्फत property
+    access वा परिमार्जन गर्नु।
+   </member>
+   <member>
+    <methodname>ReflectionObject::getProperties</methodname>,
+    <methodname>ReflectionObject::getProperty</methodname>,
+    <function>get_object_vars</function> प्रयोग गरेर properties को सूची निकाल्नु।
+   </member>
+   <member>
+    <interfacename>Iterator</interfacename> वा
+    <interfacename>IteratorAggregate</interfacename> implement नगर्ने object का
+    properties मा <link linkend="control-structures.foreach">foreach</link> प्रयोग गरेर
+    iterate गर्नु।
+   </member>
+   <member>
+    <function>serialize</function>, <function>json_encode</function> आदि प्रयोग गरेर
+    object लाई serialize गर्नु।
+   </member>
+   <member>
+    Object लाई <link linkend="language.oop5.lazy-objects.cloning">clone</link> गर्नु।
+   </member>
+  </simplelist>
+
+  <simpara>
+   Object को state access नगर्ने method calls ले initialization trigger गर्दैनन्।
+   त्यसैगरी, magic methods वा hook functions invoke गर्ने object सँगका अन्तरक्रियाहरूले
+   पनि यदि ती methods वा functions ले object को state access गर्दैनन् भने
+   initialization trigger गर्दैनन्।
+  </simpara>
+
+  <sect3>
+   <title>Non-Triggering Operations</title>
+
+   <simpara>
+    निम्न विशिष्ट methods वा low-level operations ले initialization trigger नगरीकनै
+    lazy objects मा पहुँच राख्न वा परिमार्जन गर्न अनुमति दिन्छन्:
+   </simpara>
+
+   <simplelist>
+    <member>
+     <methodname>ReflectionProperty::skipLazyInitialization</methodname> वा
+     <methodname>ReflectionProperty::setRawValueWithoutLazyInitialization</methodname>
+     प्रयोग गरेर properties लाई non-lazy का रूपमा चिन्हित गर्नु।
+    </member>
+    <member>
+     <function>get_mangled_object_vars</function> प्रयोग गरेर वा
+     <link linkend="language.types.array.casting">object लाई array मा cast गरेर</link>
+     properties को आन्तरिक रूप (internal representation) प्राप्त गर्नु।
+    </member>
+    <member>
+     <constant>ReflectionClass::SKIP_INITIALIZATION_ON_SERIALIZE</constant> set गरिएको
+     बेला <function>serialize</function> प्रयोग गर्नु, यदि
+     <link linkend="object.serialize">__serialize()</link> वा
+     <link linkend="object.sleep">__sleep()</link> ले initialization trigger नगरेको खण्डमा।
+    </member>
+    <member>
+     <methodname>ReflectionObject::__toString</methodname> call गर्नु।
+    </member>
+    <member>
+     <function>var_dump</function> वा <function>debug_zval_dump</function> प्रयोग गर्नु,
+     यदि <link linkend="object.debuginfo">__debugInfo()</link> ले initialization trigger
+     नगरेको खण्डमा।
+    </member>
+   </simplelist>
+  </sect3>
+ </sect2>
+
+ <sect2 xml:id="language.oop5.lazy-objects.initialization-sequence">
+  <title>Initialization Sequence</title>
+
+  <simpara>
+   यस खण्डमा प्रयोग भइरहेको strategy को आधारमा initialization trigger हुँदा गरिने
+   operations को क्रम उल्लेख गरिएको छ।
+  </simpara>
+
+  <sect3>
+   <title>Ghost Objects</title>
+   <simplelist>
+    <member>
+     Object लाई non-lazy का रूपमा चिन्हित गरिन्छ।
+    </member>
+    <member>
+     <methodname>ReflectionProperty::skipLazyInitialization</methodname> वा
+     <methodname>ReflectionProperty::setRawValueWithoutLazyInitialization</methodname>
+     बाट initialize नगरिएका properties लाई तिनका डिफल्ट मानहरू (यदि भएमा) set गरिन्छ।
+     यस चरणमा, पहिले नै initialize भइसकेका properties बाहेक, यो object
+     <methodname>ReflectionClass::newInstanceWithoutConstructor</methodname> बाट
+     सिर्जना गरिएको object जस्तै देखिन्छ।
+    </member>
+    <member>
+     त्यसपछि पहिलो parameter का रूपमा उक्त object पठाएर initializer function call
+     गरिन्छ। यस function ले object को state initialize गर्ने अपेक्षा गरिन्छ (यद्यपि अनिवार्य छैन),
+     र यसले &null; वा कुनै पनि value return नगर्नु पर्छ। यस बिन्दुमा object अब lazy नरहने
+     भएकाले, उक्त function ले यसका properties लाई सिधै access गर्न सक्छ।
+    </member>
+   </simplelist>
+   <simpara>
+    Initialization पछि, उक्त object कहिल्यै lazy नभएको object भन्दा फरक हुँदैन।
+   </simpara>
+  </sect3>
+
+  <sect3>
+   <title>Proxy Objects</title>
+   <simplelist>
+    <member>
+     Object लाई non-lazy का रूपमा चिन्हित गरिन्छ।
+    </member>
+    <member>
+     Ghost objects को विपरीत, यस चरणमा object का properties परिमार्जन गरिँदैनन्।
+    </member>
+    <member>
+     पहिलो parameter का रूपमा उक्त object पठाएर factory function call गरिन्छ र
+     यसले मिल्दो (compatible) class को non-lazy instance return गर्नुपर्छ
+     (<methodname>ReflectionClass::newLazyProxy</methodname> हेर्नुहोस्)।
+    </member>
+    <member>
+     Return गरिएको instance लाई <emphasis>real instance</emphasis> भनिन्छ र यसलाई
+     proxy सँग जोडिन्छ।
+    </member>
+    <member>
+     <function>unset</function> call गरिए जस्तै गरी proxy का property मानहरू हटाइन्छन्।
+    </member>
+   </simplelist>
+   <simpara>
+    Initialization पछि, proxy मा कुनै पनि property access गर्दा वास्तविक instance मा
+    सम्बन्धित property access गरे सरह नै नतिजा आउँछ; घोषित, dynamic, अस्तित्वमा नभएका,
+    वा <methodname>ReflectionProperty::skipLazyInitialization</methodname> वा
+    <methodname>ReflectionProperty::setRawValueWithoutLazyInitialization</methodname>
+    प्रयोग गरेर चिन्हित गरिएका properties लगायत proxy मा हुने सबै property accesses लाई
+    वास्तविक instance मा forward गरिन्छ।
+   </simpara>
+   <simpara>
+    Proxy object स्वयंलाई भने वास्तविक instance ले प्रतिस्थापन <emphasis>गरिँदैन</emphasis>।
+   </simpara>
+   <simpara>
+    Factory ले पहिलो parameter को रूपमा proxy प्राप्त गरे तापनि, यसले त्यसलाई परिमार्जन
+    गर्ने अपेक्षा गरिँदैन (परिमार्जन गर्न अनुमति भए पनि initialization को अन्तिम चरणमा ती हराउनेछन्)।
+    यद्यपि, initialized properties का मानहरू, class, object स्वयं, वा त्यसको identity
+    का आधारमा निर्णय लिनका लागि proxy प्रयोग गर्न सकिन्छ। उदाहरणका लागि, initializer ले
+    वास्तविक instance सिर्जना गर्दा कुनै initialized property को मान प्रयोग गर्न सक्छ।
+   </simpara>
+  </sect3>
+
+  <sect3>
+   <title>Common Behavior</title>
+
+   <simpara>
+    Initializer वा factory function को scope र <varname>$this</varname> context
+    अपरिवर्तित रहन्छ, र सामान्य visibility प्रतिबन्धहरू लागू हुन्छन्।
+   </simpara>
+
+   <simpara>
+    सफल initialization पछि, initializer वा factory function लाई object द्वारा सन्दर्भ
+    गर्न छोडिन्छ र यदि यसमा अन्य कुनै references छैनन् भने यसलाई release गर्न सकिन्छ।
+   </simpara>
+
+   <simpara>
+    यदि initializer ले exception throw गर्‍यो भने, object को state लाई त्यसको
+    pre-initialization अवस्थामा फर्काइन्छ र object लाई पुनः lazy का रूपमा चिन्हित गरिन्छ।
+    अर्को शब्दमा, object स्वयंमा परेका सबै असरहरू उल्ट्याइन्छन्। अन्य objects मा
+    परेका असरहरू जस्ता अन्य side effects भने उल्ट्याइँदैनन्। यसले असफलताको अवस्थामा आंशिक
+    रूपमा initialize भएको instance बाहिर देखिनबाट रोक्छ।
+   </simpara>
+  </sect3>
+ </sect2>
+
+ <sect2 xml:id="language.oop5.lazy-objects.cloning">
+  <title>Cloning</title>
+
+  <simpara>
+   Lazy object लाई <link linkend="language.oop5.cloning">clone</link> गर्दा
+   clone सिर्जना हुनुअघि नै त्यसको initialization trigger हुन्छ, जसको परिणामस्वरूप
+   एउटा initialized object तयार हुन्छ।
+  </simpara>
+
+  <simpara>
+   Proxy objects का हकमा, proxy र त्यसको वास्तविक instance दुवै clone गरिन्छन्, र
+   proxy को clone return गरिन्छ।
+   <link linkend="object.clone"><literal>__clone</literal></link> method
+   proxy मा नभई वास्तविक instance मा call गरिन्छ।
+   Clone गरिएका proxy र वास्तविक instance initialization को समयमा जस्तै एकअर्कासँग
+   जोडिएका हुन्छन्, त्यसैले proxy clone मा गरिने accesses वास्तविक instance clone मा
+   forward हुन्छन्।
+  </simpara>
+
+  <simpara>
+   यस व्यवहारले clone र मूल object ले आ-आफ्नो छुट्टै state कायम राखून् भन्ने सुनिश्चित गर्छ।
+   Cloning पछि मूल object वा त्यसको initializer को state मा गरिएका परिवर्तनहरूले
+   clone लाई असर गर्दैनन्। वास्तविक instance को मात्र clone return गर्नुको सट्टा proxy र
+   त्यसको वास्तविक instance दुवैलाई clone गर्नाले clone operation ले सधैँ समान class
+   को object return गर्छ भन्ने सुनिश्चित गर्छ।
+  </simpara>
+ </sect2>
+
+ <sect2 xml:id="language.oop5.lazy-objects.destructors">
+  <title>Destructors</title>
+
+  <simpara>
+   Lazy ghosts का लागि, यदि object initialize भएको छ भने मात्र destructor call गरिन्छ।
+   Proxies का लागि, यदि वास्तविक instance अस्तित्वमा छ भने केवल वास्तविक instance मा
+   मात्र destructor call गरिन्छ।
+  </simpara>
+
+  <simpara>
+   <methodname>ReflectionClass::resetAsLazyGhost</methodname> र
+   <methodname>ReflectionClass::resetAsLazyProxy</methodname> methods ले reset गरिँदै
+   गरेको object को destructor invoke गर्न सक्छन्।
+  </simpara>
+ </sect2>
+</sect1>
