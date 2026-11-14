@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: ready -->
+
+<refentry role="variable" xml:id="reserved.variables.server" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>$_SERVER</refname>
+  <refpurpose>Server र execution environment सम्बन्धी जानकारी</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <para>
+   <varname>$_SERVER</varname> एउटा यस्तो &array; हो जसमा headers, paths, र script
+   रहेको स्थान (locations) जस्ता जानकारीहरू समावेश हुन्छन्। यस array का entries हरू
+   web server द्वारा सिर्जना गरिन्छन्, त्यसैले हरेक web server ले यिनै सबै जानकारी
+   उपलब्ध गराउँछ भन्ने कुनै ग्यारेन्टी हुँदैन; servers ले केही entries नराख्न सक्छन् वा
+   यहाँ सूचीबद्ध नभएका अन्य entries उपलब्ध गराउन सक्छन्। यद्यपि, यिनमध्ये अधिकांश
+   variables लाई <link xlink:href="&url.rfc;3875">CGI/1.1 specification</link> मा
+   समेटिएको हुनाले ती प्रायः define गरिएका हुन्छन्।
+  </para>
+  <note>
+   <simpara>
+    PHP लाई <link linkend="features.commandline">command line</link> मा चलाउँदा
+    यिनमध्ये अधिकांश entries उपलब्ध हुँदैनन् वा तिनको कुनै अर्थ हुँदैन।
+   </simpara>
+  </note>
+  <para>
+   तल सूचीबद्ध elements का अतिरिक्त, PHP ले request headers बाट आएका values
+   समावेश गरी थप elements पनि बनाउँछ। ती entries को नाम <literal>HTTP_</literal> बाट
+   सुरु हुन्छ र त्यसपछि header को नाम सबै capital letters मा तथा hyphens को सट्टा
+   underscores राखेर बनाइन्छ। उदाहरणका लागि, <literal>Accept-Language</literal> header
+   चाहिँ <code>$_SERVER['HTTP_ACCEPT_LANGUAGE']</code> का रूपमा उपलब्ध हुनेछ।
+  </para>
+ </refsect1>
+
+ <refsect1 role="indices">
+  &reftitle.indices;
+
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term>'<varname>PHP_SELF</varname>'</term>
+     <listitem>
+      <simpara>
+       Document root का सापेक्षमा हाल चलिरहेको script को filename। उदाहरणका लागि,
+       <filename>http://example.com/foo/bar.php</filename> address मा रहेको script मा
+       <varname>$_SERVER['PHP_SELF']</varname> को मान <filename>/foo/bar.php</filename>
+       हुनेछ। <link linkend="language.constants.magic">__FILE__</link> constant मा चाहिँ
+       हालको (अर्थात् include गरिएको समेत) file को पूरा path र filename समावेश हुन्छ।
+      </simpara>
+      <simpara>
+       यदि PHP command-line processor का रूपमा चलिरहेको छ भने यो variable मा
+       script को नाम रहन्छ।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<link linkend="reserved.variables.argv">argv</link>'</term>
+     <listitem>
+      <simpara>
+       Script मा pass गरिएका arguments को array। Script लाई command line मा
+       चलाउँदा, यसले command line parameters मा C-style access दिन्छ। GET method
+       मार्फत call गर्दा, यसमा query string समावेश हुन्छ।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<link linkend="reserved.variables.argc">argc</link>'</term>
+     <listitem>
+      <simpara>
+       Script मा pass गरिएका command line parameters को सङ्ख्या समावेश हुन्छ
+       (यदि command line मा चलाइएको हो भने)।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>GATEWAY_INTERFACE</varname>'</term>
+     <listitem>
+      <simpara>
+       Server ले CGI specification को कुन revision प्रयोग गरिरहेको छ भन्ने जानकारी;
+       जस्तै <literal>'CGI/1.1'</literal>।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>SERVER_ADDR</varname>'</term>
+     <listitem>
+      <simpara>
+       हालको script चलिरहेको server को IP address।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>SERVER_NAME</varname>'</term>
+     <listitem>
+      <simpara>
+       हालको script चलिरहेको server host को नाम। यदि script कुनै virtual host मा
+       चलिरहेको छ भने, यो मान उक्त virtual host का लागि define गरिएको मान हुनेछ।
+      </simpara>
+      <note>
+       <simpara>
+        Apache 2 अन्तर्गत <literal>UseCanonicalName = On</literal> र
+        <literal>ServerName</literal> सेट गरिएको हुनुपर्छ। अन्यथा, यो मानले
+        client ले पठाएको hostname देखाउँछ, जसलाई spoof गर्न सकिन्छ। सुरक्षा-सम्बन्धी
+        संवेदनशील सन्दर्भहरूमा यो मानमा भर पर्नु सुरक्षित हुँदैन।
+       </simpara>
+      </note>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>SERVER_SOFTWARE</varname>'</term>
+     <listitem>
+      <simpara>
+       Requests को response पठाउँदा headers मा दिइने server पहिचान string।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>SERVER_PROTOCOL</varname>'</term>
+     <listitem>
+      <simpara>
+       Page request गरिएको information protocol को नाम र revision;
+       जस्तै <literal>'HTTP/1.0'</literal>।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>REQUEST_METHOD</varname>'</term>
+     <listitem>
+      <simpara>
+       Page access गर्न कुन request method प्रयोग गरिएको थियो; जस्तै
+       <literal>'GET'</literal>, <literal>'HEAD'</literal>,
+       <literal>'POST'</literal>, <literal>'PUT'</literal>।
+      </simpara>
+      <note>
+       <para>
+        यदि request method <literal>HEAD</literal> थियो भने, headers पठाइसकेपछि
+        (अर्थात् output buffering बिना कुनै पनि output उत्पादन गरेपछि) PHP script
+        समाप्त (terminate) हुन्छ।
+       </para>
+      </note>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>REQUEST_TIME</varname>'</term>
+     <listitem>
+      <simpara>
+       PHP ले request process गर्न सुरु गरेको समयको timestamp।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>REQUEST_TIME_FLOAT</varname>'</term>
+     <listitem>
+      <simpara>
+       PHP ले request process गर्न सुरु गरेको समयको microsecond शुद्धतासहितको
+       timestamp।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>QUERY_STRING</varname>'</term>
+     <listitem>
+      <simpara>
+       Page access गर्न प्रयोग गरिएको query string (यदि छ भने)।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>DOCUMENT_ROOT</varname>'</term>
+     <listitem>
+      <simpara>
+       Server को configuration file मा define गरिएअनुसार हालको script चलिरहेको
+       document root directory।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>HTTPS</varname>'</term>
+     <listitem>
+      <simpara>
+       यदि script लाई HTTPS protocol मार्फत अनुरोध (query) गरिएको हो भने यसमा
+       कुनै non-empty value सेट गरिन्छ।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>REMOTE_ADDR</varname>'</term>
+     <listitem>
+      <simpara>
+       प्रयोगकर्ताले हालको page हेरिरहेको IP address।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>REMOTE_HOST</varname>'</term>
+     <listitem>
+      <simpara>
+       प्रयोगकर्ताले हालको page हेरिरहेको host को नाम। Reverse DNS lookup
+       प्रयोगकर्ताको <varname>REMOTE_ADDR</varname> मा आधारित हुन्छ।
+      </simpara>
+      <note>
+       <simpara>
+        यो variable सिर्जना गर्नका लागि web server configure गरिएको हुनुपर्छ।
+        उदाहरणका लागि, Apache मा यो उपलब्ध हुन &httpd.conf; भित्र
+        <literal>HostnameLookups On</literal> सेट गरिएको हुनुपर्छ। साथै
+        <function>gethostbyaddr</function> पनि हेर्नुहोस्।
+       </simpara>
+      </note>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>REMOTE_PORT</varname>'</term>
+     <listitem>
+      <simpara>
+       Web server सँग communicate गर्न प्रयोगकर्ताको machine मा प्रयोग भइरहेको port।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>REMOTE_USER</varname>'</term>
+     <listitem>
+      <simpara>
+       Authenticate भएको प्रयोगकर्ता।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>REDIRECT_REMOTE_USER</varname>'</term>
+     <listitem>
+      <simpara>
+       यदि request लाई आन्तरिक रूपमा redirect गरिएको छ भने authenticate भएको प्रयोगकर्ता।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>SCRIPT_FILENAME</varname>'</term>
+     <listitem>
+      <para>
+       हाल चलिरहेको script को पूरा (absolute) pathname।
+       <note>
+        <para>
+         यदि script लाई CLI मार्फत <filename>file.php</filename> वा
+         <filename>../file.php</filename> जस्तो relative path दिएर चलाइयो भने,
+         <varname>$_SERVER['SCRIPT_FILENAME']</varname> मा प्रयोगकर्ताले
+         उल्लेख गरेको त्यही relative path नै रहनेछ।
+        </para>
+       </note>
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>SERVER_ADMIN</varname>'</term>
+     <listitem>
+      <simpara>
+       Web server को configuration file मा रहेको SERVER_ADMIN (Apache का लागि)
+       directive मा दिइएको मान। यदि script कुनै virtual host मा चलिरहेको छ भने,
+       यो मान उक्त virtual host का लागि define गरिएको मान हुनेछ।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>SERVER_PORT</varname>'</term>
+     <listitem>
+      <simpara>
+       Web server ले communication का लागि server machine मा प्रयोग गरिरहेको port।
+       डिफल्ट सेटअपमा यो <literal>'80'</literal> हुन्छ; उदाहरणका लागि SSL प्रयोग
+       गर्दा यो मान तपाईँले सेट गर्नुभएको सुरक्षित HTTP port अनुसार परिवर्तन हुनेछ।
+      </simpara>
+      <note>
+       <simpara>
+        Apache 2 अन्तर्गत वास्तविक (physical) port प्राप्त गर्न
+        <literal>UseCanonicalName = On</literal> का साथै
+        <literal>UseCanonicalPhysicalPort = On</literal> सेट गरिएको हुनुपर्छ;
+        अन्यथा यो मान spoof गर्न सकिन्छ र यसले वास्तविक port को मान फिर्ता
+        दिन पनि सक्छ वा नदिन पनि सक्छ। सुरक्षा-सम्बन्धी संवेदनशील सन्दर्भहरूमा यो
+        मानमा भर पर्नु सुरक्षित हुँदैन।
+       </simpara>
+      </note>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>SERVER_SIGNATURE</varname>'</term>
+     <listitem>
+      <simpara>
+       यदि सक्षम (enabled) पारिएको छ भने, server बाट उत्पन्न pages मा थपिने
+       server version र virtual host को नाम समावेश भएको string।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>PATH_TRANSLATED</varname>'</term>
+     <listitem>
+      <simpara>
+       Server ले आवश्यक virtual-to-real mapping गरिसकेपछि प्राप्त हुने,
+       (document root मा नभई) filesystem मा आधारित हालको script को path।
+      </simpara>
+      <note>
+       <simpara>
+        Apache 2 प्रयोगकर्ताहरूले <envar>PATH_INFO</envar> define गर्नका लागि
+        <filename>httpd.conf</filename> भित्र <literal>AcceptPathInfo = On</literal>
+        प्रयोग गर्न सक्छन्।
+       </simpara>
+      </note>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>SCRIPT_NAME</varname>'</term>
+     <listitem>
+      <simpara>
+       यसमा हालको script को path समावेश हुन्छ। आफैँलाई point गर्नुपर्ने pages का
+       लागि यो उपयोगी हुन्छ।
+       <link linkend="language.constants.magic">__FILE__</link> constant मा चाहिँ
+       हालको (अर्थात् include गरिएको समेत) file को पूरा path र filename समावेश हुन्छ।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>REQUEST_URI</varname>'</term>
+     <listitem>
+      <simpara>
+       यो page access गर्नका लागि दिइएको URI; उदाहरणका लागि,
+       '<literal>/index.html</literal>'।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>PHP_AUTH_DIGEST</varname>'</term>
+     <listitem>
+      <simpara>
+       Digest HTTP authentication गर्दा यो variable मा client ले पठाएको
+       'Authorization' header सेट हुन्छ (जसलाई तपाईँले उपयुक्त validation
+       गर्न प्रयोग गर्नुपर्छ)।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>PHP_AUTH_USER</varname>'</term>
+     <listitem>
+      <simpara>
+       HTTP authentication गर्दा यो variable मा प्रयोगकर्ताले प्रदान गरेको
+       username सेट हुन्छ।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>PHP_AUTH_PW</varname>'</term>
+     <listitem>
+      <simpara>
+       HTTP authentication गर्दा यो variable मा प्रयोगकर्ताले प्रदान गरेको
+       password सेट हुन्छ।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>AUTH_TYPE</varname>'</term>
+     <listitem>
+      <simpara>
+       HTTP authentication गर्दा यो variable मा authentication को प्रकार (type)
+       सेट हुन्छ।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>PATH_INFO</varname>'</term>
+     <listitem>
+      <simpara>
+       यदि उपलब्ध छ भने, वास्तविक script filename पछाडि तर query string भन्दा अगाडि
+       आउने client द्वारा प्रदान गरिएको pathname सम्बन्धी जानकारी यसमा समावेश हुन्छ।
+       उदाहरणका लागि, यदि हालको script लाई
+       <filename>http://www.example.com/php/path_info.php/some/stuff?foo=bar</filename>
+       URI मार्फत access गरिएको हो भने, <varname>$_SERVER['PATH_INFO']</varname> मा
+       <literal>/some/stuff</literal> रहनेछ।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>'<varname>ORIG_PATH_INFO</varname>'</term>
+     <listitem>
+      <simpara>
+       PHP ले process गर्नुअघिको '<varname>PATH_INFO</varname>' को मूल रूप।
+      </simpara>
+     </listitem>
+    </varlistentry>
+
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example xml:id="variable.server.basic">
+    <title><varname>$_SERVER</varname> को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo $_SERVER['SERVER_NAME'];
+?>
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+www.example.com
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  &note.is-superglobal;
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><link linkend="book.filter">Filter extension</link></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

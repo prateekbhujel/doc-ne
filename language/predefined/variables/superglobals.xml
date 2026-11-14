@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: ready -->
+
+<refentry role="variable" xml:id="language.variables.superglobals" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" annotations="verify_info:false">
+ <refnamediv>
+  <refname>Superglobals</refname>
+  <refpurpose>सबै scopes मा सधैँ उपलब्ध हुने built-in variables</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <para>
+   PHP का केही predefined variables लाई "superglobals" भनिन्छ, जसको अर्थ ती
+   script भरि नै सबै scopes मा उपलब्ध हुन्छन् भन्ने हो। Functions वा methods
+   भित्र यिनलाई access गर्न <command>global $variable;</command> लेख्नुपर्दैन।
+  </para>
+  <para>
+   ती superglobal variables निम्नानुसार छन्:
+   <simplelist>
+    <member><varname>$GLOBALS</varname></member>
+    <member><varname>$_SERVER</varname></member>
+    <member><varname>$_GET</varname></member>
+    <member><varname>$_POST</varname></member>
+    <member><varname>$_FILES</varname></member>
+    <member><varname>$_COOKIE</varname></member>
+    <member><varname>$_SESSION</varname></member>
+    <member><varname>$_REQUEST</varname></member>
+    <member><varname>$_ENV</varname></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <title>Variable को उपलब्धता</title>
+   <para>
+    डिफल्ट रूपमा सबै superglobals उपलब्ध हुन्छन्, तर तिनको उपलब्धतालाई असर गर्ने
+    directives हरू पनि छन्। थप जानकारीका लागि
+    <link linkend="ini.variables-order">variables_order</link> सम्बन्धी documentation
+    हेर्नुहोस्।
+   </para>
+  </note>
+  <note>
+   <title>Variable variables</title>
+   <para>
+    Functions वा class methods भित्र superglobals लाई
+    <link linkend="language.variables.variable">variable variables</link> का रूपमा
+    प्रयोग गर्न सकिँदैन।
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><link linkend="language.variables.scope">Variable scope</link></member>
+    <member><link linkend="ini.variables-order">variables_order</link> directive</member>
+    <member><link linkend="book.filter">Filter extension</link></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
