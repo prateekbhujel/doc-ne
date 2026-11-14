@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 6b099f8dcc7a8f4a6863a6149d7cd97c7f43c470 Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="control-structures.try-catch" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>try...catch</title>
+ <sect2 xml:id="control-structures.try" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <title>try</title>
+  <?phpdoc print-version-for="try"?>
+  <simpara>
+   &try; block ले त्यस्तो code खण्ड छुट्याउँछ, जसले handle गर्नुपर्ने
+   <exceptionname>Throwable</exceptionname> error &throw; गर्न सक्छ।
+   प्रत्येक &try; block सँग सम्बन्धित कम्तीमा एउटा
+   &catch; वा &finally; block <emphasis>हुनैपर्छ</emphasis>।
+  </simpara>
+  <simpara>
+   जब &try; block भित्र <exceptionname>Throwable</exceptionname> error throw गरिन्छ,
+   PHP ले उक्त error लाई handle गर्न मिल्ने पहिलो &catch; block खोज्ने प्रयास गर्छ।
+   यदि कुनै पनि मिल्ने block भेटिएन भने, मिल्दो &catch; block नभेटिएसम्म वा
+   global scope मा नपुगेसम्म call stack unwind हुँदै जान्छ।
+   त्यसपछि पनि catch नभएको object लाई, यदि
+   <function>set_exception_handler</function> मार्फत exception handler सेट गरिएको छ भने
+   त्यसमा पठाइन्छ; अन्यथा, fatal error का साथ script समाप्त हुन्छ।
+  </simpara>
+ </sect2>
+ <sect2 xml:id="control-structures.catch" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <title>catch</title>
+  <?phpdoc print-version-for="catch"?>
+  <simpara>
+   &catch; block ले throw गरिएको <exceptionname>Throwable</exceptionname> error मा कसरी प्रतिक्रिया जनाउने भन्ने कुरा परिभाषित गर्छ।
+   यसले आफूले handle गर्न सक्ने <exceptionname>Throwable</exceptionname> का एक वा बढी subclasses
+   (सामान्यतया <exceptionname>Exception</exceptionname>) र वैकल्पिक रूपमा उक्त exception assign गरिने एउटा variable तोक्छ।
+  </simpara>
+  <simpara>
+   Throw गरिएको <exceptionname>Throwable</exceptionname> object को class सँग मेल खाने
+   पहिलो &catch; block ले नै उक्त error लाई handle गर्नेछ।
+   त्यसपछि अन्य मिल्दा &catch; blocks भित्र नपसी &catch; block पछाडिबाट सामान्य execution पुनः सुरु हुन्छ।
+  </simpara>
+  <note>
+   <simpara>
+    <exceptionname>Error</exceptionname> objects लाई catch गर्न सिफारिस <emphasis>गरिँदैन</emphasis>,
+    किनकि तिनले programming error को सङ्केत गर्छन्।
+   </simpara>
+  </note>
+  <example>
+   <title>Exception catch गर्ने</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+try {
+    throw new Exception('Error');
+} catch (Exception $e) {
+    echo 'Caught exception: ', $e->getMessage(), "\n";
+}
+
+// Execution जारी राख्ने
+echo "Hello World\n";
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+Caught exception: Error
+Hello World
+]]>
+   </screen>
+  </example>
+
+  <simpara>
+   PHP 7.1.0 देखि, &catch; block ले handle गर्नुपर्ने
+   <exceptionname>Throwable</exceptionname> subclasses को union लाई
+   pipe (<literal>|</literal>) character प्रयोग गरेर तोक्न सकिन्छ।
+   फरक-फरक class hierarchies बाट आउने अलग-अलग exceptions लाई एउटै तरिकाले handle गर्नुपर्दा यो उपयोगी हुन्छ।
+  </simpara>
+  <example>
+   <title>Handle गर्नका लागि classes को union catch गर्ने</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+class MyException extends Exception { }
+
+class MyOtherException extends Exception { }
+
+class Test {
+    public function testing() {
+        try {
+            throw new MyException();
+        } catch (MyException | MyOtherException $e) {
+            var_dump(get_class($e));
+        }
+    }
+}
+
+$foo = new Test;
+$foo->testing();
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+string(11) "MyException"
+]]>
+   </screen>
+  </example>
+
+  <simpara>
+   <exceptionname>Throwable</exceptionname> errors का विभिन्न classes लाई फरक-फरक तरिकाले handle गर्न
+   एकभन्दा बढी &catch; blocks प्रयोग गर्न सकिन्छ।
+  </simpara>
+  <example>
+   <title>धेरै catch blocks</title>
+   <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+try {
+    do_something_io_related();
+} catch (FileNotFoundException $e) {
+    // FileNotFoundException मात्र catch गरेर यस अवस्थामा केही काम गर्ने
+} catch (MissingPermissionException $e) {
+    // MissingPermissionException मात्र catch गरेर यस अवस्थामा अर्कै काम गर्ने
+}
+]]>
+   </programlisting>
+  </example>
+
+  <simpara>
+   &catch; block भित्रैबाट पनि <exceptionname>Throwable</exceptionname> हरूलाई &throw; गर्न (वा पुनः throw गर्न) सकिन्छ।
+  </simpara>
+  <example>
+   <title>Nested Exception</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+class MyException extends Exception { }
+
+class Test {
+    public function testing() {
+        try {
+            try {
+                throw new MyException('foo!');
+            } catch (MyException $e) {
+                // यसलाई पुनः throw गर्ने
+                throw $e;
+            }
+        } catch (Exception $e) {
+            var_dump($e->getMessage());
+        }
+    }
+}
+
+$foo = new Test;
+$foo->testing();
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+string(4) "foo!"
+]]>
+   </screen>
+  </example>
+  <caution>
+   <simpara>
+    कुनै &catch; block भित्रबाट throw गरिएको object लाई सँगैको अर्को (adjacent) &catch; block ले
+    catch <emphasis>गर्ने छैन</emphasis>।
+   </simpara>
+   <example>
+    <title>क्रमिक (Sequential) catch blocks</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+class A extends Exception {}
+class B extends Exception {}
+
+try {
+    throw new A;
+} catch (A $e) {
+    throw new B;
+} catch (B) {
+    echo 'Hello';
+}
+
+]]>
+    </programlisting>
+    &example.outputs.similar;
+    <screen>
+<![CDATA[
+Fatal error: Uncaught B in /in/K8Tl9:9
+Stack trace:
+#0 {main}
+  thrown in /in/K8Tl9 on line 9
+]]>
+    </screen>
+   </example>
+  </caution>
+
+  <simpara>
+   PHP 8.0.0 देखि, catch गरिएको
+   <exceptionname>Throwable</exceptionname> का लागि variable को नाम लेख्न वैकल्पिक (optional) छ।
+   यदि नाम नतोकिएमा पनि &catch; block चल्नेछ, तर त्यसभित्र throw गरिएको object मा पहुँच हुने छैन।
+  </simpara>
+  <example>
+   <title>Catch गरिएको variable नराख्ने</title>
+   <simpara>PHP 8.0.0 देखि मात्र अनुमति दिइएको छ।</simpara>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+class SpecificException extends Exception {}
+
+function test() {
+    throw new SpecificException('Oopsie');
+}
+
+try {
+    test();
+} catch (SpecificException) {
+    print "A SpecificException was thrown, but we don't care about the details.";
+}
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+A SpecificException was thrown, but we don't care about the details.
+]]>
+   </screen>
+  </example>
+  <simpara>
+   <exceptionname>Throwable</exceptionname> hierarchy र custom exceptions कसरी परिभाषित गर्ने भन्ने बारे जान्न
+   <link linkend="language.error-handling.throwable">error handling</link> खण्ड हेर्नुहोस्।
+  </simpara>
+ </sect2>
+</sect1>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 6b099f8dcc7a8f4a6863a6149d7cd97c7f43c470 Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="control-structures.throw" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>throw</title>
+ <?phpdoc print-version-for="throw"?>
+ <simpara>
+  &throw; keyword एउटा expression हो र यसलाई जुनसुकै expression context मा प्रयोग गर्न सकिन्छ।
+  यसले argument का रूपमा <exceptionname>Throwable</exceptionname> object लिन्छ।
+ </simpara>
+ <caution>
+  <simpara>
+   PHP 8.0.0 भन्दा पहिले, &throw; keyword एउटा statement थियो, expression थिएन।
+  </simpara>
+ </caution>
+ <para>
+  Non-<exceptionname>Throwable</exceptionname> object लाई &throw; गर्ने प्रयास गर्दा
+  <exceptionname>Error</exceptionname> throw हुनेछ।
+  प्रयोगकर्ता-परिभाषित classes (user classes) ले सीधै <exceptionname>Throwable</exceptionname> implement गर्न नसक्ने हुनाले,
+  throw गरिने object कि त <exceptionname>Error</exceptionname> वा <exceptionname>Exception</exceptionname> को instance हुनुपर्छ,
+  कि त तीमध्ये कुनै एकको subclass को instance हुनुपर्छ।
+
+  <example>
+   <title>Non-<exceptionname>Throwable</exceptionname> object लाई throw गर्ने</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+throw new class {};
+]]>
+   </programlisting>
+   &example.outputs.similar;
+   <screen>
+<![CDATA[
+PHP Fatal error:  Uncaught Error: Cannot throw objects that do not implement Throwable in Command line code:1
+Stack trace:
+#0 {main}
+]]>
+   </screen>
+  </example>
+ </para>
+
+ <simpara>
+  &throw; प्रयोग गरेपछि, execution को सामान्य प्रवाह रोकिन्छ र उक्त object कुनै &catch; block द्वारा
+  catch नहुँदासम्म वा global scope मा नपुग्दासम्म call stack क्रमशः unwind हुँदै जान्छ।
+  यस बीचमा भेटिने सबै &finally; blocks चल्छन्।
+  यदि global scope मा पुगियो र <function>set_exception_handler</function> बाट exception handler
+  सेट गरिएको छ भने, उक्त object त्यो handler मा पठाइन्छ, र handler बाट return भएपछि script समाप्त हुन्छ।
+  अन्यथा, <exceptionname>Throwable</exceptionname> object कहाँ throw गरिएको थियो भन्ने देखाउने
+  stack trace सहितको fatal error का साथ program समाप्त हुन्छ।
+ </simpara>
+ <example>
+  <title>Global scope मा Exception throw गर्ने</title>
+  <programlisting role="php">
+<![CDATA[
+<?php
+echo "Before exception\n";
+throw new Exception('Stop execution');
+echo "After exception\n";
+]]>
+  </programlisting>
+  &example.outputs.similar;
+  <screen>
+<![CDATA[
+Before exception
+PHP Fatal error:  Uncaught Exception: Stop execution in Command line code:2
+Stack trace:
+#0 {main}
+  thrown in Command line code on line 2
+]]>
+  </screen>
+ </example>
+ <example>
+  <title>Function भित्र Exception throw गर्ने</title>
+  <programlisting role="php">
+   <![CDATA[
+<?php
+
+function foo() {
+    echo "Before exception\n";
+    throw new Exception('Stop execution');
+    echo "After exception\n";
+}
+
+foo();
+]]>
+  </programlisting>
+  &example.outputs.similar;
+  <screen>
+<![CDATA[
+Before exception
+PHP Fatal error:  Uncaught Exception: Stop execution in Command line code:3
+Stack trace:
+#0 Command line code(7): foo()
+#1 {main}
+  thrown in Command line code on line 3
+]]>
+  </screen>
+ </example>
+
+ <simpara>
+  &throw; एउटा expression भएकाले, यदि अर्को expression को मान उपयुक्त छैन भने
+  त्यसको नतिजाका आधारमा branch out गर्न यसलाई प्रयोग गर्न सकिन्छ।
+ </simpara>
+ <example>
+  <title>Expression का रूपमा throw को प्रयोग</title>
+  <simpara>PHP 8.0.0 देखि मात्र अनुमति दिइएको छ।</simpara>
+  <programlisting role="php">
+<![CDATA[
+<?php
+
+function test() {
+    do_something_risky() or throw new Exception('It did not work');
+}
+
+function do_something_risky() {
+    return false; // असफलता simulate गर्ने
+}
+
+try {
+    test();
+} catch (Exception $e) {
+    print $e->getMessage();
+}
+]]>
+  </programlisting>
+  &example.outputs;
+  <screen>
+<![CDATA[
+It did not work
+]]>
+  </screen>
+ </example>
+
+ <simpara>
+  <link linkend="control-structures.try-catch">try-catch</link> block प्रयोग गरेर
+  throw गरिएको <exceptionname>Throwable</exceptionname> लाई handle गर्न सकिन्छ।
+  थप जानकारीका लागि <link linkend="language.error-handling.throwable">error handling</link>
+  खण्ड हेर्नुहोस्।
+ </simpara>
+</sect1>

@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 6af4cd5be387fcb28cabfca49f0d9109ebfc660f Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="control-structures.finally" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>finally</title>
+ <?phpdoc print-version-for="finally"?>
+ <simpara>
+  &catch; blocks पछि वा तिनको सट्टामा &finally; block पनि राख्न सकिन्छ।
+  &return; वा &yield; statement भेटिए पनि, वा कुनै
+  <exceptionname>Throwable</exceptionname> error catch नगरिएको वा पुनः throw
+  गरिएको भए पनि, &finally; block भित्रको code &try; र &catch; blocks पछि सधैँ
+  execute हुन्छ। सामान्य execution flow पुनः सुरु हुनुअघि नै यो execute हुन्छ।
+  यस नियमको एकमात्र अपवाद भनेको script अचानक समाप्त (terminate) हुनु हो, जस्तै
+  <function>exit</function> call गर्दा वा fatal error आउँदा (उदाहरणका लागि,
+  अधिकतम execution time नाघ्दा)।
+ </simpara>
+ <example>
+  <title>&finally; block सहित <exceptionname>Throwable</exceptionname> error handling</title>
+  <programlisting role="php">
+<![CDATA[
+<?php
+function inverse($x) {
+    return 1/$x;
+}
+
+try {
+    echo inverse(5) . "\n";
+} catch (DivisionByZeroError $e) {
+    echo 'Caught error: ', $e->getMessage(), "\n";
+} finally {
+    echo "First finally.\n";
+}
+
+try {
+    echo inverse(0) . "\n";
+} catch (DivisionByZeroError $e) {
+    echo 'Caught error: ', $e->getMessage(), "\n";
+} finally {
+    echo "Second finally.\n";
+}
+
+// Execution जारी राख्नुहोस्
+echo "Hello World\n";
+]]>
+  </programlisting>
+  &example.outputs.8;
+  <screen>
+<![CDATA[
+0.2
+First finally.
+Caught error: Division by zero
+Second finally.
+Hello World
+]]>
+  </screen>
+ </example>
+
+ <simpara>
+  कुनै <exceptionname>Throwable</exceptionname> error throw भएपछि call stack
+  unwind हुँदा त्यस क्रममा भेटिने सबै &finally; blocks execute हुन्छन्। अर्को
+  शब्दमा भन्नुपर्दा, <exceptionname>Throwable</exceptionname> error लाई सँगैको
+  &catch; block ले catch नगरेको भए पनि nested &finally; blocks execute हुन्छन्।
+ </simpara>
+ <example>
+  <title>सबै &finally; blocks execute हुनेछन्</title>
+  <programlisting role="php">
+   <![CDATA[
+<?php
+try {
+    try {
+        throw new Exception();
+    } finally {
+        echo "Inner finally\n";
+    }
+} catch (Exception $e) {
+} finally {
+    echo "Outer finally\n";
+}
+]]>
+  </programlisting>
+  &example.outputs;
+  <screen>
+<![CDATA[
+Inner finally
+Outer finally
+]]>
+  </screen>
+ </example>
+
+ <sect2>
+  <title>&finally; block र &return; statement बीचको अन्तरक्रिया</title>
+  <simpara>
+   &finally; block र &return; statement बीच एउटा उल्लेखनीय अन्तरक्रिया हुन्छ।
+   यदि &try; वा &catch; block भित्र &return; statement भेटिएमा पनि &finally;
+   block execute हुन्छ। साथै, &return; statement भेटिएकै समयमा evaluate भए
+   पनि यसको नतिजा भने &finally; block execute भइसकेपछि मात्र return गरिन्छ।
+   यसका अतिरिक्त, यदि &finally; block मा पनि &return; statement छ भने,
+   &finally; block बाट आउने value return हुन्छ।
+  </simpara>
+  <example>
+   <title>&finally; block भित्रको &return; र अघिल्लो &return; बीचको अन्तरक्रिया</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+function testReturnTry() {
+    try {
+        echo 'Within try', "\n";
+        return 'try';
+    } finally {
+        echo 'Within finally', "\n";
+        return 'finally';
+    }
+}
+
+function testReturnCatch() {
+    try {
+        throw new Exception('foo');
+    } catch (Exception $e) {
+        echo 'Within catch', "\n";
+        return 'catch';
+    } finally {
+        echo 'Within finally', "\n";
+        return 'finally';
+    }
+}
+
+echo testReturnTry(), "\n";
+echo testReturnCatch(), "\n";
+
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+Within try
+Within finally
+finally
+Within catch
+Within finally
+finally
+]]>
+   </screen>
+  </example>
+  <example>
+   <title>&finally; block र &return; बीचको अन्तरक्रिया</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+function testReturnTry() {
+    try {
+        return 'try';
+    } finally {
+        echo 'finally ';
+    }
+}
+
+function testReturnCatch() {
+    try {
+        throw new Exception('foo');
+    } catch (Exception $e) {
+        return 'catch';
+    } finally {
+        echo 'finally ';
+    }
+}
+
+echo testReturnTry(), "\n";
+echo testReturnCatch(), "\n";
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+finally try
+finally catch
+]]>
+   </screen>
+  </example>
+ </sect2>
+
+ <sect2>
+  <title>&finally; block र &try; block मा throw गरिएको exception बीचको अन्तरक्रिया</title>
+  <simpara>
+   यदि &try; block र &finally; block दुवैले exception throw गरे भने,
+   &finally; block बाट throw भएको exception नै propagate हुन्छ र &try; block
+   बाट throw भएको exception लाई त्यसको previous exception को रूपमा प्रयोग गरिन्छ।
+  </simpara>
+  <example>
+   <title>try र finally मा exception</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+try {
+    try {
+        throw new Exception(message: 'Third', previous: new Exception('Fourth'));
+    } finally {
+        throw new Exception(message: 'First', previous: new Exception('Second'));
+    }
+} catch (Exception $e) {
+    var_dump(
+        $e->getMessage(),
+        $e->getPrevious()->getMessage(),
+        $e->getPrevious()->getPrevious()->getMessage(),
+        $e->getPrevious()->getPrevious()->getPrevious()->getMessage(),
+    );
+}
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+string(5) "First"
+string(6) "Second"
+string(5) "Third"
+string(6) "Fourth"
+]]>
+   </screen>
+  </example>
+ </sect2>
+
+ <sect2>
+  <title>
+   <link linkend="language.generators">Generator</link> मा &finally; block को व्यवहार
+  </title>
+
+  <simpara>
+   यदि कुनै generator traverse गर्ने क्रममा <exceptionname>Throwable</exceptionname>
+   error throw भयो भने, generator भित्रको &finally; block execute हुन्छ,
+   किनकि यो call stack को अघिल्लो element हो।
+  </simpara>
+  <example>
+   <title>
+    <exceptionname>Exception</exceptionname> throw भएको बेला &finally; block
+    execute हुनु
+   </title>
+   <programlisting role="php">
+    <![CDATA[
+<?php
+function generate()
+{
+    try {
+        yield 1;
+        yield 2;
+    } catch (Exception $e) {
+        echo 'catch';
+    } finally {
+        echo "finally\n";
+    }
+}
+
+try {
+    foreach (generate() as $i) {
+        echo $i, "\n";
+        throw new Exception();
+    }
+} catch (Exception $e) {
+    echo 'outer catch';
+}
+]]>
+   </programlisting>
+   &example.outputs.similar;
+   <screen>
+<![CDATA[
+1
+finally
+outer catch
+]]>
+   </screen>
+  </example>
+
+  <simpara>
+   &finally; block भित्र &yield; गर्न सम्भव छ, तर यदि कुनै
+   <exceptionname>Throwable</exceptionname> error आयो र त्यसलाई &foreach; भित्र
+   catch गरिएन भने, <literal>Cannot yield from finally in a force-closed
+   generator</literal> <exceptionname>Error</exceptionname> throw हुन्छ।
+  </simpara>
+  <example>
+   <title>
+    <exceptionname>Exception</exceptionname> throw भएको बेला &finally; block मा
+    &yield; गर्दा आउने error
+   </title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+function generate()
+{
+    try {
+        yield 1;
+        yield 2;
+    } catch (Exception $e) {
+        echo 'catch';
+    } finally {
+        echo "finally\n";
+        yield 3;
+    }
+}
+
+try {
+    foreach (generate() as $i) {
+        echo $i, "\n";
+        throw new Exception();
+    }
+} catch (Exception $e) {
+    echo 'outer catch';
+}
+]]>
+   </programlisting>
+   &example.outputs.similar;
+   <screen>
+<![CDATA[
+1
+finally
+
+Fatal error: Uncaught Exception in /in/GbFmu:19
+Stack trace:
+#0 {main}
+
+Next Error: Cannot yield from finally in a force-closed generator in /in/GbFmu:12
+Stack trace:
+#0 /in/GbFmu(19): generate()
+#1 {main}
+  thrown in /in/GbFmu on line 12
+]]>
+   </screen>
+  </example>
+ </sect2>
+
+ <sect2>
+  <title>&finally; block र <function>exit</function> call बीचको अन्तरक्रिया</title>
+  <simpara>
+   जब &try; वा &catch; block भित्र <function>exit</function> call गरिन्छ,
+   सबै &finally; blocks skip हुन्छन्।
+  </simpara>
+  <example>
+   <title>&finally; block र &try; block भित्र call गरिएको <function>exit</function> बीचको अन्तरक्रिया</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+try {
+    echo 'quit';
+    exit(0);
+} finally {
+    echo 'finally';
+}
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+quit
+]]>
+   </screen>
+  </example>
+  <example>
+   <title>&finally; block र &catch; block भित्र call गरिएको <function>exit</function> बीचको अन्तरक्रिया</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+try {
+    throw new Exception('foo');
+} catch (Exception $e) {
+    echo 'catch';
+    exit(0);
+} finally {
+    echo 'finally ';
+}
+]]>
+   </programlisting>
+   &example.outputs;
+  <screen>
+<![CDATA[
+catch
+]]>
+   </screen>
+  </example>
+  <example>
+   <title><function>exit</function> call गर्दा सबै &finally; blocks skip हुन्छन्</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+try {
+    try {
+        echo 'quit';
+        exit(0);
+    } finally {
+        echo 'inner finally ';
+    }
+} finally {
+    echo 'outer finally';
+}
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+quit
+]]>
+   </screen>
+  </example>
+
+  <simpara>
+   जब &finally; block भित्र <function>exit</function> call गरिन्छ, सबै बाहिरी
+   &finally; blocks skip हुन्छन्।
+  </simpara>
+  <example>
+   <title><function>exit</function> call गरेर बाहिरी &finally; block skip गर्ने</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+try {
+    try {
+        echo 'try', "\n";
+    } finally {
+        echo 'inner finally ';
+        exit(0);
+    }
+} finally {
+    echo 'outer finally';
+}
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+try
+inner finally
+]]>
+   </screen>
+  </example>
+
+  <sect3>
+   <title>Generator मा &foreach; भित्र <function>exit</function> call गर्दाको edge case</title>
+   <simpara>
+    यो एउटा edge case को व्यवहार code PHP को कुन संस्करणमा execute गरिएको छ
+    भन्ने कुरामा अत्यधिक निर्भर गर्दछ।
+   </simpara>
+
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function generate()
+{
+    try {
+        yield 1;
+        yield 2;
+    } catch (Exception $e) {
+        echo 'catch';
+    } finally {
+        echo "inner finally\n";
+    }
+}
+
+try {
+    foreach (generate() as $i) {
+        echo $i, "\n";
+        exit(0);
+    }
+} finally {
+    echo "outer finally\n";
+}
+]]>
+    </programlisting>
+    <simpara>
+     माथिको उदाहरणको output: PHP 7.1.14 भन्दा पहिले, PHP 7.2.0 र 7.2.1 मा,
+     तथा PHP 8.0.0 देखि
+    </simpara>
+    <screen>
+<![CDATA[
+1
+inner finally
+]]>
+    </screen>
+    <simpara>
+     माथिको उदाहरणको output: PHP 7.1.14 र 7.2.2 देखि,
+     तथा PHP 8.0.0 भन्दा पहिले
+    </simpara>
+    <screen>
+<![CDATA[
+1
+]]>
+    </screen>
+   </informalexample>
+  </sect3>
+ </sect2>
+</sect1>
