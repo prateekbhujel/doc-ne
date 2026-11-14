@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.operators.errorcontrol">
+ <title>Error Control Operators</title>
+ <titleabbrev>Error Control</titleabbrev>
+ <simpara>
+  PHP ले एउटा error control operator समर्थन गर्छ: at sign (<literal>@</literal>)।
+  PHP मा कुनै expression को अगाडि यो राख्दा उक्त expression बाट उत्पन्न हुन सक्ने
+  कुनै पनि diagnostic error suppress हुन्छ।
+ </simpara>
+ <para>
+  यदि <function>set_error_handler</function> बाट custom error handler function सेट
+  गरिएको छ भने, diagnostic suppress गरिएको भए तापनि उक्त function अझै पनि
+  call हुन्छ।
+ </para>
+
+ <warning>
+  <para>
+   PHP 8.0.0 भन्दा पहिले, यदि <literal>@</literal> operator ले error suppress गरेको थियो भने
+   custom error handler भित्र call गरिएको <function>error_reporting</function> ले सधैँ
+   <literal>0</literal> return गर्थ्यो।
+   PHP 8.0.0 देखि, यसले यो (bitwise) expression को value return गर्छ:
+   <literal>E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR | E_PARSE</literal>।
+  </para>
+ </warning>
+
+ <simpara>
+  Expression बाट उत्पन्न भएको कुनै पनि error message <function>error_get_last</function> ले
+  return गर्ने array को <literal>"message"</literal> element मा उपलब्ध हुन्छ।
+  उक्त function को नतिजा प्रत्येक error सँगै परिवर्तन हुने भएकाले यसलाई बेलैमा जाँच गर्नुपर्छ।
+ </simpara>
+ <para>
+  <example>
+   <title>जानीजानी ल्याइएको file error</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$my_file = @file ('non_existent_file') or
+    die ("Failed opening file: error was '" . error_get_last()['message'] . "'");
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
+ <para>
+  <example>
+   <title>Expressions लाई Suppress गर्ने</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// यो functions मा मात्र होइन, कुनै पनि expression मा काम गर्छ:
+$value = @$cache[$key];
+// यदि $key index छैन भने यसले notice दिँदैन।
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
+ <note>
+  <simpara>
+   <literal>@</literal> operator ले केवल
+   <link linkend="language.expressions">expressions</link> मा मात्र काम गर्छ।
+   यसलाई बुझ्ने एउटा सजिलो नियम के हो भने: यदि कुनै कुराको value लिन सकिन्छ भने,
+   त्यसको अगाडि <literal>@</literal> operator राख्न सकिन्छ।
+   उदाहरणका लागि, यसलाई variables, function calls,
+   केही language construct calls (जस्तै <function>include</function>)
+   आदिको अगाडि राख्न सकिन्छ।
+   यसलाई function वा class definitions,
+   अथवा <literal>if</literal> र &foreach; जस्ता
+   conditional structures आदिको अगाडि राख्न सकिँदैन।
+  </simpara>
+ </note>
+ <warning>
+  <para>
+   PHP 8.0.0 भन्दा पहिले, <literal>@</literal> operator ले script नै रोक्ने
+   गम्भीर (critical) errors लाई पनि disable गर्न सक्थ्यो।
+   उदाहरणका लागि, उपलब्ध नभएको वा गलत टाइप भएको कारण अस्तित्वमा नरहेको
+   function call को अगाडि <literal>@</literal> राख्दा,
+   किन रोकियो भन्ने कुनै सङ्केत बिना नै script समाप्त हुन्थ्यो।
+  </para>
+ </warning>
+
+ <sect2 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>error_reporting</function></member>
+    <member><link linkend="ref.errorfunc">Error Handling and Logging functions</link></member>
+   </simplelist>
+  </para>
+ </sect2>
+</sect1>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.operators.execution">
+ <title>Execution Operators</title>
+ <titleabbrev>Execution</titleabbrev>
+ <para>
+  PHP ले एउटा execution operator समर्थन गर्छ: backticks (<literal>``</literal>)। ध्यान दिनुहोस्,
+  यी single-quotes होइनन्! PHP ले backticks भित्र रहेको सामग्रीलाई
+  shell command का रूपमा execute गर्ने प्रयास गर्छ; र त्यसको output
+  return हुन्छ (अर्थात्, यो सिधै output मा मात्र जाँदैन; यसलाई
+  कुनै variable मा assign गर्न सकिन्छ)। Backtick operator को प्रयोग
+  <function>shell_exec</function> सँग ठ्याक्कै उस्तै हुन्छ।
+ </para>
+ <para>
+  <example>
+   <title>Backtick Operator</title>
+   <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+$output = `ls -al`;
+echo "<pre>$output</pre>";
+?>
+]]>
+   </programlisting>
+  </example>
+ </para>
+ <note>
+  <para>
+   <function>shell_exec</function> disable गरिएको बेला
+   backtick operator पनि disable हुन्छ।
+  </para>
+ </note>
+ <note>
+  <para>
+   अन्य केही भाषाहरूमा जस्तो, double-quoted strings भित्र backticks को
+   कुनै विशेष अर्थ हुँदैन।
+  </para>
+ </note>
+
+ <sect2 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.5.0</entry>
+      <entry>
+       <function>shell_exec</function> को alias का रूपमा रहेको backtick operator deprecated गरिएको छ।
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </sect2>
+
+ <sect2 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><link linkend="ref.exec">Program Execution functions</link></member>
+    <member><function>popen</function></member>
+    <member><function>proc_open</function></member>
+    <member><link linkend="features.commandline">Using PHP from the commandline</link></member>
+   </simplelist>
+  </para>
+ </sect2>
+</sect1>
