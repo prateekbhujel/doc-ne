@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 7ab54091abc99257ad20ebe4d69f5981b2d22116 Maintainer: prateekbhujel Status: ready -->
+<chapter xml:id="faq.general" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <title>सामान्य जानकारी (General Information)</title>
+  <titleabbrev>सामान्य जानकारी</titleabbrev>
+
+  <para>
+   यस खण्डमा PHP का बारेमा सबैभन्दा सामान्य प्रश्नहरू राखिएका छन्:
+   यो के हो र यसले के गर्छ।
+  </para>
+
+  <qandaset>
+   <qandaentry xml:id="faq.general.what">
+    <question>
+     <para>PHP के हो?</para>
+    </question>
+    <answer>
+     <para>
+      <link linkend="preface">म्यानुअलको भूमिका (preface)</link> बाट:
+     </para>
+     <para>
+      PHP एक HTML-embedded scripting language हो। यसको धेरैजसो syntax
+      C, Java र Perl बाट लिइएको छ र यसमा PHP का आफ्नै केही विशेष सुविधाहरू पनि थपिएका छन्।
+      यस language को लक्ष्य web developers लाई छिटोछरितो रूपमा dynamically generated pages
+      लेख्न सक्षम बनाउनु हो।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.general.acronym">
+    <question>
+     <para>PHP को पूरा रूप के हो?</para>
+    </question>
+    <answer>
+     <simpara>
+     PHP को पूरा रूप <emphasis>PHP: Hypertext Preprocessor</emphasis> हो।
+     यसले धेरै मानिसहरूलाई अलमल्लमा पार्छ किनकि यस acronym को पहिलो शब्द नै स्वयं त्यही
+     acronym हो। यस्तो प्रकारको acronym लाई recursive acronym भनिन्छ।
+     थप जानकारीका लागि जिज्ञासु पाठकहरूले
+     <link xlink:href="&url.foldoc;">Free On-line Dictionary of Computing</link>
+     वा
+     <link xlink:href="&url.wiki.recursive-acronym;">recursive acronyms सम्बन्धी Wikipedia लेख</link>
+     हेर्न सक्नुहुन्छ।
+     </simpara>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.general.relation-versions">
+    <question>
+     <para>विभिन्न versions बीच कस्तो सम्बन्ध छ?</para>
+    </question>
+    <answer>
+     <simpara>
+      PHP/FI 2.0 PHP को प्रारम्भिक र हाल support नगरिने version हो। PHP 3 चाहिँ
+      PHP/FI 2.0 को उत्तराधिकारी हो र पहिलेभन्दा निकै राम्रो छ। PHP 8 PHP को वर्तमान
+      पुस्ता हो, जसले Zend engine 4 प्रयोग गर्छ र अन्य कुराहरूका साथै धेरै अतिरिक्त
+      <link linkend="language.oop5">OOP</link> सुविधाहरू प्रदान गर्छ।
+     </simpara>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.general.running-concurrent">
+    <question>
+     <para>के म एकै समयमा PHP का धेरै versions चलाउन सक्छु?</para>
+    </question>
+    <answer>
+     <para>
+       सकिन्छ। PHP source distribution मा समावेश गरिएको <filename>INSTALL</filename> file हेर्नुहोस्।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.general.bug">
+    <question>
+     <para>
+      मलाई लाग्छ मैले एउटा bug फेला पारेँ! मैले कसलाई जानकारी गराउनु पर्छ?
+     </para>
+    </question>
+    <answer>
+     <para>
+      तपाईँ PHP Bug Database मा गएर उक्त bug पहिले नै चिनिएको (known) bug होइन भन्ने यकिन गर्नुपर्छ।
+      यदि तपाईँले त्यो database मा देख्नुभएन भने, bug report गर्न reporting form प्रयोग गर्नुहोस्।
+      कुनै mailing list मा सिधै email पठाउनुको साटो bug database प्रयोग गर्नु महत्वपूर्ण हुन्छ किनकि
+      त्यसो गर्दा bug लाई एउटा tracking number दिइन्छ र पछि फर्किएर उक्त bug को status जाँच गर्न
+      तपाईँलाई सजिलो हुन्छ। Bug database
+      <link xlink:href="&url.php.bugs;">&url.php.bugs;</link> मा पाउन सकिन्छ।
+     </para>
+    </answer>
+   </qandaentry>
+  </qandaset>
+ </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

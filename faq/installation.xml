@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 7ab54091abc99257ad20ebe4d69f5981b2d22116 Maintainer: prateekbhujel Status: ready -->
+ <chapter xml:id="faq.installation" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <title>स्थापना (Installation)</title>
+  <titleabbrev>स्थापना</titleabbrev>
+
+  <para>
+   यस खण्डमा PHP install गर्ने तरिकाबारे प्रायः सोधिने प्रश्नहरू राखिएका छन्।
+   PHP लगभग जुनसुकै OS र लगभग जुनसुकै web server का लागि उपलब्ध छ।
+  </para>
+  <para>
+   PHP install गर्न <xref linkend="install"/> मा दिइएका निर्देशनहरू पालना गर्नुहोस्।
+  </para>
+
+  <qandaset>
+   <qandaentry xml:id="faq.installation.apache2">
+    <question>
+     <para>
+      Production environment मा threaded MPM सहितको Apache2 किन प्रयोग गर्नु हुँदैन?
+     </para>
+    </question>
+    <answer>
+     <para>
+      PHP एउटा glue (जोड्ने माध्यम) हो। दर्जनौँ 3rd-party libraries लाई एकसाथ
+      जोडेर सहज र सिक्न सजिलो language interface मार्फत ती सबैलाई एउटै एकीकृत
+      प्रणाली जस्तो देखाएर राम्रा web applications बनाउन प्रयोग गरिने यो माध्यम हो।
+      PHP को लचकता र शक्ति यसको आधारभूत platform को स्थिरता र मजबुतीमा निर्भर गर्छ।
+      यसलाई एकसाथ जोड्नका लागि राम्ररी चल्ने OS, राम्ररी चल्ने web server र राम्ररी चल्ने
+      3rd-party libraries चाहिन्छ। यिनमध्ये कुनैले काम गर्न छोडेमा PHP लाई समस्या
+      पहिचान गरी छिट्टै समाधान गर्ने उपाय चाहिन्छ। यदि प्रत्येक request का लागि
+      पूर्णतया अलग execution threads, पूर्णतया अलग memory segments र बलियो
+      sandbox नराखेर आधारभूत संरचनालाई अझ जटिल बनाइयो भने PHP को प्रणालीमा थप
+      कमजोरीहरू भित्रिन्छन्।
+     </para>
+     <para>
+      यदि तपाईँ threaded MPM नै प्रयोग गर्न चाहनुहुन्छ भने, FastCGI configuration
+      हेर्नुहोस् जहाँ PHP आफ्नै छुट्टै memory space मा चल्छ।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.phpini">
+    <question>
+     <para>
+      Unix/Windows: मेरो &php.ini; file कहाँ राखिनुपर्छ?
+     </para>
+    </question>
+    <answer>
+     <para>
+      Unix मा डिफल्ट रूपमा यो <filename>/usr/local/lib</filename> अर्थात्
+      <filename>&lt;install-path&gt;/lib</filename> मा हुनुपर्छ। अधिकांश मानिसहरू
+      compile गर्ने समयमा <link linkend="configure.with-config-file-path">--with-config-file-path</link>
+      flag प्रयोग गरेर यसलाई बदल्न चाहन्छन्। उदाहरणका लागि, तपाईँ यसलाई यसरी सेट
+      गर्न सक्नुहुन्छ:
+      <programlisting role="shell">
+--with-config-file-path=/etc
+      </programlisting>
+      अनि त्यसपछि distribution बाट <filename>php.ini-development</filename> लाई
+      <filename>/etc/php.ini</filename> मा copy गरेर आफूलाई चाहिएका स्थानीय
+      परिवर्तनहरू edit गर्न सक्नुहुन्छ।
+     </para>
+      <programlisting role="shell">
+--with-config-file-scan-dir=PATH 
+      </programlisting>
+     <simpara>
+      Windows मा &php.ini; file को डिफल्ट स्थान Windows directory हो। यदि तपाईँ
+      Apache web server प्रयोग गर्दै हुनुहुन्छ भने, &php.ini; लाई पहिले Apache
+      install भएको directory मा खोजिन्छ, जस्तै <filename>c:\program
+      files\apache group\apache</filename>। यसरी तपाईँले एउटै machine मा
+      Apache का फरक-फरक versions का लागि अलग-अलग &php.ini; files राख्न सक्नुहुन्छ।
+     </simpara>
+     <para>
+     <link linkend="configuration.file">configuration file</link> सम्बन्धी
+     अध्याय पनि हेर्नुहोस्।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.nodata">
+    <question>
+     <para>
+      Unix: मैले PHP install गरेँ, तर हरेक पटक document load गर्दा
+      'Document Contains No Data' भन्ने message आउँछ! के भइरहेको होला?
+     </para>
+    </question>
+    <answer>
+     <para>
+      यसको मतलब PHP मा कुनै समस्या आएर core-dump भइरहेको हुन सक्छ। यस्तो हो कि
+      होइन हेर्न आफ्नो server को error log जाँच्नुहोस्, र त्यसपछि सानो test case
+      बनाएर समस्या दोहोरिन्छ कि (reproduce) हेर्नुहोस्। यदि तपाईँलाई 'gdb' चलाउन
+      आउँछ भने, developers लाई समस्या ठ्याक्कै पत्ता लगाउन मद्दत गर्न bug report सँगै
+      backtrace पठाउनु धेरै उपयोगी हुन्छ। यदि तपाईँ PHP लाई Apache module का रूपमा
+      प्रयोग गर्दै हुनुहुन्छ भने यसो गरेर हेर्नुहोस्:
+      <itemizedlist>
+       <listitem>
+        <para>
+         आफ्नो httpd processes बन्द गर्नुहोस्
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         gdb httpd
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         आफ्नो httpd processes बन्द गर्नुहोस्
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         &gt; run -X -f /path/to/httpd.conf
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         त्यसपछि आफ्नो browser बाट समस्या निम्त्याइरहेको URL खोल्नुहोस्
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         &gt; run -X -f /path/to/httpd.conf
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         यदि core dump भइरहेको छ भने, अब gdb ले तपाईँलाई यसको जानकारी दिनेछ
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         type गर्नुहोस्: bt
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         तपाईँले आफ्नो bug report मा यो backtrace समावेश गर्नुपर्छ। यो
+         <link xlink:href="&url.php.bugs;">&url.php.bugs;</link> मा पठाउनुपर्छ।
+        </para>
+       </listitem>
+      </itemizedlist>
+     </para>
+     <para>
+      यदि तपाईँको script ले regular expression functions
+      (<function>preg_match</function> र यस्तै अन्य functions) प्रयोग गर्छ भने,
+      तपाईँले PHP र Apache लाई एउटै regular expression package सँग compile
+      गर्नुभएको छ भनी निश्चित गर्नुपर्छ। PHP र Apache 1.3.x सँग यो स्वतः नै हुने गर्छ।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.processing">
+    <question>
+     <simpara>
+      Unix: मैले RPMs प्रयोग गरेर PHP install गरेँ, तर Apache ले PHP pages
+      process गरिरहेको छैन! के भइरहेको होला?
+     </simpara>
+    </question>
+    <answer>
+     <para>
+      यदि तपाईँले Apache र PHP दुवै RPM packages बाट install गर्नुभएको हो भने,
+      तपाईँको &httpd.conf; file मा निम्नमध्ये केही वा सबै लाइनहरू uncomment गर्न वा
+      थप्न आवश्यक छ:
+      <programlisting role="apache-conf">
+<![CDATA[
+# Extra Modules
+AddModule mod_php.c
+AddModule mod_perl.c
+
+# Extra Modules
+LoadModule php_module         modules/mod_php.so
+LoadModule php5_module        modules/libphp5.so
+LoadModule perl_module        modules/libperl.so
+]]>
+      </programlisting>
+      र यो थप्नुहोस्:
+      <programlisting role="apache-conf">
+<![CDATA[
+AddType application/x-httpd-php .php
+]]>
+      </programlisting>
+      ... global properties मा, वा तपाईँले PHP support थप्न चाहेको
+      VirtualDomain को properties मा।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.frontpage">
+    <question>
+     <para>
+      Unix: मैले Apache मा FrontPage extensions patch लगाएँ, र अचानक PHP ले
+      काम गर्न छोड्यो। के PHP Apache FrontPage extensions सँग असंगत (incompatible) छ?
+     </para>
+    </question>
+    <answer>
+     <simpara>
+      होइन, PHP ले FrontPage extensions सँग राम्रै काम गर्छ। समस्या के हो भने
+      FrontPage patch ले PHP निर्भर रहने Apache का धेरै आन्तरिक structures मा
+      परिवर्तन गरिदिन्छ। FP patch लगाएपछि PHP लाई ('make clean ; make' प्रयोग
+      गरेर) पुनः compile गर्दा यो समस्या समाधान हुन्छ।
+     </simpara>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.blankscreen">
+    <question>
+     <para>
+      Unix/Windows: मैले PHP install गरेँ, तर browser बाट PHP script file
+      खोल्न खोज्दा खाली (blank) screen मात्र आउँछ।
+     </para>
+    </question>
+    <answer>
+     <para>
+      Web browser मा 'view source' गरेर हेर्नुहोस्, सम्भवतः तपाईँले आफ्नो PHP
+      script को source code त्यहाँ देख्नुहुनेछ। यसको अर्थ web server ले उक्त
+      script लाई interpret गर्नका लागि PHP मा पठाएन। Server configuration मा कतै
+      गल्ती भएको छ — PHP installation निर्देशनहरूसँग भिडाएर server configuration
+      फेरि राम्ररी जाँच गर्नुहोस्।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.500error">
+    <question>
+     <simpara>
+      Unix/Windows: मैले PHP install गरेँ, तर browser बाट PHP script file
+      खोल्न खोज्दा server 500 error आउँछ।
+     </simpara>
+    </question>
+    <answer>
+     <para>
+      Server ले PHP चलाउन खोज्दा केही गल्ती भयो। स्पष्ट error message हेर्नका लागि,
+      command line बाट PHP executable (Windows मा <filename>php.exe</filename>)
+      रहेको directory मा जानुहोस् र <command>php -i</command> run गर्नुहोस्। यदि
+      PHP चल्न कुनै समस्या छ भने, उपयुक्त error message देखिनेछ जसले अब के गर्नुपर्छ
+      भन्ने संकेत दिनेछ। यदि screen भरि HTML codes (<function>phpinfo</function>
+      function को output) देखियो भने PHP राम्ररी चलिरहेको छ, र समस्या तपाईँको
+      server configuration सँग सम्बन्धित हुन सक्छ जसलाई तपाईँले फेरि जाँच्नुपर्छ।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.undefinedsyms">
+    <question>
+     <para>
+      केही operating systems मा: मैले बिना कुनै error PHP install गरेँ, तर
+      Apache start गर्न खोज्दा undefined symbol errors आउँछन्:
+      <programlisting role="shell">
+[mybox:user /src/php5] root# apachectl configtest
+ apachectl: /usr/local/apache/bin/httpd Undefined symbols:
+  _compress
+  _uncompress
+      </programlisting>
+     </para>
+    </question>
+    <answer>
+     <para>
+      यसको वास्तवमा PHP सँग कुनै सम्बन्ध छैन, बरु यो MySQL client libraries सँग
+      सम्बन्धित छ। तीमध्ये कसैलाई <option role="configure">--with-zlib</option>
+      चाहिन्छ भने कसैलाई चाहिँदैन। यो विषय MySQL FAQ मा पनि समेटिएको छ।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.cgierror">
+    <question>
+     <para>
+      Windows: मैले PHP install गरेँ, तर browser बाट PHP script file खोल्न
+      खोज्दा यो error आउँछ:
+      <screen>
+<![CDATA[
+cgi error:
+ The specified CGI application misbehaved by not
+ returning a complete set of HTTP headers.
+ The headers it did return are:
+]]>
+      </screen>
+     </para>
+    </question>
+    <answer>
+     <para>
+      यस error message को अर्थ PHP ले कुनै पनि output दिन असफल भयो भन्ने हो। स्पष्ट
+      error message हेर्नका लागि, command line बाट PHP executable (Windows मा
+      <filename>php.exe</filename>) रहेको directory मा जानुहोस् र
+      <command>php -i</command> run गर्नुहोस्। यदि PHP चल्न कुनै समस्या छ भने,
+      उपयुक्त error message देखिनेछ जसले अब के गर्नुपर्छ भन्ने संकेत दिनेछ। यदि
+      screen भरि HTML codes (<function>phpinfo</function> function को output)
+      देखियो भने PHP राम्ररी चलिरहेको छ।
+     </para>
+     <para>
+      Command line मा PHP राम्ररी चलेपछि, फेरि browser बाट script खोल्ने प्रयास
+      गर्नुहोस्। यदि अझै पनि असफल भयो भने निम्नमध्ये कुनै एक कारण हुन सक्छ:
+     </para>
+     <itemizedlist>
+      <listitem>
+       <simpara>
+        तपाईँको PHP script, <filename>php.exe</filename>,
+        <filename>php5ts.dll</filename>, &php.ini; वा तपाईँले load गर्न
+        खोजिरहनुभएको कुनै PHP extensions का file permissions यस्ता छन् कि
+        anonymous internet user <literal>ISUR_&lt;machinename&gt;</literal> ले
+        तिनलाई access गर्न सक्दैन।
+       </simpara>
+      </listitem>
+      <listitem>
+       <simpara>
+        Script file त्यहाँ छैन (वा सम्भवतः तपाईँको web root directory को
+        सापेक्षमा तपाईँले सोचेको ठाउँमा छैन)। ध्यान दिनुहोस् कि IIS का लागि
+        Internet Services Manager मा script mappings सेटअप गर्दा 'check file
+        exists' box मा tick लगाएर यो error लाई समात्न सकिन्छ। यदि script file
+        फेला परेन भने server ले यसको सट्टा 404 error return गर्नेछ। यसको अर्को
+        फाइदा के पनि छ भने IIS ले तपाईँको script file मा रहेको NTLanMan
+        permissions को आधारमा आवश्यक authentication आफैँ गरिदिन्छ।
+       </simpara>
+      </listitem>
+     </itemizedlist>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.phpandiis">
+    <question>
+     <para>
+      Windows: मैले सबै निर्देशनहरू पालना गरेँ, तर अझै पनि PHP र IIS लाई
+      एकसाथ काम गराउन सकिनँ!
+     </para>
+    </question>
+    <answer>
+     <para>
+      PHP script चलाउनुपर्ने जुनसुकै user सँग <filename>php.exe</filename> चलाउने
+      अधिकार (rights) छ भनी निश्चित गर्नुहोस्! IIS ले एउटा anonymous user प्रयोग
+      गर्छ जुन IIS install गर्ने बेलामा थपिन्छ। यो user लाई
+      <filename>php.exe</filename> चलाउने अधिकार चाहिन्छ। साथै, जुनसुकै
+      authenticated user लाई पनि <filename>php.exe</filename> execute गर्ने
+      अधिकार आवश्यक हुन्छ। अनि IIS4 का लागि PHP एउटा script engine हो भनेर
+      बताउनुपर्छ। साथै, <link linkend="faq.installation.forceredirect">यो FAQ</link>
+      पनि पढ्नुहोस्।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.forceredirect">
+    <question>
+     <simpara>
+       IIS, PWS, OmniHTTPD वा Xitami सँग PHP लाई CGI का रूपमा चलाउँदा निम्न
+       error आउँछ: <literal>Security Alert! PHP CGI cannot be accessed
+       directly.</literal>
+     </simpara>
+    </question>
+    <answer>
+     <para>
+      तपाईँले <link linkend="ini.cgi.force-redirect">cgi.force_redirect</link>
+      directive लाई <literal>0</literal> मा सेट गर्नुपर्छ। डिफल्ट रूपमा यो
+      <literal>1</literal> हुन्छ, त्यसैले यो directive (<literal>;</literal> राखेर)
+      comment out गरिएको छैन भनी निश्चित गर्नुहोस्। अन्य सबै directives जस्तै,
+      यो पनि &php.ini; मै सेट गरिन्छ।
+     </para>
+     <para>
+      डिफल्ट रूपमा <literal>1</literal> हुने भएकाले, सही &php.ini; file नै read
+      भइरहेको छ भनेर तपाईँ १००% ढुक्क हुनु अत्यन्त जरुरी छ। विस्तृत जानकारीका लागि
+      <link linkend="faq.installation.findphpini">यो FAQ</link> पढ्नुहोस्।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.findphpini">
+    <question>
+     <para>
+      मेरो &php.ini; भेटिएको र read भएको छ कि छैन कसरी थाहा पाउने? मैले गरेका
+      परिवर्तनहरू लागू नभएको देख्दा यो read नभएको जस्तो लाग्छ।
+     </para>
+    </question>
+    <answer>
+     <para>
+      PHP ले तपाईँको &php.ini; read गरिरहेको छ कि छैन पक्का गर्न
+      <function>phpinfo</function> call गर्नुहोस्। माथितिर
+      <literal>Configuration File (php.ini)</literal> नामको विवरण देखिनेछ।
+      यसले PHP ले &php.ini; कहाँ खोजिरहेको छ र त्यो read भइरहेको छ कि छैन भन्ने
+      बताउँछ। यदि त्यहाँ केवल directory <envar>PATH</envar> मात्र देखिएको छ भने
+      यो read भइरहेको छैन, र तपाईँले आफ्नो &php.ini; त्यही directory मा
+      राख्नुपर्छ। यदि <envar>PATH</envar> भित्र &php.ini; पनि समावेश छ भने त्यो
+      read भइरहेको छ।
+     </para>
+     <para>
+      यदि &php.ini; read भइरहेको छ र तपाईँले PHP लाई module का रूपमा
+      चलाइरहनुभएको छ भने, &php.ini; मा परिवर्तन गरेपछि आफ्नो web server
+      restart गर्न नबिर्सिनुहोस्।
+     </para>
+     <para>
+      यो पनि हेर्नुहोस्: <function>php_ini_loaded_file</function>।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.addtopath">
+    <question>
+     <para>
+      Windows मा मेरो PHP directory लाई <envar>PATH</envar> मा कसरी थप्ने?
+     </para>
+    </question>
+    <answer>
+     <para>
+      Windows मा:
+      <itemizedlist>
+       <listitem><para>
+        Control Panel मा गएर System icon खोल्नुहोस् (Start → Control Panel)
+       </para></listitem>
+       <listitem><para>
+        Advanced tab मा जानुहोस्
+       </para></listitem>
+       <listitem><para>
+        'Environment Variables' button मा click गर्नुहोस्
+       </para></listitem>
+       <listitem><para>
+        'System Variables' pane मा हेर्नुहोस्
+       </para></listitem>
+       <listitem><para>
+        Path entry खोज्नुहोस् (भेटाउनका लागि scroll गर्नुपर्ने हुन सक्छ)
+       </para></listitem>
+       <listitem><para>
+        Path entry मा double click गर्नुहोस्
+       </para></listitem>
+       <listitem><para>
+        अन्त्यमा अगाडि ';' सहित आफ्नो PHP directory लेख्नुहोस् (जस्तै
+        <literal>;C:\php</literal>)
+       </para></listitem>
+       <listitem><para>
+        OK थिच्नुहोस्
+       </para></listitem>
+      </itemizedlist>
+     </para>
+     <note>
+      <simpara>
+       <envar>PATH</envar> मा गरिएका परिवर्तनहरू लागू भएको सुनिश्चित गर्न माथिका
+       चरणहरू पूरा गरेपछि reboot गर्न नबिर्सिनुहोस्।
+      </simpara>
+     </note>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.phprc">
+    <question>
+     <para>
+      Windows मा PHP का लागि &php.ini; file कसरी उपलब्ध गराउने?
+     </para>
+    </question>
+    <answer>
+     <para>
+      यो गर्ने धेरै तरिकाहरू छन्। यदि तपाईँ Apache प्रयोग गर्दै हुनुहुन्छ भने Apache
+      documentation हेर्नुहोस्, अन्यथा तपाईँले <varname>PHPRC</varname> environment
+      variable सेट गर्नुपर्छ।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.windows-temporary-path">
+    <question>
+     <simpara>
+      Windows: IIS अन्तर्गत PHP ले temporary directory मा लेख्न (write गर्न) सक्छ
+      भनी कसरी जाँच गर्ने?
+     </simpara>
+    </question>
+    <answer>
+     <procedure>
+      <step>
+       <simpara>
+        Permissions हेर्नका लागि File Explorer मा temporary directory
+        (<varname>%TEMP%</varname>) मा right-click गर्नुहोस्। Temporary directory को
+        स्थान configuration वा <function>phpinfo</function> बाट हेर्न सकिन्छ।
+       </simpara>
+      </step>
+      <step>
+       <simpara>
+        IIS का लागि, <literal>IIS_User</literal> user सँग
+        <literal>MODIFY</literal> permission छ भनी जाँच गर्नुहोस्।
+       </simpara>
+      </step>
+     </procedure>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.apache.multiviews">
+    <question>
+     <para>
+      के PHP सँग Apache content negotiation (MultiViews option) प्रयोग गर्न
+      सम्भव छ?
+     </para>
+    </question>
+    <answer>
+     <para>
+      यदि PHP files का links मा extension समावेश छ भने सबै कुरा राम्रै काम गर्छ।
+      यो FAQ केवल त्यस्तो अवस्थाका लागि हो जहाँ PHP files का links मा extension
+      समावेश हुँदैन र तपाईँ extension बिनाको URL बाट PHP files छान्न content
+      negotiation प्रयोग गर्न चाहनुहुन्छ। यस्तो अवस्थामा <literal>AddType
+      application/x-httpd-php .php</literal> लाइनलाई निम्न लाइनले बदल्नुहोस्:
+      <programlisting role="apache-conf">
+<![CDATA[
+AddHandler php5-script php
+AddType text/html php
+]]>
+     </programlisting>
+     यो समाधान Apache 1 मा काम गर्दैन, किनकि त्यसमा PHP module ले
+     <literal>php-script</literal> समात्दैन।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.installation.requestmethods">
+    <question>
+     <simpara>
+      के PHP केवल GET र POST request methods मात्र process गर्न सीमित छ?
+     </simpara>
+    </question>
+    <answer>
+     <para>
+      होइन, जुनसुकै request method, जस्तै CONNECT पनि handle गर्न सम्भव छ।
+      <function>header</function> प्रयोग गरेर उचित response status पठाउन सकिन्छ।
+      यदि केवल GET र POST methods मात्र handle गर्नुपर्ने हो भने, यो Apache
+      configuration बाट गर्न सकिन्छ:
+      <programlisting role="apache-conf">
+<![CDATA[
+<LimitExcept GET POST>
+Deny from all
+</LimitExcept>
+]]>
+     </programlisting>
+     </para>
+    </answer>
+   </qandaentry>
+
+  </qandaset>
+ </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 7ab54091abc99257ad20ebe4d69f5981b2d22116 Maintainer: prateekbhujel Status: ready -->
+<chapter xml:id="faq.using" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <title>PHP को प्रयोग (Using PHP)</title>
+  <titleabbrev>PHP को प्रयोग</titleabbrev>
+
+  <para>
+   यस खण्डमा PHP scripts लेख्दा तपाईँले सामना गर्न सक्ने थुप्रै सामान्य errors
+   संकलन गरिएका छन्।
+  </para>
+
+  <qandaset>
+
+   <qandaentry xml:id="faq.using.parameterorder">
+    <question>
+     <para>
+      म PHP functions का parameter order सम्झनै सक्दिनँ, के ती जथाभावी (random) राखिएका हुन्?
+     </para>
+    </question>
+    <answer>
+     <para>
+      PHP सयौँ external libraries लाई एकसाथ जोड्ने माध्यम हो, त्यसैले कहिलेकाहीँ
+      यो अलि अलमलिने खालको हुन सक्छ। यद्यपि, सम्झिने एउटा सरल नियम यस प्रकार छ:
+     </para>
+     <para>
+      <link linkend="book.array">Array function</link> का parameters
+      "<emphasis>needle, haystack</emphasis>" क्रममा हुन्छन् भने
+      <link linkend="book.strings">String functions</link> मा ठ्याक्कै उल्टो,
+      अर्थात् "<emphasis>haystack, needle</emphasis>" क्रममा हुन्छन्।
+     </para>
+     <para>
+      PHP 8.0 देखि, <link linkend="functions.named-arguments">named arguments</link> ले
+      parameter को नामकै आधारमा arguments pass गर्न दिन्छ, जसले गर्दा parameter order
+      को चिन्ता त्यति हुँदैन।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.using.anyform">
+    <question>
+     <para>
+      म जुनसुकै form बाट आएको data handle गर्न सक्ने सामान्य (generic) PHP script
+      लेख्न चाहन्छु। कुन-कुन POST method variables उपलब्ध छन् भनेर कसरी थाहा पाउने?
+     </para>
+    </question>
+    <answer>
+     <para>
+      PHP ले superglobal <varname>$_POST</varname> जस्ता थुप्रै
+      <link linkend="language.variables.predefined">predefined variables</link> उपलब्ध
+      गराउँछ। <varname>$_POST</varname> मा POST गरिएका सबै values को associative
+      array रहने हुनाले तपाईँ यसमा loop चलाउन सक्नुहुन्छ। उदाहरणका लागि, &foreach;
+      प्रयोग गरी यसमा loop चलाऔँ, <function>empty</function> values जाँचौँ, र तिनलाई
+      print गरौँ।
+      <programlisting role="php">
+<![CDATA[
+<?php
+$empty = $post = array();
+foreach ($_POST as $varname => $varvalue) {
+    if (empty($varvalue)) {
+        $empty[$varname] = $varvalue;
+    } else {
+        $post[$varname] = $varvalue;
+    }
+}
+
+print "<pre>";
+if (empty($empty)) {
+    print "None of the POSTed values are empty, posted:\n";
+    var_dump($post);
+} else {
+    print "We have " . count($empty) . " empty values\n";
+    print "Posted:\n"; var_dump($post);
+    print "Empty:\n";  var_dump($empty);
+    exit;
+}
+?>
+]]>
+      </programlisting>
+     </para>
+
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.using.addslashes">
+    <question>
+     <para>
+      मैले सबै single-quotes (') लाई backslash र त्यसपछि single-quote (\') मा
+      बदल्नुपर्ने छ। Regular expression प्रयोग गरेर यो कसरी गर्न सकिन्छ? साथै, म
+      " लाई \" मा र \ लाई \\ मा पनि बदल्न चाहन्छु।
+     </para>
+    </question>
+    <answer>
+     <simpara>
+      यदि यो database का लागि हो भने, सम्बन्धित database सँगै आउने escaping
+      mechanism प्रयोग गर्नुहोस्। उदाहरणका लागि, MySQL सँग
+      <function>mysql_real_escape_string</function> र PostgreSQL सँग
+      <function>pg_escape_string</function> प्रयोग गर्नुहोस्। पुराना PHP code मा
+      बढी देखिने सामान्य <function>addslashes</function> र
+      <function>stripslashes</function> functions पनि छन्।
+     </simpara>
+     <para>
+      Manual तरिकाले values escape गर्दा गल्ती हुने सम्भावना बढी हुन्छ र यो
+      सन्दर्भ (context) मा पनि निर्भर रहन्छ। Escaped strings जोडेर query
+      बनाउनुको सट्टा prepared statements र parameter binding समर्थन गर्ने
+      database APIs प्रयोग गर्नु उपयुक्त हुन्छ।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.using.wrong-order">
+    <question>
+     <para>
+      तलको जस्तो गर्दा output गलत क्रममा print हुन्छ:
+     <programlisting role="php">
+<![CDATA[
+<?php
+function myfunc($argument)
+{
+    echo $argument + 10;
+}
+$variable = 10;
+echo "myfunc($variable) = " . myfunc($variable);
+?>
+]]>
+    </programlisting>
+     यस्तो किन भइरहेको होला?
+     </para>
+    </question>
+    <answer>
+     <para>
+      आफ्नो function को नतिजालाई कुनै expression मा प्रयोग गर्न (जस्तै माथिको
+      उदाहरणमा अरू strings सँग concatenate गर्न), तपाईँले त्यो value लाई
+      <function>echo</function> होइन, <function>return</function> गर्नुपर्छ।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.using.newlines">
+    <question>
+     <para>
+      अरे, मेरा newlines कता हराए?
+      <programlisting role="php">
+<![CDATA[
+<pre>
+<?php echo "This should be the first line."; ?>
+<?php echo "This should show up after the new line above."; ?>
+</pre>
+]]>
+      </programlisting>
+     </para>
+    </question>
+    <answer>
+     <para>
+      PHP मा code block को अन्त्य या त "?&gt;" हुन्छ या "?&gt;\n" (जहाँ \n ले
+      newline लाई जनाउँछ)। त्यसैले माथिको उदाहरणमा, echo गरिएका वाक्यहरू एउटै
+      लाइनमा आउनेछन्, किनकि PHP ले block सकिने बित्तिकै आउने newline लाई हटाइदिन्छ।
+      यसको अर्थ, एउटा newline print गराउन तपाईँले प्रत्येक PHP code block पछि एउटा
+      अतिरिक्त newline थप्नुपर्छ।
+     </para>
+     <para>
+      PHP ले यस्तो किन गर्छ? किनकि सामान्य HTML format गर्दा यसले तपाईँको काम
+      सजिलो बनाउँछ; त्यहाँ तपाईँलाई त्यो newline चाहिँदैन, तर यदि PHP ले त्यो
+      नहटाउने भए तपाईँले त्यस्तो नतिजा पाउन धेरै लामा लाइनहरू लेख्नुपर्ने वा page को
+      raw source लाई पढ्नै गाह्रो हुने गरी राख्नुपर्ने हुन्थ्यो।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.using.headers-sent">
+    <question>
+     <para>
+      मलाई 'Warning: Cannot send session cookie - headers already sent...' वा
+      'Cannot add header information - headers already sent...' भन्ने message आउँछ।
+     </para>
+    </question>
+    <answer>
+     <simpara>
+      <function>header</function>, <function>setcookie</function>, र
+      <link linkend="ref.session">session functions</link> ले output stream मा
+      headers थप्नुपर्ने हुन्छ, तर headers अरू सबै सामग्री पठाउनुभन्दा अगाडि मात्र
+      पठाउन सकिन्छ। यी functions प्रयोग गर्नुअघि HTML जस्ता कुनै पनि output
+      पठाइएको हुनु हुँदैन। तपाईँको script ले पहिले नै headers पठाइसकेको छ कि छैन
+      भनी जाँच्न <function>headers_sent</function> function प्रयोग गर्न सकिन्छ, र
+      साथै <link linkend="ref.outcontrol">Output Control functions</link> पनि हेर्नुहोस्।
+     </simpara>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.using.header">
+    <question>
+     <para>
+      मलाई request header मा रहेको जानकारी सिधै access गर्नुछ। यो कसरी गर्न सकिन्छ?
+     </para>
+    </question>
+    <answer>
+     <para>
+      यदि तपाईँले PHP लाई Apache module का रूपमा चलाइरहनुभएको छ भने
+      <function>getallheaders</function> function ले यो काम गरिदिन्छ। त्यसैले,
+      तलको सानो code ले तपाईँलाई सबै request headers देखाइदिनेछ:
+      <programlisting role="php">
+<![CDATA[
+<?php
+$headers = getallheaders();
+foreach ($headers as $name => $content) {
+    echo "headers[$name] = $content<br />\n";
+}
+?>
+]]>
+      </programlisting>
+     </para>
+     <para>
+      यो पनि हेर्नुहोस्:
+      <function>apache_lookup_uri</function>,
+      <function>apache_response_headers</function>, र
+      <function>fsockopen</function>।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.using.authentication">
+    <question>
+     <para>
+      IIS सँग authentication प्रयोग गर्न खोज्दा 'No Input file specified' भन्ने error आउँछ।
+     </para>
+    </question>
+    <answer>
+     <para>
+      यहाँ IIS को security model कै कारण समस्या आएको हो। IIS अन्तर्गत चल्ने सबै
+      CGI programs मा यो समस्या सामान्य रूपमा देखिन्छ। यसको एउटा उपाय भनेको
+      authenticated directory को entry page का रूपमा एउटा सामान्य HTML file (जसलाई
+      PHP ले parse गर्दैन) बनाउनु हो। त्यसपछि PHP page मा redirect गर्न META tag
+      प्रयोग गर्नुहोस्, वा PHP page को link राख्नुहोस्। यसो गर्दा PHP ले
+      authentication लाई सही तरिकाले पहिचान गर्नेछ। अन्य NT web servers मा यसले
+      असर गर्नु हुँदैन। थप जानकारीका लागि:
+      <link xlink:href="&url.iis;">&url.iis;</link> र म्यानुअलको
+      <link linkend="features.http-auth">HTTP Authentication</link> खण्ड हेर्नुहोस्।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.using.iis.sharing">
+    <question>
+     <para>
+      Windows: IIS प्रयोग गरेर अर्को computer मा share गरिएका files access गर्न सकिरहेको छैन
+     </para>
+    </question>
+    <answer>
+     <simpara>
+      तपाईँले <literal>Internet Information Services</literal> मा जानुपर्छ। आफ्नो
+      PHP file फेला पारी त्यसको properties मा जानुहोस्। त्यहाँ <literal>File
+      Security</literal> tab हुँदै <literal>Edit -&gt; Anonymous access and
+      authentication control</literal> मा जानुहोस्।
+     </simpara>
+     <simpara>
+      तपाईँले <literal>Anonymous Access</literal> लाई untick गरी
+      <literal>Integrated Windows Authentication</literal> मा tick राखेर, अथवा
+      <literal>Anonymous Access</literal> मा tick लगाएर user को विवरण edit गरेर
+      (किनकि उक्त user सँग access rights नभएको हुन सक्छ) यो समस्या समाधान गर्न
+      सक्नुहुन्छ।
+     </simpara>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.using.mixml">
+    <question>
+     <para>
+      म XML र PHP लाई कसरी सँगै प्रयोग गरूँ? यसले मेरा &lt;?xml tags मा error देखाउँछ!
+     </para>
+    </question>
+    <answer>
+     <para>
+      तपाईँको PHP code भित्र सिधै &lt;?xml राख्नका लागि PHP directive
+      <link linkend="ini.short-open-tag">short_open_tags</link> लाई
+      <literal>0</literal> मा सेट गरेर short tags बन्द गर्नुपर्ने हुन्छ। तपाईँले
+      यो directive लाई <function>ini_set</function> बाट सेट गर्न सक्नुहुन्न।
+      <link linkend="ini.short-open-tag">short_open_tags</link> on वा off जे भए
+      पनि, तपाईँले यस्तो तरिका अपनाउन सक्नुहुन्छ:
+      <literal>&lt;?php echo '&lt;?xml'; ?&gt;</literal>। यो directive को डिफल्ट
+      अवस्था <literal>On</literal> हुन्छ।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.using.variables">
+    <question>
+     <simpara>
+      PHP मा मेरो लागि उपलब्ध रहेका variables को पूरा सूची कहाँ पाउन सक्छु?
+     </simpara>
+    </question>
+    <answer>
+     <simpara>
+      <link linkend="language.variables.predefined">predefined variables</link>
+      सम्बन्धी म्यानुअल पृष्ठ पढ्नुहोस्, जसमा तपाईँको script का लागि उपलब्ध
+      पूर्वपरिभाषित variables को आंशिक सूची समेटिएको छ। उपलब्ध variables को पूर्ण
+      सूची (र अरू धेरै जानकारी) <function>phpinfo</function> function call गरेर
+      हेर्न सकिन्छ। म्यानुअलको <link linkend="language.variables.external">PHP
+      बाहिरबाट आउने variables</link> खण्ड पनि अवश्य पढ्नुहोस्, किनकि त्यहाँ HTML
+      form, Cookie, र URL बाट आउने जस्ता बाह्य variables का सामान्य अवस्थाहरू
+      वर्णन गरिएका छन्।
+     </simpara>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.using.freepdf">
+    <question>
+     <para>
+      PDFLib जस्ता non-free र commercial libraries प्रयोग नगरी PDF files कसरी
+      generate गर्न सकिन्छ? मलाई नि:शुल्क र external PDF libraries नचाहिने खालको
+      उपाय चाहिएको छ।
+     </para>
+    </question>
+    <answer>
+     <para>
+      PHP मै लेखिएका <link xlink:href="&url.pdf.fpdf;">FPDF</link> र
+      <link xlink:href="&url.pdf.tcpdf;">TCPDF</link> जस्ता केही विकल्पहरू उपलब्ध छन्।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.using.shorthandbytes">
+    <question>
+     <para>
+      केही PHP directives ले केवल <type>int</type> byte values मात्र नभई
+      shorthand byte values पनि लिन्छन्। उपलब्ध सबै shorthand byte विकल्पहरू के-के हुन्?
+     </para>
+    </question>
+    <answer>
+     <simpara>
+      उपलब्ध विकल्पहरू K (Kilobytes का लागि), M (Megabytes का लागि) र G
+      (Gigabytes का लागि) हुन्, र यी सबै case-insensitive हुन्छन्। अरू जेसुकै
+      भएमा bytes मानिन्छ। <literal>1M</literal> बराबर एक megabyte वा
+      <literal>1048576</literal> bytes हुन्छ। <literal>1K</literal> बराबर एक
+      kilobyte वा <literal>1024</literal> bytes हुन्छ। यी shorthand notations लाई
+      &php.ini; र <function>ini_set</function> function मा प्रयोग गर्न सकिन्छ।
+      ध्यान दिनुहोस् कि संख्यात्मक value लाई <type>int</type> मा cast गरिन्छ;
+      उदाहरणका लागि, <literal>0.5M</literal> लाई <literal>0</literal> का रूपमा बुझिन्छ।
+     </simpara>
+     <note>
+      <title>kilobyte र kibibyte बीचको फरक</title>
+      <para>
+       PHP notation ले एक kilobyte लाई 1024 bytes बराबर मान्छ, जबकि
+       <acronym>IEC</acronym> standard ले यसलाई kibibyte मान्दछ।
+       सारांश: k र K = 1024 bytes।
+      </para>
+     </note>
+    </answer>
+   </qandaentry>
+  </qandaset>
+ </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

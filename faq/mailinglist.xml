@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 7ab54091abc99257ad20ebe4d69f5981b2d22116 Maintainer: prateekbhujel Status: ready -->
+ <chapter xml:id="faq.mailinglist" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <title>Mailing lists</title>
+  <titleabbrev>Mailing lists</titleabbrev>
+
+   <para>
+    यस खण्डमा PHP community सँग कसरी सम्पर्कमा रहने भन्ने प्रश्नहरू राखिएका छन्।
+    यसको सबैभन्दा राम्रो माध्यम mailing lists हुन्।
+   </para>
+
+  <qandaset>
+   <qandaentry xml:id="faq.mailinglist.isthere">
+    <question>
+     <para>के PHP का कुनै mailing lists छन्?</para>
+    </question>
+    <answer>
+     <para>
+      अवश्य छन्! विभिन्न विषयहरूका लागि थुप्रै mailing lists उपलब्ध छन्।
+      सबैभन्दा प्रचलित community mailing lists हाम्रो
+      <link xlink:href="&url.php.mailing-lists;">mailing list</link> पृष्ठमा पाउन सकिन्छ।
+     </para>
+     <para>
+      सबैभन्दा सामान्य mailing list <literal>php-general</literal> हो।
+      Subscribe गर्नका लागि
+      <link xlink:href="mailto:&url.ml.general.subscribe;">&url.ml.general.subscribe;</link> मा एउटा खाली email message पठाउनुहोस्।
+      Unsubscribe गर्नका लागि <link xlink:href="mailto:&url.ml.general.unsubscribe;">&url.ml.general.unsubscribe;</link> मा खाली email पठाउनुहोस्।
+     </para>
+     <para>
+      तपाईँले हाम्रो <link xlink:href="&url.php.mailing-lists;">mailing list</link> पृष्ठमा रहेको
+      web interface प्रयोग गरेर पनि subscribe र unsubscribe गर्न सक्नुहुन्छ, साथै प्रत्येक mailing list
+      message को footer मा पनि unsubscribe गर्ने निर्देशनहरू दिइएका हुन्छन्।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.mailinglist.others">
+    <question>
+     <para>के अन्य communities पनि छन्?</para>
+    </question>
+    <answer>
+     <para>
+      संसारभरि PHP-केन्द्रित अनगिन्ती communities छन्, र तीमध्ये केही स्रोतहरूको link
+      (तथा थप जानकारी कसरी लिने भन्ने विवरण) हाम्रो <link xlink:href="&url.php.support;">Support</link> पृष्ठमा उपलब्ध छ।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.mailinglist.myown">
+    <question>
+     <para>के म आफ्नै PHP mailing list सुरु गर्न सक्छु?</para>
+    </question>
+    <answer>
+     <para>
+      बिल्कुल सक्नुहुन्छ! वास्तवमा, हामी यसलाई स्वतन्त्र रूपमा अनुमति मात्र दिँदैनौँ, प्रोत्साहन नै गर्छौँ!
+      PHP सम्बन्धी आफ्नो ज्ञान र अनुभव बाँडेर अरूलाई मद्दत गर्नाले विश्वव्यापी PHP community र
+      स्वयं PHP language को विकास तथा विस्तारमा योगदान पुग्छ।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.mailinglist.subscribing">
+    <question>
+     <para>
+      मद्दत गर्नुहोस्! म कुनै एक mailing list मा subscribe गर्न वा
+      unsubscribe गर्न सकिरहेको छैन!
+     </para>
+    </question>
+    <answer>
+     <simpara>
+      मानिसहरूलाई हाम्रो mailing lists बाट unsubscribe गर्न गाह्रो हुनुको सबैभन्दा सामान्य कारण
+      mail forwarders को प्रयोग हो। उदाहरणका लागि, यदि तपाईँको email address
+      <literal>elephpant@example.com</literal> हो, तर तपाईँले forwarder
+      <literal>php-lists@example.com</literal> प्रयोग गरी mailing list मा subscribe गरेर त्यसलाई
+      <literal>elephpant@example.com</literal> मा forward गर्नुभएको छ भने,
+      <literal>elephpant@example.com</literal> बाट unsubscribe गर्ने प्रयासले काम गर्दैन, किनकि
+      त्यो address हाम्रो systems लाई थाहा नै हुँदैन। बरु, जुन address मा mail पठाइएको हो,
+      त्यही address बाट email पठाएर—यस उदाहरणमा
+      <literal>php-lists@example.com</literal> बाट—unsubscribe गर्नुपर्ने हुन्छ।
+     </simpara>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.mailinglist.archive">
+    <question>
+     <para>के mailing lists को कुनै archive कतै उपलब्ध छ?</para>
+    </question>
+    <answer>
+     <para>
+       छ, तपाईँले केही archive sites का links
+       <link xlink:href="&url.php.mailing-lists;">mailing list</link> पृष्ठमा पाउनुहुनेछ।
+       साथै आफ्नो मनपर्ने Internet search engine मा "php mailing list archives" खोजेर पनि
+       हाम्रो mailing list सामग्री archive र/वा syndicate गर्ने दर्जनौँ sites भेटाउन सक्नुहुन्छ।
+     </para>
+     <para>
+       सबै mailing list articles हरू news messages का रूपमा पनि archive गरिएका हुन्छन्।
+       तपाईँले news client प्रयोग गरी <link
+       xlink:href="&url.php.news;">&url.php.news;</link> मा रहेको news server पहुँच गर्न सक्नुहुन्छ।
+       उक्त news server का लागि <link
+       xlink:href="&url.php.newsweb;">&url.php.newsweb;</link> मा एउटा प्रयोगात्मक (experimental)
+       web interface पनि उपलब्ध छ।
+     </para>
+    </answer>
+   </qandaentry>
+  
+   <qandaentry xml:id="faq.mailinglist.question">
+    <question>
+     <para>म mailing list मा के कस्ता प्रश्न सोध्न सक्छु?</para>
+    </question>
+    <answer>
+     <para>
+      PHP दिनप्रतिदिन झन्-झन् लोकप्रिय हुँदै गइरहेकाले, php-general mailing list मा आउने traffic
+      निकै भारी हुन सक्छ, जुन दैनिक ७५ देखि २०० वा सोभन्दा बढी posts सम्म पुग्छ। यही कारणले गर्दा,
+      अन्य सबै उपायहरू प्रयास गरिसकेपछि मात्र अन्तिम विकल्पका रूपमा यो list प्रयोग गर्नु सबैको हितमा हुन्छ।
+     </para>
+     <simpara>
+      List मा post गर्नुअघि उत्तर पाउन सकिन्छ कि भनेर कृपया यो FAQ र manual मा हेर्नुहोस्।
+      यदि त्यहाँ केही भेटिएन भने mailing list archives (माथि हेर्नुहोस्) जाँच गर्नुहोस्।
+      यदि तपाईँलाई PHP install वा configure गर्न समस्या भइरहेको छ भने, कृपया साथमा दिइएका सबै
+      documentation र READMEs राम्ररी पढ्नुहोस्। यदि अझै पनि मद्दत पुग्ने कुनै जानकारी फेला पार्न
+      सक्नुभएन भने, उपयुक्त mailing list प्रयोग गर्न तपाईँलाई स्वागत छ।
+     </simpara>
+     <para>
+      तपाईँले उत्तम प्रतिक्रिया पाउनुहोस् (र सहकर्मी विकासकर्ताहरू दिक्क नहुन्) भन्नाका लागि कृपया
+      आफ्नो प्रश्न उपयुक्त list मा नै post गर्नुहोला। उदाहरणका लागि, यदि तपाईँलाई PHP install गर्न
+      कठिनाइ भइरहेको छ भने, तपाईँले आफ्नो प्रश्न <literal>php-install</literal> mailing list मा
+      पठाउनुपर्छ। एउटा सावधानी: कतिपय lists का नाम उस्तै भए पनि तिनको प्रयोग बिल्कुल फरक हुन्छ;
+      Windows मा PHP scripts सम्बन्धी प्रश्न Windows PHP users list मा पठाउनुपर्छ,
+      Windows Internals list मा <emphasis>होइन</emphasis>।
+     </para>
+     <para>
+      प्रश्नहरू सोध्नुअघि, तपाईँ <link xlink:href="&url.smart.questions;">How To Ask Questions The Smart
+      Way</link> लेख पढ्न सक्नुहुन्छ, किनकि यो सबैका लागि राम्रो उपाय हो।
+     </para>
+    </answer>
+   </qandaentry>
+   
+   <qandaentry xml:id="faq.mailinglist.guideline">
+    <question>
+     <para>Mailing list मा post गर्दा मैले के-कस्ता जानकारी समावेश गर्नुपर्छ?</para>
+    </question>
+    <answer>
+     <para>
+      "I can't get PHP up and running! Help me! What is wrong?" जस्ता posts कसैका लागि पनि
+      कुनै कामका हुँदैनन्। यदि तपाईँलाई PHP सेटअप गरेर चलाउन समस्या भइरहेको छ भने, तपाईँले
+      प्रयोग गरिरहनुभएको operating system, प्रयोग गर्न खोज्नुभएको PHP को version, त्यसलाई कसरी
+      प्राप्त गर्नुभयो (pre-compiled, Git, RPM, आदि), अहिलेसम्म के गर्नुभएको छ, र ठ्याक्कै के
+      error message वा वर्तमान नतिजा देखियो भन्ने कुरा समावेश गर्नैपर्छ।
+     </para>
+     <para>
+      यो नियम अन्य जुनसुकै समस्यामा पनि लागू हुन्छ: तपाईँले के गर्नुभएको छ, के गर्न खोज्दै हुनुहुन्छ,
+      र त्यस क्रममा आएका जुनसुकै error messages को विवरण समावेश गर्नैपर्छ। यदि तपाईँको source code मा
+      समस्या भइरहेको छ भने, काम नगरेको code को भाग समावेश गर्नुहोस् र उपयुक्त ठाउँमा code comment
+      राखेर कुन line मा समस्या छ भन्ने संकेत गर्नुहोस्। तर आवश्यकभन्दा बढी code नराख्नुहोला! यसले
+      post पढ्न गाह्रो बनाउँछ, जसका कारण धेरैले तपाईँको अनुरोधलाई बेवास्ता गर्न सक्छन्। कति जानकारी
+      समावेश गर्ने भन्नेमा अनिश्चित हुनुहुन्छ भने, वर्तमान समस्यासँग सिधै सान्दर्भिक लाग्ने कुरा
+      post गर्नुहोस् र थप विवरण मागिएमा उपलब्ध गराउन तयार रहनुहोस्।
+     </para>
+     <simpara>
+      याद राख्नुपर्ने अर्को महत्वपूर्ण कुरा के हो भने subject line मा आफ्नो समस्याको सारांश लेख्नुहोस्।
+      "HELP MEEEE!!!" वा "What is the problem here?" जस्ता subject लाई अधिकांश पाठकहरूले
+      बेवास्ता गर्नेछन्।
+     </simpara>
+     <para>
+      र अन्त्यमा, तपाईँलाई
+      <link xlink:href="&url.smart.questions;">How To Ask Questions The
+      Smart Way</link> लेख पढ्न प्रोत्साहित गरिन्छ, किनकि यसले सबैलाई, र विशेष गरी तपाईँ आफैँलाई
+      ठूलो मद्दत गर्नेछ।
+     </para>
+    </answer>
+   </qandaentry>
+  </qandaset>
+ </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

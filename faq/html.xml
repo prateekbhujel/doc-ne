@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 7ab54091abc99257ad20ebe4d69f5981b2d22116 Maintainer: prateekbhujel Status: ready -->
+ <chapter xml:id="faq.html" xmlns="http://docbook.org/ns/docbook">
+  <title>PHP र HTML</title>
+  <titleabbrev>PHP र HTML</titleabbrev>
+
+  <para>
+   PHP र HTML बीच धेरै अन्तरक्रिया हुन्छ: PHP ले HTML generate गर्न सक्छ, र HTML ले
+   PHP मा जानकारी पठाउन सक्छ। यी FAQ हरू पढ्नुअघि
+   <link linkend="language.variables.external">बाह्य स्रोतहरूबाट variables</link>
+   कसरी प्राप्त गर्ने भन्ने सिक्नु महत्त्वपूर्ण हुन्छ। यस विषयको म्यानुअल पृष्ठमा
+   थुप्रै उदाहरणहरू पनि समावेश छन्।
+  </para>
+
+  <qandaset>
+   <qandaentry xml:id="faq.html.encoding">
+    <question>
+     <para>
+      Form वा URL मार्फत कुनै value pass गर्दा कस्तो encoding/decoding आवश्यक पर्छ?
+     </para>
+    </question>
+    <answer>
+     <para>
+      Encoding महत्त्वपूर्ण हुने धेरै चरणहरू छन्। मानौँ तपाईँसँग एउटा
+      <type>string</type> <varname>$data</varname> छ, जसमा तपाईँले encode
+      नगरीकनै पठाउन चाहनुभएको string राखिएको छ; अब सम्बन्धित चरणहरू यस्ता छन्:
+      <itemizedlist>
+       <listitem>
+        <para>
+         HTML interpretation: कुनै पनि अनियमित string राख्नका लागि, तपाईँले
+         त्यसलाई double quotes भित्र राख्नैपर्छ र पूरै value लाई
+         <function>htmlspecialchars</function> <emphasis>गर्नैपर्छ</emphasis>।
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         URL: एउटा URL धेरै भागहरू मिलेर बनेको हुन्छ। यदि तपाईँ आफ्नो data एउटै
+         item को रूपमा बुझियोस् भन्ने चाहनुहुन्छ भने, त्यसलाई
+         <function>urlencode</function> प्रयोग गरी encode <emphasis>गर्नैपर्छ</emphasis>।
+        </para>
+       </listitem>
+      </itemizedlist>
+     </para>
+     <para>
+      <example>
+       <title>एउटा hidden HTML form element</title>
+        <programlisting role="php">
+<![CDATA[
+<?php
+    echo '<input type="hidden" value="' . htmlspecialchars($data) . '" />'."\n";
+?>
+]]>
+        </programlisting>
+      </example>
+      <note>
+       <simpara>
+        यहाँ <varname>$data</varname> लाई <function>urlencode</function> गर्नु
+        गलत हुन्छ, किनकि data लाई <function>urlencode</function> गर्ने काम browser को
+        हो। सबै लोकप्रिय browsers ले यो काम सही ढंगले गर्छन्। ध्यान दिनुहोस् कि यो
+        जुनसुकै method (अर्थात् GET वा POST) मा पनि हुन्छ। यद्यपि, POST requests
+        सामान्यतया नदेखिने भएकाले तपाईँले यो केवल GET request मा मात्र देख्नुहुनेछ।
+       </simpara>
+      </note>
+      <example>
+       <title>प्रयोगकर्ताले edit गर्ने data</title>
+        <programlisting role="php">
+<![CDATA[
+<?php
+    echo "<textarea name='mydata'>\n";
+    echo htmlspecialchars($data)."\n";
+    echo "</textarea>";
+?>
+]]>
+        </programlisting>
+      </example>
+      <note>
+       <simpara>
+        Browser ले HTML escaped symbols लाई interpret गर्ने हुनाले data सोचेजस्तै
+        गरी browser मा देखिन्छ।
+       </simpara>
+       <simpara>
+        GET वा POST जुनसुकै तरिकाबाट submit गर्दा पनि, data पठाउनका लागि browser ले
+        त्यसलाई urlencode गर्छ र PHP ले सिधै urldecode गर्छ। त्यसैले अन्त्यमा तपाईँले
+        आफैँ कुनै urlencoding वा urldecoding गरिरहनुपर्दैन, सबै कुरा स्वतः
+        (automagically) सम्हालिन्छ।
+       </simpara>
+      </note>
+      <example>
+       <title>URL भित्र</title>
+        <programlisting role="php">
+<![CDATA[
+<?php
+    echo '<a href="' . htmlspecialchars("/nextpage.php?stage=23&data=" .
+        urlencode($data)) . '">'."\n";
+?>
+]]>
+        </programlisting>
+      </example>
+      <note>
+       <simpara>
+        वास्तवमा तपाईँ यहाँ HTML GET request को नक्कल गरिरहनुभएको छ, त्यसैले
+        data लाई manually <function>urlencode</function> गर्नु आवश्यक हुन्छ।
+       </simpara>
+      </note>
+      <note>
+       <simpara>
+        तपाईँले पूरै URL मा <function>htmlspecialchars</function> लागू गर्नुपर्छ,
+        किनकि उक्त URL एउटा HTML-attribute को value का रूपमा रहेको हुन्छ। यस्तो
+        अवस्थामा browser ले पहिले value बाट <function>htmlspecialchars</function>
+        हटाउँछ, र त्यसपछि URL अगाडि पठाउँछ। तपाईँले data लाई
+        <function>urlencode</function> गर्नुभएको हुनाले PHP ले उक्त URL सही ढंगले
+        बुझ्नेछ।
+       </simpara>
+       <simpara>
+        URL मा रहेको <literal>&amp;</literal> लाई <literal>&amp;amp;</literal> ले
+        बदलिएको तपाईँले देख्नुहुनेछ। यदि तपाईँले यो गर्न बिर्सिनुभयो भने धेरैजसो
+        browsers ले आफैँ मिलाएर बुझे पनि, सधैँ त्यस्तो सम्भव हुँदैन। त्यसैले
+        तपाईँको URL dynamic नभए पनि, URL मा <function>htmlspecialchars</function>
+        लागू गर्नु <emphasis>जरुरी</emphasis> हुन्छ।
+       </simpara>
+      </note>
+     </para>
+     <!-- TODO: a note about addgpcslashes? -->
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.html.form-image">
+    <question>
+     <simpara>
+      म &lt;input type="image"&gt; tag प्रयोग गर्न खोजिरहेको छु, तर
+      <varname>$foo.x</varname> र <varname>$foo.y</varname> variables उपलब्ध
+      छैनन्। <varname>$_GET['foo.x']</varname> पनि छैन। ती कहाँ गए?
+     </simpara>
+    </question>
+    <answer>
+     <para>
+      Form submit गर्दा सामान्य submit button को सट्टा यस्तो tag प्रयोग गरेर
+      image राख्न सम्भव छ:
+      <programlisting role="html">
+<![CDATA[
+<input type="image" src="image.gif" name="foo" />
+]]>
+      </programlisting>
+      जब प्रयोगकर्ताले उक्त image को कुनै ठाउँमा click गर्छन्, तब सम्बन्धित form
+      दुईवटा अतिरिक्त variables: <varname>foo.x</varname> र
+      <varname>foo.y</varname> का साथ server मा पठाइन्छ।
+     </para>
+     <para>
+      <varname>foo.x</varname> र <varname>foo.y</varname> PHP मा अमान्य variable
+      नाम हुने भएकाले, तिनलाई स्वतः <varname>foo_x</varname> र
+      <varname>foo_y</varname> मा रूपान्तरण गरिन्छ। अर्थात्, थोप्ला (periods) लाई
+      underscore ले बदलिन्छ। त्यसैले, तपाईँले यी variables लाई
+      <link linkend="language.variables.external">बाह्य स्रोतहरूबाट variables</link>
+      प्राप्त गर्ने खण्डमा वर्णन गरिएका अन्य variables जस्तै गरी access गर्न
+      सक्नुहुन्छ। उदाहरणका लागि, <varname>$_GET['foo_x']</varname>।
+      <note>
+       <para>
+         Request variable का नाममा भएका spaces लाई underscores मा रूपान्तरण गरिन्छ।
+       </para>
+      </note>
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.html.arrays">
+    <question>
+     <simpara>HTML &lt;form&gt; मा arrays कसरी बनाउने?</simpara>
+    </question>
+    <answer>
+     <para>
+      तपाईँको &lt;form&gt; को नतिजा PHP script मा
+      <link linkend="language.types.array">array</link> का रूपमा पठाउनका लागि
+      &lt;input&gt;, &lt;select&gt; वा &lt;textarea&gt; elements को नाम यसरी राख्नुहोस्:
+      <programlisting role="html">
+<![CDATA[
+<input name="MyArray[]" />
+<input name="MyArray[]" />
+<input name="MyArray[]" />
+<input name="MyArray[]" />
+]]>
+      </programlisting>
+      Variable को नाम पछाडि रहेका square brackets ध्यान दिनुहोस्; तिनैले यसलाई
+      array बनाउँछन्। फरक-फरक elements मा एउटै नाम दिएर तपाईँ elements लाई
+      अलग-अलग arrays मा समूहबद्ध (group) गर्न सक्नुहुन्छ:
+      <programlisting role="html">
+<![CDATA[
+<input name="MyArray[]" />
+<input name="MyArray[]" />
+<input name="MyOtherArray[]" />
+<input name="MyOtherArray[]" />
+]]>
+      </programlisting>
+      यसले MyArray र MyOtherArray नामका दुईवटा arrays बनाउँछ, जुन PHP script मा
+      पठाइन्छन्। तपाईँको arrays मा निश्चित keys तोक्न पनि सम्भव छ:
+      <programlisting role="html">
+<![CDATA[
+<input name="AnotherArray[]" />
+<input name="AnotherArray[]" />
+<input name="AnotherArray[email]" />
+<input name="AnotherArray[phone]" />
+]]>
+      </programlisting>
+      अब AnotherArray array मा 0, 1, email र phone keys हुनेछन्।
+      </para>
+      <para>
+       <note>
+        <para>
+         HTML मा array keys तोक्नु ऐच्छिक (optional) हो। यदि तपाईँले keys
+         तोक्नुभएन भने, form मा elements देखिएको क्रममा नै array भरिन्छ। हाम्रो
+         पहिलो उदाहरणमा 0, 1, 2 र 3 keys हुनेछन्।
+        </para>
+       </note>
+      </para>
+      <para>
+      <link linkend="ref.array">Array Functions</link> र
+      <link linkend="language.variables.external">Variables From External
+      Sources</link> पनि हेर्नुहोस्।
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.html.select-multiple">
+    <question>
+     <para>
+      select multiple HTML tag बाट सबै नतिजाहरू कसरी प्राप्त गर्ने?
+     </para>
+    </question>
+    <answer>
+     <para>
+      HTML को select multiple tag ले प्रयोगकर्ताहरूलाई सूचीबाट एकभन्दा बढी items
+      छान्न दिन्छ। त्यसपछि यी छानिएका items form को action handler मा पठाइन्छन्।
+      समस्या के हुन्छ भने ती सबै एउटै widget नामबाट पठाइन्छन्। जस्तै:
+      <programlisting role="html">
+<![CDATA[
+<select name="var" multiple="multiple">
+]]>
+      </programlisting>
+      छानिएको प्रत्येक option action handler मा यसरी पुग्छ:
+      <programlisting>
+var=option1
+var=option2
+var=option3
+      </programlisting>
+      प्रत्येक option ले अघिल्लो <varname>$var</varname> variable को सामग्रीलाई
+      overwrite गरिदिन्छ। यसको समाधान भनेको PHP को "array from form element"
+      विशेषता प्रयोग गर्नु हो। यसका लागि निम्न अनुसार लेख्नुपर्छ:
+      <programlisting role="html">
+<![CDATA[
+<select name="var[]" multiple="multiple">
+]]>
+      </programlisting>
+      यसले PHP लाई <varname>$var</varname> लाई एउटा array को रूपमा लिन भन्छ र
+      var[] मा प्रत्येक value assign हुँदा array मा एउटा नयाँ item थपिँदै जान्छ।
+      पहिलो item <varname>$var[0]</varname>, अर्को <varname>$var[1]</varname>,
+      इत्यादि बन्छ। कतिवटा options छानिए भनी पत्ता लगाउन <function>count</function>
+      function प्रयोग गर्न सकिन्छ, र आवश्यक परेमा option array लाई क्रमबद्ध (sort)
+      गर्न <function>sort</function> function प्रयोग गर्न सकिन्छ।
+     </para>
+     <para>
+      ध्यान दिनुहोस् कि यदि तपाईँ JavaScript प्रयोग गर्दै हुनुहुन्छ भने, element को
+      नाममा रहेको <literal>[]</literal> ले नामबाट element लाई refer गर्न खोज्दा
+      समस्या ल्याउन सक्छ। त्यसको सट्टा यसको numeric form element ID प्रयोग
+      गर्नुहोस्, अथवा variable को नामलाई single quotes भित्र राखेर elements array को
+      index का रूपमा प्रयोग गर्नुहोस्, उदाहरणका लागि:
+      <programlisting>
+variable = document.forms[0].elements['var[]'];
+      </programlisting>
+     </para>
+    </answer>
+   </qandaentry>
+
+   <qandaentry xml:id="faq.html.javascript-variable">
+    <question>
+     <para>
+      Javascript बाट PHP मा variable कसरी pass गर्ने?
+     </para>
+    </question>
+    <answer>
+     <para>
+      Javascript (सामान्यतया) एक client-side प्रविधि हो र PHP (सामान्यतया) एक
+      server-side प्रविधि हो, अनि HTTP एउटा "stateless" protocol भएकाले, यी दुई
+      भाषाहरूले सिधै variables साझा गर्न सक्दैनन्।
+     </para>
+     <para>
+      यद्यपि, यी दुई बीच variables pass गर्न भने सम्भव छ। यसो गर्ने एउटा तरिका
+      भनेको PHP बाट Javascript code generate गर्नु र निश्चित variables लाई पुनः
+      PHP script मा पठाउँदै browser लाई आफैँ refresh हुन लगाउनु हो। तलको उदाहरणले
+      ठ्याक्कै यो कसरी गर्ने भनेर देखाउँछ — यसले PHP code लाई screen को height र
+      width प्राप्त गर्न दिन्छ, जुन सामान्यतया client side मा मात्र सम्भव हुन्छ।
+     </para>
+     <para>
+      <example>
+       <title>PHP बाट Javascript generate गर्ने</title>
+       <programlisting role="php">
+<![CDATA[
+<?php
+if (isset($_GET['width']) AND isset($_GET['height'])) {
+  // output the geometry variables
+  echo "Screen width is: ". $_GET['width'] ."<br />\n";
+  echo "Screen height is: ". $_GET['height'] ."<br />\n";
+} else {
+  // pass the geometry variables
+  // (preserve the original query string
+  //   -- post variables will need to be handled differently)
+
+  echo "<script language='javascript'>\n";
+  echo "  location.href=\"{$_SERVER['SCRIPT_NAME']}?{$_SERVER['QUERY_STRING']}"
+            . "&width=\" + screen.width + \"&height=\" + screen.height;\n";
+  echo "</script>\n";
+  exit();
+}
+?>
+]]>
+       </programlisting>
+      </example>
+     </para>
+    </answer>
+   </qandaentry>
+
+  </qandaset>
+ </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
