@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 7132d8833a86604aa2d10c16c0470d0ef1a0fdfb Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.types.type-juggling">
+ <title>Type Juggling</title>
+
+ <simpara>
+  PHP मा variable घोषणा गर्दा स्पष्ट रूपमा type परिभाषित गर्न आवश्यक पर्दैन।
+  यस्तो अवस्थामा, variable को type त्यसमा भण्डारण गरिएको मानले निर्धारण गर्छ।
+  अर्थात्, यदि <varname>$var</varname> variable मा <type>string</type> assign गरियो भने <varname>$var</varname> को type <type>string</type> हुन्छ। यदि पछि <varname>$var</varname> मा <type>int</type> मान assign गरियो भने, यसको type <type>int</type> हुनेछ।
+ </simpara>
+
+ <para>
+  केही निश्चित contexts मा PHP ले कुनै मानको type लाई स्वतः अर्को type मा परिवर्तन गर्ने प्रयास गर्न सक्छ। त्यस्ता विभिन्न contexts यस प्रकार छन्:
+  <itemizedlist>
+   <listitem>
+    <simpara>Numeric</simpara>
+   </listitem>
+   <listitem>
+    <simpara>String</simpara>
+   </listitem>
+   <listitem>
+    <simpara>Logical</simpara>
+   </listitem>
+   <listitem>
+    <simpara>Integral र string</simpara>
+   </listitem>
+   <listitem>
+    <simpara>Comparative</simpara>
+   </listitem>
+   <listitem>
+    <simpara>Function</simpara>
+   </listitem>
+  </itemizedlist>
+ </para>
+
+ <note>
+  <simpara>
+   कुनै मानलाई फरक type को रूपमा व्याख्या (interpret) गर्नुपर्ने भए तापनि, उक्त मान स्वयंको type भने परिवर्तन <emphasis>हुँदैन</emphasis>।
+  </simpara>
+ </note>
+
+ <simpara>
+  कुनै variable लाई निश्चित type को रूपमा मूल्याङ्कन (evaluate) गराउन <link linkend="language.types.typecasting">Type casting</link> खण्ड हेर्नुहोस्। Variable को type नै परिवर्तन गर्न <function>settype</function> function हेर्नुहोस्।
+ </simpara>
+
+ <sect2>
+  <title>Numeric contexts</title>
+
+  <simpara>
+   यो <link linkend="language.operators.arithmetic">arithmetical operator</link> प्रयोग गर्दा हुने context हो।
+  </simpara>
+
+  <simpara>
+   यस context मा, यदि कुनै एक operand <type>float</type> छ (वा <type>int</type> को रूपमा व्याख्या गर्न सकिँदैन) भने, दुवै operands लाई <type>float</type> को रूपमा लिइन्छ, र नतिजा पनि <type>float</type> नै हुन्छ।
+   अन्यथा, operands लाई <type>int</type> को रूपमा लिइन्छ, र नतिजा पनि <type>int</type> नै हुन्छ।
+   PHP 8.0.0 देखि, यदि कुनै एक operand लाई व्याख्या (interpret) गर्न सकिएन भने <exceptionname>TypeError</exceptionname> फ्याँकिन्छ।
+  </simpara>
+ </sect2>
+
+ <sect2>
+  <title>String contexts</title>
+
+  <simpara>
+   यो <function>echo</function>,
+   <function>print</function>,
+   <link linkend="language.types.string.parsing">string interpolation</link>,
+   वा string
+   <link linkend="language.operators.string">concatenation operator</link> प्रयोग गर्दा हुने context हो।
+  </simpara>
+
+  <simpara>
+   यस context मा, मानलाई <type>string</type> को रूपमा लिइन्छ।
+   यदि मानलाई व्याख्या (interpret) गर्न सकिएन भने <exceptionname>TypeError</exceptionname> फ्याँकिन्छ।
+   PHP 7.4.0 भन्दा पहिले <constant>E_RECOVERABLE_ERROR</constant> जारी गरिन्थ्यो।
+  </simpara>
+ </sect2>
+
+ <sect2>
+  <title>Logical contexts</title>
+
+  <simpara>
+   यो conditional statements,
+   <link linkend="language.operators.comparison.ternary">ternary operator</link>,
+   वा <link linkend="language.operators.logical">logical operator</link> प्रयोग गर्दा हुने context हो।
+  </simpara>
+
+  <simpara>
+   यस context मा, मानलाई <type>bool</type> को रूपमा लिइन्छ।
+  </simpara>
+ </sect2>
+
+ <sect2>
+  <title>Integral र string contexts</title>
+
+  <simpara>
+   यो <link linkend="language.operators.bitwise">bitwise operators</link> प्रयोग गर्दा हुने context हो।
+  </simpara>
+
+  <simpara>
+   यस context मा, यदि सबै operands हरू <type>string</type> type का छन् भने, नतिजा पनि <type>string</type> नै हुन्छ।
+   अन्यथा, operands लाई <type>int</type> को रूपमा लिइन्छ, र नतिजा पनि <type>int</type> नै हुन्छ।
+   PHP 8.0.0 देखि, यदि कुनै एक operand लाई व्याख्या (interpret) गर्न सकिएन भने <exceptionname>TypeError</exceptionname> फ्याँकिन्छ।
+  </simpara>
+ </sect2>
+
+ <sect2>
+  <title>Comparative contexts</title>
+
+  <simpara>
+   यो <link linkend="language.operators.comparison">comparison operator</link> प्रयोग गर्दा हुने context हो।
+  </simpara>
+
+  <simpara>
+   यस context मा हुने type conversions को व्याख्या Comparison with Various Types <link linkend="language.operators.comparison.types">तालिका (table)</link> मा गरिएको छ।
+  </simpara>
+ </sect2>
+
+ <sect2 xml:id="language.types.type-juggling.function">
+  <title>Function contexts</title>
+
+  <simpara>
+   यो यस्तो context हो जहाँ कुनै मान typed parameter वा property मा पठाइन्छ, अथवा return type घोषणा गरिएको function बाट return गरिन्छ।
+  </simpara>
+
+  <simpara>
+   यस context मा, मान सोही तोकिएको type को हुनुपर्छ।
+   यसका दुई अपवादहरू छन्। पहिलो: यदि मान <type>int</type> type को छ र घोषित type <type>float</type> हो भने, उक्त integer लाई floating-point number मा परिवर्तन गरिन्छ।
+   दोस्रो: यदि घोषित type <emphasis>scalar</emphasis>
+   <!-- e.g. An object that implements __toString will pass a string type -->
+   type हो, मानलाई scalar type मा परिवर्तन गर्न सकिन्छ, र coercive typing mode
+   (जुन पूर्वनिर्धारित हो) सक्रिय छ भने, उक्त मानलाई स्वीकार्य scalar मानमा रूपान्तरण गर्न सकिन्छ।
+   यस व्यवहारको विवरण तल हेर्नुहोस्।
+  </simpara>
+
+  <warning>
+   <simpara>
+    <link linkend="functions.internal">Internal functions</link> ले &null; लाई स्वतः scalar types मा coerce गर्छन्।
+    यो व्यवहार PHP 8.1.0 देखि <emphasis>DEPRECATED</emphasis> गरिएको छ।
+   </simpara>
+  </warning>
+
+  <sect3 xml:id="language.types.type-juggling.function.simple">
+   <title>सरल type declarations सँग Coercive typing</title>
+   <itemizedlist>
+    <listitem>
+     <simpara>
+      <type>bool</type> type declaration: मानलाई <type>bool</type> को रूपमा लिइन्छ।
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <type>int</type> type declaration: यदि रूपान्तरण स्पष्ट रूपमा परिभाषित (well-defined) छ भने मानलाई <type>int</type> को रूपमा लिइन्छ। उदाहरणका लागि, string <link linkend="language.types.numeric-strings">numeric</link> छ।
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <type>float</type> type declaration: यदि रूपान्तरण स्पष्ट रूपमा परिभाषित (well-defined) छ भने मानलाई <type>float</type> को रूपमा लिइन्छ। उदाहरणका लागि, string <link linkend="language.types.numeric-strings">numeric</link> छ।
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <type>string</type> type declaration: मानलाई <type>string</type> को रूपमा लिइन्छ।
+     </simpara>
+    </listitem>
+   </itemizedlist>
+  </sect3>
+
+  <sect3 xml:id="language.types.type-juggling.function.union">
+   <title>Union types सँग Coercive typing</title>
+   <para>
+    जब <literal>strict_types</literal> सक्षम (enabled) हुँदैन, scalar type declarations मा सीमित implicit type coercions लागू हुन्छन्।
+    यदि मानको exact type union को भाग होइन भने, लक्ष्य (target) type निम्न प्राथमिकताको क्रममा छानिन्छ:
+
+    <orderedlist>
+     <listitem>
+      <simpara>
+       <type>int</type>
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <type>float</type>
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <type>string</type>
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <type>bool</type>
+      </simpara>
+     </listitem>
+    </orderedlist>
+
+    यदि उक्त type union मा अवस्थित छ र PHP को विद्यमान type-checking नियम (semantics) अन्तर्गत मानलाई त्यस type मा coerce गर्न सकिन्छ भने, त्यो type छानिन्छ।
+    अन्यथा, अर्को type प्रयास गरिन्छ।
+   </para>
+
+   <caution>
+    <para>
+     अपवादको रूपमा, यदि मान एउटा string हो र int र float दुवै union को भाग हुन् भने, प्राथमिकता दिइने type विद्यमान <link linkend="language.types.numeric-strings">numeric string</link> नियम अनुसार निर्धारण हुन्छ।
+     उदाहरणका लागि, <literal>"42"</literal> का लागि <type>int</type> छानिन्छ, जबकि <literal>"42.0"</literal> का लागि <type>float</type> छानिन्छ।
+    </para>
+   </caution>
+
+   <note>
+    <simpara>
+     माथिको प्राथमिकता सूचीमा नभएका types implicit coercion का लागि योग्य लक्ष्य हुँदैनन्। विशेष गरी, <type>null</type>, <type>false</type>, र <type>true</type> types मा कुनै पनि implicit coercion हुँदैन।
+    </simpara>
+   </note>
+
+   <example>
+    <title>Union को भाग रहेको type मा types coerce हुने उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// int|string
+42    --> 42          // exact type
+"42"  --> "42"        // exact type
+new ObjectWithToString --> "Result of __toString()"
+                      // object never compatible with int, fall back to string
+42.0  --> 42          // float compatible with int
+42.1  --> 42          // float compatible with int
+1e100 --> "1.0E+100"  // float too large for int type, fall back to string
+INF   --> "INF"       // float too large for int type, fall back to string
+true  --> 1           // bool compatible with int
+[]    --> TypeError   // array not compatible with int or string
+
+// int|float|bool
+"45"    --> 45        // int numeric string
+"45.0"  --> 45.0      // float numeric string
+
+"45X"   --> true      // not numeric string, fall back to bool
+""      --> false     // not numeric string, fall back to bool
+"X"     --> true      // not numeric string, fall back to bool
+[]      --> TypeError // array not compatible with int, float or bool
+?>
+]]>
+    </programlisting>
+   </example>
+  </sect3>
+
+ </sect2>
+
+ <sect2 xml:id="language.types.typecasting">
+  <title>Type Casting</title>
+
+  <simpara>
+   Type casting ले परिवर्तन गर्नुपर्ने मानभन्दा अगाडि कोष्ठक (parentheses) भित्र type लेखेर उक्त मानलाई रोजिएको type मा रूपान्तरण गर्छ।
+  </simpara>
+
+  <example>
+   <title>Type Casting</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$foo = 10;          // $foo is an integer
+$bar = (bool) $foo; // $bar is a boolean
+
+var_dump($bar);
+?>
+]]>
+   </programlisting>
+  </example>
+
+  <simpara>
+   अनुमति दिइएका casts यस प्रकार छन्:
+  </simpara>
+
+  <simplelist>
+   <member><literal>(int)</literal> - <type>int</type> मा cast गर्ने</member>
+   <member><literal>(bool)</literal> - <type>bool</type> मा cast गर्ने</member>
+   <member><literal>(float)</literal> - <type>float</type> मा cast गर्ने</member>
+   <member><literal>(string)</literal> - <type>string</type> मा cast गर्ने</member>
+   <member><literal>(array)</literal> - <type>array</type> मा cast गर्ने</member>
+   <member><literal>(object)</literal> - <type>object</type> मा cast गर्ने</member>
+   <member><literal>(unset)</literal> - <type>NULL</type> मा cast गर्ने</member>
+  </simplelist>
+
+  <simpara>
+   <link linkend="language.types.void.casting"><literal>(void)</literal></link>
+   cast पनि PHP 8.5.0 देखि उपलब्ध छ, तर यो मान रूपान्तरण होइन।
+   यसलाई कुनै expression को नतिजालाई स्पष्ट रूपमा हटाउन (discard गर्न) statement को रूपमा प्रयोग गरिन्छ।
+  </simpara>
+
+  <warning>
+   <para>
+    <literal>(integer)</literal> भनेको <literal>(int)</literal> cast को alias हो।
+    <literal>(boolean)</literal> भनेको <literal>(bool)</literal> cast को alias हो।
+    <literal>(binary)</literal> भनेको <literal>(string)</literal> cast को alias हो।
+    <literal>(double)</literal> र <literal>(real)</literal> भनेका <literal>(float)</literal> cast का aliases हुन्।
+    यी casts ले canonical type name प्रयोग गर्दैनन् र PHP 8.5.0 देखि deprecated गरिएका छन्।
+   </para>
+  </warning>
+
+  <warning>
+   <simpara>
+    <literal>(real)</literal> cast alias PHP 7.4.0 देखि deprecated गरिएको थियो र PHP 8.0.0 देखि हटाइएको छ।
+   </simpara>
+  </warning>
+
+  <warning>
+   <simpara>
+    <literal>(unset)</literal> cast PHP 7.2.0 देखि deprecated गरिएको थियो।
+    ध्यान दिनुहोस् कि <literal>(unset)</literal> cast गर्नु भनेको variable वा call मा <type>NULL</type> मान assign गर्नु जस्तै हो।
+    <literal>(unset)</literal> cast PHP 8.0.0 देखि हटाइएको छ।
+   </simpara>
+  </warning>
+
+  <caution>
+   <simpara>
+    <literal>(binary)</literal> cast र <literal>b</literal> prefix भविष्यको समर्थन (forward support) का लागि राखिएका हुन्। हाल <literal>(binary)</literal> र <literal>(string)</literal> एउटै हुन्, यद्यपि यो परिवर्तन हुन सक्छ र यसमा भर पर्नु हुँदैन।
+   </simpara>
+  </caution>
+
+  <note>
+   <para>
+    Cast को कोष्ठक भित्रका whitespace हरूलाई बेवास्ता (ignore) गरिन्छ।
+    त्यसैले, तलका दुई casts समान छन्:
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$foo = (int) $bar;
+$foo = ( int ) $bar;
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+  </note>
+
+  <informalexample>
+   <simpara>
+    Literal <type>string</type> र variables लाई binary <type>string</type> मा cast गर्ने:
+   </simpara>
+
+   <programlisting role="php">
+<![CDATA[
+<?php
+$binary = (binary) $string;
+$binary = b"binary string";
+?>
+]]>
+   </programlisting>
+  </informalexample>
+
+  <!-- TODO Remove or move into string context section? -->
+  <simpara>
+   कुनै variable लाई <type>string</type> मा cast गर्नुको सट्टा, variable लाई double quotes भित्र राख्न पनि सकिन्छ।
+  </simpara>
+
+  <example>
+   <title>विभिन्न Casting तरिकाहरू (Different Casting Mechanisms)</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$foo = 10;            // $foo is an integer
+$str = "$foo";        // $str is a string
+$fst = (string) $foo; // $fst is also a string
+
+// This prints out that "they are the same"
+if ($fst === $str) {
+    echo "they are the same", PHP_EOL;
+}
+?>
+]]>
+   </programlisting>
+  </example>
+
+  <para>
+   केही निश्चित types बीच cast गर्दा ठ्याक्कै के हुन्छ भन्ने कुरा सधैँ स्पष्ट नहुन सक्छ। थप जानकारीका लागि, यी खण्डहरू हेर्नुहोस्:
+   <simplelist>
+    <member><link linkend="language.types.boolean.casting">Boolean मा परिवर्तन गर्ने तरिका</link></member>
+    <member><link linkend="language.types.integer.casting">Integer मा परिवर्तन गर्ने तरिका</link></member>
+    <member><link linkend="language.types.float.casting">Float मा परिवर्तन गर्ने तरिका</link></member>
+    <member><link linkend="language.types.string.casting">String मा परिवर्तन गर्ने तरिका</link></member>
+    <member><link linkend="language.types.array.casting">Array मा परिवर्तन गर्ने तरिका</link></member>
+    <member><link linkend="language.types.object.casting">Object मा परिवर्तन गर्ने तरिका</link></member>
+    <member><link linkend="language.types.resource.casting">Resource मा परिवर्तन गर्ने तरिका</link></member>
+    <member><link linkend="language.types.null.casting">NULL मा परिवर्तन गर्ने तरिका</link></member>
+    <member><link linkend="language.types.void.casting"><literal>(void)</literal> प्रयोग गरी मान हटाउने (Discard गर्ने) तरिका</link></member>
+    <member><link linkend="types.comparisons">Type comparison तालिकाहरू</link></member>
+   </simplelist>
+  </para>
+
+  <note>
+   <simpara>
+    PHP ले <type>array</type> indexing जस्तै उही syntax प्रयोग गरी offsets मार्फत <type>string</type> भित्र index गर्न समर्थन गर्ने भएकाले, तलको उदाहरण PHP का सबै संस्करणहरूमा सत्य हुन्छ:
+   </simpara>
+
+   <example>
+    <title>String सँग Array Offset को प्रयोग</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$a    = 'car'; // $a is a string
+$a[0] = 'b';   // $a is still a string
+echo $a;       // bar
+?>
+]]>
+    </programlisting>
+   </example>
+
+   <simpara>
+    थप जानकारीका लागि <link linkend="language.types.string.substr">String access by character</link> शीर्षकको खण्ड हेर्नुहोस्।
+   </simpara>
+  </note>
+ </sect2>
+
+</sect1>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
