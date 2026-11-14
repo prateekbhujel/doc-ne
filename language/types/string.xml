@@ -1,0 +1,1185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: eb4bde8a489ee6523879baa482247ed49aea951d Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.types.string">
+ <title>Strings (स्ट्रिङहरू)</title>
+
+ <para>
+  <type>string</type> भनेको characters को एक शृङ्खला हो, जहाँ एउटा character भन्नु नै एउटा byte बराबर हुन्छ। यसको अर्थ PHP ले केवल 256-character set लाई मात्र समर्थन गर्छ, र त्यसैले यसले native Unicode support प्रदान गर्दैन। थप जानकारीका लागि <link linkend="language.types.string.details">string type का विस्तृत विवरण</link> हेर्नुहोस्।
+ </para>
+
+ <note>
+  <simpara>
+   32-bit builds मा, एउटा <type>string</type> को लम्बाइ अधिकतम 2GB (2147483647 bytes) सम्म हुन सक्छ।
+  </simpara>
+ </note>
+
+ <sect2 xml:id="language.types.string.syntax">
+  <title>सिन्ट्याक्स (Syntax)</title>
+
+  <para>
+   <type>string</type> literal लाई चार फरक तरिकाले तोक्न सकिन्छ:
+  </para>
+
+  <itemizedlist>
+   <listitem>
+    <simpara>
+     <link linkend="language.types.string.syntax.single">single quoted</link>
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <link linkend="language.types.string.syntax.double">double quoted</link>
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <link linkend="language.types.string.syntax.heredoc">heredoc syntax</link>
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <link linkend="language.types.string.syntax.nowdoc">nowdoc syntax</link>
+    </simpara>
+   </listitem>
+  </itemizedlist>
+
+  <sect3 xml:id="language.types.string.syntax.single">
+   <title>Single quoted</title>
+
+   <para>
+    <type>string</type> तोक्ने सबैभन्दा सरल तरिका भनेको त्यसलाई single quotes (<literal>'</literal> character) भित्र राख्नु हो।
+   </para>
+
+   <para>
+    शाब्दिक (literal) single quote लेख्नका लागि त्यसलाई backslash (<literal>\</literal>) ले escape गर्नुहोस्। शाब्दिक backslash लेख्नका लागि त्यसलाई दोहोर्‍याएर (<literal>\\</literal>) लेख्नुहोस्। यस बाहेक अन्य सबै अवस्थामा backslash लाई शाब्दिक backslash कै रूपमा लिइन्छ: यसको अर्थ तपाईंले प्रयोग गर्ने गरेका अन्य escape sequences, जस्तै <literal>\r</literal> वा <literal>\n</literal>, ले कुनै विशेष अर्थ नराखी जस्ताको तस्तै output हुनेछन्।
+   </para>
+
+   <note>
+    <simpara>
+     <link linkend="language.types.string.syntax.double">double-quoted</link> र <link linkend="language.types.string.syntax.heredoc">heredoc</link> syntax हरूमा जस्तो नभई, single quoted <type>string</type> हरूभित्र आउने <link linkend="language.variables">variables</link> र विशेष characters का escape sequences हरू expand <emphasis>हुँदैनन्</emphasis>।
+    </simpara>
+   </note>
+
+   <example>
+    <title>Syntax का प्रकारहरू (Syntax Variants)</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo 'this is a simple string', PHP_EOL;
+
+echo 'You can also have embedded newlines in
+strings this way as it is
+okay to do', PHP_EOL;
+
+// नतिजा: Arnold once said: "I'll be back"
+echo 'Arnold once said: "I\'ll be back"', PHP_EOL;
+
+// नतिजा: You deleted C:\*.*?
+echo 'You deleted C:\\*.*?', PHP_EOL;
+
+// नतिजा: You deleted C:\*.*?
+echo 'You deleted C:\*.*?', PHP_EOL;
+
+// नतिजा: This will not expand: \n a newline
+echo 'This will not expand: \n a newline', PHP_EOL;
+
+// नतिजा: Variables do not $expand $either
+echo 'Variables do not $expand $either', PHP_EOL;
+?>
+]]>
+    </programlisting>
+   </example>
+
+  </sect3>
+
+  <sect3 xml:id="language.types.string.syntax.double">
+   <title>Double quoted</title>
+
+   <para>
+    यदि <type>string</type> लाई double-quotes (<literal>"</literal>) भित्र राखिएको छ भने, PHP ले विशेष characters का लागि निम्न escape sequences को अर्थ लगाउनेछ:
+   </para>
+
+   <table>
+    <title>Escaped characters</title>
+
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Sequence (क्रम)</entry>
+       <entry>Meaning (अर्थ)</entry>
+      </row>
+     </thead>
+
+     <tbody>
+      <row>
+       <entry><literal>\n</literal></entry>
+       <entry>linefeed (ASCII मा LF वा 0x0A (10))</entry>
+      </row>
+      <row>
+       <entry><literal>\r</literal></entry>
+       <entry>carriage return (ASCII मा CR वा 0x0D (13))</entry>
+      </row>
+      <row>
+       <entry><literal>\t</literal></entry>
+       <entry>horizontal tab (ASCII मा HT वा 0x09 (9))</entry>
+      </row>
+      <row>
+       <entry><literal>\v</literal></entry>
+       <entry>vertical tab (ASCII मा VT वा 0x0B (11))</entry>
+      </row>
+      <row>
+       <entry><literal>\e</literal></entry>
+       <entry>escape (ASCII मा ESC वा 0x1B (27))</entry>
+      </row>
+      <row>
+       <entry><literal>\f</literal></entry>
+       <entry>form feed (ASCII मा FF वा 0x0C (12))</entry>
+      </row>
+      <row>
+       <entry><literal>\\</literal></entry>
+       <entry>backslash</entry>
+      </row>
+      <row>
+       <entry><literal>\$</literal></entry>
+       <entry>dollar sign</entry>
+      </row>
+      <row>
+       <entry><literal>\"</literal></entry>
+       <entry>double-quote</entry>
+      </row>
+      <row>
+       <entry><literal>\[0-7]{1,3}</literal></entry>
+       <entry>
+        Octal: regular expression <literal>[0-7]{1,3}</literal> सँग मिल्ने characters को क्रम octal notation मा रहेको character हो (जस्तै <literal>"\101" === "A"</literal>), जुन एउटा byte भित्र अटाउन चुपचाप overflow हुन्छ (जस्तै <literal>"\400" === "\000"</literal>)
+       </entry>
+      </row>
+      <row>
+       <entry><literal>\x[0-9A-Fa-f]{1,2}</literal></entry>
+       <entry>
+        Hexadecimal: regular expression <literal>[0-9A-Fa-f]{1,2}</literal> सँग मिल्ने characters को क्रम hexadecimal notation मा रहेको character हो (जस्तै <literal>"\x41" === "A"</literal>)
+       </entry>
+      </row>
+      <row>
+       <entry><literal>\u{[0-9A-Fa-f]+}</literal></entry>
+       <entry>
+        Unicode: regular expression <literal>[0-9A-Fa-f]+</literal> सँग मिल्ने characters को क्रम एउटा Unicode codepoint हो, जुन string मा उक्त codepoint को UTF-8 स्वरूपमा output हुन्छ। यस sequence मा braces अनिवार्य हुन्छन्। जस्तै <literal>"\u{41}" === "A"</literal>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+
+   <para>
+    Single quoted <type>string</type> हरूमा जस्तै, अन्य कुनै character लाई escape गर्दा backslash पनि सँगै print हुन्छ।
+   </para>
+
+   <para>
+    Double-quoted <type>string</type> हरूको सबैभन्दा महत्त्वपूर्ण विशेषता भनेको यसमा variable का नामहरू expand हुनु हो। विस्तृत जानकारीका लागि <link linkend="language.types.string.parsing">string interpolation</link> हेर्नुहोस्।
+   </para>
+  </sect3>
+
+  <sect3 xml:id="language.types.string.syntax.heredoc">
+   <title>Heredoc</title>
+
+   <simpara>
+    <type>string</type> हरूलाई सीमाङ्कन (delimit) गर्ने तेस्रो तरिका heredoc syntax हो: <literal>&lt;&lt;&lt;</literal>। यो operator पछि एउटा identifier दिइन्छ, र त्यसपछि newline आउँछ। त्यसपछि मुख्य <type>string</type> आउँछ, र अन्त्यमा quotation बन्द गर्नका लागि फेरि उही identifier राखिन्छ।
+   </simpara>
+
+   <simpara>
+    Closing identifier लाई spaces वा tabs प्रयोग गरेर indent गर्न सकिन्छ। त्यसपछि closing identifier को indentation बराबरको whitespace heredoc string को प्रत्येक line को सुरुबाट हटाइन्छ। PHP 7.3.0 भन्दा पहिले, closing identifier line को पहिलो column बाटै सुरु हुनु <emphasis>अनिवार्य</emphasis> थियो।
+   </simpara>
+
+   <simpara>
+    साथै, closing identifier ले PHP का अन्य label जस्तै नामकरणका नियमहरू पालना गर्नुपर्छ: यसमा alphanumeric characters र underscores मात्र हुनुपर्छ, र यो अंक बाहेकको character वा underscore बाट सुरु हुनुपर्छ।
+   </simpara>
+
+   <example>
+    <title>PHP 7.3.0 अनुसारको आधारभूत Heredoc उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// closing identifier मा indentation नराखिएको
+echo <<<END
+      a
+     b
+    c
+\n
+END;
+
+// closing identifier मा 3 spaces को indentation राखिएको; प्रत्येक line बाट 3 spaces हटाइन्छ
+echo <<<END
+      a
+     b
+    c
+   END;
+]]>
+    </programlisting>
+    &example.outputs.73;
+    <screen>
+<![CDATA[
+      a
+     b
+    c
+
+   a
+  b
+ c
+]]>
+    </screen>
+   </example>
+
+   <simpara>
+    यदि closing identifier लाई body को कुनै पनि line भन्दा बढी indent गरिएको छ भने, <exceptionname>ParseError</exceptionname> throw हुनेछ:
+   </simpara>
+
+   <example>
+    <title>Closing identifier लाई body का कुनै पनि line भन्दा बढी indent गर्नु हुँदैन</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo <<<END
+  a
+ b
+c
+   END;
+]]>
+    </programlisting>
+    &example.outputs.73;
+    <screen>
+<![CDATA[
+Parse error: Invalid body indentation level (expecting an indentation level of at least 3) in example.php on line 4
+]]>
+    </screen>
+   </example>
+
+   <simpara>
+    यदि closing identifier मा indentation राखिएको छ भने, tabs पनि प्रयोग गर्न सकिन्छ। यद्यपि, tabs र spaces लाई आपसमा मिसाउनु <emphasis>हुँदैन</emphasis>। Body र closing identifier को indentation मा दुवैमध्ये एउटै मात्र निरन्तर प्रयोग गर्नुपर्छ। यदि tabs र spaces मिसाइयो भने, <exceptionname>ParseError</exceptionname> throw हुनेछ। Indentation का लागि tabs र spaces मिसाउँदा code पढ्न कठिन हुने भएकाले यी whitespace सम्बन्धी नियमहरू राखिएका हुन्।
+   </simpara>
+
+   <example>
+    <title>Body र closing identifier का लागि फरक indentation</title>
+    <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+// तलका कुनै पनि code ले काम गर्दैनन्।
+
+// body (spaces) र ending marker (tabs) मा फरक indentation
+{
+	echo <<<END
+	 a
+		END;
+}
+
+// body मा spaces र tabs मिसाइएको
+{
+    echo <<<END
+    	a
+     END;
+}
+
+// ending marker मा spaces र tabs मिसाइएको
+{
+	echo <<<END
+		  a
+		 END;
+}
+]]>
+    </programlisting>
+    &example.outputs.73;
+    <screen>
+<![CDATA[
+Parse error: Invalid indentation - tabs and spaces cannot be mixed in example.php line 8
+]]>
+    </screen>
+   </example>
+
+   <simpara>
+    Body string को closing identifier पछि तुरुन्तै semicolon वा newline आउनैपर्छ भन्ने छैन। उदाहरणका लागि, PHP 7.3.0 देखि निम्न code मान्य छ:
+   </simpara>
+
+   <example>
+    <title>Closing identifier पछि expression लाई निरन्तरता दिने</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$values = [<<<END
+a
+  b
+    c
+END, 'd e f'];
+var_dump($values);
+]]>
+    </programlisting>
+    &example.outputs.73;
+    <screen>
+<![CDATA[
+array(2) {
+  [0] =>
+  string(11) "a
+  b
+    c"
+  [1] =>
+  string(5) "d e f"
+}
+]]>
+    </screen>
+   </example>
+
+   <warning>
+    <simpara>
+     यदि line को सुरुमा closing identifier भेटियो भने, त्यो अर्को शब्दको भाग होस् वा नहोस्, त्यसलाई closing identifier नै मानिन्छ र यसले <exceptionname>ParseError</exceptionname> निम्त्याउँछ।
+    </simpara>
+
+    <example>
+     <title>String को body मा closing identifier पर्दा <exceptionname>ParseError</exceptionname> आउन सक्छ</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$values = [<<<END
+a
+b
+END ING
+END, 'd e f'];
+]]>
+     </programlisting>
+     &example.outputs.73;
+    <screen>
+<![CDATA[
+Parse error: syntax error, unexpected identifier "ING", expecting "]" in example.php on line 5
+]]>
+     </screen>
+    </example>
+
+    <simpara>
+     यो समस्याबाट बच्न एउटा सरल नियम पालना गर्नु सुरक्षित हुन्छ: <emphasis>text को body भित्र आउने कुनै पनि शब्दलाई closing identifier को रूपमा नछान्नुहोस्</emphasis>।
+    </simpara>
+
+   </warning>
+
+   <warning>
+    <simpara>
+     PHP 7.3.0 भन्दा पहिले, closing identifier भएको line मा semicolon (<literal>;</literal>) बाहेक अन्य कुनै पनि characters हुनु हुँदैन भन्ने कुरामा विशेष ध्यान दिनु अत्यन्त महत्त्वपूर्ण छ। यसको विशेष अर्थ यो हो कि identifier <emphasis>indent गरिएको हुनु हुँदैन</emphasis>, र semicolon को अगाडि वा पछाडि कुनै spaces वा tabs हुनु हुँदैन। यो पनि बुझ्नु महत्त्वपूर्ण छ कि closing identifier भन्दा ठीक अघिल्लो character स्थानीय operating system ले तोकेको newline हुनुपर्छ। macOS लगायत UNIX प्रणालीहरूमा यो <literal>\n</literal> हुन्छ। Closing delimiter पछि पनि newline आउनैपर्छ।
+    </simpara>
+
+    <simpara>
+     यदि यो नियम उल्लङ्घन गरियो र closing identifier "clean" भएन भने, त्यसलाई closing identifier मानिँदैन, र PHP ले अर्को closing identifier खोजिरहन्छ। यदि हालको file को अन्त्यसम्म पनि सही closing identifier भेटिएन भने, अन्तिम line मा parse error आउनेछ।
+    </simpara>
+
+    <example>
+     <title>PHP 7.3.0 भन्दा अघिको अवैध (Invalid) उदाहरण</title>
+     <programlisting role="php">
+      <!-- This is an INVALID example -->
+<![CDATA[
+<?php
+class foo {
+    public $bar = <<<EOT
+bar
+    EOT;
+}
+// Identifier मा indentation हुनु हुँदैन
+?>
+]]>
+     </programlisting>
+    </example>
+    <example>
+     <title>PHP 7.3.0 भन्दा पहिले पनि मान्य (Valid) उदाहरण</title>
+     <programlisting role="php">
+      <!-- This is a VALID example -->
+<![CDATA[
+<?php
+class foo {
+    public $bar = <<<EOT
+bar
+EOT;
+}
+?>
+]]>
+     </programlisting>
+    </example>
+
+    <para>
+     Variables भएका heredocs लाई class properties initialize गर्न प्रयोग गर्न सकिँदैन।
+    </para>
+
+   </warning>
+
+   <para>
+    Heredoc text ले double quotes बिनाको double-quoted <type>string</type> जस्तै व्यवहार गर्छ। यसको अर्थ heredoc भित्रका quotes लाई escape गरिरहनु पर्दैन, तर माथि सूचीबद्ध escape codes अझै प्रयोग गर्न सकिन्छ। Variables हरू expand हुन्छन्, तर <type>string</type> हरूमा जस्तै heredoc भित्र जटिल variables लेख्दा उही सावधानी अपनाउनुपर्छ।
+   </para>
+
+   <example>
+    <title>Heredoc string quoting उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$str = <<<EOD
+Example of string
+spanning multiple lines
+using heredoc syntax.
+EOD;
+
+/* Variables सहितको अलि जटिल उदाहरण। */
+class foo
+{
+    var $foo;
+    var $bar;
+
+    function __construct()
+    {
+        $this->foo = 'Foo';
+        $this->bar = array('Bar1', 'Bar2', 'Bar3');
+    }
+}
+
+$foo = new foo();
+$name = 'MyName';
+
+echo <<<EOT
+My name is "$name". I am printing some $foo->foo.
+Now, I am printing some {$foo->bar[1]}.
+This should print a capital 'A': \x41
+EOT;
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+My name is "MyName". I am printing some Foo.
+Now, I am printing some Bar2.
+This should print a capital 'A': A]]>
+    </screen>
+   </example>
+
+   <para>
+    Function arguments मा data पठाउनका लागि पनि Heredoc syntax प्रयोग गर्न सम्भव छ:
+   </para>
+
+   <example>
+    <title>Arguments मा Heredoc को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+var_dump(array(<<<EOD
+foobar!
+EOD
+));
+?>
+]]>
+    </programlisting>
+   </example>
+
+   <para>
+    Heredoc syntax प्रयोग गरेर static variables र class properties/constants लाई initialize गर्न पनि सकिन्छ:
+   </para>
+
+   <example>
+    <title>Static मानहरू initialize गर्न Heredoc को प्रयोग</title>
+    <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+// Static variables
+function foo()
+{
+    static $bar = <<<LABEL
+Nothing in here...
+LABEL;
+}
+
+// Class properties/constants
+class foo
+{
+    const BAR = <<<FOOBAR
+Constant example
+FOOBAR;
+
+    public $baz = <<<FOOBAR
+Property example
+FOOBAR;
+}
+?>
+]]>
+    </programlisting>
+   </example>
+
+   <para>
+    सुरुवाती Heredoc identifier लाई स्वेच्छाले double quotes भित्र पनि राख्न सकिन्छ:
+   </para>
+
+   <example>
+    <title>Heredoc मा double quotes को प्रयोग</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo <<<"FOOBAR"
+Hello World!
+FOOBAR;
+?>
+]]>
+    </programlisting>
+   </example>
+
+  </sect3>
+
+  <sect3 xml:id="language.types.string.syntax.nowdoc">
+   <title>Nowdoc</title>
+
+   <simpara>
+    Double-quoted strings का लागि heredocs जस्तै, single-quoted strings का लागि nowdocs हुन्छन्। Nowdoc लाई पनि heredoc जस्तै गरी लेखिन्छ, तर nowdoc भित्र <emphasis>कुनै पनि string interpolation गरिँदैन</emphasis>। यो संरचना PHP code वा text का ठूला खण्डहरूलाई escape नगरीकन सिधै राख्न निकै उपयुक्त हुन्छ। यसका केही विशेषताहरू SGML को <literal>&lt;![CDATA[ ]]&gt;</literal> संरचनासँग मिल्दाजुल्दा छन्, जहाँ यसले parse नगरिने text को एउटा खण्ड घोषणा गर्छ।
+   </simpara>
+
+   <para>
+    Nowdoc लाई पनि heredocs मा प्रयोग हुने उही <literal>&lt;&lt;&lt;</literal> sequence बाट चिनिन्छ, तर यसपछि आउने identifier लाई single quotes भित्र राखिन्छ, जस्तै <literal>&lt;&lt;&lt;'EOT'</literal>। Heredoc identifiers का सबै नियमहरू nowdoc identifiers मा पनि लागू हुन्छन्, विशेष गरी closing identifier को उपस्थितिसँग सम्बन्धित नियमहरू।
+   </para>
+
+   <example>
+    <title>Nowdoc string quoting उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+echo <<<'EOD'
+Example of string spanning multiple lines
+using nowdoc syntax. Backslashes are always treated literally,
+e.g. \\ and \'.
+EOD;
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Example of string spanning multiple lines
+using nowdoc syntax. Backslashes are always treated literally,
+e.g. \\ and \'.
+]]>
+    </screen>
+   </example>
+
+   <example>
+    <title>Variables सहितको Nowdoc string quoting उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class foo
+{
+    public $foo;
+    public $bar;
+
+    function __construct()
+    {
+        $this->foo = 'Foo';
+        $this->bar = array('Bar1', 'Bar2', 'Bar3');
+    }
+}
+
+$foo = new foo();
+$name = 'MyName';
+
+echo <<<'EOT'
+My name is "$name". I am printing some $foo->foo.
+Now, I am printing some {$foo->bar[1]}.
+This should not print a capital 'A': \x41
+EOT;
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+My name is "$name". I am printing some $foo->foo.
+Now, I am printing some {$foo->bar[1]}.
+This should not print a capital 'A': \x41]]>
+    </screen>
+   </example>
+
+   <example>
+    <title>Static data उदाहरण</title>
+    <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+class foo {
+    public $bar = <<<'EOT'
+bar
+EOT;
+}
+?>
+]]>
+    </programlisting>
+   </example>
+
+  </sect3>
+
+  <sect3 xml:id="language.types.string.parsing">
+   <title>String interpolation</title>
+
+   <simpara>
+    जब <type>string</type> लाई double quotes वा heredoc मा लेखिन्छ, तब त्यसभित्र <link linkend="language.variables">variables</link> लाई प्रतिस्थापन (substitute) गर्न सकिन्छ।
+   </simpara>
+
+   <simpara>
+    यसमा दुई प्रकारका syntax छन्: एउटा <link linkend="language.types.string.parsing.basic">basic</link> र अर्को <link linkend="language.types.string.parsing.advanced">advanced</link>। Basic syntax सबैभन्दा प्रचलित र सहज छ। यसले न्यूनतम प्रयासमा <type>string</type> भित्र कुनै variable, <type>array</type> value, वा <type>object</type> property समावेश गर्ने तरिका प्रदान गर्छ।
+   </simpara>
+
+   <sect4 xml:id="language.types.string.parsing.basic">
+    <title>Basic syntax</title>
+    <simpara>
+     यदि dollar sign (<literal>$</literal>) भेटियो भने, त्यसपछि आउने र variable को नाममा प्रयोग गर्न मिल्ने characters लाई variable नामकै रूपमा बुझिन्छ र तिनको मान प्रतिस्थापन गरिन्छ।
+    </simpara>
+    <example>
+     <title>String Interpolation</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$juice = "apple";
+
+echo "He drank some $juice juice." . PHP_EOL;
+
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+He drank some apple juice.
+]]>
+     </screen>
+    </example>
+
+    <simpara>
+     औपचारिक रूपमा, basic variable प्रतिस्थापन syntax को संरचना यस प्रकार छ:
+    </simpara>
+    <informalexample>
+     <programlisting>
+<![CDATA[
+string-variable::
+     variable-name   (offset-or-property)?
+   | ${   expression   }
+
+offset-or-property::
+     offset-in-string
+   | property-in-string
+
+offset-in-string::
+     [   name   ]
+   | [   variable-name   ]
+   | [   integer-literal   ]
+
+property-in-string::
+     ->  name
+
+variable-name::
+     $   name
+
+name::
+     [a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*
+
+]]>
+     </programlisting>
+    </informalexample>
+
+    <warning>
+     <para>
+      PHP 8.2.0 देखि <literal>${ expression }</literal> syntax लाई deprecated गरिएको छ, किनभने यसलाई <link linkend="language.variables.variable">variable variables</link> को रूपमा अर्थ लगाउन सकिन्छ:
+      <informalexample>
+       <programlisting role="php">
+<![CDATA[
+<?php
+const foo = 'bar';
+$foo = 'foo';
+$bar = 'bar';
+var_dump("${foo}");
+var_dump("${(foo)}");
+?>
+]]>
+       </programlisting>
+       &example.outputs.82;
+       <screen>
+<![CDATA[
+Deprecated: Using ${var} in strings is deprecated, use {$var} instead in file on line 6
+
+Deprecated: Using ${expr} (variable variables) in strings is deprecated, use {${expr}} instead in file on line 9
+string(3) "foo"
+string(3) "bar"
+]]>
+       </screen>
+       &example.outputs;
+       <screen>
+<![CDATA[
+string(3) "foo"
+string(3) "bar"
+]]>
+       </screen>
+      </informalexample>
+      यसको सट्टा <link linkend="language.types.string.parsing.advanced">advanced</link> string interpolation syntax प्रयोग गर्नुपर्छ।
+     </para>
+    </warning>
+
+    <note>
+     <simpara>
+      यदि मान्य नाम बनाउन सम्भव नभएमा dollar sign जस्ताको तस्तै string मै रहन्छ:
+     </simpara>
+     <informalexample>
+      <programlisting role="php">
+<![CDATA[
+<?php
+echo "No interpolation $  has happened\n";
+echo "No interpolation $\n has happened\n";
+echo "No interpolation $2 has happened\n";
+?>
+]]>
+      </programlisting>
+      &example.outputs;
+      <screen>
+<![CDATA[
+No interpolation $  has happened
+No interpolation $
+ has happened
+No interpolation $2 has happened
+]]>
+      </screen>
+     </informalexample>
+    </note>
+
+    <example>
+     <title>Array को पहिलो आयाम वा property को मान interpolate गर्ने</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$juices = array("apple", "orange", "string_key" => "purple");
+
+echo "He drank some $juices[0] juice.";
+echo PHP_EOL;
+echo "He drank some $juices[1] juice.";
+echo PHP_EOL;
+echo "He drank some $juices[string_key] juice.";
+echo PHP_EOL;
+
+class A {
+    public $s = "string";
+}
+
+$o = new A();
+
+echo "Object value: $o->s.";
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+He drank some apple juice.
+He drank some orange juice.
+He drank some purple juice.
+Object value: string.
+]]>
+     </screen>
+    </example>
+
+    <note>
+     <simpara>
+      Array key मा quotes हुनु हुँदैन, र त्यसैले basic syntax बाट constant लाई key को रूपमा प्रयोग गर्न सकिँदैन। यसको सट्टा <link linkend="language.types.string.parsing.advanced">advanced</link> syntax प्रयोग गर्नुहोस्।
+     </simpara>
+    </note>
+
+    <simpara>
+     PHP 7.1.0 देखि <emphasis>ऋणात्मक (negative)</emphasis> numeric indices लाई पनि समर्थन गरिएको छ।
+    </simpara>
+
+    <example><title>ऋणात्मक (Negative) numeric indices</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$string = 'string';
+echo "The character at index -2 is $string[-2].", PHP_EOL;
+$string[-3] = 'o';
+echo "Changing the character at index -3 to o gives $string.", PHP_EOL;
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+The character at index -2 is n.
+Changing the character at index -3 to o gives strong.
+]]>
+     </screen>
+    </example>
+
+    <simpara>
+     यहाँ उल्लेख गरिएभन्दा जटिल कुनै पनि अवस्थाका लागि <link linkend="language.types.string.parsing.advanced">advanced</link> syntax नै प्रयोग गर्नुपर्छ।
+    </simpara>
+   </sect4>
+
+   <sect4 xml:id="language.types.string.parsing.advanced">
+    <title>Advanced (curly) syntax</title>
+
+    <simpara>
+     Advanced syntax ले जुनसुकै accessors भएका <emphasis>variables</emphasis> लाई interpolate गर्न अनुमति दिन्छ।
+    </simpara>
+
+    <simpara>
+     <type>string</type> प्रतिनिधित्व भएका कुनै पनि scalar variable, array element वा object property (<modifier>static</modifier> होस् वा नहोस्) लाई यो syntax मार्फत समावेश गर्न सकिन्छ। Expression लाई <type>string</type> भन्दा बाहिर जसरी लेखिन्छ, ठ्याक्कै त्यसरी नै लेखेर <literal>{</literal> र <literal>}</literal> भित्र राखिन्छ। <literal>{</literal> लाई escape गर्न नसकिने हुँदा, <literal>{</literal> लगत्तै तुरुन्तै <literal>$</literal> आएमा मात्र यो syntax लाई पहिचान गरिन्छ। शाब्दिक <literal>{$</literal> प्राप्त गर्न <literal>{\$</literal> प्रयोग गर्नुहोस्। यसलाई स्पष्ट पार्न केही उदाहरणहरू तल दिइएका छन्:
+    </simpara>
+
+    <example>
+     <title>Curly Syntax</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+const DATA_KEY = 'const-key';
+$great = 'fantastic';
+$arr = [
+    '1',
+    '2',
+    '3',
+    [41, 42, 43],
+    'key' => 'Indexed value',
+    'const-key' => 'Key with minus sign',
+    'foo' => ['foo1', 'foo2', 'foo3']
+];
+
+// काम गर्दैन, नतिजा: This is { fantastic}
+echo "This is { $great}" . PHP_EOL;
+
+// काम गर्छ, नतिजा: This is fantastic
+echo "This is {$great}" . PHP_EOL;
+
+// नतिजामा curly braces देखाउन:
+echo "This is {{$great}}" . PHP_EOL;
+
+class Square {
+    public $width;
+
+    public function __construct(int $width) { $this->width = $width; }
+}
+
+$square = new Square(5);
+
+// काम गर्छ
+echo "This square is {$square->width}00 centimeters wide." . PHP_EOL;
+
+
+// काम गर्छ, quoted keys ले curly brace syntax मा मात्र काम गर्छन्
+echo "This works: {$arr['key']}" . PHP_EOL;
+
+
+// काम गर्छ
+echo "This works: {$arr[3][2]}" . PHP_EOL;
+
+echo "This works: {$arr[DATA_KEY]}" . PHP_EOL;
+
+// Multidimensional arrays प्रयोग गर्दा, string भित्र सधैँ arrays को वरिपरि
+// braces प्रयोग गर्नुहोस्
+echo "This works: {$arr['foo'][2]}" . PHP_EOL;
+
+echo "This works: {$obj->values[3]->name}" . PHP_EOL;
+
+echo "This works: {$obj->$staticProp}" . PHP_EOL;
+
+// काम गर्दैन, नतिजा: C:\directory\{fantastic}.txt
+echo "C:\directory\{$great}.txt" . PHP_EOL;
+
+// काम गर्छ, नतिजा: C:\directory\fantastic.txt
+echo "C:\\directory\\{$great}.txt" . PHP_EOL;
+?>
+]]>
+     </programlisting>
+    </example>
+
+    <note>
+     <simpara>
+      यो syntax ले जुनसुकै expressions लाई अनुमति दिने भएकाले, advanced syntax भित्र <link linkend="language.variables.variable">variable variables</link> प्रयोग गर्न सम्भव छ।
+     </simpara>
+    </note>
+   </sect4>
+  </sect3>
+
+  <sect3 xml:id="language.types.string.substr">
+   <title>Character अनुसार string access र परिमार्जन (String access and modification by character)</title>
+
+   <para>
+    Square <type>array</type> brackets प्रयोग गरेर <type>string</type> पछि चाहेको character को शून्य-आधारित (zero-based) offset तोकेर (<varname>$str[42]</varname> जस्तै गरी) <type>string</type> भित्रका characters हरू access र परिमार्जन गर्न सकिन्छ। यस उद्देश्यका लागि <type>string</type> लाई characters को एउटा <type>array</type> जस्तै सोच्नुहोस्। यदि तपाईं 1 भन्दा बढी characters निकाल्न (extract गर्न) वा प्रतिस्थापन गर्न चाहनुहुन्छ भने <function>substr</function> र <function>substr_replace</function> functions प्रयोग गर्न सकिन्छ।
+   </para>
+
+   <note>
+    <simpara>
+     PHP 7.1.0 देखि negative string offsets लाई पनि समर्थन गरिएको छ। यिनले string को अन्त्यबाट offset जनाउँछन्। पहिले, negative offsets ले पढ्ने बेला <constant>E_NOTICE</constant> (र खाली string दिने) र लेख्ने बेला <constant>E_WARNING</constant> (string लाई जस्ताको तस्तै छोड्ने) उत्पन्न गर्थे।
+    </simpara>
+   </note>
+
+   <note>
+    <simpara>
+     PHP 8.0.0 भन्दा पहिले, यही उद्देश्यका लागि <varname>$str{42}</varname> जस्तै गरी braces प्रयोग गरेर पनि <type>string</type> हरू access गर्न सकिन्थ्यो। यो curly brace syntax लाई PHP 7.4.0 देखि deprecated गरिएको थियो र PHP 8.0.0 देखि यसलाई हटाएर समर्थन बन्द गरिएको छ।
+    </simpara>
+   </note>
+
+   <warning>
+    <simpara>
+     दायराभन्दा बाहिरको (out-of-range) offset मा लेख्दा string मा खाली ठाउँ (spaces) थपिन्छ। Integer बाहेकका अन्य types लाई integer मा रूपान्तरण गरिन्छ। अवैध offset type ले <constant>E_WARNING</constant> उत्पन्न गर्छ। Assign गरिएको string को पहिलो character मात्र प्रयोग हुन्छ। PHP 7.1.0 देखि, खाली string assign गर्दा fatal error आउँछ। पहिले, यसले NULL byte assign गर्थ्यो।
+    </simpara>
+   </warning>
+
+   <warning>
+    <simpara>
+     आन्तरिक रूपमा, PHP strings भनेका byte arrays हुन्। फलस्वरूप, array brackets प्रयोग गरेर string access वा परिमार्जन गर्नु multi-byte सुरक्षित हुँदैन, र यो केवल ISO-8859-1 जस्ता single-byte encoding मा रहेका strings सँग मात्र गरिनुपर्छ।
+    </simpara>
+   </warning>
+
+   <note>
+    <simpara>
+     PHP 7.1.0 देखि, खाली string मा empty index operator लागू गर्दा fatal error आउँछ। पहिले, खाली string स्वतः array मा रूपान्तरण हुन्थ्यो।
+    </simpara>
+   </note>
+
+   <example>
+    <title>केही string उदाहरणहरू</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// String को पहिलो character लिनुहोस्
+$str = 'This is a test.';
+$first = $str[0];
+var_dump($first);
+
+// String को तेस्रो character लिनुहोस्
+$third = $str[2];
+var_dump($third);
+
+// String को अन्तिम character लिनुहोस्।
+$str = 'This is still a test.';
+$last = $str[strlen($str)-1];
+var_dump($last);
+
+// String को अन्तिम character परिमार्जन गर्नुहोस्
+$str = 'Look at the sea';
+$str[strlen($str)-1] = 'e';
+var_dump($str);
+?>
+]]>
+    </programlisting>
+   </example>
+
+   <simpara>
+    String offsets हरू कि त integers हुनुपर्छ कि त integer-जस्तो strings हुनुपर्छ। PHP 8.0.0 देखि, अन्य कुनै पनि string ले <exceptionname>TypeError</exceptionname> throw गर्छ, केवल integer बाट सुरु भएर पछाडि अन्य characters भएका string बाहेक — जसले <constant>E_WARNING</constant> उत्पन्न गर्छ र त्यसलाई सुरुवाती integer कै रूपमा बुझिन्छ। PHP 8.0.0 भन्दा पहिले, कुनै <exceptionname>TypeError</exceptionname> throw हुँदैनथ्यो: यसको सट्टा अवैध offset ले <constant>E_WARNING</constant> उत्पन्न गर्थ्यो।
+   </simpara>
+
+   <example>
+    <title>अवैध (Illegal) String Offsets को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$str = 'abc';
+
+$keys = [ '1', '1.0', 'x', '1x' ];
+
+foreach ($keys as $keyToTry) {
+    var_dump(isset($str[$keyToTry]));
+
+    try {
+        var_dump($str[$keyToTry]);
+    } catch (TypeError $e) {
+        echo $e->getMessage(), PHP_EOL;
+    }
+
+    echo PHP_EOL;
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs.8;
+    <screen>
+<![CDATA[
+bool(true)
+string(1) "b"
+
+bool(false)
+Cannot access offset of type string on string
+
+bool(false)
+Cannot access offset of type string on string
+
+bool(false)
+
+Warning: Illegal string offset "1x" in example.php on line 10
+string(1) "b"
+]]>
+    </screen>
+    &example.outputs.7;
+    <screen>
+<![CDATA[
+bool(true)
+string(1) "b"
+
+bool(false)
+
+Warning: Illegal string offset '1.0' in example.php on line 10
+string(1) "b"
+
+bool(false)
+
+Warning: Illegal string offset 'x' in example.php on line 10
+string(1) "a"
+
+bool(false)
+
+Notice: A non well formed numeric value encountered in example.php on line 10
+string(1) "b"
+]]>
+    </screen>
+   </example>
+
+   <note>
+    <para>
+     उपयुक्त interfaces लागू गरेका arrays वा objects बाहेक अन्य types का variables लाई <literal>[]</literal> वा <literal>{}</literal> प्रयोग गरेर access गर्दा चुपचाप &null; फर्काइन्छ।
+    </para>
+   </note>
+
+   <note>
+    <para>
+     String literals भित्रका characters लाई <literal>[]</literal> वा <literal>{}</literal> प्रयोग गरेर access गर्न सकिन्छ।
+    </para>
+   </note>
+
+   <note>
+    <para>
+     PHP 7.4 मा <literal>{}</literal> syntax प्रयोग गरेर string literals भित्रका characters access गर्ने तरिकालाई deprecated गरिएको थियो। PHP 8.0 मा यसलाई हटाइएको छ।
+    </para>
+   </note>
+  </sect3>
+ </sect2><!-- end syntax -->
+
+ <sect2 xml:id="language.types.string.useful-funcs">
+  <title>उपयोगी functions र operators (Useful functions and operators)</title>
+
+  <para>
+   <type>String</type> हरूलाई '.' (dot) operator प्रयोग गरेर जोड्न (concatenate गर्न) सकिन्छ। ध्यान दिनुहोस् कि यसका लागि '+' (addition) operator ले काम <emphasis>गर्दैन</emphasis>। थप जानकारीका लागि <link linkend="language.operators.string">String operators</link> हेर्नुहोस्।
+  </para>
+
+  <para>
+   <type>string</type> परिमार्जन तथा व्यवस्थापनका लागि धेरै उपयोगी functions उपलब्ध छन्।
+  </para>
+
+  <simpara>
+   सामान्य functions का लागि <link linkend="ref.strings">string functions खण्ड</link>, र उन्नत खोज तथा प्रतिस्थापन (find &amp; replace) सुविधाका लागि <link linkend="ref.pcre">Perl-compatible regular expression functions</link> हेर्नुहोस्।
+  </simpara>
+
+  <simpara>
+   त्यहाँ <link linkend="ref.url">URL strings का लागि functions</link>, र strings लाई encrypt/decrypt गर्ने functions (<link linkend="ref.sodium">Sodium</link> र <link linkend="ref.hash">Hash</link>) पनि उपलब्ध छन्।
+  </simpara>
+
+  <simpara>
+   अन्त्यमा, <link linkend="ref.ctype">character type functions</link> पनि हेर्नुहोस्।
+  </simpara>
+ </sect2>
+
+ <sect2 xml:id="language.types.string.casting">
+  <title>String मा परिवर्तन गर्ने तरिका (Converting to string)</title>
+
+  <para>
+   <literal>(string)</literal> cast वा <function>strval</function> function प्रयोग गरेर कुनै मानलाई <type>string</type> मा परिवर्तन गर्न सकिन्छ। जहाँ <type>string</type> आवश्यक पर्छ, त्यस्तो expression को दायरामा <type>String</type> रूपान्तरण स्वतः हुन्छ। यस्तो <function>echo</function> वा <function>print</function> functions प्रयोग गर्दा, वा कुनै variable लाई <type>string</type> सँग तुलना गर्दा हुन्छ। <link linkend="language.types">Types</link> र <link linkend="language.types.type-juggling">Type Juggling</link> सम्बन्धी खण्डहरूले तलको विवरणलाई अझ स्पष्ट पार्नेछन्। साथै <function>settype</function> function पनि हेर्नुहोस्।
+  </para>
+
+  <para>
+   <type>bool</type> &true; मान <type>string</type> <literal>"1"</literal> मा परिणत हुन्छ। <type>bool</type> &false; मान <literal>""</literal> (खाली string) मा परिणत हुन्छ। यसले <type>bool</type> र <type>string</type> मानहरू बीच यताउता रूपान्तरण गर्न सम्भव बनाउँछ।
+  </para>
+
+  <simpara>
+   <type>int</type> वा <type>float</type> लाई उक्त सङ्ख्यालाई अक्षरमा (textually) जनाउने <type>string</type> मा परिवर्तन गरिन्छ (<type>float</type> हरूको हकमा exponent भाग सहित)। Floating-point सङ्ख्याहरूलाई exponential notation (<literal>4.1E+6</literal>) प्रयोग गरेर रूपान्तरण गर्न सकिन्छ।
+  </simpara>
+
+  <note>
+   <para>
+    PHP 8.0.0 देखि, दशमलव बिन्दु जनाउने character सधैँ थोप्ला ("<literal>.</literal>") हुन्छ। PHP 8.0.0 भन्दा पहिले, दशमलव बिन्दु character script को locale (category LC_NUMERIC) मा परिभाषित गरिन्थ्यो। <function>setlocale</function> function हेर्नुहोस्।
+   </para>
+  </note>
+
+  <para>
+   <type>Array</type> हरू सधैँ <literal>"Array"</literal> भन्ने <type>string</type> मा परिणत हुन्छन्; यसैकारण, <function>echo</function> र <function>print</function> ले आफैँ <type>array</type> भित्रको सामग्री देखाउन सक्दैनन्। कुनै एकल element हेर्न <literal>echo $arr['foo']</literal> जस्तो संरचना प्रयोग गर्नुहोस्। सम्पूर्ण सामग्री हेर्ने उपायहरूका लागि तल हेर्नुहोस्।
+  </para>
+
+  <para>
+   <type>object</type> हरूलाई <type>string</type> मा रूपान्तरण गर्नका लागि magic method <link linkend="language.oop5.magic">__toString</link> प्रयोग गर्नुपर्छ।
+  </para>
+
+  <para>
+   <type>Resource</type> हरू सधैँ <literal>"Resource id #1"</literal> संरचना भएको <type>string</type> मा परिणत हुन्छन्, जहाँ <literal>1</literal> भन्नाले runtime मा PHP ले उक्त <type>resource</type> लाई दिएको resource नम्बर हो। यो string को ठ्याक्कै संरचनामा भर पर्नु हुँदैन र यो परिवर्तन हुन सक्छ, यद्यपि यो चलिरहेको script को जीवनकाल (अर्थात् Web request वा CLI process) भरि दिइएको resource का लागि सधैँ अद्वितीय (unique) रहन्छ र पुन: प्रयोग गरिँदैन। कुनै <type>resource</type> को type पत्ता लगाउन <function>get_resource_type</function> function प्रयोग गर्नुहोस्।
+  </para>
+
+  <para>
+   &null; सधैँ खाली string मा परिणत हुन्छ।
+  </para>
+
+  <para>
+   माथि उल्लेख गरिए झैँ, <type>array</type>, <type>object</type>, वा <type>resource</type> लाई सिधै <type>string</type> मा रूपान्तरण गर्दा त्यसको type बाहेक मानको बारेमा कुनै उपयोगी जानकारी प्राप्त हुँदैन। यस्ता types भित्रको सामग्री अझ प्रभावकारी ढङ्गले निरीक्षण गर्न <function>print_r</function> र <function>var_dump</function> functions हेर्नुहोस्।
+  </para>
+
+  <para>
+   अधिकांश PHP मानहरूलाई स्थायी भण्डारणका लागि <type>string</type> मा पनि रूपान्तरण गर्न सकिन्छ। यस तरिकालाई serialization भनिन्छ, र यो <function>serialize</function> function द्वारा गरिन्छ।
+  </para>
+
+ </sect2>
+
+ <sect2 xml:id="language.types.string.details">
+
+  <title>String Type का विस्तृत विवरण (Details of the String Type)</title>
+
+  <simpara>
+   PHP मा <type>string</type> लाई bytes को एउटा array र buffer को लम्बाइ जनाउने एउटा integer को रूपमा कार्यान्वयन गरिएको हुन्छ। ती bytes कसरी characters मा अनुवाद हुन्छन् भन्ने बारेमा यसमा कुनै जानकारी हुँदैन, र त्यो काम programmer कै जिम्मामा छोडिएको हुन्छ। String मा कस्ता मानहरू रहन सक्छन् भन्नेमा कुनै सीमा हुँदैन; विशेष गरी, <literal>0</literal> मान भएका bytes (“NUL bytes”) लाई string को जुनसुकै स्थानमा राख्न पाइन्छ। यद्यपि, यस manual मा “binary safe” नभनिएका केही functions ले NUL byte पछाडिको data लाई बेवास्ता गर्ने libraries हरूमा ती strings पठाउन सक्छन्।
+  </simpara>
+  <para>
+   String type को यही प्रकृतिका कारण PHP मा छुट्टै “byte” type नभएको हो – strings ले नै यो भूमिका निर्वाह गर्छन्। कुनै text-सम्बन्धी data नफर्काउने functions ले पनि – उदाहरणका लागि, network socket बाट पढिएको स्वेच्छाचारी data – strings नै फर्काउँछन्।
+  </para>
+  <simpara>
+   PHP ले strings का लागि कुनै निश्चित encoding नतोक्ने हुँदा, string literals कसरी encode हुन्छन् भन्ने जिज्ञासा लाग्न सक्छ। उदाहरणका लागि, के <literal>"á"</literal> भन्ने string <literal>"\xE1"</literal> (ISO-8859-1), <literal>"\xC3\xA1"</literal> (UTF-8, C form), <literal>"\x61\xCC\x81"</literal> (UTF-8, D form) वा अन्य कुनै सम्भावित रूपसँग बराबर हुन्छ? यसको उत्तर के हो भने script file जुन encoding मा लेखिएको छ, string पनि ठ्याक्कै त्यही रूपमा encode हुन्छ। तसर्थ, यदि script ISO-8859-1 मा लेखिएको छ भने, string पनि ISO-8859-1 मै encode हुन्छ र यस्तै अन्यमा पनि लागू हुन्छ। यद्यपि, यदि Zend Multibyte सक्षम गरिएको छ भने यो नियम लागू हुँदैन; त्यस्तो अवस्थामा, script जुनसुकै encoding मा लेखिएको हुन सक्छ (जसलाई स्पष्ट रूपमा घोषणा गरिएको वा पत्ता लगाइएको हुन्छ) र त्यसपछि त्यसलाई एक निश्चित आन्तरिक encoding मा रूपान्तरण गरिन्छ, अनि त्यही encoding नै string literals का लागि प्रयोग गरिन्छ। ध्यान दिनुहोस् कि script को encoding मा (वा Zend Multibyte सक्षम भएको खण्डमा आन्तरिक encoding मा) केही सीमाहरू हुन्छन् – यसको अर्थ प्रायः सधैँ यो encoding UTF-8 वा ISO-8859-1 जस्ता ASCII सँग मिल्ने superset हुनुपर्छ। तथापि, ध्यान दिनुहोस् कि एउटै byte मानहरू initial र non-initial shift states मा प्रयोग हुन सक्ने state-dependent encodings समस्याजनक हुन सक्छन्।
+  </simpara>
+  <para>
+   निस्सन्देह, उपयोगी हुनका लागि, text मा काम गर्ने functions ले string कसरी encode गरिएको छ भन्ने बारेमा केही अनुमान गर्नुपर्ने हुन सक्छ। दुर्भाग्यवश, PHP का functions भरि नै यस विषयमा धेरै विविधता रहेको छ:
+  </para>
+  <itemizedlist>
+   <listitem>
+    <simpara>
+     केही functions ले string कुनै (कुनै पनि) single-byte encoding मा encode गरिएको छ भनी अनुमान गर्छन्, तर तिनलाई ती bytes लाई विशेष characters को रूपमा अर्थ लगाइरहनु पर्दैन। उदाहरणका लागि, <function>substr</function>, <function>strpos</function>, <function>strlen</function> वा <function>strcmp</function> को हकमा यस्तै हुन्छ। यी functions लाई बुझ्ने अर्को तरिका के हो भने यिनले memory buffers मा काम गर्छन्, अर्थात् यिनले bytes र byte offsets सँग काम गर्छन्।
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     अन्य functions ले parameter को रूपमा string को encoding प्राप्त गर्छन् वा नदिएको खण्डमा default encoding मान्छन्। <function>htmlentities</function> र <link linkend="book.mbstring">mbstring</link> extension का अधिकांश functions को हकमा यस्तै हुन्छ।
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     अरू केहीले हालको locale प्रयोग गर्छन् (<function>setlocale</function> हेर्नुहोस्), तर byte-by-byte काम गर्छन्।
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     अन्त्यमा, तिनले string ले कुनै खास encoding, सामान्यतया UTF-8, प्रयोग गरिरहेको छ भनी मान्न सक्छन्। <link linkend="book.intl">intl</link> extension र <link linkend="book.pcre">PCRE</link> extension का अधिकांश functions मा (पछिल्लो अवस्थामा, <literal>u</literal> modifier प्रयोग गर्दा मात्र) यस्तै हुन्छ।
+    </simpara>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   अन्ततः, यसको अर्थ Unicode प्रयोग गरेर सही programs लेख्नु भन्नाले काम नगर्ने र सम्भवतः data बिगार्ने functions लाई सावधानीपूर्वक बेवास्ता गर्नु र त्यसको सट्टा सामान्यतया <link linkend="book.intl">intl</link> तथा <link linkend="book.mbstring">mbstring</link> extensions बाट सही व्यवहार गर्ने functions प्रयोग गर्नु हो। यद्यपि, Unicode encodings ह्यान्डल गर्न सक्ने functions प्रयोग गर्नु केवल सुरुवात मात्र हो। भाषाले जुनसुकै functions उपलब्ध गराए पनि, Unicode specification को जानकारी राख्नु अत्यावश्यक छ। उदाहरणका लागि, केवल uppercase र lowercase मात्र हुन्छन् भनी मान्ने program ले गलत अनुमान गरिरहेको हुन्छ।
+  </para>
+ </sect2>
+</sect1><!-- end string -->
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
