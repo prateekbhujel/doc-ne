@@ -1,0 +1,1956 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 5e6ca803fc284739a7b1e7fba58b6b8466d5006f Maintainer: prateekbhujel Status: ready -->
+<chapter xml:id="features.commandline" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>Command line बाट PHP प्रयोग गर्ने तरिका</title>
+ <titleabbrev>Command line प्रयोग</titleabbrev>
+ 
+ <section xml:id="features.commandline.introduction" annotations="chunk:false">
+  <title>परिचय</title>
+  
+  <para>
+   &cli.sapi; को मुख्य उद्देश्य PHP प्रयोग गरेर shell applications विकास गर्नु हो।
+   &cli.sapi; र अन्य <acronym>SAPI</acronym> हरू बीच थुप्रै भिन्नताहरू छन्,
+   जुन यस अध्यायमा व्याख्या गरिएका छन्। यहाँ उल्लेख गर्नुपर्ने महत्वपूर्ण कुरा के छ
+   भने, &cli; र <acronym>CGI</acronym> ले धेरै समान व्यवहार साझा गरे तापनि यी दुई
+   फरक <acronym>SAPI</acronym> हरू हुन्।
+  </para>
+
+  <para>
+   &cli.sapi; डिफल्ट रूपमा <option role="configure">--enable-cli</option>
+   प्रयोग गरी सक्षम (enable) गरिएको हुन्छ, तर <command>./configure</command>
+   चलाउँदा <option role="configure">--disable-cli</option> option प्रयोग गरेर
+   यसलाई अक्षम (disable) गर्न सकिन्छ।
+  </para>
+  
+  <para>
+   तपाईँको system मा PHP कसरी install गरिएको छ भन्ने आधारमा &cli;/<acronym>CGI</acronym>
+   binaries को नाम, स्थान र उपस्थिति फरक पर्न सक्छ। डिफल्ट रूपमा <command>make</command>
+   चलाउँदा <acronym>CGI</acronym> र &cli; दुवै build हुन्छन् र तपाईँको PHP source
+   directory भित्र क्रमशः <filename>sapi/cgi/php-cgi</filename> र
+   <filename>sapi/cli/php</filename> का रूपमा राखिन्छन्। ध्यान दिनुहोस् कि दुवैको
+   नाम <filename>php</filename> हुन्छ। <command>make install</command> चलाउँदा के
+   हुन्छ भन्ने कुरा तपाईँको configure line मा निर्भर गर्दछ। यदि configure गर्दा
+   apxs जस्तो module <acronym>SAPI</acronym> छानिएको छ, वा
+   <option role="configure">--disable-cgi</option> option प्रयोग गरिएको छ भने
+   <command>make install</command> को समयमा &cli; लाई
+   <filename>{PREFIX}/bin/php</filename> मा copy गरिन्छ; अन्यथा त्यहाँ
+   <acronym>CGI</acronym> राखिन्छ। उदाहरणका लागि, यदि तपाईँको configure line मा
+   <option role="configure">--with-apxs</option> छ भने <command>make install</command>
+   चलाउँदा &cli; लाई <filename>{PREFIX}/bin/php</filename> मा copy गरिन्छ।
+   यदि तपाईँ <acronym>CGI</acronym> binary को installation लाई override गर्न
+   चाहनुहुन्छ भने <command>make install</command> पछि
+   <command>make install-cli</command> चलाउनुहोस्। वैकल्पिक रूपमा, तपाईँले
+   configure line मा <option role="configure">--disable-cgi</option> तोक्न
+   सक्नुहुन्छ।
+  </para>
+  
+  <note>
+   <para>
+    <option role="configure">--enable-cli</option> र
+    <option role="configure">--enable-cgi</option> दुवै डिफल्ट रूपमा सक्षम
+    गरिएका हुने भएकाले, configure line मा <option role="configure">--enable-cli</option>
+    राख्दैमा <command>make install</command> गर्दा &cli; नै
+    <filename>{PREFIX}/bin/php</filename> का रूपमा copy हुन्छ भन्ने निश्चित हुँदैन।
+   </para>
+  </note>
+  
+  <para>
+   Windows मा &cli; binary लाई मुख्य folder भित्र <filename>php.exe</filename>
+   का रूपमा वितरण गरिन्छ। <acronym>CGI</acronym> संस्करणलाई
+   <filename>php-cgi.exe</filename> का रूपमा वितरण गरिन्छ। यसका अतिरिक्त, यदि
+   PHP लाई <option role="configure">--enable-cli-win32</option> प्रयोग गरेर
+   configure गरिएको छ भने <filename>php-win.exe</filename> पनि उपलब्ध गराइन्छ।
+   यसले &cli; संस्करण जस्तै काम गर्छ, फरक यति मात्र हो कि यसले केही output
+   दिँदैन र त्यसैले कुनै console पनि प्रदान गर्दैन।
+  </para>
+  
+  <note>
+   <title>मसँग कुन SAPI छ?</title>
+   <para>
+    shell बाट <command>php -v</command> टाइप गर्दा <filename>php</filename> चाहिँ
+    <acronym>CGI</acronym> हो वा &cli; हो भन्ने थाहा हुन्छ। साथै
+    <function>php_sapi_name</function> function र <constant>PHP_SAPI</constant>
+    constant पनि हेर्नुहोस्।
+   </para>
+  </note>
+  
+  <note>
+   <para>
+    shell वातावरणमा <command>man php</command> टाइप गरेर Unix
+    <literal>man</literal>ual पृष्ठ हेर्न सकिन्छ।
+   </para>
+  </note>
+ </section>
+
+ <section xml:id="features.commandline.differences">
+  <title>अन्य <acronym>SAPI</acronym> हरूभन्दा फरक पक्षहरू</title>
+  
+  <para>
+   अन्य <acronym>SAPI</acronym> हरूको तुलनामा &cli; <acronym>SAPI</acronym> का
+   प्रमुख भिन्नताहरू यस प्रकार छन्:
+   <itemizedlist>
+    <listitem>
+     <para>
+      <acronym>CGI</acronym> <acronym>SAPI</acronym> को विपरीत, output मा कुनै
+      headers लेखिँदैनन्।
+     </para>
+     <para>
+      <acronym>CGI</acronym> <acronym>SAPI</acronym> मा HTTP headers रोक्ने उपाय
+      उपलब्ध भए तापनि &cli.sapi; मा तिनलाई सक्षम पार्ने त्यस्तो कुनै switch छैन।
+     </para>
+     <para>
+      &cli; डिफल्ट रूपमै quiet mode मा सुरु हुन्छ; यद्यपि पुराना
+      <acronym>CGI</acronym> scripts चलाउन मिल्ने compatibility का लागि
+      <option>-q</option> र <option>--no-header</option> switches यथावत् राखिएका छन्।
+     </para>
+     <para>
+      यसले working directory लाई script रहेको directory मा परिवर्तन गर्दैन।
+      (compatibility का लागि <option>-C</option> र <option>--no-chdir</option>
+      switches राखिएका छन्)
+     </para>
+     <para>
+      साधारण text मा error messages आउँछन् (कुनै <acronym>HTML</acronym> formatting
+      हुँदैन)।
+     </para>
+    </listitem>
+    
+    <listitem>
+     <para>
+      केही निश्चित &php.ini; directives लाई &cli.sapi; ले override गर्छ,
+      किनभने shell वातावरणमा ती उपयुक्त हुँदैनन्:
+     </para>
+     <para>
+      <table>
+       <title>Override गरिएका &php.ini; directives</title>
+       <tgroup cols="3">
+        <thead>
+         <row>
+          <entry>Directive</entry>
+          <entry>&cli; <acronym>SAPI</acronym> डिफल्ट मान</entry>
+          <entry>टिप्पणी (Comment)</entry>
+         </row>
+        </thead>
+        <tbody>
+         <row>
+          <entry><link linkend="ini.html-errors">html_errors</link></entry>
+          <entry>&false;</entry>
+          <entry>
+           यो डिफल्ट रूपमा &false; हुन्छ, किनकि व्याख्या नगरिएका
+           <acronym>HTML</acronym> tags ले भरिएका error messages shell वातावरणमा
+           पढ्न निकै कठिन हुन्छ।
+          </entry>
+         </row>
+         <row>
+          <entry><link linkend="ini.implicit-flush">implicit_flush</link></entry>
+          <entry>&true;</entry>
+          <entry>
+           shell वातावरणमा <function>print</function>, <function>echo</function> र
+           यस्तै functions बाट आउने output लाई buffer मा रोकेर नराखी तुरुन्तै
+           देखाइनु सामान्यतया उपयोगी हुन्छ। यद्यपि, standard output लाई पछि सार्न
+           वा परिमार्जन गर्न <link linkend="ref.outcontrol">output buffering</link>
+           अझै पनि प्रयोग गर्न सकिन्छ।
+          </entry>
+         </row>
+         <row>
+          <entry><link linkend="ini.max-execution-time">max_execution_time</link></entry>
+          <entry>0 (असीमित)</entry>
+          <entry>
+           सामान्य Web-based scripts को तुलनामा shell वातावरणमा PHP धेरै विविध
+           कामहरूका लागि प्रयोग गरिन्छ, र यस्ता कार्यहरू निकै लामो समयसम्म चल्न
+           सक्ने भएकाले अधिकतम execution समय असीमित राखिएको हुन्छ।
+          </entry>
+         </row>
+         <row>
+          <entry><link linkend="ini.register-argc-argv">register_argc_argv</link></entry>
+          <entry>&true;</entry>
+          <entry>
+          <para>
+           यसलाई &true; राख्नुको अर्थ &cli; <acronym>SAPI</acronym> मार्फत चलाइने
+           scripts ले सधैँ <emphasis>argc</emphasis> (application मा पठाइएका
+           arguments को सङ्ख्या) र <emphasis>argv</emphasis> (वास्तविक arguments
+           को array) मा पहुँच पाउँछन् भन्ने हो।
+          </para>
+          <para>
+           &cli; <acronym>SAPI</acronym> प्रयोग गर्दा PHP variables
+           <varname>$argc</varname> र <varname>$argv</varname> स्वतः उपयुक्त
+           values सहित set हुन्छन्। यी values <varname>$_SERVER</varname> array
+           भित्र पनि भेटिन्छन्, उदाहरणका लागि: <varname>$_SERVER['argv']</varname>।
+          </para>
+          <warning>
+           <para>
+            <varname>$argv</varname> वा <varname>$_SERVER['argv']</varname> को
+            उपस्थिति नै कुनै script command line बाट चलिरहेको छ भन्ने भरपर्दो
+            सङ्केत होइन, किनकि <link linkend="ini.register-argc-argv">register_argc_argv</link>
+            सक्षम हुँदा अन्य सन्दर्भमा पनि यी set हुन सक्छन्। त्यसको सट्टा
+            <function>php_sapi_name</function> ले return गर्ने value जाँच गरिनुपर्छ।
+            <informalexample>
+             <programlisting role="php">
+<![CDATA[
+<?php
+
+if (php_sapi_name() === 'cli') {
+    echo "This is being run from the command line!\n";
+}
+]]>
+             </programlisting>
+            </informalexample>
+           </para>
+          </warning>
+          &warn.deprecated.feature-8-5-0;
+          </entry>
+         </row>
+         <row>
+          <entry><link linkend="ini.output-buffering">output_buffering</link></entry>
+          <entry>&false;</entry>
+          <entry>
+           <para>
+            &php.ini; setting hardcode गरेर &false; राखिएको भए तापनि
+            <link linkend="book.outcontrol">Output buffering</link> functions
+            उपलब्ध हुन्छन्।
+           </para>
+          </entry>
+         </row>
+         <row>
+          <entry><link linkend="ini.max-input-time">max_input_time</link></entry>
+          <entry>&false;</entry>
+          <entry>
+           <para>
+            PHP &cli; ले GET, POST वा file uploads लाई समर्थन गर्दैन।
+           </para>
+          </entry>
+         </row>
+        </tbody>
+       </tgroup>
+      </table>
+     </para>
+     <note>
+      <para>
+       यी directives लाई &php.ini; वा कुनै custom configuration file (यदि तोकिएको
+       छ भने) बाट अर्को value दिएर initialize गर्न सकिँदैन। सबै configuration
+       files parse भइसकेपछि मात्र यी values लागू गरिने भएकाले यस्तो सीमा रहेको हो।
+       यद्यपि, runtime को बेला यिनका values परिवर्तन गर्न सकिन्छ (तर
+       <link linkend="ini.register-argc-argv">register_argc_argv</link> जस्ता सबै
+       directives का लागि यो अर्थपूर्ण हुँदैन)।
+      </para>
+     </note>
+     <note>
+      <para>
+       command line scripts का लागि
+       <link linkend="ini.ignore-user-abort">ignore_user_abort</link> set गर्न
+       सिफारिस गरिन्छ। थप जानकारीका लागि <function>ignore_user_abort</function>
+       हेर्नुहोस्।
+      </para>
+     </note>
+    </listitem>
+    
+    <listitem>
+     <para>
+      shell वातावरणमा काम गर्न सहज होस् भनेर <link linkend="features.commandline.io-streams">I/O streams</link>
+      का लागि थुप्रै constants परिभाषित गरिएका छन्।
+     </para>
+    </listitem>
+    
+    <listitem>
+     <para>
+      &cli.sapi; ले current directory लाई चलाइएको script को directory मा परिवर्तन
+      <emphasis role="strong">गर्दैन</emphasis>।
+     </para>
+     <example>
+      <title>
+       <acronym>CGI</acronym> <acronym>SAPI</acronym> सँगको भिन्नता देखाउने उदाहरण:
+      </title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+// Our simple test application named test.php
+echo getcwd(), "\n";
+?>
+]]>
+      </programlisting>
+      <para>
+       <acronym>CGI</acronym> संस्करण प्रयोग गर्दा यस्तो output आउँछ:
+      </para>
+      <screen>
+<![CDATA[
+$ pwd
+/tmp
+
+$ php -q another_directory/test.php
+/tmp/another_directory
+]]>
+      </screen>
+      <para>
+       यसले स्पष्ट रूपमा देखाउँछ कि PHP ले आफ्नो current directory लाई चलाइएको
+       script को directory मा परिवर्तन गर्छ।
+      </para>
+      <para>
+       &cli.sapi; प्रयोग गर्दा यस्तो नतिजा आउँछ:
+      </para>
+      <screen>
+<![CDATA[
+$ pwd
+/tmp
+
+$ php -f another_directory/test.php
+/tmp
+]]>
+      </screen>
+      <para>
+       यसले PHP मा shell tools लेख्दा अझ बढी लचिलोपन प्रदान गर्छ।
+      </para>
+     </example>
+     <note>
+      <simpara>
+       command line बाट चलाउँदा <acronym>CGI</acronym> <acronym>SAPI</acronym> ले
+       <option>-C</option> switch मार्फत यो &cli.sapi; व्यवहारलाई समर्थन गर्छ।
+      </simpara>
+     </note>
+    </listitem>
+   </itemizedlist>
+  </para>
+ </section>
+
+ <section xml:id="features.commandline.options">
+  <title>Command line options</title>
+  <titleabbrev>Options</titleabbrev>
+  
+  <para>
+   PHP binary ले प्रदान गर्ने command line options को सूची जुनसुकै बेला
+   <option>-h</option> switch सँग PHP चलाएर हेर्न सकिन्छ:
+   <screen>
+<![CDATA[
+Usage: php [options] [-f] <file> [--] [args...]
+   php [options] -r <code> [--] [args...]
+   php [options] [-B <begin_code>] -R <code> [-E <end_code>] [--] [args...]
+   php [options] [-B <begin_code>] -F <file> [-E <end_code>] [--] [args...]
+   php [options] -- [args...]
+   php [options] -a
+
+  -a               Run interactively
+  -c <path>|<file> Look for php.ini file in this directory
+  -n               No php.ini file will be used
+  -d foo[=bar]     Define INI entry foo with value 'bar'
+  -e               Generate extended information for debugger/profiler
+  -f <file>        Parse and execute <file>.
+  -h               This help
+  -i               PHP information
+  -l               Syntax check only (lint)
+  -m               Show compiled in modules
+  -r <code>        Run PHP <code> without using script tags <?..?>
+  -B <begin_code>  Run PHP <begin_code> before processing input lines
+  -R <code>        Run PHP <code> for every input line
+  -F <file>        Parse and execute <file> for every input line
+  -E <end_code>    Run PHP <end_code> after processing all input lines
+  -H               Hide any passed arguments from external tools.
+  -S <addr>:<port> Run with built-in web server.
+  -t <docroot>     Specify document root <docroot> for built-in web server.
+  -s               Output HTML syntax highlighted source.
+  -v               Version number
+  -w               Output source with stripped comments and whitespace.
+
+  args...          Arguments passed to script. Use -- args when first argument
+                   starts with - or script is read from stdin
+
+  --ini            Show configuration file names
+
+  --rf <name>      Show information about function <name>.
+  --rc <name>      Show information about class <name>.
+  --re <name>      Show information about extension <name>.
+  --rz <name>      Show information about Zend extension <name>.
+  --ri <name>      Show configuration for extension <name>.
+]]>
+   </screen>
+  </para>
+  
+  <para>
+   <table>
+    <title>Command line options</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Option</entry>
+       <entry>Long Option</entry>
+       <entry>विवरण (Description)</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>-a</entry>
+       <entry>--interactive</entry>
+       <entry>
+        <para>
+         PHP लाई अन्तरक्रियात्मक रूपमा (interactively) चलाउनुहोस्। थप जानकारीका
+         लागि <link linkend="features.commandline.interactive">Interactive shell</link>
+         खण्ड हेर्नुहोस्।
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>-b</entry>
+       <entry>--bindpath</entry>
+       <entry>
+        <para>
+         बाह्य FASTCGI Server mode का लागि Bind Path (<acronym>CGI</acronym>
+         मात्र)।
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>-C</entry>
+       <entry>--no-chdir</entry>
+       <entry>
+        <para>
+         script को directory मा chdir नगर्नुहोस् (<acronym>CGI</acronym> मात्र)।
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>-q</entry>
+       <entry>--no-header</entry>
+       <entry>
+        <para>
+         Quiet-mode। <acronym>HTTP</acronym> header output रोक्नुहोस्
+         (<acronym>CGI</acronym> मात्र)।
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>-T</entry>
+       <entry>--timing</entry>
+       <entry>
+        <para>
+         <varname>count</varname> पटक दोहोर्‍याएर script चल्न लाग्ने समय मापन
+         गर्नुहोस् (<acronym>CGI</acronym> मात्र)।
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>-c</entry>
+       <entry>--php-ini</entry>
+       <entry>
+        <para>
+         &php.ini; खोज्ने directory वा कुनै custom <literal>INI</literal> file
+         (जसको नाम &php.ini; नै हुनुपर्छ भन्ने छैन) तोक्छ, जस्तै:
+        </para>
+        <para><informalexample>
+         <screen>
+<![CDATA[
+$ php -c /custom/directory/ my_script.php
+
+$ php -c /custom/directory/custom-file.ini my_script.php
+]]>
+         </screen>
+        </informalexample></para>
+        <para>
+         यदि यो option नतोकिएमा, &php.ini; लाई
+         <link linkend="configuration.file">डिफल्ट स्थानहरूमा</link> खोजिन्छ।
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>-n</entry>
+       <entry>--no-php-ini</entry>
+       <entry>
+        <para>
+         &php.ini; लाई पूर्ण रूपमा वेवास्ता गर्नुहोस्।
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>-d</entry>
+       <entry>--define</entry>
+       <entry>
+        <para>
+         &php.ini; मा अनुमति दिइएका कुनै पनि configuration directives का लागि
+         custom value set गर्नुहोस्। यसको syntax यस प्रकार छ:
+         <screen>
+ <![CDATA[
+ -d configuration_directive[=value]
+ ]]>
+         </screen>
+        </para>
+        <para><example>
+         <title>INI setting सेट गर्न <literal>-d</literal> प्रयोग गर्ने उदाहरण</title>
+         <screen>
+<![CDATA[
+# Omitting the value part will set the given configuration directive to "1"
+$ php -d max_execution_time
+        -r '$foo = ini_get("max_execution_time"); var_dump($foo);'
+string(1) "1"
+
+# Passing an empty value part will set the configuration directive to ""
+php -d max_execution_time=
+        -r '$foo = ini_get("max_execution_time"); var_dump($foo);'
+string(0) ""
+
+# The configuration directive will be set to anything passed after the '=' character
+$  php -d max_execution_time=20
+        -r '$foo = ini_get("max_execution_time"); var_dump($foo);'
+string(2) "20"
+$  php
+        -d max_execution_time=doesntmakesense
+        -r '$foo = ini_get("max_execution_time"); var_dump($foo);'
+string(15) "doesntmakesense"
+]]>
+         </screen>
+        </example></para>
+       </entry>
+      </row>
+      <row>
+       <entry>-e</entry>
+       <entry>--profile-info</entry>
+       <entry>
+        <para>
+         debugger/profiler द्वारा प्रयोग गरिने extended information mode
+         सक्रिय (activate) गर्नुहोस्।
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>-f</entry>
+       <entry>--file</entry>
+       <entry>
+        <para>
+         तोकिएको file लाई parse र execute गर्नुहोस्। <option>-f</option>
+         वैकल्पिक हो र यसलाई नराखे पनि हुन्छ - execute गर्नुपर्ने file को नाम
+         मात्र दिँदा पनि पर्याप्त हुन्छ।
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>-h र -?</entry>
+       <entry>--help र --usage</entry>
+       <entry>
+        command line options को सूची र प्रत्येकले के काम गर्छ भन्ने एक-लाइने
+        विवरण output दिन्छ।
+       </entry>
+      </row>
+      <row>
+       <entry>-i</entry>
+       <entry>--info</entry>
+       <entry>
+        <function>phpinfo</function> call गर्छ र नतिजा print गर्छ। यदि PHP ले
+        सही तरिकाले काम गरिरहेको छैन भने, <command>php -i</command> command
+        चलाएर जानकारी तालिकाभन्दा अगाडि वा त्यसको सट्टामा कुनै error messages
+        प्रिन्ट भएका छन् कि छैनन् भनी हेर्नु उचित हुन्छ। ध्यान दिनुहोस् कि
+        <acronym>CGI</acronym> mode प्रयोग गर्दा output <acronym>HTML</acronym>
+        मा आउने भएकाले निकै ठूलो हुन्छ।
+       </entry>
+      </row>
+      <row>
+       <entry>-l</entry>
+       <entry>--syntax-check</entry>
+       <entry>
+        <para>
+         दिइएको PHP code को syntax मात्र जाँच गर्नुहोस् तर execute नगर्नुहोस्।
+         यदि कुनै file नाम नतोकिएमा standard input बाट आउने input process
+         गरिनेछ, अन्यथा प्रत्येक file नाम जाँच गरिनेछ। सफल भएमा standard output मा
+         <literal>No syntax errors detected in &lt;filename&gt;</literal> लेखिन्छ।
+         असफल भएमा आन्तरिक parser error का अतिरिक्त standard output मा
+         <literal>Errors parsing &lt;filename&gt;</literal> लेखिन्छ। यदि
+         तोकिएका files (वा standard input) मा कुनै असफलता भेटिएमा shell return
+         code लाई <literal>-1</literal> मा set गरिन्छ, अन्यथा shell return code
+         <literal>0</literal> हुन्छ।
+        </para>
+        <para>
+         यो option ले code execute नगरी थाहा नहुने fatal errors (जस्तै परिभाषित
+         नगरिएका functions) पत्ता लगाउँदैन।
+        </para>
+        <note>
+         <para>
+          PHP 8.3.0 भन्दा अगाडि, जाँच गर्नका लागि केवल एउटा मात्र file नाम तोक्न
+          सम्भव थियो।
+         </para>
+        </note>
+        <note>
+         <para>
+          यो option ले <option>-r</option> option सँगै काम गर्दैन।
+         </para>
+        </note>
+       </entry>
+      </row>
+      <row>
+       <entry>-m</entry>
+       <entry>--modules</entry>
+       <entry>
+        <para><example>
+         <title>Built-in (र load गरिएका) PHP तथा Zend modules प्रिन्ट गर्ने उदाहरण</title>
+         <screen>
+<![CDATA[
+$ php -m
+[PHP Modules]
+xml
+tokenizer
+standard
+session
+posix
+pcre
+overload
+mysql
+mbstring
+ctype
+
+[Zend Modules]
+]]>
+         </screen>
+        </example></para>
+       </entry>
+      </row>
+      <row>
+       <entry>-r</entry>
+       <entry>--run</entry>
+       <entry>
+        <para>
+         command line मै सिधै लेखिएको PHP code चलाउन अनुमति दिन्छ। PHP का सुरु र
+         अन्त्यका tags (<literal>&lt;?php</literal> र <literal>?&gt;</literal>)
+         <emphasis role="strong">आवश्यक पर्दैनन्</emphasis>, र यदि ती राखिएमा
+         parse error आउनेछ।
+        </para>
+        <note>
+         <para>
+          PHP को यो रूप प्रयोग गर्दा shell ले गर्ने command line variable
+          substitution सँग नजुधोस् भनेर सावधानी अपनाउनुपर्छ।
+         </para>
+         <example>
+          <title>Double quotes प्रयोग गर्दा syntax error आउने उदाहरण</title>
+          <screen>
+<![CDATA[
+$ php -r "$foo = get_defined_constants();"
+PHP Parse error:  syntax error, unexpected '=' in Command line code on line 1
+
+Parse error: syntax error, unexpected '=' in Command line code on line 1
+]]>
+          </screen>
+         </example>
+         <para>
+          यहाँ समस्या के हो भने sh/bash ले double quotes <literal>"</literal>
+          प्रयोग गर्दा पनि variable substitution गर्छ। variable
+          <varname>$foo</varname> पहिले नै परिभाषित गरिएको हुने सम्भावना कम
+          भएकाले, यो खालीमा expand हुन्छ जसको परिणामस्वरूप PHP लाई execution का
+          लागि पठाइने code वास्तवमा यस्तो बन्न पुग्छ:
+         </para>
+         <informalexample>
+          <screen>
+<![CDATA[
+$ php -r " = get_defined_constants();"
+]]>
+          </screen>
+         </informalexample>
+         
+         <para>
+          सही तरिका चाहिँ single quotes <literal>'</literal> प्रयोग गर्नु हो।
+          single-quoted strings भित्रका variables लाई sh/bash ले expand गर्दैन।
+         </para>
+         <example>
+          <title>Shell को variable substitution रोक्न single quotes प्रयोग गर्ने उदाहरण</title>
+          <screen>
+<![CDATA[
+$ php -r '$foo = get_defined_constants(); var_dump($foo);'
+array(370) {
+  ["E_ERROR"]=>
+  int(1)
+  ["E_WARNING"]=>
+  int(2)
+  ["E_PARSE"]=>
+  int(4)
+  ["E_NOTICE"]=>
+  int(8)
+  ["E_CORE_ERROR"]=>
+  [...]
+]]>
+          </screen>
+         </example>
+         <para>
+          यदि sh/bash बाहेक अन्य shell प्रयोग गर्दै हुनुहुन्छ भने थप समस्याहरू
+          देखिन सक्छन् - आवश्यक लागेमा <link xlink:href="&url.php.bugs;">&url.php.bugs;</link>
+          मा bug report खोल्नुहोस्। command-line code मा variables (shell वा PHP)
+          प्रयोग गर्न खोज्दा वा escaping का लागि backslashes प्रयोग गर्दा समस्यामा
+          पर्न अझै पनि सजिलो हुन्छ, त्यसैले यसो गर्दा विशेष ध्यान दिनुहोस्।
+          तपाईँलाई सावधान गराइएको छ!
+         </para>
+        </note>
+        <note>
+         <para>
+          <option>-r</option> option &cli.sapi; मा उपलब्ध छ, तर
+          <emphasis>CGI</emphasis> <acronym>SAPI</acronym> मा उपलब्ध छैन।
+         </para>
+        </note>
+        <note>
+         <para>
+          यो option अत्यन्त आधारभूत code का लागि मात्र बनाइएको हो, त्यसैले यस
+          mode मा केही configuration directives (जस्तै
+          <link linkend="ini.auto-prepend-file">auto_prepend_file</link> र
+          <link linkend="ini.auto-append-file">auto_append_file</link>) लाई
+          वेवास्ता गरिन्छ।
+         </para>
+        </note>
+       </entry>
+      </row>
+      <row>
+       <entry>-B</entry>
+       <entry>--process-begin</entry>
+       <entry>
+        <para>
+         stdin process गर्नुअघि चलाउनुपर्ने PHP code।
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>-R</entry>
+       <entry>--process-code</entry>
+       <entry>
+        <para>
+         प्रत्येक input लाइनका लागि चलाउनुपर्ने PHP code।
+        </para>
+        <para>
+         यस mode मा दुईवटा विशेष variables उपलब्ध हुन्छन्:
+         <varname>$argn</varname> र <varname>$argi</varname>।
+         <varname>$argn</varname> मा PHP ले त्यस क्षणमा process गरिरहेको लाइन
+         रहन्छ भने <varname>$argi</varname> मा लाइन नम्बर रहन्छ।
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>-F</entry>
+       <entry>--process-file</entry>
+       <entry>
+        <para>
+         प्रत्येक input लाइनका लागि चलाउनुपर्ने PHP file।
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>-E</entry>
+       <entry>--process-end</entry>
+       <entry>
+        <para>
+         input process गरिसकेपछि चलाउनुपर्ने PHP code।
+        </para>
+        <para><example>
+         <title>कुनै project का लाइनहरूको सङ्ख्या गन्न <option>-B</option>, <option>-R</option> र
+          <option>-E</option> options प्रयोग गर्ने उदाहरण।
+         </title>
+         <screen>
+<![CDATA[
+$ find my_proj | php -B '$l=0;' -R '$l += count(@file($argn));' -E 'echo "Total Lines: $l\n";'
+Total Lines: 37328
+]]>
+         </screen>
+        </example></para>
+       </entry>
+      </row>
+      <row>
+       <entry>-S</entry>
+       <entry>--server</entry>
+       <entry>
+        <para>
+         <link linkend="features.commandline.webserver">built-in web server</link>
+         सुरु गर्छ।
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>-t</entry>
+       <entry>--docroot</entry>
+       <entry>
+        <link linkend="features.commandline.webserver">built-in web server</link>
+        का लागि document root तोक्छ।
+       </entry>
+      </row>
+      <row>
+       <entry>-s</entry>
+       <entry>--syntax-highlight र --syntax-highlighting</entry>
+       <entry>
+        <para>
+         रङ्गिन syntax highlight गरिएको source देखाउनुहोस्।
+        </para>
+        <para>
+         यो option ले file parse गर्न आन्तरिक प्रणाली प्रयोग गर्छ र त्यसको HTML
+         highlighted संस्करण standard output मा लेख्छ। ध्यान दिनुहोस् कि यसले
+         केवल <literal>&lt;code&gt; [...] &lt;/code&gt;</literal> HTML tags
+         को एउटा block मात्र बनाउँछ, HTML headers बनाउँदैन।
+        </para>
+        <note>
+         <para>
+          यो option ले <option>-r</option> option सँगै काम गर्दैन।
+         </para>
+        </note>
+       </entry>
+      </row>
+      <row>
+       <entry>-v</entry>
+       <entry>--version</entry>
+       <entry>
+        <para><example>
+         <title><acronym>SAPI</acronym> को नाम तथा PHP र Zend को version थाहा पाउन <option>-v</option> प्रयोग गर्ने उदाहरण</title>
+         <screen>
+<![CDATA[
+$ php -v
+PHP 5.3.1 (cli) (built: Dec 11 2009 19:55:07)
+Copyright (c) 1997-2009 The PHP Group
+Zend Engine v2.3.0, Copyright (c) 1998-2009 Zend Technologies
+]]>
+         </screen>
+        </example></para>
+       </entry>
+      </row>
+      <row>
+       <entry>-w</entry>
+       <entry>--strip</entry>
+       <entry>
+        <para>
+         comments र whitespace हटाइएको source देखाउनुहोस्।
+        </para>
+        <note>
+         <para>
+          यो option ले <option>-r</option> option सँगै काम गर्दैन।
+         </para>
+        </note>
+       </entry>
+      </row>
+      <row>
+       <entry></entry>
+       <entry>--ini</entry>
+       <entry>
+        <para>
+         configuration file का नामहरू र scan गरिएका directories देखाउनुहोस्।
+         वैकल्पिक रूपमा, load गरिएका configuration files र डिफल्ट configuration
+         बीचको भिन्नता देखाउन <literal>--ini=diff</literal> pass गर्न सकिन्छ।
+         <example>
+          <title><literal>--ini</literal> उदाहरण</title>
+          <programlisting role="shell">
+<![CDATA[
+$ php --ini
+Configuration File (php.ini) Path: /usr/dev/php/5.2/lib
+Loaded Configuration File:         /usr/dev/php/5.2/lib/php.ini
+Scan for additional .ini files in: (none)
+Additional .ini files parsed:      (none)
+]]>
+          </programlisting>
+         </example>
+         <note>
+          <simpara>
+           PHP 8.5.0 भन्दा अगाडि <literal>--ini=diff</literal> option उपलब्ध छैन।
+          </simpara>
+         </note>
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>--rf</entry>
+       <entry>--rfunction</entry>
+       <entry>
+        <para>
+         दिइएको function वा class method को बारेमा जानकारी देखाउनुहोस् (जस्तै
+         parameters को सङ्ख्या र नाम)।
+        </para>
+        <para>
+         यदि PHP लाई <link linkend="book.reflection">Reflection</link> support
+         सहित compile गरिएको छ भने मात्र यो option उपलब्ध हुन्छ।
+        </para>
+        <para>
+         <example>
+          <title>आधारभूत <literal>--rf</literal> प्रयोग</title>
+          <programlisting role="shell">
+<![CDATA[
+$ php --rf var_dump
+Function [ <internal> public function var_dump ] {
+
+  - Parameters [2] {
+    Parameter #0 [ <required> $var ]
+    Parameter #1 [ <optional> $... ]
+  }
+}
+]]>
+          </programlisting>
+         </example>
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>--rc</entry>
+       <entry>--rclass</entry>
+       <entry>
+        <para>
+         दिइएको class को बारेमा जानकारी देखाउनुहोस् (constants, properties र
+         methods को सूची)।
+        </para>
+        <para>
+         यदि PHP लाई <link linkend="book.reflection">Reflection</link> support
+         सहित compile गरिएको छ भने मात्र यो option उपलब्ध हुन्छ।
+        </para>
+        <para>
+         <example>
+          <title><literal>--rc</literal> उदाहरण</title>
+          <programlisting role="shell">
+<![CDATA[
+$ php --rc Directory
+Class [ <internal:standard> class Directory ] {
+
+  - Constants [0] {
+  }
+
+  - Static properties [0] {
+  }
+
+  - Static methods [0] {
+  }
+
+  - Properties [0] {
+  }
+
+  - Methods [3] {
+    Method [ <internal> public method close ] {
+    }
+
+    Method [ <internal> public method rewind ] {
+    }
+
+    Method [ <internal> public method read ] {
+    }
+  }
+}
+]]>
+          </programlisting>
+         </example>
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>--re</entry>
+       <entry>--rextension</entry>
+       <entry>
+        <para>
+         दिइएको extension को बारेमा जानकारी देखाउनुहोस् (&php.ini; options,
+         परिभाषित functions, constants र classes को सूची)।
+        </para>
+        <para>
+         यदि PHP लाई <link linkend="book.reflection">Reflection</link> support
+         सहित compile गरिएको छ भने मात्र यो option उपलब्ध हुन्छ।
+        </para>
+        <para>
+         <example>
+          <title><literal>--re</literal> उदाहरण</title>
+          <programlisting role="shell">
+<![CDATA[
+$ php --re json
+Extension [ <persistent> extension #19 json version 1.2.1 ] {
+
+  - Functions {
+    Function [ <internal> function json_encode ] {
+    }
+    Function [ <internal> function json_decode ] {
+    }
+  }
+}
+]]>
+          </programlisting>
+         </example>
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>--rz</entry>
+       <entry>--rzendextension</entry>
+       <entry>
+        <para>
+         दिइएको Zend extension को configuration जानकारी देखाउनुहोस् (<function>phpinfo</function>
+         ले return गर्ने जस्तै जानकारी)।
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>--ri</entry>
+       <entry>--rextinfo</entry>
+       <entry>
+        <para>
+         दिइएको extension को configuration जानकारी देखाउनुहोस् (<function>phpinfo</function>
+         ले return गर्ने जस्तै जानकारी)। core configuration जानकारी हेर्न
+         extension नामका रूपमा "main" प्रयोग गर्न सकिन्छ।
+        </para>
+        <para>
+         <example>
+          <title><literal>--ri</literal> उदाहरण</title>
+          <programlisting role="shell">
+<![CDATA[
+$ php --ri date
+
+date
+
+date/time support => enabled
+"Olson" Timezone Database Version => 2009.20
+Timezone Database => internal
+Default timezone => Europe/Oslo
+
+Directive => Local Value => Master Value
+date.timezone => Europe/Oslo => Europe/Oslo
+date.default_latitude => 59.930972 => 59.930972
+date.default_longitude => 10.776699 => 10.776699
+date.sunset_zenith => 90.583333 => 90.583333
+date.sunrise_zenith => 90.583333 => 90.583333
+]]>
+          </programlisting>
+         </example>
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+  
+  <note>
+   <para>
+    <literal>-rBRFEH</literal>, <literal>--ini</literal> र
+    <literal>--r[fcezi]</literal> options केवल &cli; मा मात्र उपलब्ध छन्।
+   </para>
+  </note>
+ </section>
+
+ <section xml:id="features.commandline.usage">
+  <title>PHP files चलाउने तरिका</title>
+  <titleabbrev>प्रयोग</titleabbrev>
+  
+  <para>
+   execute गर्नका लागि &cli.sapi; लाई PHP code दिने तीनवटा फरक तरिकाहरू छन्:
+   <orderedlist>
+    <listitem>
+     <para>
+      PHP लाई कुनै निश्चित file चलाउन निर्देशन दिनुहोस्।
+     </para>
+     <informalexample>
+      <screen>
+<![CDATA[
+$ php my_script.php
+
+$ php -f my_script.php
+]]>
+      </screen>
+     </informalexample>
+     <simpara>
+      यी दुवै तरिकाले (<option>-f</option> switch प्रयोग गरेर वा नगरी)
+      <filename>my_script.php</filename> file लाई चलाउँछन्। ध्यान दिनुहोस् कि
+      कुन files चलाउन सकिन्छ भन्नेमा कुनै प्रतिबन्ध छैन; विशेष गरी, file को नाममा
+      <literal>.php</literal> extension हुनैपर्छ भन्ने जरुरी छैन।
+     </simpara>
+    </listitem>
+    <listitem>
+     <para>
+      चलाउनुपर्ने PHP code सिधै command line मा pass गर्नुहोस्।
+     </para>
+     <informalexample>
+      <screen>
+<![CDATA[
+$ php -r 'print_r(get_defined_constants());'
+]]>
+      </screen>
+     </informalexample>
+     <para>
+      shell variable substitution र quotes को प्रयोगको सन्दर्भमा विशेष सावधानी
+      अपनाउनुपर्छ।
+     </para>
+     <note>
+      <para>
+       उदाहरणलाई ध्यान दिएर हेर्नुहोस्: त्यहाँ सुरु वा अन्त्यका tags छैनन्!
+       <option>-r</option> switch लाई ती आवश्यक पर्दैनन्, र तिनको प्रयोग गरेमा
+       parse error आउनेछ।
+      </para>
+     </note>
+    </listitem>
+    <listitem>
+     <para>
+      standard input (<literal>stdin</literal>) मार्फत execute गर्नुपर्ने PHP
+      code दिनुहोस्।
+     </para>
+     <para>
+      यसले dynamically PHP code बनाएर सिधै binary मा feed गर्ने शक्तिशाली
+      क्षमता दिन्छ, जस्तो कि यो (काल्पनिक) उदाहरणमा देखाइएको छ:
+     </para>
+     <informalexample>
+      <screen>
+<![CDATA[
+$ some_application | some_filter | php | sort -u > final_output.txt
+]]>
+      </screen>
+     </informalexample>
+    </listitem>
+   </orderedlist>
+   तपाईँले code चलाउने यी तीनमध्ये कुनै पनि तरिकालाई एकैसाथ मिसाएर प्रयोग गर्न
+   सक्नुहुन्न।
+  </para>
+  
+  <para>
+   अन्य सबै shell application जस्तै PHP binary ले पनि थुप्रै arguments स्वीकार
+   गर्छ; तर PHP script ले पनि थप arguments प्राप्त गर्न सक्छ। तपाईँको script
+   मा pass गर्न सकिने arguments को सङ्ख्यालाई PHP ले सीमित गरेको छैन (र shell
+   मा pass गर्न सकिने characters को सङ्ख्यामा सीमा भए पनि सामान्यतया त्यो
+   सीमासम्म पुग्ने अवस्था आउँदैन)। script मा pass गरिएका arguments हरू global
+   array <varname>$argv</varname> मा उपलब्ध हुन्छन्। पहिलो index (शून्य) मा सधैँ
+   command line बाट call गरिएको script को नाम रहन्छ। ध्यान दिनुहोस् कि यदि
+   code लाई <option>-r</option> command line switch प्रयोग गरी in-line चलाइएको
+   छ भने <varname>$argv[0]</varname> को value <literal>"Standard input code"</literal>
+   हुनेछ; PHP 7.2.0 भन्दा अगाडि यसको सट्टा एउटा dash (<literal>"-"</literal>)
+   हुन्थ्यो। <constant>STDIN</constant> बाट pipe मार्फत code चलाउँदा पनि यही
+   नियम लागू हुन्छ।
+  </para>
+
+  <para>
+   दोस्रो global variable, <varname>$argc</varname> मा <varname>$argv</varname>
+   array भित्र रहेका elements को सङ्ख्या रहन्छ (script मा pass गरिएका arguments
+   को सङ्ख्या <emphasis role="strong">होइन</emphasis>)।
+  </para>
+  
+  <para>
+   script मा pass गरिने arguments हरू <literal>-</literal> character बाट सुरु
+   नभएसम्म विशेष ध्यान दिनुपर्ने केही हुँदैन। तर <literal>-</literal> बाट सुरु
+   हुने argument script मा pass गर्दा समस्या आउन सक्छ, किनकि PHP interpreter ले
+   script चलाउनु अघि नै त्यो argument लाई आफैँले handle गर्नुपर्छ भन्ने ठान्छ।
+   यसलाई रोक्नका लागि argument list separator <literal>--</literal> प्रयोग
+   गर्नुहोस्। PHP ले यो separator parse गरिसकेपछि, त्यसपछाडिका प्रत्येक
+   argument लाई जस्ताको तस्तै script मा पठाइन्छ।
+  </para>
+  
+  <informalexample>
+   <screen>
+<![CDATA[
+# This will not execute the given code but will show the PHP usage
+$ php -r 'var_dump($argv);' -h
+Usage: php [options] [-f] <file> [args...]
+[...]
+
+# This will pass the '-h' argument to the script and prevent PHP from showing its usage
+$ php -r 'var_dump($argv);' -- -h
+array(2) {
+  [0]=>
+  string(1) "-"
+  [1]=>
+  string(2) "-h"
+}
+]]>
+   </screen>
+  </informalexample>
+  
+  <para>
+   यद्यपि, Unix systems मा shell scripting का लागि PHP प्रयोग गर्ने अर्को तरिका
+   पनि छ: script को पहिलो लाइन <literal>#!/usr/bin/php</literal> (वा यदि फरक
+   छ भने तपाईँको PHP &cli; binary को जुनसुकै path) बाट सुरु गर्नुहोस्। file को
+   बाँकी भागमा सामान्य PHP सुरु र अन्त्यका tags भित्र सामान्य PHP code हुनुपर्छ।
+   एकपटक file का execution attributes उचित रूपमा set गरिसकेपछि (जस्तै
+   <command>chmod +x test</command>), त्यो script लाई अन्य कुनै पनि shell वा
+   perl script जस्तै चलाउन सकिन्छ:
+  </para>
+  
+  <example>
+   <title>PHP script लाई shell script को रूपमा चलाउने उदाहरण</title>
+   <programlisting role="php">
+<![CDATA[
+#!/usr/bin/php
+<?php
+var_dump($argv);
+?>
+]]>
+   </programlisting>
+   <para>
+     यदि हालको directory मा यो file को नाम <filename>test</filename> राखिएको छ
+     भने, अब निम्न अनुसार गर्न सम्भव छ:
+   </para>
+   <screen>
+<![CDATA[
+$ chmod +x test
+$ ./test -h -- foo
+array(4) {
+  [0]=>
+  string(6) "./test"
+  [1]=>
+  string(2) "-h"
+  [2]=>
+  string(2) "--"
+  [3]=>
+  string(3) "foo"
+}
+]]>
+   </screen>
+  </example>
+  
+  <para>
+   देख्न सकिए झैँ, यस अवस्थामा <literal>-</literal> बाट सुरु हुने parameters
+   pass गर्दा कुनै विशेष सावधानी अपनाइरहनु पर्दैन।
+  </para>
+  
+  <para>
+   PHP executable लाई web server बाट पूर्ण रूपमा स्वतन्त्र रही PHP scripts
+   चलाउन प्रयोग गर्न सकिन्छ। Unix systems मा PHP scripts मा विशेष
+   <literal>#!</literal> (वा "shebang") पहिलो लाइन थप्नुपर्छ ता कि system ले
+   उक्त script कुन program ले चलाउनुपर्छ भन्ने कुरा स्वतः थाहा पाओस्। Windows
+   platforms मा <literal>.php</literal> extension को double click option सँग
+   <filename>php.exe</filename> लाई associate गर्न सकिन्छ, वा PHP मार्फत
+   scripts चलाउन एउटा batch file बनाउन सकिन्छ। Unix का लागि राखिने विशेष
+   shebang पहिलो लाइनले Windows मा कुनै हानि गर्दैन (किनकि यो PHP comment को
+   रूपमा format गरिएको हुन्छ), त्यसैले यसलाई समावेश गरेर cross platform
+   programs लेख्न सकिन्छ। command line PHP program लेख्ने एउटा सरल उदाहरण तल
+   देखाइएको छ।
+  </para>
+  
+  <para>
+   <example>
+    <title>Command line बाट चलाउनका लागि बनाइएको script (script.php)</title>
+    <programlisting role="php">
+<![CDATA[
+#!/usr/bin/php
+<?php
+
+if ($argc != 2 || in_array($argv[1], array('--help', '-help', '-h', '-?'))) {
+?>
+
+This is a command line PHP script with one option.
+
+  Usage:
+  <?php echo $argv[0]; ?> <option>
+
+  <option> can be some word you would like
+  to print out. With the --help, -help, -h,
+  or -? options, you can get this help.
+
+<?php
+} else {
+    echo $argv[1];
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  
+  <para>
+   माथिको script मा यो file PHP ले चलाउनुपर्छ भनी जनाउन Unix shebang को पहिलो
+   लाइन समावेश गरिएको छ। हामी यहाँ &cli; संस्करणसँग काम गरिरहेका छौँ, त्यसैले
+   कुनै <acronym>HTTP</acronym> headers output आउने छैन।
+  </para>
+  
+  <para>
+   program ले पहिले आवश्यक पर्ने एउटा argument (जुन script नामको अतिरिक्त
+   गनिन्छ) छ कि छैन भनी जाँच गर्छ। यदि छैन भने, वा argument चाहिँ
+   <option>--help</option>, <option>-help</option>, <option>-h</option> वा
+   <option>-?</option> थियो भने, command line मा टाइप गरिए अनुसारकै script नाम
+   dynamically प्रिन्ट गर्न <varname>$argv[0]</varname> प्रयोग गर्दै help message
+   प्रिन्ट गरिन्छ। अन्यथा, प्राप्त भएको argument लाई जस्ताको तस्तै echo गरिन्छ।
+  </para>
+  
+  <para>
+   Unix मा माथिको script चलाउन यसलाई executable बनाउनुपर्छ, र सिधै
+   <command>script.php echothis</command> वा <command>script.php -h</command>
+   को रूपमा call गर्नुपर्छ। Windows मा यस कामका लागि तलको जस्तै batch file
+   बनाउन सकिन्छ:
+  </para>
+  
+  <para>
+   <example>
+    <title>Command line PHP script चलाउने batch file (script.bat)</title>
+    <programlisting role="winbat">
+<![CDATA[
+@echo OFF
+"C:\php\php.exe" script.php %*
+]]>
+    </programlisting>
+   </example>
+  </para>
+  
+  <para>
+   माथिको program को नाम <filename>script.php</filename> छ र &cli;
+   <filename>php.exe</filename> चाहिँ <filename>C:\php\php.exe</filename> मा छ
+   भन्ने मान्दा, यो batch file ले पछाडि जोडिएका सबै options सहित यसलाई चलाउनेछ:
+   <command>script.bat echothis</command> वा <command>script.bat -h</command>।
+  </para>
+  
+  <para>
+   PHP मा command line applications लाई अझ प्रभावकारी बनाउन प्रयोग गर्न सकिने
+   थप functions का लागि <link linkend="ref.readline">Readline</link> extension
+   को documentation पनि हेर्नुहोस्।
+  </para>
+  
+  <para>
+   <link linkend="install.windows.commandline">Microsoft Windows मा Command Line PHP</link>
+   मा वर्णन गरिए अनुसार, Windows मा <filename>C:\php\php.exe</filename> वा
+   <literal>.php</literal> extension दिन नपर्ने गरी PHP चलाउन configure गर्न
+   सकिन्छ।
+  </para>
+
+  <note>
+   <para>
+    Windows मा PHP लाई वास्तविक user account अन्तर्गत चलाउन सिफारिस गरिन्छ।
+    network service अन्तर्गत चलाउँदा केही निश्चित कार्यहरू असफल हुनेछन्, किनकि
+    "No mapping between account names and security IDs was done" भन्ने समस्या
+    आउँछ।
+   </para>
+  </note>
+ </section>
+
+ <section xml:id="features.commandline.io-streams">
+  <title>Input/output streams</title>
+  <titleabbrev>I/O streams</titleabbrev>
+  
+  <para>
+   command line का लागि programming गर्न अलि सजिलो होस् भनेर &cli.sapi; ले
+   I/O streams का लागि केही constants परिभाषित गर्दछ।
+  </para>
+  
+  <para>
+   <table>
+    <title>CLI का लागि विशेष Constants</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Constant</entry>
+       <entry>विवरण (Description)</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><constant>STDIN</constant></entry>
+       <entry>
+        <para><literal>stdin</literal> का लागि पहिले नै खोलिएको stream। यसले
+       निम्न code लेखेर खोल्नुपर्ने झन्झट बचाउँछ:
+       <programlisting role="php">
+<![CDATA[
+<?php
+$stdin = fopen('php://stdin', 'r');
+?>
+]]>
+       </programlisting>
+       यदि तपाईँ <literal>stdin</literal> बाट एउटा लाइन पढ्न चाहनुहुन्छ भने,
+       निम्न प्रयोग गर्न सक्नुहुन्छ:
+       <programlisting role="php">
+<![CDATA[
+<?php
+$line = trim(fgets(STDIN)); // reads one line from STDIN
+fscanf(STDIN, "%d\n", $number); // reads number from STDIN
+?>
+]]>
+       </programlisting>
+       </para></entry>
+      </row>
+      <row>
+       <entry><constant>STDOUT</constant></entry>
+       <entry><para>
+       <literal>stdout</literal> का लागि पहिले नै खोलिएको stream। यसले निम्न
+       code लेखेर खोल्नुपर्ने झन्झट बचाउँछ:
+       <programlisting role="php">
+<![CDATA[
+<?php
+$stdout = fopen('php://stdout', 'w');
+?>
+]]>
+       </programlisting>
+       </para></entry>
+      </row>
+      <row>
+       <entry><constant>STDERR</constant></entry>
+       <entry>
+        <para>
+         <literal>stderr</literal> का लागि पहिले नै खोलिएको stream।
+         यसले निम्न code लेखेर खोल्नुपर्ने झन्झट बचाउँछ:
+         <programlisting role="php">
+<![CDATA[
+<?php
+$stderr = fopen('php://stderr', 'w');
+?>
+]]>
+         </programlisting>
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+  
+  <para>
+   माथि उल्लेखित व्यवस्थाका कारण, तपाईँले उदाहरणका लागि <literal>stderr</literal> का
+   लागि आफैँ stream खोलिरहनुपर्दैन, बरु stream resource को सट्टा सिधै
+   constant प्रयोग गरे पुग्छ:
+   <programlisting role="shell">
+<![CDATA[
+php -r 'fwrite(STDERR, "stderr\n");'
+]]>
+   </programlisting>
+   तपाईँले यी streams लाई स्पष्ट रूपमा close गरिरहनुपर्दैन, किनकि तपाईँको
+   script समाप्त हुँदा PHP ले तिनलाई स्वतः close गरिदिन्छ।
+  </para>
+  
+  <note>
+   <para>
+    यदि PHP script लाई <literal>stdin</literal> बाट पढिएको हो भने यी
+    constants उपलब्ध हुँदैनन्।
+   </para>
+  </note>
+ </section>
+
+ <section xml:id="features.commandline.interactive">
+  <title>Interactive shell</title>
+
+  <para>
+   यदि PHP लाई <option role="configure">--with-readline</option> विकल्पसहित
+   compile गरिएको छ भने &cli.sapi; ले <option>-a</option> option प्रयोग गरेर
+   interactive shell प्रदान गर्दछ। PHP 7.1.0 देखि, यदि
+   <link linkend="book.readline">readline extension</link> सक्षम छ भने
+   interactive shell Windows मा पनि उपलब्ध छ।
+  </para>
+
+  <para>
+   interactive shell प्रयोग गरेर तपाईँ PHP code टाइप गर्न र त्यसलाई सिधै
+   execute गराउन सक्नुहुन्छ।
+  </para>
+
+  <example>
+   <title>Interactive shell प्रयोग गरेर code execute गर्ने उदाहरण</title>
+   <programlisting role="shell">
+<![CDATA[
+$ php -a
+Interactive shell
+
+php > echo 5+8;
+13
+php > function addTwo($n)
+php > {
+php { return $n + 2;
+php { }
+php > var_dump(addtwo(2));
+int(4)
+php >
+]]>
+   </programlisting>
+  </example>
+
+  <para>
+   interactive shell मा functions, constants, class का नामहरू, variables,
+   static method calls र class constants का लागि tab completion को सुविधा
+   पनि हुन्छ।
+  </para>
+
+  <example>
+   <title>Tab completion</title>
+   <simpara>
+    धेरै सम्भावित completions हुँदा tab key दुई पटक थिच्दा ती completions को
+    सूची देखिनेछ:
+   </simpara>
+   <programlisting role="shell">
+<![CDATA[
+php > strp[TAB][TAB]
+strpbrk   strpos    strptime  
+php > strp
+]]>
+   </programlisting>
+   <simpara>
+    केवल एउटा मात्र सम्भावित completion हुँदा, एक पटक tab थिच्दा नै त्यही
+    लाइनमा बाँकी भाग पूरा हुनेछ:
+   </simpara>
+   <programlisting role="shell">
+<![CDATA[
+php > strpt[TAB]ime(
+]]>
+   </programlisting>
+   <simpara>
+    हालको interactive shell session को समयमा परिभाषित गरिएका नामहरूका लागि
+    पनि completion ले काम गर्नेछ:
+   </simpara>
+   <programlisting role="shell">
+<![CDATA[
+php > $fooThisIsAReallyLongVariableName = 42;
+php > $foo[TAB]ThisIsAReallyLongVariableName
+]]>
+   </programlisting>
+  </example>
+
+  <simpara>
+   interactive shell ले तपाईँको history सुरक्षित राख्छ जसलाई up र down keys
+   प्रयोग गरेर हेर्न सकिन्छ। यो history <filename>~/.php_history</filename> file
+   मा save हुन्छ। PHP 8.4.0 देखि, <envar>PHP_HISTFILE</envar> environment
+   variable प्रयोग गरेर history file को path set गर्न सकिन्छ।
+  </simpara>
+
+  <para>
+   &cli.sapi; ले &php.ini; settings <parameter>cli.pager</parameter> र
+   <parameter>cli.prompt</parameter> प्रदान गर्दछ। <parameter>cli.pager</parameter>
+   setting ले output सिधै screen मा देखाउनुको सट्टा कुनै बाह्य program (जस्तै
+   <filename>less</filename>) लाई output को pager को रूपमा काम गर्न अनुमति
+   दिन्छ। <parameter>cli.prompt</parameter> setting ले <literal>php &gt;</literal>
+   prompt परिवर्तन गर्न सम्भव बनाउँछ।
+  </para>
+
+  <para>
+   interactive shell भित्रै shorthand notation प्रयोग गरेर &php.ini; settings
+   सेट गर्न पनि सम्भव छ।
+  </para>
+
+  <example>
+   <title>Interactive shell मा &php.ini; settings सेट गर्ने उदाहरण</title>
+   <simpara>
+    <parameter>cli.prompt</parameter> setting:
+   </simpara>
+   <programlisting role="shell">
+<![CDATA[
+php > #cli.prompt=hello world :> 
+hello world :> 
+]]>
+   </programlisting>
+   <simpara>
+    Backticks प्रयोग गरेर prompt भित्र PHP code execute गराउन पनि सम्भव छ:
+   </simpara>
+   <programlisting role="shell">
+<![CDATA[
+php > #cli.prompt=`echo date('H:i:s');` php > 
+15:49:35 php > echo 'hi';
+hi
+15:49:43 php > sleep(2);
+15:49:45 php > 
+]]>
+   </programlisting>
+   <simpara>
+    Pager लाई <filename>less</filename> मा सेट गर्ने उदाहरण:
+   </simpara>
+   <programlisting role="shell">
+<![CDATA[
+php > #cli.pager=less
+php > phpinfo();
+(output displayed in less)
+php > 
+]]>
+   </programlisting>
+  </example>
+
+  <para>
+   <parameter>cli.prompt</parameter> setting ले केही escape sequences समर्थन
+   गर्दछ:
+   <table>
+    <title><parameter>cli.prompt</parameter> का escape sequences</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Sequence</entry>
+       <entry>विवरण (Description)</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><literal>\e</literal></entry>
+       <entry>
+        prompt मा रङ्गहरू थप्नका लागि प्रयोग गरिन्छ। एउटा उदाहरण
+        <literal>\e[032m\v \e[031m\b \e[34m\> \e[0m</literal> हुन सक्छ
+       </entry>
+      </row>
+      <row>
+       <entry><literal>\v</literal></entry>
+       <entry>PHP version।</entry>
+      </row>
+      <row>
+       <entry><literal>\b</literal></entry>
+       <entry>
+        PHP कुन block भित्र छ भन्ने सङ्केत गर्छ। उदाहरणका लागि, multi-line
+        comment भित्र रहेको जनाउन <literal>/*</literal>। बाहिरी scope लाई
+        <literal>php</literal> द्वारा जनाइन्छ।
+       </entry>
+      </row>
+      <row>
+       <entry><literal>\&gt;</literal></entry>
+       <entry>
+        prompt character जनाउँछ। डिफल्ट रूपमा यो <literal>&gt;</literal> हुन्छ,
+        तर shell कुनै नटुङ्गिएको block वा string भित्र हुँदा परिवर्तन हुन्छ।
+        सम्भावित characters हरू यी हुन्: <literal>' " { ( &gt;</literal>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+
+  <note>
+   <para>
+    <link linkend="ini.auto-prepend-file">auto_prepend_file</link> र
+    <link linkend="ini.auto-append-file">auto_append_file</link> मार्फत include
+    गरिएका files यस mode मा parse हुन्छन् तर केही सीमितताहरू सहित - जस्तै
+    functions लाई call गर्नुअघि नै परिभाषित गरिएको हुनुपर्छ।
+   </para>
+  </note>
+
+  <section xml:id="features.commandline.interactive.mode">
+   <title>Interactive mode</title>
+   <para>
+    यदि readline extension उपलब्ध छैन भने, PHP 8.1.0 भन्दा अगाडि
+    <option>-a</option> option सहित &cli.sapi; चलाउँदा interactive mode खुल्थ्यो।
+    यस mode मा STDIN मार्फत एउटा पूर्ण PHP script दिइनुपर्थ्यो, र
+    <keycombo action='simul'>
+     <keycap>CTRL</keycap>
+     <keycap>D</keycap>
+    </keycombo>
+    (POSIX) वा
+    <keycombo action='simul'>
+     <keycap>CTRL</keycap>
+     <keycap>Z</keycap>
+    </keycombo>
+    थिचेर <keycap>ENTER</keycap> (Windows) बाट समाप्त गरेपछि उक्त script
+    evaluate गरिन्थ्यो। यो आधारभूत रूपमा <option>-a</option> option बिना
+    &cli.sapi; चलाउनु जस्तै हो।
+   </para>
+   <para>
+    PHP 8.1.0 देखि, यदि readline extension उपलब्ध छैन भने <option>-a</option>
+    option सहित &cli.sapi; चलाउँदा असफल (fail) हुन्छ।
+   </para>
+  </section>
+ </section>
+
+ <section xml:id="features.commandline.webserver">
+  <title>Built-in web server</title>
+
+  <warning>
+   <para>
+    यो web server application development मा सहयोग पुर्‍याउनका लागि बनाइएको हो।
+    यो परीक्षण (testing) का उद्देश्यहरूका लागि वा नियन्त्रित वातावरणमा चलाइने
+    application demonstrations का लागि पनि उपयोगी हुन सक्छ। यो पूर्ण-सुविधासम्पन्न
+    web server का रूपमा प्रयोग गर्नका लागि होइन। यसलाई सार्वजनिक नेटवर्कमा प्रयोग
+    गर्नु हुँदैन।
+   </para>
+  </warning>
+
+  <para>
+   &cli.sapi; ले एक built-in web server प्रदान गर्दछ।
+  </para>
+
+  <para>
+   यो web server एउटा मात्र single-threaded process मा चल्छ, त्यसैले यदि कुनै
+   request block भयो भने PHP applications रोकिनेछन् (stall हुनेछन्)।
+  </para>
+
+  <para>
+    स्पष्ट रूपमा document root तोक्न -t option प्रयोग नगरिएसम्म, URI requests
+    हरू PHP सुरु गरिएको current working directory बाट serve गरिन्छन्। यदि URI
+    request ले कुनै file नतोकेको खण्डमा, दिइएको directory भित्रको index.php वा
+    index.html मध्ये एक return गरिन्छ। यदि ती दुवै file अवस्थित छैनन् भने,
+    index.php र index.html खोज्ने काम parent directory मा र त्यसरी नै माथिल्ला
+    directories मा कुनै नभेटीएसम्म वा document root नपुगेसम्म जारी रहन्छ। यदि
+    index.php वा index.html भेटिएमा त्यो return गरिन्छ र URI को पछिल्लो भागलाई
+    $_SERVER['PATH_INFO'] मा set गरिन्छ। अन्यथा 404 response code return गरिन्छ।
+  </para>
+
+  <note>
+   <simpara>
+    PHP 8.4.0 देखि, अनुरोध गरिएको path ले हेर्दा file जस्तो देखिए तापनि — अर्थात्
+    यसको अन्तिम path component मा थोप्लो (period) रहे तापनि — यदि त्यो भेटिएन
+    भने पनि यो index file खोज्ने काम गरिन्छ। पहिले, यस्ता requests ले खोज्ने
+    प्रक्रिया नगरी तुरुन्तै 404 response return गर्थे।
+   </simpara>
+  </note>
+
+  <para>
+    यदि web server सुरु गर्दा command line मा कुनै PHP file दिइएको छ भने त्यसलाई
+    "router" script को रूपमा लिइन्छ। प्रत्येक HTTP request को सुरुमा यो script
+    चल्छ। यदि यो script ले &false; return गर्छ भने अनुरोध गरिएको resource लाई
+    जस्ताको तस्तै return गरिन्छ। अन्यथा script को output नै browser मा return
+    गरिन्छ।
+  </para>
+
+  <para>
+   निम्न extensions भएका files का लागि मानक MIME types return गरिन्छन्:
+   <simplelist type="inline">
+    <member><literal>.3gp</literal></member>
+    <member><literal>.apk</literal></member>
+    <member><literal>.avi</literal></member>
+    <member><literal>.bmp</literal></member>
+    <member><literal>.css</literal></member>
+    <member><literal>.csv</literal></member>
+    <member><literal>.doc</literal></member>
+    <member><literal>.docx</literal></member>
+    <member><literal>.flac</literal></member>
+    <member><literal>.gif</literal></member>
+    <member><literal>.gz</literal></member>
+    <member><literal>.gzip</literal></member>
+    <member><literal>.htm</literal></member>
+    <member><literal>.html</literal></member>
+    <member><literal>.ics</literal></member>
+    <member><literal>.jpe</literal></member>
+    <member><literal>.jpeg</literal></member>
+    <member><literal>.jpg</literal></member>
+    <member><literal>.js</literal></member>
+    <member><literal>.kml</literal></member>
+    <member><literal>.kmz</literal></member>
+    <member><literal>.m4a</literal></member>
+    <member><literal>.mov</literal></member>
+    <member><literal>.mp3</literal></member>
+    <member><literal>.mp4</literal></member>
+    <member><literal>.mpeg</literal></member>
+    <member><literal>.mpg</literal></member>
+    <member><literal>.odp</literal></member>
+    <member><literal>.ods</literal></member>
+    <member><literal>.odt</literal></member>
+    <member><literal>.oga</literal></member>
+    <member><literal>.ogg</literal></member>
+    <member><literal>.ogv</literal></member>
+    <member><literal>.pdf</literal></member>
+    <member><literal>.png</literal></member>
+    <member><literal>.pps</literal></member>
+    <member><literal>.pptx</literal></member>
+    <member><literal>.qt</literal></member>
+    <member><literal>.svg</literal></member>
+    <member><literal>.swf</literal></member>
+    <member><literal>.tar</literal></member>
+    <member><literal>.text</literal></member>
+    <member><literal>.tif</literal></member>
+    <member><literal>.txt</literal></member>
+    <member><literal>.wav</literal></member>
+    <member><literal>.webm</literal></member>
+    <member><literal>.wmv</literal></member>
+    <member><literal>.xls</literal></member>
+    <member><literal>.xlsx</literal></member>
+    <member><literal>.xml</literal></member>
+    <member><literal>.xsl</literal></member>
+    <member><literal>.xsd</literal></member>
+    <member><literal>.zip</literal></member>
+   </simplelist>
+   ।
+  </para>
+
+  <simpara>
+   PHP 7.4.0 देखि, built-in webserver मा एकैसाथ धेरै concurrent requests
+   आवश्यक पर्ने code परीक्षण गर्नका लागि यसले धेरै workers fork गर्ने गरी
+   configure गर्न सकिन्छ। server सुरु गर्नुअघि <envar>PHP_CLI_SERVER_WORKERS</envar>
+   environment variable मा चाहेको workers सङ्ख्या set गर्नुहोस्।
+  </simpara>
+  <note>
+   <simpara>Windows मा multiple workers समर्थित छैनन्।</simpara>
+  </note>
+  <note>
+   <simpara>
+    PHP commandline को प्रयोग र options सम्बन्धी जानकारीका लागि
+    <command>php --help</command> वा <command>man php</command> चलाउनुहोस्।
+    web server चलाउँदा सबै options लागू हुँदैनन्।
+   </simpara>
+  </note>
+  <warning>
+   <para>
+    यो <emphasis>प्रयोगात्मक (experimental)</emphasis> सुविधा production प्रयोगका
+    लागि <emphasis>होइन</emphasis>। सामान्यतया, built-in Web Server नै production
+    प्रयोगका लागि बनाइएको <emphasis>होइन</emphasis>।
+   </para>
+  </warning>
+
+  <example>
+   <title>Web server सुरु गर्ने उदाहरण</title> 
+   <programlisting role="shell">
+<![CDATA[
+$ cd ~/public_html
+$ php -S localhost:8000
+]]>
+   </programlisting>
+   <para>
+     terminal मा यस्तो देखिनेछ:
+   </para>
+   <screen>
+<![CDATA[
+PHP 5.4.0 Development Server started at Thu Jul 21 10:43:28 2011
+Listening on localhost:8000
+Document root is /home/me/public_html
+Press Ctrl-C to quit
+]]>
+   </screen>
+   <para>
+     http://localhost:8000/ र http://localhost:8000/myscript.html का लागि URI
+     requests पछि terminal मा निम्न जस्तै देखिनेछ:
+   </para>
+   <screen>
+<![CDATA[
+PHP 5.4.0 Development Server started at Thu Jul 21 10:43:28 2011
+Listening on localhost:8000
+Document root is /home/me/public_html
+Press Ctrl-C to quit.
+[Thu Jul 21 10:48:48 2011] ::1:39144 GET /favicon.ico - Request read
+[Thu Jul 21 10:48:50 2011] ::1:39146 GET / - Request read
+[Thu Jul 21 10:48:50 2011] ::1:39147 GET /favicon.ico - Request read
+[Thu Jul 21 10:48:52 2011] ::1:39148 GET /myscript.html - Request read
+[Thu Jul 21 10:48:52 2011] ::1:39149 GET /favicon.ico - Request read
+]]>
+   </screen>
+   <para>
+    ध्यान दिनुहोस् कि PHP 7.4.0 भन्दा अगाडि, router script ले handle नगरेसम्म
+    Windows मा symlink गरिएका static resources पहुँचयोग्य हुँदैनथे।
+   </para>
+  </example>
+
+  <example>
+   <title>कुनै निश्चित document root directory सहित सुरु गर्ने उदाहरण</title> 
+   <programlisting role="shell">
+<![CDATA[
+$ cd ~/public_html
+$ php -S localhost:8000 -t foo/
+]]>
+   </programlisting>
+   <para>
+     terminal मा यस्तो देखिनेछ:
+   </para>
+   <screen>
+<![CDATA[
+PHP 5.4.0 Development Server started at Thu Jul 21 10:50:26 2011
+Listening on localhost:8000
+Document root is /home/me/public_html/foo
+Press Ctrl-C to quit
+]]>
+   </screen>
+  </example>
+
+  <example>
+   <title>Router Script प्रयोग गर्ने उदाहरण</title> 
+<para>
+  यस उदाहरणमा, images का लागि आउने requests ले तिनलाई देखाउनेछन्, तर HTML files का लागि आउने requests ले "Welcome to PHP" देखाउनेछन्:
+</para>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// router.php
+if (preg_match('/\.(?:png|jpg|jpeg|gif)$/', $_SERVER["REQUEST_URI"])) {
+    return false;    // serve the requested resource as-is.
+} else { 
+    echo "<p>Welcome to PHP</p>";
+}
+?>]]>
+   </programlisting>
+   <programlisting role="shell">
+<![CDATA[
+$ php -S localhost:8000 router.php
+]]>
+   </programlisting>
+  </example>
+
+  <example>
+   <title>CLI Web Server प्रयोग जाँच गर्ने उदाहरण</title> 
+<para>
+  विकास (development) को समयमा CLI web server सँग र पछि production web server सँग पनि एउटै framework router script पुनः प्रयोग गर्नका लागि:
+</para>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// router.php
+if (php_sapi_name() == 'cli-server') {
+    /* route static assets and return false */
+}
+/* go on with normal index.php operations */
+?>]]>
+   </programlisting>
+   <programlisting role="shell">
+<![CDATA[
+$ php -S localhost:8000 router.php
+]]>
+   </programlisting>
+  </example>
+
+  <example>
+   <title>समर्थित नभएका File Types ह्यान्डल गर्ने उदाहरण</title> 
+<para>
+  यदि तपाईँलाई CLI web server ले handle नगर्ने MIME type भएको कुनै static resource serve गर्न आवश्यक छ भने निम्न प्रयोग गर्नुहोस्:
+</para>
+   <programlisting role="php">
+<![CDATA[
+<?php
+// router.php
+$path = pathinfo($_SERVER["SCRIPT_FILENAME"]);
+if ($path["extension"] == "el") {
+    header("Content-Type: text/x-script.elisp");
+    readfile($_SERVER["SCRIPT_FILENAME"]);
+}
+else {
+    return FALSE;
+}
+?>]]>
+   </programlisting>
+   <programlisting role="shell">
+<![CDATA[
+$ php -S localhost:8000 router.php
+]]>
+   </programlisting>
+  </example>
+
+  <example>
+   <title>टाढाका Machines बाट CLI Web Server पहुँच गर्ने उदाहरण</title> 
+   <para>
+    तपाईँ निम्न command प्रयोग गरेर port 8000 मा कुनै पनि interface बाट web
+    server पहुँचयोग्य बनाउन सक्नुहुन्छ:
+   </para>
+   <programlisting role="shell">
+<![CDATA[
+$ php -S 0.0.0.0:8000
+]]>
+   </programlisting>
+   <warning>
+    <para>
+      built-in Web Server लाई सार्वजनिक नेटवर्कमा प्रयोग गर्नु हुँदैन।
+    </para>
+   </warning>
+  </example>
+
+ </section>
+
+  <section xml:id="features.commandline.ini">
+   <title>INI settings</title>
+   <para>
+    <table>
+     <title>CLI SAPI Configuration Options</title>
+     <tgroup cols="4">
+      <thead>
+       <row>
+        <entry>&Name;</entry>
+        <entry>&Default;</entry>
+        <entry>&Changeable;</entry>
+        <entry>&Changelog;</entry>
+       </row>
+      </thead>
+      <tbody xml:id="features.commandline.ini.list">
+       <row>
+        <entry><link linkend="ini.cli-server.color">cli_server.color</link></entry>
+        <entry>"0"</entry>
+        <entry><constant>INI_ALL</constant></entry>
+        <entry></entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </para>
+   
+   &ini.descriptions.title;
+   
+   <para>
+    <variablelist>
+     <varlistentry xml:id="ini.cli-server.color">
+      <term>
+       <parameter>cli_server.color</parameter>
+       <type>bool</type>
+      </term>
+      <listitem>
+       <para>
+        built-in development web server लाई terminal output मा ANSI color
+        coding प्रयोग गर्न सक्षम पार्छ।
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </para>
+  </section>
+  
+</chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=marker fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

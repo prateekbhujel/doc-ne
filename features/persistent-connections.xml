@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: ready -->
+<chapter xml:id="features.persistent-connections" xmlns="http://docbook.org/ns/docbook">
+ <title>Persistent Database Connections</title>
+
+ <simplesect>
+  <title>Persistent Connections भनेका के हुन्?</title>
+  <simpara>
+   Persistent connections भनेका त्यस्ता links हुन् जुन script को execution
+   सकिँदा पनि बन्द हुँदैनन्। जब कुनै persistent connection को अनुरोध गरिन्छ,
+   PHP ले पहिले नै खुलेको त्यस्तै (identical) persistent connection विद्यमान छ
+   कि छैन भनी जाँच गर्छ; यदि छ भने त्यसैलाई पुनः प्रयोग गरिन्छ, र यदि छैन भने
+   नयाँ link बनाइन्छ। 'Identical' connection भन्नाले उही host मा उही username र
+   password (जहाँ लागू हुन्छ) प्रयोग गरेर खोलिएको connection लाई जनाउँछ।
+  </simpara>
+  <simpara>
+   कुनै विशेष connection अनुरोध गर्ने, वा प्राप्त भएको connection पहिलेकै हो कि
+   एकदमै नयाँ हो भनी ग्यारेन्टी गर्ने कुनै उपाय हुँदैन (यदि सबै विद्यमान
+   connections प्रयोगमा छन् भने, वा उक्त request लाई आफ्नै छुट्टै connection pool
+   भएको अर्को worker ले serve गरिरहेको छ भने नयाँ connection बन्छ)।
+  </simpara>
+  <simpara>
+   त्यसैले PHP का persistent connections लाई उदाहरणका लागि निम्न कामहरूमा
+   प्रयोग गर्न सकिँदैन:
+  </simpara>
+  <simplelist>
+   <member>कुनै निश्चित web user लाई निश्चित database session तोक्न</member>
+   <member>धेरैवटा requests मा फैलिएको ठूलो transaction सिर्जना गर्न</member>
+   <member>एउटा request मा query सुरु गरेर अर्को request मा नतिजा संकलन गर्न</member>
+  </simplelist>
+  <simpara>
+   Persistent connections ले non-persistent connections बाट सम्भव नहुने
+   <emphasis>कुनै पनि</emphasis> अतिरिक्त सुविधा प्रदान गर्दैनन्।
+  </simpara>
+ </simplesect>
+
+ <simplesect xml:id="persistent-connections.web">
+  <title>Web Requests</title>
+  <simpara>
+   Web server ले web pages तयार गर्न PHP लाई दुई तरिकाले प्रयोग गर्न सक्छ:
+  </simpara>
+  <simpara>
+   पहिलो तरिका PHP लाई CGI "wrapper" का रूपमा प्रयोग गर्नु हो। यसरी चलाउँदा,
+   web server मा आउने (PHP page का लागि) प्रत्येक page request सँगै PHP
+   interpreter को एउटा instance बन्छ र request सकिएपछि नष्ट हुन्छ। हरेक
+   request पछि यो नष्ट हुने भएकाले, यसले प्राप्त गरेका कुनै पनि resources (जस्तै
+   SQL database server सँगको link) पनि यो नष्ट हुँदा सँगै बन्द हुन्छन्। यस्तो
+   अवस्थामा persistent connections प्रयोग गरेर कुनै फाइदा हुँदैन — ती केवल
+   persist नै हुँदैनन्।
+  </simpara>
+  <simpara>
+   दोस्रो र सबैभन्दा प्रचलित तरिका भनेको PHP-FPM चलाउनु, वा multiprocess web
+   server (हाल Apache मात्र) मा module का रूपमा PHP चलाउनु हो। यस्ता setup
+   हरूमा सामान्यतया एउटा मुख्य process (parent) हुन्छ जसले वास्तवमा web pages
+   serve गर्ने काम गर्ने processes को समूह (यसका children) लाई समन्वय गर्दछ।
+   जब client बाट कुनै request आउँछ, यसलाई पहिले नै अर्को client लाई serve
+   नगरिरहेको एउटा child process मा जिम्मा लगाइन्छ। यसको अर्थ, जब उही client ले
+   server मा दोस्रो request पठाउँछ, त्यो पहिलो पटकको भन्दा फरक child process
+   बाट serve हुन सक्छ। एक पटक persistent connection खोलिएपछि, त्यही child
+   process बाट serve हुने पछिल्ला कुनै पनि page ले SQL server सँग पहिले नै
+   स्थापित भइसकेको उक्त connection पुनः प्रयोग गर्न सक्छ।
+  </simpara>
+  <note>
+   <para>
+    कुन तरिका प्रयोग भइरहेको छ भन्ने कुरा web request बाट चलाइएको
+    <function>phpinfo</function> को output मा "Server API" को मान वा
+    <constant>PHP_SAPI</constant> को मान हेरेर जाँच्न सकिन्छ।
+   </para>
+   <para>
+    यदि Server API को मान "Apache 2 Handler" वा "FPM/FastCGI" छ भने, एउटै
+    worker द्वारा serve गरिएका requests मा persistent connections प्रयोग हुनेछन्।
+    अन्य जुनसुकै मान भएको अवस्थामा, प्रत्येक request पछि persistent connections
+    कायम (persist) रहने छैनन्।
+   </para>
+  </note>
+ </simplesect>
+
+ <simplesect xml:id="persistent-connections.cli">
+  <title>Command-line Processes</title>
+  <simpara>
+   Command-line PHP ले प्रत्येक script का लागि नयाँ process प्रयोग गर्ने भएकाले,
+   command-line scripts बीच persistent connections साझा हुँदैनन्; त्यसैले crons
+   वा commands जस्ता अस्थायी (transient) scripts मा तिनको प्रयोग गर्नुको कुनै
+   अर्थ हुँदैन। यद्यपि, उदाहरणका लागि धेरै requests वा tasks serve गर्ने
+   long-running application server मा भने यी उपयोगी हुन सक्छन्, जहाँ प्रत्येक
+   request वा task लाई आफ्नै database connection चाहिन सक्छ।
+  </simpara>
+ </simplesect>
+
+ <simplesect xml:id="persistent-connections.why">
+  <title>यिनलाई किन प्रयोग गर्ने?</title>
+  <simpara>
+   SQL server सँग link बनाउने लागत (overhead) उच्च भएको बेला persistent
+   connections फाइदाजनक हुन्छन्। यो overhead कत्तिको ठूलो छ भन्ने कुरा database
+   को प्रकार, त्यो database web server भएकै machine मा छ कि छैन, र उक्त machine
+   मा कति load छ जस्ता धेरै पक्षहरूमा निर्भर गर्दछ। जब connection बनाउने
+   overhead उच्च हुन्छ, persistent connections ले निकै मद्दत गर्न सक्छन्:
+   प्रत्येक child process ले SQL server सँग connection चाहिने page process
+   गर्ने हरेक पटक नयाँ connection खोल्नुको सट्टा, आफ्नो सम्पूर्ण जीवनकाल
+   (lifespan) भर एक पटक मात्र connect गर्छ। यसको अर्थ persistent connection
+   खोल्ने प्रत्येक child ले server सँग आफ्नै छुट्टै connection कायम राख्छ।
+   उदाहरणका लागि, यदि 20 वटा फरक-फरक child processes ले SQL server मा
+   persistent connection बनाउने script चलाउँछन् भने, प्रत्येक child बाट एक-एक
+   गरी उक्त server मा 20 वटा छुट्टाछुट्टै connections हुनेछन्।
+  </simpara>
+ </simplesect>
+
+ <simplesect xml:id="persistent-connections.drawbacks.conn-limits">
+  <title>सम्भावित कमजोरीहरू: Connection Limits</title>
+  <simpara>
+   यद्यपि, ध्यान दिनुहोस् कि यदि database मा रहेका connection limits भन्दा
+   persistent child connections को सङ्ख्या बढी भयो भने यसका बेफाइदाहरू हुन
+   सक्छन्। यदि database मा एकै समयमा अधिकतम 16 वटा connections को सीमा छ, र
+   server व्यस्त भएको बेला 17 वटा child processes ले connect गर्ने प्रयास गरे
+   भने तीमध्ये एउटा असफल हुनेछ। यदि scripts मा connections बन्द हुन नदिने bugs
+   छन् (जस्तै infinite loops) भने, जम्मा 16 वटा मात्र connection क्षमता भएको
+   database छिट्टै भरिने (swamped हुने) सम्भावना रहन्छ।
+  </simpara>
+  <simpara>
+   Persistent connections ले सामान्यतया कुनै पनि समयमा खुला रहने connections को
+   सङ्ख्या बढाउँछ, किनकि निष्क्रिय (idle) workers ले पनि अघिल्ला requests का
+   लागि खोलेका connections लाई थामेर राखेका हुन्छन्। यदि traffic को चाप धान्न
+   ठूलो सङ्ख्यामा workers सुरु गरियो भने, ती worker बन्द नहुन्जेल वा database
+   server ले connection बन्द नगरुन्जेल तिनले खोलेका connections खुला नै रहन्छन्।
+  </simpara>
+  <simpara>
+   Database server ले अनुमति दिने अधिकतम connections को सङ्ख्या web request
+   workers को अधिकतम सङ्ख्या (साथै crons वा administrative connections जस्ता
+   अन्य प्रयोगहरूसमेत जोडेर) भन्दा बढी छ भन्ने कुरा सुनिश्चित गर्नुहोस्।
+  </simpara>
+  <simpara>
+   छाडिएका (abandoned) वा निष्क्रिय (idle) connections (timeouts) कसरी
+   व्यवस्थापन गर्ने भन्ने जानकारीका लागि database को documentation हेर्नुहोस्।
+   लामो timeout राख्दा एकै समयमा खुला रहने persistent connections को सङ्ख्या
+   उल्लेखनीय रूपमा बढ्न सक्छ।
+  </simpara>
+ </simplesect>
+
+ <simplesect xml:id="persistent-connections.drawbacks.state">
+  <title>सम्भावित कमजोरीहरू: Connection State कायम राख्ने</title>
+  <simpara>
+   केही database extensions ले connection पुनः प्रयोग हुँदा स्वतः cleanup गर्छन्;
+   अरूले यो काम application developer कै जिम्मामा छोड्छन्। छानिएको database
+   extension र application को design अनुसार, script बाहिरिनु अघि manual रूपमा
+   cleanup गर्नुपर्ने हुन सक्छ। Connections लाई अनपेक्षित अवस्थामा छोड्न सक्ने
+   परिवर्तनहरूमा निम्न समावेश छन्:
+  </simpara>
+  <simplelist>
+   <member>छानिएको / डिफल्ट database</member>
+   <member>Table locks</member>
+   <member>Commit नगरिएका (uncommitted) transactions</member>
+   <member>Temporary tables</member>
+   <member>Connection अनुसारका विशेष settings वा profiling जस्ता features</member>
+  </simplelist>
+  <simpara>
+   सफा नगरिएका वा बन्द नगरिएका table locks र transactions ले अन्य queries लाई
+   अनिश्चितकालसम्म अवरुद्ध (block) गर्न सक्छन् र/वा पछि सोही connection पुनः
+   प्रयोग हुँदा अनपेक्षित परिवर्तनहरू निम्त्याउन सक्छन्।
+  </simpara>
+  <simpara>
+   गलत database छानिएको रह्यो भने पछि उक्त connection पुनः प्रयोग हुँदा queries
+   अपेक्षित रूपमा चल्न नसक्ने हुन सक्छन् (वा यदि schemas उस्तै-उस्तै छन् भने
+   गलत database मा queries चल्न सक्छन्)।
+  </simpara>
+  <simpara>
+   यदि temporary tables सफा गरिएनन् भने, पछिल्ला requests ले त्यही नामको table
+   पुनः सिर्जना गर्न सक्ने छैनन्।
+  </simpara>
+  <simpara>
+   Class destructors वा <function>register_shutdown_function</function> प्रयोग
+   गरेर cleanup लागू गर्न सकिन्छ। आफ्नै सुविधाका रूपमा यो कार्य समावेश गर्ने
+   dedicated connection pooling proxies बारे पनि विचार गर्न सकिन्छ।
+  </simpara>
+ </simplesect>
+
+ <simplesect xml:id="persistent-connections.final-words">
+  <title>निष्कर्ष</title>
+  <simpara>
+   माथि वर्णन गरिएको व्यवहार र सम्भावित कमजोरीहरूलाई ध्यानमा राख्दै, राम्ररी
+   सोचविचार नगरी persistent connections प्रयोग गर्नु हुँदैन। Application मा
+   आवश्यक अतिरिक्त परिवर्तनहरू लागू नगरी तथा database server र web server र/वा
+   PHP-FPM को सावधानीपूर्वक configuration नगरी यिनको प्रयोग गर्नु हुँदैन।
+  </simpara>
+  <simpara>
+   Connection बनाउने overhead हुनुको कारण पत्ता लगाएर समाधान गर्ने (उदाहरणका
+   लागि, database server मा reverse DNS lookups बन्द गर्ने), वा dedicated
+   connection pooling proxies प्रयोग गर्ने जस्ता वैकल्पिक समाधानहरूबारे विचार
+   गर्नुहोस्।
+  </simpara>
+  <simpara>
+   धेरै traffic हुने web APIs का लागि वैकल्पिक runtimes वा long-running
+   application servers प्रयोग गर्ने बारे सोच्नुहोस्।
+  </simpara>
+ </simplesect>
+
+ <simplesect role="seealso" xml:id="persistent-connections.seealso">
+  &reftitle.seealso;
+  <simplelist>
+   <member><function>ibase_pconnect</function></member>
+   <member><function>oci_pconnect</function></member>
+   <member><function>odbc_pconnect</function></member>
+   <member><function>pfsockopen</function></member>
+   <member><function>pg_connect</function></member>
+   <member><link linkend="mysqli.persistconns">MySQLi र Persistent Connections</link></member>
+   <member><link linkend="pdo.connections">PDO Connection व्यवस्थापन</link></member>
+  </simplelist>
+ </simplesect>
+</chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

@@ -1,0 +1,756 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 5e6ca803fc284739a7b1e7fba58b6b8466d5006f Maintainer: prateekbhujel Status: ready -->
+<chapter xml:id="features.dtrace" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>DTrace Dynamic Tracing</title>
+
+ <sect1 xml:id="features.dtrace.introduction">
+  <title>PHP र DTrace को परिचय</title>
+
+  <para>
+   DTrace एउटा सधैँ उपलब्ध रहने, कम overhead भएको tracing framework हो, जुन
+   Solaris, macOS, Oracle Linux र BSD लगायतका थुप्रै platforms मा उपलब्ध छ।
+   DTrace ले operating system को व्यवहार र user program को execution लाई
+   trace गर्न सक्छ। यसले argument values देखाउन सक्छ र performance सम्बन्धी
+   तथ्याङ्क अनुमान गर्न प्रयोग गर्न सकिन्छ। Probes लाई DTrace D scripting
+   language मा user ले बनाएका scripts मार्फत monitor गरिन्छ। यसले data points
+   को प्रभावकारी विश्लेषण गर्न मद्दत गर्छ।
+  </para>
+
+  <para>
+   User को DTrace D script द्वारा सक्रिय रूपमा monitor नगरिएका PHP probes मा
+   instrumented code हुँदैन, त्यसैले सामान्य रूपमा application चल्दा
+   performance मा कुनै कमी आउँदैन। सक्रिय रूपमा monitor गरिएका probes मा
+   पनि यति कम overhead हुन्छ कि सामान्यतया live production systems मा समेत
+   DTrace बाट निगरानी गर्न सकिन्छ।
+  </para>
+
+  <para>
+   PHP मा "User-level Statically Defined Tracing" (USDT) probes समावेश छन्,
+   जुन runtime मा trigger हुन्छन्। उदाहरणका लागि, यदि कुनै D script ले PHP को
+   <literal>function-entry</literal> probe लाई monitor गरिरहेको छ भने, हरेक
+   पटक PHP script मा कुनै function call हुँदा यो probe fire हुन्छ र त्यससँग
+   सम्बन्धित D script को action code चल्छ। उदाहरणका लागि, उक्त action code ले
+   PHP function रहेको source file को स्थान जस्ता probe arguments print गर्न
+   सक्छ। अथवा, प्रत्येक function कति पटक call भयो भन्ने जस्ता data जम्मा
+   (aggregate) गर्न सक्छ।
+  </para>
+
+  <para>
+   यहाँ केवल PHP USDT probes को मात्र विवरण दिइएको छ। अन्य कुनै पनि
+   function वा operating system को व्यवहार trace गर्न DTrace कसरी प्रयोग गर्ने
+   भन्ने जान्नका लागि सामान्य तथा operating system अनुसारका बाह्य DTrace
+   सन्दर्भ सामग्रीहरू हेर्नुहोस्। ध्यान दिनुहोस् कि सबै DTrace implementations मा
+   DTrace का सबै विशेषताहरू उपलब्ध नहुन सक्छन्।
+  </para>
+
+  <para>
+   PHP मा रहेका static DTrace probes लाई विकल्पका रूपमा केही Linux
+   distributions मा उपलब्ध SystemTap सुविधासँग पनि प्रयोग गर्न सकिन्छ।
+  </para>
+ </sect1>
+
+ <sect1 xml:id="features.dtrace.dtrace">
+  <title>PHP र DTrace को प्रयोग</title>
+  <para>
+   DTrace Dynamic Tracing समर्थन गर्ने platforms मा PHP लाई DTrace static
+   probes सहित configure गर्न सकिन्छ।
+  </para>
+
+  <sect2 xml:id="features.dtrace.install">
+   <title>DTrace Static Probes का लागि PHP configure गर्ने</title>
+
+   <para>
+    Operating system मा DTrace समर्थन सक्षम (enable) गर्नका लागि सम्बन्धित
+    platform को बाह्य documentation हेर्नुहोस्। उदाहरणका लागि, Oracle Linux
+    मा UEK3 kernel बाट boot गरी निम्न command चलाउनुहोस्:
+
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+# modprobe fasttrap
+# chmod 666 /dev/dtrace/helper
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+   <para>
+    <literal>chmod</literal> प्रयोग गर्नुको सट्टा, कुनै निश्चित user का लागि मात्र
+    device access सीमित गर्न तपाईँले ACL package rule प्रयोग गर्न पनि सक्नुहुन्छ।
+   </para>
+
+   <para>
+    <literal>--enable-dtrace</literal> configuration parameter प्रयोग गरेर PHP
+    build गर्नुहोस्:
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+# ./configure --enable-dtrace ...
+# make
+# make install
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+   <para>
+    यसले core PHP मा static probes उपलब्ध गराउँछ। आफ्नै probes प्रदान गर्ने
+    कुनै पनि PHP extensions लाई भने छुट्टै shared extensions को रूपमा build
+    गर्नुपर्छ।
+   </para>
+   <simpara>
+    Probes सक्षम गर्नका लागि लक्षित PHP processes का निम्ति
+    <option>USE_ZEND_DTRACE=1</option> environment variable सेट गर्नुहोस्।
+   </simpara>
+  </sect2>
+
+  <sect2 xml:id="features.dtrace.static-probes">
+  <title>Core PHP मा DTrace Static Probes</title>
+  <table>
+   <title>PHP मा निम्न static probes उपलब्ध छन्</title>
+   <tgroup cols="3">
+    <thead>
+     <row>
+      <entry>Probe को नाम</entry>
+      <entry>Probe को विवरण</entry>
+      <entry>Probe Arguments</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry><literal>request-startup</literal></entry>
+      <entry>Request सुरु हुँदा fire हुन्छ।</entry>
+      <entry>char *<varname>file</varname>, char *<varname>request_uri</varname>, char *<varname>request_method</varname></entry>
+     </row>
+     <row>
+      <entry><literal>request-shutdown</literal></entry>
+      <entry>Request बन्द (shut down) हुँदा fire हुन्छ।</entry>
+      <entry>char *<varname>file</varname>, char *<varname>request_uri</varname>, char *<varname>request_method</varname></entry>
+     </row>
+     <row>
+      <entry><literal>compile-file-entry</literal></entry>
+      <entry>Script compile हुन सुरु हुँदा fire हुन्छ।</entry>
+      <entry>char *<varname>compile_file</varname>, char *<varname>compile_file_translated</varname></entry>
+     </row>
+     <row>
+      <entry><literal>compile-file-return</literal></entry>
+      <entry>Script compile भइसक्दा fire हुन्छ।</entry>
+      <entry>char *<varname>compile_file</varname>, char *<varname>compile_file_translated</varname></entry>
+     </row>
+     <row>
+      <entry><literal>execute-entry</literal></entry>
+      <entry>Opcode array execute हुन लाग्दा fire हुन्छ। उदाहरणका लागि,
+      यो function calls, includes, र generator resumes हुँदा fire हुन्छ।</entry>
+      <entry>char *<varname>request_file</varname>, int <varname>lineno</varname></entry>
+     </row>
+     <row>
+      <entry><literal>execute-return</literal></entry>
+      <entry>Opcode array execute भइसकेपछि fire हुन्छ।</entry>
+      <entry>char *<varname>request_file</varname>, int <varname>lineno</varname></entry>
+     </row>
+     <row>
+      <entry><literal>function-entry</literal></entry>
+      <entry>PHP engine कुनै PHP function वा method call भित्र प्रवेश गर्दा fire हुन्छ।</entry>
+      <entry>char *<varname>function_name</varname>, char *<varname>request_file</varname>, int <varname>lineno</varname>, char *<varname>classname</varname>, char *<varname>scope</varname></entry>
+     </row>
+     <row>
+      <entry><literal>function-return</literal></entry>
+      <entry>PHP engine कुनै PHP function वा method call बाट return हुँदा fire हुन्छ।</entry>
+      <entry>char *<varname>function_name</varname>, char *<varname>request_file</varname>, int <varname>lineno</varname>, char *<varname>classname</varname>, char *<varname>scope</varname></entry>
+     </row>
+     <row>
+      <entry><literal>exception-thrown</literal></entry>
+      <entry>Exception throw हुँदा fire हुन्छ।</entry>
+      <entry>char *<varname>classname</varname></entry>
+     </row>
+     <row>
+      <entry><literal>exception-caught</literal></entry>
+      <entry>Exception catch हुँदा fire हुन्छ।</entry>
+      <entry>char *<varname>classname</varname></entry>
+     </row>
+     <row>
+      <entry><literal>error</literal></entry>
+      <entry><link linkend="ini.error-reporting">error_reporting</link> स्तर जस्तोसुकै भए पनि, error आउँदा fire हुन्छ।</entry>
+      <entry>char *<varname>errormsg</varname>, char *<varname>request_file</varname>, int <varname>lineno</varname></entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+  <para>
+   PHP extensions हरूमा थप static probes पनि हुन सक्छन्।
+  </para>
+  </sect2>
+
+  <sect2 xml:id="features.dtrace.list-probes">
+   <title>PHP मा DTrace Static Probes को सूची हेर्ने</title>
+   <para>
+    उपलब्ध probes को सूची हेर्न, एउटा PHP process सुरु गर्नुहोस् र त्यसपछि निम्न
+    command चलाउनुहोस्:
+    <informalexample>
+     <programlisting>
+<![CDATA[
+# dtrace -l
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+
+   <para>
+    यसको output लगभग यस्तो देखिनेछ:
+    <informalexample>
+     <programlisting>
+<![CDATA[
+   ID   PROVIDER            MODULE                          FUNCTION NAME
+   [ . . . ]
+    4   php15271               php               dtrace_compile_file compile-file-entry
+    5   php15271               php               dtrace_compile_file compile-file-return
+    6   php15271               php                        zend_error error
+    7   php15271               php  ZEND_CATCH_SPEC_CONST_CV_HANDLER exception-caught
+    8   php15271               php     zend_throw_exception_internal exception-thrown
+    9   php15271               php                 dtrace_execute_ex execute-entry
+   10   php15271               php           dtrace_execute_internal execute-entry
+   11   php15271               php                 dtrace_execute_ex execute-return
+   12   php15271               php           dtrace_execute_internal execute-return
+   13   php15271               php                 dtrace_execute_ex function-entry
+   14   php15271               php                 dtrace_execute_ex function-return
+   15   php15271               php              php_request_shutdown request-shutdown
+   16   php15271               php               php_request_startup request-startup
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+
+   <para>
+    Provider स्तम्भ (column) मा रहेको मान <literal>php</literal> र हाल
+    चलिरहेको PHP process को process id मिलेर बनेको हुन्छ।
+   </para>
+
+   <para>
+    यदि Apache web server चलिरहेको छ भने, module को नाम उदाहरणका लागि
+    <filename>libphp5.so</filename> हुन सक्छ, र त्यहाँ चलिरहेको प्रत्येक
+    Apache process का लागि एक-एक वटा गरी सूचीका धेरै blocks देखिनेछन्।
+   </para>
+
+   <para>
+    Function स्तम्भले प्रत्येक provider रहेको PHP को आन्तरिक C
+    implementation का function names जनाउँछ।
+   </para>
+
+   <para>
+    यदि कुनै PHP process चलिरहेको छैन भने, कुनै पनि PHP probes देखिने छैनन्।
+   </para>
+  </sect2>
+
+  <sect2 xml:id="features.dtrace.examples">
+   <title>PHP सँग DTrace को उदाहरण</title>
+   <para>
+    यो उदाहरणले DTrace D scripting language का आधारभूत कुराहरू देखाउँछ।
+    <example>
+     <title>DTrace बाट सबै PHP Static Probes trace गर्नका लागि <filename>all_probes.d</filename></title>
+     <programlisting>
+<![CDATA[
+#!/usr/sbin/dtrace -Zs
+
+#pragma D option quiet
+
+php*:::compile-file-entry
+{
+    printf("PHP compile-file-entry\n");
+    printf("  compile_file              %s\n", copyinstr(arg0));
+    printf("  compile_file_translated   %s\n", copyinstr(arg1));
+}
+
+php*:::compile-file-return
+{
+    printf("PHP compile-file-return\n");
+    printf("  compile_file              %s\n", copyinstr(arg0));
+    printf("  compile_file_translated   %s\n", copyinstr(arg1));
+}
+
+php*:::error
+{
+    printf("PHP error\n");
+    printf("  errormsg                  %s\n", copyinstr(arg0));
+    printf("  request_file              %s\n", copyinstr(arg1));
+    printf("  lineno                    %d\n", (int)arg2);
+}
+
+php*:::exception-caught
+{
+    printf("PHP exception-caught\n");
+    printf("  classname                 %s\n", copyinstr(arg0));
+}
+
+php*:::exception-thrown
+{
+    printf("PHP exception-thrown\n");
+    printf("  classname                 %s\n", copyinstr(arg0));
+}
+
+php*:::execute-entry
+{
+    printf("PHP execute-entry\n");
+    printf("  request_file              %s\n", copyinstr(arg0));
+    printf("  lineno                    %d\n", (int)arg1);
+}
+
+php*:::execute-return
+{
+    printf("PHP execute-return\n");
+    printf("  request_file              %s\n", copyinstr(arg0));
+    printf("  lineno                    %d\n", (int)arg1);
+}
+
+php*:::function-entry
+{
+    printf("PHP function-entry\n");
+    printf("  function_name             %s\n", copyinstr(arg0));
+    printf("  request_file              %s\n", copyinstr(arg1));
+    printf("  lineno                    %d\n", (int)arg2);
+    printf("  classname                 %s\n", copyinstr(arg3));
+    printf("  scope                     %s\n", copyinstr(arg4));
+}
+
+php*:::function-return
+{
+    printf("PHP function-return\n");
+    printf("  function_name             %s\n", copyinstr(arg0));
+    printf("  request_file              %s\n", copyinstr(arg1));
+    printf("  lineno                    %d\n", (int)arg2);
+    printf("  classname                 %s\n", copyinstr(arg3));
+    printf("  scope                     %s\n", copyinstr(arg4));
+}
+
+php*:::request-shutdown
+{
+    printf("PHP request-shutdown\n");
+    printf("  file                      %s\n", copyinstr(arg0));
+    printf("  request_uri               %s\n", copyinstr(arg1));
+    printf("  request_method            %s\n", copyinstr(arg2));
+}
+
+php*:::request-startup
+{
+    printf("PHP request-startup\n");
+    printf("  file                      %s\n", copyinstr(arg0));
+    printf("  request_uri               %s\n", copyinstr(arg1));
+    printf("  request_method            %s\n", copyinstr(arg2));
+}
+]]>
+     </programlisting>
+    </example>
+   </para>
+
+   <para>
+    यस script मा <filename>dtrace</filename> को <literal>-Z</literal> विकल्प
+    प्रयोग गरिएको छ, जसले गर्दा कुनै PHP process नचलिरहेको बेलामा पनि यसलाई
+    चलाउन सकिन्छ। यदि यो विकल्प नराखिएको भए, monitor गर्नुपर्ने कुनै पनि
+    probe हाल अस्तित्वमा नभएको थाहा पाएर script तुरुन्तै बन्द हुने थियो।
+   </para>
+
+   <para>
+    यस script ले चलिरहेको PHP script को अवधिभरि सबै core PHP static probe
+    points लाई trace गर्छ। D script चलाउनुहोस्:
+    <informalexample>
+     <programlisting>
+<![CDATA[
+# ./all_probes.d
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+
+   <para>
+    अब कुनै PHP script वा application चलाउनुहोस्। Monitor गरिरहेको D script
+    ले प्रत्येक probe fire हुँदा त्यसका arguments output मा देखाउनेछ।
+   </para>
+
+   <para>
+    निगरानी (monitoring) पूरा भएपछि,
+    <keycombo action='simul'><keycap>CTRL</keycap><keycap>C</keycap></keycombo>
+    थिचेर D script बन्द गर्न सकिन्छ।
+   </para>
+
+   <para>
+    एकभन्दा बढी CPU भएका मेसिनहरूमा probes देखिने क्रम क्रमिक (sequential)
+    नदेखिन पनि सक्छ। यो कुन CPU ले probes process गरिरहेको थियो र threads
+    कसरी विभिन्न CPUs बीच सर्छन् भन्ने कुरामा निर्भर गर्छ। Probes का
+    timestamps देखाउँदा अन्योल कम गर्न मद्दत पुग्छ, उदाहरणका लागि:
+    <informalexample>
+     <programlisting>
+<![CDATA[
+php*:::function-entry
+{
+      printf("%lld: PHP function-entry ", walltimestamp);
+      [ . . .]
+}
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+  </sect2>
+
+  <sect2 xml:id="features.dtrace.references">
+   &reftitle.seealso;
+   <simplelist>
+    <member><link linkend="oci8.dtrace">OCI8 र DTrace Dynamic Tracing</link></member>
+   </simplelist>
+  </sect2>
+ </sect1>
+
+ <sect1 xml:id="features.dtrace.systemtap">
+  <title>PHP DTrace Static Probes सँग SystemTap को प्रयोग</title>
+  <para>
+   केही Linux distributions मा PHP का static DTrace probes trace गर्नका लागि
+   SystemTap tracing utility प्रयोग गर्न सकिन्छ। यो सुविधा PHP 5.4.20 र
+   PHP 5.5 बाट उपलब्ध छ।
+  </para>
+
+  <sect2 xml:id="features.dtrace.systemtap-install">
+   <title>SystemTap सँग PHP install गर्ने</title>
+
+   <para>
+    SystemTap SDT development package install गर्नुहोस्:
+    <informalexample>
+     <programlisting role="shell">
+<![CDATA[
+# yum install systemtap-sdt-devel
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+
+   <para>
+    DTrace probes सक्षम (enable) गरेर PHP install गर्नुहोस्:
+    <informalexample>
+     <programlisting role="shell">
+<![CDATA[
+# ./configure --enable-dtrace ...
+# make
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+  </sect2>
+
+  <sect2 xml:id="features.dtrace.systemtap-list-probes">
+   <title>SystemTap बाट Static Probes को सूची हेर्ने</title>
+
+   <para>
+    <filename>stap</filename> प्रयोग गरेर PHP मा रहेका static probes को सूची
+    हेर्न सकिन्छ:
+    <informalexample>
+     <programlisting>
+<![CDATA[
+# stap -l 'process.provider("php").mark("*")' -c 'sapi/cli/php -i'
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+
+   <para>
+    यसले निम्न output दिन्छ:
+    <informalexample>
+     <programlisting>
+<![CDATA[
+process("sapi/cli/php").provider("php").mark("compile__file__entry")
+process("sapi/cli/php").provider("php").mark("compile__file__return")
+process("sapi/cli/php").provider("php").mark("error")
+process("sapi/cli/php").provider("php").mark("exception__caught")
+process("sapi/cli/php").provider("php").mark("exception__thrown")
+process("sapi/cli/php").provider("php").mark("execute__entry")
+process("sapi/cli/php").provider("php").mark("execute__return")
+process("sapi/cli/php").provider("php").mark("function__entry")
+process("sapi/cli/php").provider("php").mark("function__return")
+process("sapi/cli/php").provider("php").mark("request__shutdown")
+process("sapi/cli/php").provider("php").mark("request__startup")
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+  </sect2>
+
+  <sect2 xml:id="features.dtrace.systemtap-examples">
+   <title>PHP सँग SystemTap को उदाहरण</title>
+
+   <para>
+    <example>
+     <title>SystemTap बाट सबै PHP Static Probes trace गर्नका लागि <filename>all_probes.stp</filename></title>
+     <programlisting role="shell">
+<![CDATA[
+probe process("sapi/cli/php").provider("php").mark("compile__file__entry") {
+    printf("Probe compile__file__entry\n");
+    printf("  compile_file %s\n", user_string($arg1));
+    printf("  compile_file_translated %s\n", user_string($arg2));
+}
+probe process("sapi/cli/php").provider("php").mark("compile__file__return") {
+    printf("Probe compile__file__return\n");
+    printf("  compile_file %s\n", user_string($arg1));
+    printf("  compile_file_translated %s\n", user_string($arg2));
+}
+probe process("sapi/cli/php").provider("php").mark("error") {
+    printf("Probe error\n");
+    printf("  errormsg %s\n", user_string($arg1));
+    printf("  request_file %s\n", user_string($arg2));
+    printf("  lineno %d\n", $arg3);
+}
+probe process("sapi/cli/php").provider("php").mark("exception__caught") {
+    printf("Probe exception__caught\n");
+    printf("  classname %s\n", user_string($arg1));
+}
+probe process("sapi/cli/php").provider("php").mark("exception__thrown") {
+    printf("Probe exception__thrown\n");
+    printf("  classname %s\n", user_string($arg1));
+}
+probe process("sapi/cli/php").provider("php").mark("execute__entry") {
+    printf("Probe execute__entry\n");
+    printf("  request_file %s\n", user_string($arg1));
+    printf("  lineno %d\n", $arg2);
+}
+probe process("sapi/cli/php").provider("php").mark("execute__return") {
+    printf("Probe execute__return\n");
+    printf("  request_file %s\n", user_string($arg1));
+    printf("  lineno %d\n", $arg2);
+}
+probe process("sapi/cli/php").provider("php").mark("function__entry") {
+    printf("Probe function__entry\n");
+    printf("  function_name %s\n", user_string($arg1));
+    printf("  request_file %s\n", user_string($arg2));
+    printf("  lineno %d\n", $arg3);
+    printf("  classname %s\n", user_string($arg4));
+    printf("  scope %s\n", user_string($arg5));
+}
+probe process("sapi/cli/php").provider("php").mark("function__return") {
+    printf("Probe function__return: %s\n", user_string($arg1));
+    printf(" function_name %s\n", user_string($arg1));
+    printf("  request_file %s\n", user_string($arg2));
+    printf("  lineno %d\n", $arg3);
+    printf("  classname %s\n", user_string($arg4));
+    printf("  scope %s\n", user_string($arg5));
+}
+probe process("sapi/cli/php").provider("php").mark("request__shutdown") {
+    printf("Probe request__shutdown\n");
+    printf("  file %s\n", user_string($arg1));
+    printf("  request_uri %s\n", user_string($arg2));
+    printf("  request_method %s\n", user_string($arg3));
+}
+probe process("sapi/cli/php").provider("php").mark("request__startup") {
+    printf("Probe request__startup\n");
+    printf("  file %s\n", user_string($arg1));
+    printf("  request_uri %s\n", user_string($arg2));
+    printf("  request_method %s\n", user_string($arg3));
+}
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <para>
+    माथिको script ले चलिरहेको PHP script को अवधिभरि सबै core PHP static
+    probe points लाई trace गर्नेछ:
+    <informalexample>
+     <programlisting>
+<![CDATA[
+# stap -c 'sapi/cli/php test.php' all_probes.stp
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 xml:id="features.dtrace.bpftrace">
+  <title>PHP DTrace Static Probes सँग bpftrace को प्रयोग</title>
+  <simpara>
+   eBPF समर्थन गर्ने kernel भएका Linux distributions मा, SystemTap को
+   आवश्यकता बिना नै bpftrace utility ले PHP का DTrace USDT probes मा सिधै
+   attach हुन सक्छ।
+  </simpara>
+  <sect2 xml:id="features.dtrace.bpftrace-install">
+   <title>bpftrace install गर्ने</title>
+   <para>
+    आफ्नो distribution को package manager प्रयोग गरेर bpftrace install
+    गर्नुहोस्। उदाहरणका लागि, Oracle Linux, RHEL, वा Fedora मा:
+    <informalexample>
+     <programlisting role="shell">
+<![CDATA[
+# dnf install bpftrace
+]]>
+     </programlisting>
+    </informalexample>
+    अथवा, Debian वा Ubuntu मा:
+    <informalexample>
+     <programlisting role="shell">
+<![CDATA[
+# apt install bpftrace
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+   <simpara>
+    तलका उदाहरणहरूमा लक्षित PHP binary <filename>/usr/bin/php</filename> मा
+    install गरिएको छ भनी मानिएको छ।
+   </simpara>
+   <simpara>
+    यही source tree बाट build गरिएका अन्य SAPIs मा पनि यिनै USDT probes
+    उपलब्ध हुन्छन्, त्यसैले probe को लक्ष्य Apache module
+    (<filename>libphp.so</filename>) वा FastCGI Process Manager binary
+    (<filename>php-fpm</filename>) पनि हुन सक्छ; आवश्यकता अनुसार उपयुक्त path
+    राख्नुहोस् वा <literal>-p</literal> प्रयोग गरी PID बाट attach गर्नुहोस्।
+   </simpara>
+   <simpara>
+    लक्षित binary DTrace सहित build गरिएको छ र environment variable सही
+    तरिकाले configure गरिएको छ भनी सुनिश्चित गर्नुहोस्। विस्तृत जानकारीका
+    लागि <link linkend="features.dtrace.install">DTrace Static Probes का लागि PHP configure गर्ने</link> हेर्नुहोस्।
+   </simpara>
+   <para>
+    <command>bpftrace</command> प्रयोग गरेर PHP मा रहेका static probes को
+    सूची हेर्न सकिन्छ:
+    <informalexample>
+     <programlisting>
+<![CDATA[
+# bpftrace -l 'usdt:/usr/bin/php:php:*'
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+
+   <para>
+    यसले निम्न output दिन्छ:
+    <informalexample>
+     <programlisting>
+<![CDATA[
+usdt:/usr/bin/php:php:compile__file__entry
+usdt:/usr/bin/php:php:compile__file__return
+usdt:/usr/bin/php:php:error
+usdt:/usr/bin/php:php:exception__caught
+usdt:/usr/bin/php:php:exception__thrown
+usdt:/usr/bin/php:php:execute__entry
+usdt:/usr/bin/php:php:execute__return
+usdt:/usr/bin/php:php:function__entry
+usdt:/usr/bin/php:php:function__return
+usdt:/usr/bin/php:php:request__shutdown
+usdt:/usr/bin/php:php:request__startup
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+
+   <para>
+    <example>
+     <title>bpftrace बाट सबै PHP Static Probes trace गर्नका लागि <filename>all_probes.bt</filename></title>
+     <programlisting role="shell">
+<![CDATA[
+#!/usr/bin/env bpftrace
+
+usdt:/usr/bin/php:php:compile__file__entry
+{
+    printf("Probe compile__file__entry\n");
+    printf("  compile_file %s\n", str(arg0));
+    printf("  compile_file_translated %s\n", str(arg1));
+}
+usdt:/usr/bin/php:php:compile__file__return
+{
+    printf("Probe compile__file__return\n");
+    printf("  compile_file %s\n", str(arg0));
+    printf("  compile_file_translated %s\n", str(arg1));
+}
+usdt:/usr/bin/php:php:error
+{
+    printf("Probe error\n");
+    printf("  errormsg %s\n", str(arg0));
+    printf("  request_file %s\n", str(arg1));
+    printf("  lineno %d\n", (int32)arg2);
+}
+usdt:/usr/bin/php:php:exception__caught
+{
+    printf("Probe exception__caught\n");
+    printf("  classname %s\n", str(arg0));
+}
+usdt:/usr/bin/php:php:exception__thrown
+{
+    printf("Probe exception__thrown\n");
+    printf("  classname %s\n", str(arg0));
+}
+usdt:/usr/bin/php:php:execute__entry
+{
+    printf("Probe execute__entry\n");
+    printf("  request_file %s\n", str(arg0));
+    printf("  lineno %d\n", (int32)arg1);
+}
+usdt:/usr/bin/php:php:execute__return
+{
+    printf("Probe execute__return\n");
+    printf("  request_file %s\n", str(arg0));
+    printf("  lineno %d\n", (int32)arg1);
+}
+usdt:/usr/bin/php:php:function__entry
+{
+    printf("Probe function__entry\n");
+    printf("  function_name %s\n", str(arg0));
+    printf("  request_file %s\n", str(arg1));
+    printf("  lineno %d\n", (int32)arg2);
+    printf("  classname %s\n", str(arg3));
+    printf("  scope %s\n", str(arg4));
+}
+usdt:/usr/bin/php:php:function__return
+{
+    printf("Probe function__return\n");
+    printf("  function_name %s\n", str(arg0));
+    printf("  request_file %s\n", str(arg1));
+    printf("  lineno %d\n", (int32)arg2);
+    printf("  classname %s\n", str(arg3));
+    printf("  scope %s\n", str(arg4));
+}
+usdt:/usr/bin/php:php:request__shutdown
+{
+    printf("Probe request__shutdown\n");
+    printf("  file %s\n", str(arg0));
+    printf("  request_uri %s\n", str(arg1));
+    printf("  request_method %s\n", str(arg2));
+}
+usdt:/usr/bin/php:php:request__startup
+{
+    printf("Probe request__startup\n");
+    printf("  file %s\n", str(arg0));
+    printf("  request_uri %s\n", str(arg1));
+    printf("  request_method %s\n", str(arg2));
+}
+]]>
+     </programlisting>
+    </example>
+   </para>
+
+   <para>
+    माथिको script ले चलिरहेको PHP script को अवधिभरि सबै core PHP static
+    probe points लाई trace गर्नेछ। bpftrace चलाउन root privileges आवश्यक पर्छ:
+    <informalexample>
+     <programlisting>
+<![CDATA[
+# USE_ZEND_DTRACE=1 bpftrace -c '/usr/bin/php test.php' all_probes.bt
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+
+   <para>
+    पहिले नै चलिरहेको PHP process (उदाहरणका लागि,
+    <filename>php-fpm</filename> worker वा <filename>libphp.so</filename>
+    load गरेको Apache process) trace गर्न PID बाट attach गर्नुहोस्:
+    <informalexample>
+     <programlisting>
+<![CDATA[
+# bpftrace -p $PID all_probes.bt
+]]>
+     </programlisting>
+    </informalexample>
+    Script मा रहेको <literal>usdt:</literal> target path चलिरहेको process
+    को binary सँग मेल खानुपर्छ; आवश्यकता अनुसार
+    <literal>usdt:/usr/bin/php</literal> लाई <filename>php-fpm</filename>
+    binary वा <filename>libphp.so</filename> मा परिवर्तन गर्नुहोस्।
+  </para>
+  </sect2>
+ </sect1>
+</chapter>
+
+<!-- Keep this comment at the end of the file
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

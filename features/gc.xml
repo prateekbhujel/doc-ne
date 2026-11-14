@@ -1,0 +1,691 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 5e6ca803fc284739a7b1e7fba58b6b8466d5006f Maintainer: prateekbhujel Status: ready -->
+ <chapter xml:id="features.gc" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <title>Garbage Collection</title>
+
+  <para>
+   यस खण्डले PHP 5.3 मा समावेश गरिएको नयाँ Garbage Collection (जसलाई संक्षेपमा
+   GC पनि भनिन्छ) प्रणालीका फाइदाहरूको व्याख्या गर्दछ।
+  </para>
+
+  <sect1 xml:id="features.gc.refcounting-basics">
+   <title>Reference Counting को आधारभूत जानकारी</title>
+   <para>
+    PHP को variable लाई "zval" भनिने container मा भण्डारण गरिन्छ। zval
+    container मा variable को type र value बाहेक अन्य दुई थप जानकारी पनि
+    हुन्छन्। पहिलोलाई "is_ref" भनिन्छ र यो एउटा boolean value हो जसले उक्त
+    variable कुनै "reference set" को भाग हो वा होइन भन्ने जनाउँछ। यही bit बाट
+    PHP को engine ले सामान्य variables र references बीच फरक छुट्याउँछ। PHP ले
+    &amp; operator बाट बनाइने user-land references अनुमति दिने भएकाले, memory
+    प्रयोगलाई अनुकूल (optimize) बनाउन zval container मा आन्तरिक reference
+    counting प्रणाली पनि हुन्छ। दोस्रो थप जानकारीलाई "refcount" भनिन्छ, जसमा यो
+    एउटै zval container लाई कतिवटा variable का नामहरू (जसलाई symbols पनि
+    भनिन्छ) ले point गरिरहेका छन् भन्ने संख्या रहन्छ। सबै symbols एउटा symbol
+    table मा भण्डारण हुन्छन्, र प्रत्येक scope का लागि एक-एक symbol table
+    हुन्छ। मुख्य script (जस्तै, browser मार्फत अनुरोध गरिएको script) का लागि
+    एउटा scope हुन्छ, र प्रत्येक function वा method का लागि पनि आ-आफ्नै
+    scope हुन्छ।
+   </para>
+   <para>
+    कुनै constant value सहित नयाँ variable बनाउँदा zval container सिर्जना
+    हुन्छ, जस्तै:
+    <example>
+     <title>नयाँ zval container बनाउने</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$a = "new string";
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <para>
+    यस अवस्थामा, हालको scope मा नयाँ symbol नाम <literal>a</literal> बन्छ, र
+    <type>string</type> type तथा <literal>new string</literal> value भएको
+    नयाँ variable container सिर्जना हुन्छ। कुनै user-land reference नबनाइएको
+    हुनाले "is_ref" bit डिफल्ट रूपमा &false; मा सेट हुन्छ। यो variable
+    container प्रयोग गर्ने symbol एउटा मात्र भएकाले "refcount" को मान
+    <literal>1</literal> सेट हुन्छ। ध्यान दिनुहोस् कि "refcount"
+    <literal>1</literal> भएका references (अर्थात् "is_ref" को मान &true; भए
+    पनि) लाई reference नभए जस्तै गरी (मानौँ "is_ref" &false; भए झैँ) व्यवहार
+    गरिन्छ। यदि तपाईँले <link xlink:href="&url.xdebug;">Xdebug</link> install
+    गर्नुभएको छ भने, <function>xdebug_debug_zval</function> call गरेर यो जानकारी
+    हेर्न सक्नुहुन्छ।
+   </para>
+   <para>
+    <example>
+     <title>zval को जानकारी देखाउने</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$a = "new string";
+xdebug_debug_zval('a');
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+a: (refcount=1, is_ref=0)='new string'
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    यो variable लाई अर्को variable नाममा assign गर्दा refcount बढ्छ।
+   </para>
+   <para>
+    <example>
+     <title>zval को refcount बढाउने</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$a = "new string";
+$b = $a;
+xdebug_debug_zval( 'a' );
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+a: (refcount=2, is_ref=0)='new string'
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    यहाँ refcount <literal>2</literal> छ, किनभने एउटै variable container
+    <varname>a</varname> र <varname>b</varname> दुवैसँग जोडिएको छ। आवश्यक नभएको
+    बेला वास्तविक variable container लाई copy नगर्न PHP पर्याप्त चलाख छ। जब
+    "refcount" शून्यमा झर्छ, तब variable containers नष्ट (destroy) हुन्छन्।
+    Variable container सँग जोडिएको कुनै symbol scope बाट बाहिर जाँदा (जस्तै,
+    function समाप्त हुँदा) वा symbol लाई unassign गर्दा (जस्तै,
+    <function>unset</function> call गरेर) "refcount" एकले घट्छ। निम्न उदाहरणले
+    यही कुरा देखाउँछ:
+   </para>
+   <para>
+    <example>
+     <title>zval को refcount घटाउने</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+$a = "new string";
+$c = $b = $a;
+xdebug_debug_zval( 'a' );
+$b = 42;
+xdebug_debug_zval( 'a' );
+unset( $c );
+xdebug_debug_zval( 'a' );
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+a: (refcount=3, is_ref=0)='new string'
+a: (refcount=2, is_ref=0)='new string'
+a: (refcount=1, is_ref=0)='new string'
+]]>
+     </screen>
+    </example>
+   </para>
+   <para>
+    यदि हामीले अब <literal>unset($a);</literal> call गर्‍यौँ भने, type र value
+    सहित पूरा variable container नै memory बाट हट्नेछ।
+   </para>
+
+   <sect2 xml:id="features.gc.compound-types">
+    <title>Compound Types</title>
+
+    <para>
+     <type>array</type> र <type>object</type> जस्ता compound types मा कुरा अलि
+     जटिल हुन्छ। <type>scalar</type> values को विपरीत, <type>array</type> र
+     <type>object</type> ले आफ्ना properties लाई आफ्नै अलग symbol table मा
+     भण्डारण गर्छन्। यसको अर्थ निम्न उदाहरणले तीनवटा zval containers बनाउँछ:
+    </para>
+    <para>
+     <example>
+      <title><type>array</type> zval बनाउने</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+$a = array( 'meaning' => 'life', 'number' => 42 );
+xdebug_debug_zval( 'a' );
+?>
+]]>
+      </programlisting>
+      &example.outputs.similar;
+      <screen>
+<![CDATA[
+a: (refcount=1, is_ref=0)=array (
+   'meaning' => (refcount=1, is_ref=0)='life',
+   'number' => (refcount=1, is_ref=0)=42
+)
+]]>
+      </screen>
+      <para>वा ग्राफिकल रूपमा</para>
+      <mediaobject>
+       <alt>सरल array का लागि zvals</alt>
+       <imageobject>
+        <imagedata fileref="en/features/figures/simple-array.png" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </example>
+    </para>
+    <para>
+     ती तीन zval containers हुन्: <varname>a</varname>,
+     <varname>meaning</varname>, र <varname>number</varname>। "refcounts"
+     बढाउन र घटाउन उस्तै नियमहरू लागू हुन्छन्। तल हामी array मा अर्को एउटा
+     element थप्छौँ र त्यसको value लाई पहिले नै रहेको element को सामग्री बराबर
+     सेट गर्छौँ:
+    </para>
+    <para>
+     <example>
+      <title>array मा पहिले नै रहेको element थप्ने</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+$a = array( 'meaning' => 'life', 'number' => 42 );
+$a['life'] = $a['meaning'];
+xdebug_debug_zval( 'a' );
+?>
+]]>
+      </programlisting>
+      &example.outputs.similar;
+      <screen>
+<![CDATA[
+a: (refcount=1, is_ref=0)=array (
+   'meaning' => (refcount=2, is_ref=0)='life',
+   'number' => (refcount=1, is_ref=0)=42,
+   'life' => (refcount=2, is_ref=0)='life'
+)
+]]>
+      </screen>
+      <para>वा ग्राफिकल रूपमा</para>
+      <mediaobject>
+       <alt>reference सहितको सरल array का लागि zvals</alt>
+       <imageobject>
+        <imagedata fileref="en/features/figures/simple-array2.png" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </example>
+    </para>
+    <para>
+     माथिको Xdebug output बाट हामी देख्न सक्छौँ कि पुरानो र नयाँ दुवै array
+     elements ले अब <literal>2</literal> "refcount" भएको एउटै zval container
+     लाई point गरिरहेका छन्। यद्यपि Xdebug को output ले <literal>'life'</literal>
+     value भएका दुईवटा zval containers देखाउँछ, वास्तवमा ती एउटै हुन्।
+     <function>xdebug_debug_zval</function> function ले यो कुरा देखाउँदैन, तर
+     memory pointer समेत प्रदर्शन गर्ने हो भने तपाईँले त्यो देख्न सक्नुहुन्छ।
+    </para>
+    <para>
+     Array बाट कुनै element हटाउनु भनेको scope बाट symbol हटाउनु जस्तै हो। यसो
+     गर्दा array element ले point गरेको container को "refcount" घट्छ। फेरि पनि,
+     जब "refcount" शून्यमा पुग्छ, तब variable container memory बाट हटाइन्छ। यो
+     देखाउनका लागि अर्को उदाहरण हेरौँ:
+    </para>
+    <para>
+     <example>
+      <title>array बाट element हटाउने</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+$a = array( 'meaning' => 'life', 'number' => 42 );
+$a['life'] = $a['meaning'];
+unset( $a['meaning'], $a['number'] );
+xdebug_debug_zval( 'a' );
+?>
+]]>
+      </programlisting>
+      &example.outputs.similar;
+      <screen>
+<![CDATA[
+a: (refcount=1, is_ref=0)=array (
+   'life' => (refcount=1, is_ref=0)='life'
+)
+]]>
+      </screen>
+     </example>
+    </para>
+    <para>
+     अब, यदि हामीले array स्वयंलाई नै त्यसै array को एउटा element को रूपमा
+     थप्यौँ भने कुरा अझ रोचक हुन्छ। हामी अर्को उदाहरणमा यही गर्दैछौँ, जसमा एउटा
+     reference operator पनि प्रयोग गरेका छौँ, किनकि त्यसो नगरे PHP ले यसको
+     copy बनाइदिन्छ:
+    </para>
+    <para>
+     <example>
+      <title>array लाई आफ्नै element को रूपमा थप्ने</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+$a = array( 'one' );
+$a[] =& $a;
+xdebug_debug_zval( 'a' );
+?>
+]]>
+      </programlisting>
+      &example.outputs.similar;
+      <screen>
+<![CDATA[
+a: (refcount=2, is_ref=1)=array (
+   0 => (refcount=1, is_ref=0)='one',
+   1 => (refcount=2, is_ref=1)=...
+)
+]]>
+      </screen>
+      <para>वा ग्राफिकल रूपमा</para>
+      <mediaobject>
+       <alt>circular reference भएको array का लागि zvals</alt>
+       <imageobject>
+        <imagedata fileref="en/features/figures/loop-array.png" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </example>
+    </para>
+    <para>
+     तपाईँ देख्न सक्नुहुन्छ कि array variable (<varname>a</varname>) र दोस्रो
+     element (<varname>1</varname>) दुवैले अब <literal>2</literal> "refcount"
+     भएको variable container लाई point गरिरहेका छन्। माथिको output मा देखिएको
+     "..." ले यहाँ recursion भएको संकेत गर्छ, जसको अर्थ पक्कै पनि "..." ले मूल
+     array तर्फ नै फर्किएर point गरिरहेको छ भन्ने हुन्छ।
+    </para>
+    <para>
+     पहिले जस्तै, variable लाई unset गर्दा symbol हट्छ, र यसले point गरेको
+     variable container को reference count एकले घट्छ। त्यसैले, माथिको code
+     चलाएपछि यदि हामीले variable <varname>$a</varname> लाई unset गर्‍यौँ भने,
+     <varname>$a</varname> र element "1" ले point गरेको variable container को
+     reference count एकले घटेर "2" बाट "1" मा झर्छ। यसलाई निम्न अनुसार देखाउन
+     सकिन्छ:
+    </para>
+    <para>
+     <example>
+      <title><varname>$a</varname> लाई unset गर्ने</title>
+      <screen>
+<![CDATA[
+(refcount=1, is_ref=1)=array (
+   0 => (refcount=1, is_ref=0)='one',
+   1 => (refcount=1, is_ref=1)=...
+)
+]]>
+      </screen>
+      <para>वा ग्राफिकल रूपमा</para>
+      <mediaobject>
+       <alt>memory leak देखाउने circular reference भएको array हटाएपछि zvals को अवस्था</alt>
+       <imageobject>
+        <imagedata fileref="en/features/figures/leak-array.png" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </example>
+    </para>
+   </sect2>
+
+   <sect2 xml:id="features.gc.cleanup-problems">
+    <title>Cleanup सम्बन्धी समस्याहरू</title>
+    <para>
+     यद्यपि अब कुनै पनि scope मा यो संरचनालाई point गर्ने symbol बाँकी छैन,
+     तैपनि यसलाई सफा (clean up) गर्न सकिँदैन किनकि array element "1" ले अझै पनि
+     यही array लाई point गरिरहेको छ। यसलाई point गर्ने कुनै बाहिरी symbol
+     नभएको हुनाले, user का लागि यो संरचना सफा गर्ने कुनै उपाय रहँदैन; यसरी
+     memory leak हुन पुग्छ। सौभाग्यवश, request समाप्त हुँदा PHP ले यो data
+     structure सफा गरिदिन्छ, तर त्यसअघिसम्म यसले memory मा बहुमूल्य ठाउँ
+     ओगटेर बसिरहन्छ। यदि तपाईँ parsing algorithms वा child ले "parent"
+     element तर्फ फर्किएर point गर्ने अन्य कुनै संरचना बनाउँदै हुनुहुन्छ भने
+     यस्तो अवस्था प्रायः आइरहन्छ। पक्कै पनि यही अवस्था objects मा पनि हुन सक्छ,
+     र त्यहाँ यो झनै बढी हुने सम्भावना रहन्छ, किनकि objects सधैँ अप्रत्यक्ष
+     रूपमा "<link linkend="language.oop5.references">by reference</link>"
+     प्रयोग हुन्छन्।
+    </para>
+    <para>
+     यस्तो घटना एक-दुई पटक मात्र हुँदा खासै समस्या नहुन सक्छ, तर यदि यस्ता
+     memory क्षति हजारौँ वा लाखौँ पटक भएमा, यो स्पष्ट रूपमा गम्भीर समस्या बन्न
+     थाल्छ। विशेषगरी लामो समयसम्म चल्ने scripts, जस्तै request कहिल्यै नसकिने
+     daemons वा unit tests को ठूलो समूह चलाउँदा यो झनै समस्याजनक हुन्छ। दोस्रो
+     अवस्थामा, eZ Components library को Template component का लागि unit tests
+     चलाउँदा यस्तै समस्या देखिएको थियो। केही अवस्थामा त्यसलाई २ GB भन्दा बढी
+     memory चाहिन्थ्यो, जुन test server सँग उपलब्ध थिएन।
+    </para>
+   </sect2>
+  </sect1>
+
+  <sect1 xml:id="features.gc.collecting-cycles">
+   <title>Cycles Collect गर्ने प्रक्रिया (Collecting Cycles)</title>
+   <simpara>
+    परम्परागत रूपमा, PHP ले पहिले प्रयोग गर्ने गरेको जस्ता reference counting
+    memory प्रणालीहरू circular reference बाट हुने memory leaks समाधान गर्न
+    असफल हुन्छन्; तर PHP 5.3.0 देखि, PHP ले
+    <link xlink:href="&url.gc-paper;">Concurrent Cycle Collection in Reference Counted Systems</link>
+    शोधपत्रमा उल्लेखित synchronous algorithm लागू गरेको छ, जसले यो समस्या
+    समाधान गर्छ।
+   </simpara>
+   <para>
+    यो algorithm ले कसरी काम गर्छ भन्ने पूर्ण व्याख्या गर्नु यस खण्डको
+    दायराभन्दा अलि बाहिर हुनेछ, तर आधारभूत कुराहरू यहाँ व्याख्या गरिएको छ।
+    सबैभन्दा पहिले, हामीले केही आधारभूत नियमहरू बुझ्नुपर्छ। यदि refcount बढ्छ
+    भने, त्यो अझै प्रयोगमै छ र त्यसैले garbage होइन। यदि refcount घटेर शून्यमा
+    पुग्छ भने, त्यो zval लाई free गर्न सकिन्छ। यसको अर्थ garbage cycles तब
+    मात्र बन्न सक्छन् जब कुनै refcount मान घटेर शून्यबाहेक अन्य मान (non-zero
+    value) मा झर्छ। दोस्रो, कुनै garbage cycle भित्र कुन-कुन भागहरू garbage
+    हुन् भनी पत्ता लगाउन तिनको refcount एकले घटाउन सकिन्छ कि सकिँदैन भनी जाँच
+    गरेर, अनि त्यसपछि कुन-कुन zvals को refcount शून्य भयो भनी हेरेर पत्ता
+    लगाउन सम्भव हुन्छ।
+   </para>
+   <para>
+     <mediaobject>
+      <alt>Garbage collection algorithm</alt>
+      <imageobject>
+       <imagedata fileref="en/features/figures/gc-algorithm.png" format="PNG"/>
+      </imageobject>
+     </mediaobject>
+   </para>
+   <para>
+    हरेक पटक refcount घट्ने बित्तिकै garbage cycles जाँच्ने प्रक्रिया चलाउनु
+    नपरोस् भन्नका लागि, यस algorithm ले सबै सम्भावित roots (zvals) लाई "root
+    buffer" मा राख्छ (र तिनलाई "purple" चिह्न लगाउँछ)। साथै, प्रत्येक सम्भावित
+    garbage root buffer भित्र एक पटक मात्र परोस् भन्ने पनि यसले सुनिश्चित
+    गर्छ। Root buffer पूरा भरिएपछि मात्र भित्र रहेका सबै zvals का लागि
+    collection प्रक्रिया सुरु हुन्छ। माथिको चित्रमा चरण A हेर्नुहोस्।
+   </para>
+   <para>
+    चरण B मा, algorithm ले सबै सम्भावित roots मा depth-first search चलाएर
+    भेटिएका प्रत्येक zval को refcount एकले घटाउँछ, र एउटै zval को refcount
+    दुई पटक नघटोस् भनी सुनिश्चित गर्छ (तिनलाई "grey" चिह्न लगाएर)। चरण C मा,
+    प्रत्येक zval को refcount फेरि जाँच्नका लागि algorithm ले प्रत्येक root
+    node बाट पुनः depth-first search चलाउँछ। यदि refcount शून्य भेटियो भने,
+    त्यस zval लाई "white" चिह्न लगाइन्छ (चित्रमा नीलो रङ)। यदि यो शून्यभन्दा
+    ठूलो छ भने, त्यहाँबाट depth-first search मार्फत एकले घटाइएको refcount लाई
+    पूर्ववत् फर्काउँछ, र तिनलाई फेरि "black" चिह्न लगाइन्छ। अन्तिम चरण (D) मा,
+    algorithm ले root buffer भरि घुम्दै त्यहाँबाट zval roots हटाउँछ र साथसाथै
+    अघिल्लो चरणमा कुन-कुन zvals लाई "white" चिह्न लगाइएको थियो भनी जाँच गर्छ।
+    "white" चिह्न लगाइएका प्रत्येक zval लाई free गरिन्छ।
+   </para>
+   <para>
+    अब तपाईँले algorithm ले कसरी काम गर्छ भन्ने आधारभूत कुरा बुझिसक्नुभएको छ,
+    हामी यो PHP सँग कसरी जोडिएको छ भन्ने हेर्नेछौँ। डिफल्ट रूपमा, PHP को
+    garbage collector अन (on) गरिएको हुन्छ। तर, यसलाई परिवर्तन गर्न दिने एउटा
+    &php.ini; सेटिङ उपलब्ध छ:
+    <link linkend="ini.zend.enable-gc">zend.enable_gc</link>।
+   </para>
+   <para>
+    जब garbage collector अन (on) हुन्छ, तब root buffer भरिने बित्तिकै माथि
+    व्याख्या गरिए अनुसारको cycle पत्ता लगाउने algorithm चल्छ। Root buffer को
+    आकार १०,००० सम्भावित roots मा स्थिर (fixed) गरिएको हुन्छ (यद्यपि तपाईँले
+    PHP source code को <literal>Zend/zend_gc.c</literal> मा रहेको
+    <constant>GC_THRESHOLD_DEFAULT</constant> constant परिवर्तन गरेर र PHP
+    पुनः compile गरेर यसलाई बदल्न सक्नुहुन्छ)। जब garbage collector बन्द (off)
+    हुन्छ, तब cycle पत्ता लगाउने algorithm कहिल्यै चल्दैन। यद्यपि, यो
+    configuration सेटिङबाट garbage collection प्रणाली सक्रिय गरिएको होस् वा
+    नहोस्, सम्भावित roots सधैँ root buffer मा रेकर्ड भइरहन्छन्।
+   </para>
+   <para>
+    यदि garbage collection प्रणाली बन्द रहेको बेला root buffer सम्भावित roots
+    ले भरियो भने, त्यसपछिका सम्भावित roots सिधै रेकर्ड हुँदैनन्। रेकर्ड नभएका
+    ती सम्भावित roots लाई algorithm द्वारा कहिल्यै विश्लेषण गरिँदैन। यदि ती
+    कुनै circular reference cycle को भाग थिए भने, ती कहिल्यै सफा हुँदैनन् र
+    memory leak सिर्जना गर्छन्।
+   </para>
+   <para>
+    यो प्रणाली असक्षम (disable) गरिएको अवस्थामा पनि सम्भावित roots रेकर्ड
+    गरिनुको कारण के हो भने, हरेक पटक सम्भावित root भेटिन सक्दा प्रणाली अन छ कि
+    छैन भनी जाँच गर्नुभन्दा सिधै सम्भावित roots रेकर्ड गर्नु छिटो हुन्छ। तर,
+    वास्तविक garbage collection र विश्लेषण प्रणाली चल्न भने उल्लेख्य समय
+    लाग्न सक्छ।
+   </para>
+   <para>
+    <link linkend="ini.zend.enable-gc">zend.enable_gc</link> configuration
+    सेटिङ परिवर्तन गर्नुका साथै, क्रमशः <function>gc_enable</function> वा
+    <function>gc_disable</function> call गरेर पनि garbage collection प्रणाली
+    अन र अफ गर्न सकिन्छ। ती functions call गर्दाको प्रभाव configuration
+    सेटिङबाट प्रणाली अन वा अफ गरेसरह नै हुन्छ। यदि सम्भावित root buffer अझै
+    नभरिएको भए पनि जबरजस्ती cycles collect गराउन सम्भव छ। यसका लागि तपाईँ
+    <function>gc_collect_cycles</function> function प्रयोग गर्न सक्नुहुन्छ। यस
+    function ले algorithm द्वारा कतिवटा cycles collect गरिए भन्ने संख्या
+    return गर्छ।
+   </para>
+   <para>
+    प्रणाली अन र अफ गर्न मिल्ने तथा आफैँले cycle collection सुरु गर्न मिल्ने
+    सुविधा दिनुको कारण के हो भने तपाईँको application का केही भागहरू समयको
+    हिसाबले अत्यन्त संवेदनशील (time-sensitive) हुन सक्छन्। त्यस्ता अवस्थामा
+    तपाईँ बीचमै garbage collection प्रणाली सक्रिय नहोस् भन्ने चाहन सक्नुहुन्छ।
+    निश्चय पनि, आफ्नो application का निश्चित भागका लागि garbage collection
+    बन्द गर्दा memory leaks हुने जोखिम रहन्छ, किनकि सीमित root buffer मा केही
+    सम्भावित roots नअट्न सक्छन्। तसर्थ, root buffer मा पहिले नै रेकर्ड
+    भइसकेका सम्भावित roots का कारण खेर जान सक्ने memory खाली (free) गर्न
+    <function>gc_disable</function> call गर्नुभन्दा ठीक अगाडि
+    <function>gc_collect_cycles</function> call गर्नु बुद्धिमानी हुन्छ। यसले
+    buffer खाली गरिदिन्छ, जसले गर्दा cycle collect गर्ने प्रणाली बन्द रहेको
+    बेला नयाँ सम्भावित roots भण्डारण गर्न थप खाली ठाउँ उपलब्ध हुन्छ।
+   </para>
+  </sect1>
+
+  <sect1 xml:id="features.gc.performance-considerations">
+   <title>Performance सम्बन्धी पक्षहरू</title>
+   <para>
+    हामीले अघिल्लो खण्डमै उल्लेख गरिसकेका छौँ कि केवल सम्भावित roots संकलन
+    गर्दा performance मा एकदमै सानो असर मात्र पर्छ, तर यो PHP 5.2 सँग PHP 5.3
+    को तुलना गर्दाको कुरा हो। PHP 5.2 मा जस्तै सम्भावित roots रेकर्ड नै नगर्ने
+    अवस्थासँग तुलना गर्दा रेकर्ड गर्ने काम ढिलो भए पनि, PHP 5.3 मा PHP runtime
+    मा गरिएका अन्य सुधारहरूले यो विशेष performance ह्रास देखिनै दिएनन्।
+   </para>
+   <para>
+    Performance मा असर पर्ने दुई मुख्य क्षेत्रहरू छन्। पहिलो क्षेत्र memory
+    प्रयोगमा आउने कमी हो, र दोस्रो क्षेत्र garbage collection प्रणालीले memory
+    सफा गर्दा run-time मा हुने ढिलाइ हो। हामी यी दुवै विषयमा हेर्नेछौँ।
+   </para>
+
+   <sect2 xml:id="features.gc.performance-considerations.reduced-mem">
+    <title>Memory प्रयोगमा कमी</title>
+    <para>
+     सबैभन्दा पहिले, garbage collection प्रणाली लागू गर्नुको मुख्य कारण नै
+     आवश्यक शर्तहरू पूरा हुने बित्तिकै circular-referenced variables लाई सफा
+     गरेर memory प्रयोग घटाउनु हो। PHP को implementation मा, यो काम
+     root-buffer भरिने बित्तिकै वा <function>gc_collect_cycles</function>
+     function call गर्दा हुन्छ। तलको ग्राफमा हामीले तल दिइएको script को memory
+     प्रयोगलाई PHP 5.2 र PHP 5.3 दुवैमा देखाएका छौँ, जसमा PHP सुरु हुँदा आफैँले
+     प्रयोग गर्ने आधारभूत (base) memory समावेश गरिएको छैन।
+    </para>
+    <para>
+     <example>
+      <title>Memory प्रयोगको उदाहरण</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+class Foo
+{
+    public $var = '3.14159265359';
+    public $self;
+}
+
+$baseMemory = memory_get_usage();
+
+for ( $i = 0; $i <= 100000; $i++ )
+{
+    $a = new Foo;
+    $a->self = $a;
+    if ( $i % 500 === 0 )
+    {
+        echo sprintf( '%8d: ', $i ), memory_get_usage() - $baseMemory, "\n";
+    }
+}
+?>
+]]>
+      </programlisting>
+      <mediaobject>
+       <alt>PHP 5.2 र PHP 5.3 बीच memory प्रयोगको तुलना</alt>
+       <imageobject>
+        <imagedata fileref="en/features/figures/gc-benchmark.png" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </example>
+    </para>
+    <para>
+     यो अत्यन्तै सैद्धान्तिक (academic) उदाहरणमा, हामी एउटा यस्तो object
+     बनाइरहेका छौँ जसको एउटा property ले फर्किएर त्यसै object लाई point गर्छ।
+     जब loop को अर्को iteration मा script भित्रको <varname>$a</varname>
+     variable लाई पुनः assign गरिन्छ, तब सामान्यतया memory leak हुने गर्छ। यस
+     अवस्थामा दुईवटा zval-containers leak हुन्छन् (object zval र property
+     zval), तर एउटा मात्र सम्भावित root भेटिन्छ: त्यो हो unset भएको variable।
+     १०,००० iterations पछि जब root-buffer भरिन्छ (कुल १०,००० सम्भावित roots
+     सहित), तब garbage collection प्रणाली सक्रिय हुन्छ र ती सम्भावित roots
+     सँग सम्बन्धित memory खाली (free) गरिदिन्छ। PHP 5.3 को तल-माथि गरिरहने
+     (jagged) memory-usage ग्राफमा यो कुरा स्पष्ट रूपमा देख्न सकिन्छ। प्रत्येक
+     १०,००० iterations पछि यो प्रणाली चल्छ र circular referenced variables
+     सँग सम्बन्धित memory खाली गर्छ। यस उदाहरणमा प्रणाली आफैँले धेरै काम
+     गर्नुपर्दैन, किनकि leak भएको संरचना अत्यन्त सरल छ। चित्रबाट तपाईँ देख्न
+     सक्नुहुन्छ कि PHP 5.3 मा अधिकतम memory प्रयोग लगभग 9 Mb छ, जबकि PHP 5.2
+     मा भने memory प्रयोग निरन्तर बढिरहन्छ।
+    </para>
+   </sect2>
+
+   <sect2 xml:id="features.gc.performance-considerations.slowdowns">
+    <title>Run-Time मा हुने ढिलाइ (Slowdowns)</title>
+    <para>
+     Garbage collection प्रणालीले performance मा प्रभाव पार्ने दोस्रो क्षेत्र
+     भनेको "leak" भएको memory खाली गर्न garbage collection प्रणाली सक्रिय
+     हुँदा लाग्ने समय हो। यो समय कति हुन्छ भनी हेर्नका लागि, हामी अघिल्लो script
+     मा अझ धेरै iterations चल्ने गरी र बीच-बीचको memory प्रयोगको तथ्याङ्क हटाएर
+     अलिकति परिमार्जन गर्छौँ। दोस्रो script यहाँ छ:
+    </para>
+    <para>
+     <example>
+      <title>GC ले performance मा पार्ने प्रभाव</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+class Foo
+{
+    public $var = '3.14159265359';
+    public $self;
+}
+
+for ( $i = 0; $i <= 1000000; $i++ )
+{
+    $a = new Foo;
+    $a->self = $a;
+}
+
+echo memory_get_peak_usage(), "\n";
+?>
+]]>
+      </programlisting>
+     </example>
+    </para>
+    <para>
+     हामी यो script लाई दुई पटक चलाउनेछौँ: एक पटक
+     <link linkend="ini.zend.enable-gc">zend.enable_gc</link> सेटिङ अन (on)
+     गरेर, र एक पटक अफ (off) गरेर:
+    </para>
+    <para>
+     <example>
+      <title>माथिको script चलाउने</title>
+      <programlisting role="shell">
+<![CDATA[
+time php -dzend.enable_gc=0 -dmemory_limit=-1 -n example2.php
+# and
+time php -dzend.enable_gc=1 -dmemory_limit=-1 -n example2.php
+]]>
+      </programlisting>
+     </example>
+    </para>
+    <para>
+     मेरो मेसिनमा, पहिलो command ले लगातार लगभग 10.7 सेकेन्ड लिन्छ, जबकि
+     दोस्रो command ले लगभग 11.4 सेकेन्ड लिन्छ। यो करिब 7% को ढिलाइ (slowdown)
+     हो। यद्यपि, script ले प्रयोग गर्ने अधिकतम memory को मात्रा 98% ले घटेर
+     931Mb बाट 10Mb मा झरेको छ। यो benchmark धेरै वैज्ञानिक वा वास्तविक जीवनका
+     applications को प्रतिनिधित्व गर्ने खालको छैन, तर यसले यो garbage
+     collection प्रणालीले दिने memory बचतका फाइदाहरू अवश्य प्रदर्शन गर्छ।
+     राम्रो पक्ष के हो भने, यो विशेष script का लागि ढिलाइ सधैँ उही 7% नै
+     रहन्छ, जबकि script चल्दै जाँदा जति धेरै circular references भेटिन्छन्,
+     त्यति नै धेरै memory बचत हुँदै जान्छ।
+    </para>
+   </sect2>
+
+   <sect2 xml:id="features.gc.performance-considerations.internal-stats">
+    <title>PHP को आन्तरिक GC तथ्याङ्क (Statistics)</title>
+    <para>
+     PHP भित्रबाटै garbage collection प्रणाली कसरी चलिरहेको छ भन्ने बारेमा
+     अलि थप जानकारी निकाल्न सम्भव छ। तर त्यसो गर्नका लागि, तपाईँले benchmark
+     र data-collecting code सक्षम (enable) गर्न PHP लाई पुनः compile
+     गर्नुपर्ने हुन्छ। आवश्यक विकल्पहरूसहित <literal>./configure</literal>
+     चलाउनुअघि तपाईँले <literal>CFLAGS</literal> environment variable लाई
+     <literal>-DGC_BENCH=1</literal> मा सेट गर्नुपर्नेछ। निम्न क्रमले यो काम
+     गर्नेछ:
+    </para>
+    <para>
+     <example>
+      <title>GC benchmarking सक्षम गर्न PHP लाई पुनः compile गर्ने</title>
+      <programlisting role="shell">
+<![CDATA[
+export CFLAGS=-DGC_BENCH=1
+./config.nice
+make clean
+make
+]]>
+      </programlisting>
+     </example>
+    </para>
+    <para>
+     तपाईँले नयाँ build गरिएको PHP binary प्रयोग गरी माथिको उदाहरण code फेरि
+     चलाउँदा, PHP को काम समाप्त भएपछि निम्न विवरण देख्नुहुनेछ:
+    </para>
+    <para>
+     <example>
+      <title>GC तथ्याङ्क (GC statistics)</title>
+      <programlisting role="shell">
+<![CDATA[
+GC Statistics
+-------------
+Runs:               110
+Collected:          2072204
+Root buffer length: 0
+Root buffer peak:   10000
+
+      Possible            Remove from  Marked
+        Root    Buffered     buffer     grey
+      --------  --------  -----------  ------
+ZVAL   7175487   1491291    1241690   3611871
+ZOBJ  28506264   1527980     677581   1025731
+]]>
+      </programlisting>
+     </example>
+    </para>
+    <para>
+     सबैभन्दा जानकारीमूलक तथ्याङ्क पहिलो block मा देखाइएको छ। यहाँ तपाईँ देख्न
+     सक्नुहुन्छ कि garbage collection प्रणाली 110 पटक चल्यो, र ती 110 पटकको
+     चक्रमा कुल २० लाखभन्दा बढी memory allocations खाली (free) गरिए।
+     Garbage collection प्रणाली कम्तीमा एक पटक चलिसकेपछि, "Root buffer peak"
+     सधैँ 10000 रहन्छ।
+    </para>
+   </sect2>
+
+   <sect2 xml:id="features.gc.performance-considerations.conclusion">
+    <title>निष्कर्ष (Conclusion)</title>
+    <para>
+     सामान्यतया PHP मा रहेको garbage collector ले cycle collect गर्ने algorithm
+     वास्तवमा चल्दा मात्र ढिलाइ निम्त्याउँछ, जबकि सामान्य (साना) scripts मा
+     भने performance मा कुनै असर पर्नुहुँदैन।
+    </para>
+    <para>
+     यद्यपि, सामान्य scripts मा पनि cycle collection प्रणाली चल्ने अवस्थामा,
+     यसले उपलब्ध गराउने memory को बचतका कारण कुल memory कम प्रयोग हुने भएकाले
+     तपाईँको server मा त्यस्ता धेरै scripts एकैसाथ (concurrently) चलाउन
+     सकिन्छ।
+    </para>
+    <para>
+     यसका फाइदाहरू लामो समयसम्म चल्ने scripts, जस्तै लामो test suites वा
+     daemon scripts मा सबैभन्दा स्पष्ट देखिन्छन्। साथै, Web का scripts भन्दा
+     सामान्यतया लामो समय चल्ने <link xlink:href="&url.php.gtk;">PHP-GTK</link>
+     applications मा पनि, समयसँगै थुप्रिँदै जाने memory leaks को समस्या रोक्न
+     यो नयाँ प्रणालीले निकै ठूलो फरक पार्नेछ।
+    </para>
+   </sect2>
+  </sect1>
+ </chapter>
+
+<!-- Keep this comment at the end of the file
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
