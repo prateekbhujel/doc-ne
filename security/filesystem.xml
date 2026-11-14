@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: f5b71e9150fddd14fa56c3c8f7197ef08e966c0b Maintainer: prateekbhujel Status: ready -->
+<!-- split from ./index.xml, last change in rev 1.66 -->
+  <chapter xml:id="security.filesystem" xmlns="http://docbook.org/ns/docbook">
+   <title>Filesystem सुरक्षा</title>
+   <simpara>
+    अधिकांश server systems मा file र directory को आधारमा बनाइएको permission सम्बन्धी सुरक्षा नियम <acronym>PHP</acronym> मा पनि लागू हुन्छ। यसले तपाईंलाई filesystem मा रहेका कुन files पढ्न (read गर्न) मिल्छ भन्ने कुरा नियन्त्रण गर्न दिन्छ। सबैले पढ्न मिल्ने (world-readable) कुनै पनि files का हकमा, त्यो filesystem मा पहुँच भएका सबै users ले ती files पढ्न सुरक्षित छन् भन्ने सुनिश्चित गर्न विशेष सावधानी अपनाउनुपर्छ।
+   </simpara>
+   <simpara>
+    <acronym>PHP</acronym> लाई filesystem मा user-level पहुँच दिन मिल्ने गरी design गरिएको हुनाले, <filename>/etc/passwd</filename> जस्ता system files पढ्न, तपाईंको ethernet connections परिवर्तन गर्न, वा ठूला printer jobs पठाउन सक्ने <acronym>PHP</acronym> script लेख्न पूर्ण रूपमा सम्भव छ। यसको स्पष्ट अर्थ के हो भने, तपाईंले read गर्ने र write गर्ने files सही र उपयुक्त नै छन् भन्ने कुरा सुनिश्चित गर्नुपर्छ।
+   </simpara>
+   <simpara>
+    तलको script मा विचार गर्नुहोस्, जहाँ एक user ले आफ्नो home directory भित्रको कुनै file मेटाउन चाहेको कुरा बताउँछ। यहाँ यस्तो अवस्था मानिएको छ जहाँ file management का लागि <acronym>PHP</acronym> web interface नियमित रूपमा प्रयोग गरिन्छ, त्यसैले Apache user लाई users का home directories भित्रका files मेटाउने अनुमति दिइएको छ।
+   </simpara>
+   <para>
+    <example>
+     <title>Variable राम्ररी जाँच नगर्दा निम्तिने नतिजा....</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+// Remove a file from the user's home directory
+$username = $_POST['user_submitted_name'];
+$userfile = $_POST['user_submitted_filename'];
+$homedir  = "/home/$username";
+
+unlink("$homedir/$userfile");
+
+echo "The file has been deleted!";
+
+?>
+]]>
+     </programlisting>
+    </example>
+   Username र filename दुवै user form बाट पठाउन मिल्ने भएकाले, कसैले अरू कसैको username र filename पठाउन सक्छ र अनुमति नभएको अवस्थामा पनि अरूको file मेटाउन सक्छ। यस्तो अवस्थामा, तपाईंले अर्कै किसिमको authentication तरिका अपनाउनुपर्छ। यदि पठाइएका variables मा
+   <literal>"../etc/"</literal> र <literal>"passwd"</literal> राखियो भने के हुन सक्छ विचार गर्नुहोस्। तब त्यो code व्यवहारिक रूपमा यस्तो देखिनेछ:
+    <example>
+     <title>... एक filesystem आक्रमण</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+// Removes a file from anywhere on the hard drive that
+// the PHP user has access to. If PHP has root access:
+$username = $_POST['user_submitted_name']; // "../etc"
+$userfile = $_POST['user_submitted_filename']; // "passwd"
+$homedir  = "/home/$username"; // "/home/../etc"
+
+unlink("$homedir/$userfile"); // "/home/../etc/passwd"
+
+echo "The file has been deleted!";
+
+?>
+]]>
+     </programlisting>
+    </example>
+    यस्ता समस्याहरू रोक्नका लागि तपाईंले दुईवटा महत्वपूर्ण उपायहरू अपनाउनुपर्छ।
+    <itemizedlist>
+     <listitem>
+      <simpara>
+       <acronym>PHP</acronym> web user binary लाई सीमित permissions मात्र दिनुहोस्।
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       पठाइएका (submitted) सबै variables को जाँच गर्नुहोस्।
+      </simpara>
+     </listitem>
+    </itemizedlist>
+    यहाँ सुधारिएको script दिइएको छ:
+    <example>
+     <title>अझ सुरक्षित file name जाँच</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+// Removes a file from the hard drive that
+// the PHP user has access to.
+$username = $_SERVER['REMOTE_USER']; // using an authentication mechanism
+$userfile = basename($_POST['user_submitted_filename']);
+$homedir  = "/home/$username";
+
+$filepath = "$homedir/$userfile";
+
+if (file_exists($filepath) && unlink($filepath)) {
+    $logstring = "Deleted $filepath\n";
+} else {
+    $logstring = "Failed to delete $filepath\n";
+}
+
+$fp = fopen("/home/logging/filedelete.log", "a");
+fwrite($fp, $logstring);
+fclose($fp);
+
+echo htmlentities($logstring, ENT_QUOTES);
+
+?>
+]]>
+     </programlisting>
+    </example>
+    तर, यो पनि पूर्ण रूपमा कमजोरीरहित छैन। यदि तपाईंको authentication system ले users लाई आफ्नै user login बनाउन दिन्छ, र कुनै user ले <literal>"../etc/"</literal> लाई login नामका रूपमा चुन्यो भने, system फेरि जोखिममा पर्छ। यही कारणले गर्दा, तपाईंले अझ विशिष्ट (customized) जाँच लेख्न रुचाउन सक्नुहुन्छ:
+    <example>
+     <title>अझ सुरक्षित file name जाँच</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+$username     = $_SERVER['REMOTE_USER']; // using an authentication mechanism
+$userfile     = $_POST['user_submitted_filename'];
+$homedir      = "/home/$username";
+
+$filepath     = "$homedir/$userfile";
+
+if (!ctype_alnum($username) || !preg_match('/^(?:[a-z0-9_-]|\.(?!\.))+$/iD', $userfile)) {
+    die("Bad username/filename");
+}
+
+// etc.
+
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <simpara>
+    तपाईंको operating system अनुसार, तपाईंले ध्यान दिनुपर्ने थुप्रै प्रकारका files हुन सक्छन् — जसमा device entries (<filename>/dev/</filename>
+    वा <filename>COM1</filename>), configuration files (<filename>/etc/</filename> files र <literal>.ini</literal> files), प्रचलित file राख्ने ठाउँहरू (<filename>/home/</filename>,
+    <filename>My Documents</filename>), आदि पर्दछन्। यही कारणले गर्दा, तपाईंले स्पष्ट रूपमा अनुमति दिएका कुराहरू बाहेक अरू सबैमाथि रोक लगाउने नीति (policy) बनाउनु प्रायः सजिलो हुन्छ।
+   </simpara>
+   <sect1 xml:id="security.filesystem.nullbytes">
+    <title>Null bytes सँग सम्बन्धित समस्याहरू</title>
+    <simpara>
+     <acronym>PHP</acronym> ले filesystem सम्बन्धी कामहरूका लागि भित्री रूपमा C functions प्रयोग गर्ने हुनाले, यसले null bytes लाई निकै अनपेक्षित तरिकाले handle गर्न सक्छ। C मा null byte ले string को अन्त्य जनाउने भएकाले, null byte भएका strings लाई पूरा नहेरी null byte भेटिएको ठाउँसम्म मात्र लिइन्छ।
+
+     तलको उदाहरणले यो समस्या देखाउने असुरक्षित (vulnerable) code प्रस्तुत गर्दछ:
+    </simpara>
+    <example>
+     <title>Null bytes को जोखिममा रहेको script</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+$file = $_GET['file']; // "../../etc/passwd\0"
+
+if (file_exists('/home/wwwrun/' . $file . '.php')) {
+    // File_exists will return true as the file /home/wwwrun/../../etc/passwd exists
+    include '/home/wwwrun/' . $file . '.php';
+
+    // The file /etc/passwd will be included
+}
+
+?>
+]]>
+     </programlisting>
+    </example>
+    <para>
+     त्यसैले, filesystem सम्बन्धी काममा प्रयोग गरिने कुनै पनि बाह्य वा शङ्कास्पद (tainted) string लाई सधैँ राम्ररी validate गर्नुपर्छ। अघिल्लो उदाहरणको अझ राम्रो रूप यहाँ छ:
+    </para>
+    <example>
+     <title>Input लाई सही तरिकाले validate गर्ने</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+$file = $_GET['file'];
+
+// Whitelisting possible values
+switch ($file) {
+    case 'main':
+    case 'foo':
+    case 'bar':
+        include '/home/wwwrun/include/' . $file . '.php';
+        break;
+    default:
+        include '/home/wwwrun/include/main.php';
+}
+
+?>
+]]>
+     </programlisting>
+    </example>
+   </sect1>
+
+  </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
+

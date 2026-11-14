@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: f5b71e9150fddd14fa56c3c8f7197ef08e966c0b Maintainer: prateekbhujel Status: ready -->
+<!-- split from ./index.xml, last change in rev 1.66 -->
+  <chapter xml:id="security.general" xmlns="http://docbook.org/ns/docbook">
+   <title>सामान्य ध्यान दिनुपर्ने कुराहरू</title>
+   <simpara>
+    पूर्ण रूपमा सुरक्षित system बनाउनु लगभग असम्भव जस्तै हुन्छ, त्यसैले security को क्षेत्रमा
+    प्रायः जोखिम (risk) र प्रयोगयोग्यता (usability) बीच सन्तुलन मिलाउने दृष्टिकोण अपनाइन्छ।
+    यदि user ले submit गर्ने प्रत्येक variable का लागि दुई प्रकारको biometric validation
+    (जस्तै retinal scan र fingerprint) आवश्यक पारियो भने, त्यसमा अत्यन्तै उच्च स्तरको
+    उत्तरदायित्व (accountability) त हुन्छ; तर एउटा अलि जटिल form भर्न नै आधा घण्टा लाग्नेछ,
+    जसले गर्दा users ले उल्टै security छल्ने (bypass गर्ने) बाटो खोज्न थाल्नेछन्।
+   </simpara>
+   <simpara>
+    सबैभन्दा राम्रो security प्रायः त्यस्तो हुन्छ जुन आवश्यकता अनुसार सहज होस्—न त त्यसले
+    user लाई आफ्नो काम गर्न रोकोस्, न त code लेख्ने व्यक्तिलाई अनावश्यक जटिलताको बोझ नै थपोस्।
+    वास्तवमा, कतिपय security आक्रमणहरू यस्तै अत्यधिक जटिल बनाइएको security का कमजोरीहरूको
+    फाइदा उठाएरै हुन्छन्, जुन समयसँगै कमजोर हुँदै जान्छन्।
+   </simpara>
+   <simpara>
+    एउटा मननयोग्य भनाइ छ: कुनै पनि system त्यति नै बलियो हुन्छ जति त्यसको साङ्लोको सबैभन्दा
+    कमजोर कडी बलियो हुन्छ। यदि सबै transactions लाई समय, स्थान, transaction को प्रकार
+    आदिका आधारमा कडाइका साथ log गरिन्छ तर user को पहिचान भने केवल एउटै cookie को आधारमा
+    मात्र verify गरिन्छ भने, users लाई उक्त transaction log सँग जोड्ने प्रमाणिकता (validity)
+    गम्भीर रूपमा कमजोर हुन्छ।
+   </simpara>
+   <simpara>
+    Testing गर्दा यो कुरा ध्यानमा राख्नुहोस् कि तपाईँले सबैभन्दा साधारण page का लागि समेत सबै
+    सम्भावनाहरू परीक्षण गर्न सक्नुहुन्न। तपाईँले अपेक्षा गरेको input र कुनै असन्तुष्ट कर्मचारी,
+    महिनौँ समय फुर्सद भएको cracker, वा keyboard माथि हिँड्ने घरपालुवा बिरालोले दिने input बीच
+    कुनै सम्बन्ध नहुन सक्छ। त्यसैले code लाई तार्किक दृष्टिकोणबाट हेरेर अनपेक्षित data कहाँबाट
+    भित्रिन सक्छ भनी पहिचान गर्नु र त्यसपछि त्यो data कसरी परिमार्जन हुन्छ, घट्छ वा बढ्छ
+    (amplified हुन्छ) भनेर पछ्याउनु नै सबैभन्दा उत्तम हुन्छ।
+   </simpara>
+   <simpara>
+    Internet यस्ता व्यक्तिहरूले भरिएको छ जो तपाईँको code तोडेर, site crash गराएर, अनुपयुक्त
+    सामग्री post गरेर वा अन्य तरिकाले समस्या खडा गरेर आफ्नो नाम कमाउन खोजिरहेका हुन्छन्।
+    तपाईँको site सानो होस् वा ठूलो, त्यसले कुनै फरक पार्दैन—online हुनु र जडान गर्न मिल्ने
+    server हुनु मात्रैले पनि तपाईँ निशानामा पर्न सक्नुहुन्छ। धेरैजसो cracking programs ले
+    आकार हेरेर भेदभाव गर्दैनन्; तिनले केवल शिकार खोज्दै ठूला-ठूला IP blocks मा स्वचालित रूपमा
+    स्क्यान गरिरहन्छन्। त्यस्तो शिकार नबन्ने प्रयास गर्नुहोस्।
+   </simpara>
+  </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

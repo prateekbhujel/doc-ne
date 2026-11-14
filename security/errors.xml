@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: f5b71e9150fddd14fa56c3c8f7197ef08e966c0b Maintainer: prateekbhujel Status: ready -->
+<!-- split from ./index.xml, last change in rev 1.66 -->
+  <chapter xml:id="security.errors" xmlns="http://docbook.org/ns/docbook">
+   <title>Error रिपोर्टिङ (Error Reporting)</title>
+   <para>
+    PHP सुरक्षाको सन्दर्भमा, error reporting का दुई पाटा छन्। एउटा सुरक्षा बढाउनका लागि फाइदाजनक छ भने अर्को चाहिँ हानिकारक छ।
+   </para>
+   <para>
+    एउटा सामान्य आक्रमण रणनीतिमा system भित्र गलत data पठाएर, अनि त्यसबाट फर्कने errors का प्रकार र सन्दर्भहरू जाँचेर system को जानकारी संकलन (profiling) गरिन्छ। यसले attacker (system cracker) लाई server बारे जानकारी खोज्न र सम्भावित कमजोरीहरू पत्ता लगाउन मद्दत गर्छ। उदाहरणका लागि, यदि attacker ले अघिल्लो form submission को आधारमा कुनै page बारे जानकारी बटुलिसकेको छ भने, उसले variables लाई override वा परिवर्तन गर्ने प्रयास गर्न सक्छ:
+    <example>
+     <title>Custom HTML page मार्फत variables मा आक्रमण गर्ने</title>
+     <programlisting role="html">
+<![CDATA[
+<form method="post" action="attacktarget?username=badfoo&amp;password=badfoo">
+<input type="hidden" name="username" value="badfoo" />
+<input type="hidden" name="password" value="badfoo" />
+</form>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <para>
+    सामान्यतया आउने PHP errors कुनै script debug गर्न खोजिरहेको developer का लागि निकै उपयोगी हुन सक्छन् — किनकि तिनले कुन function वा file असफल भयो, कुन PHP file मा समस्या आयो, र कुन line number मा असफलता भयो भन्ने जस्ता कुरा देखाउँछन्। तर यी सबै त्यस्ता जानकारी हुन् जसको दुरुपयोग गर्न सकिन्छ। PHP developer ले debugging का लागि <function>show_source</function>,
+    <function>highlight_string</function>, वा
+    <function>highlight_file</function> प्रयोग गर्नु सामान्य कुरा हो, तर live site मा यसले लुकेका variables, जाँच नगरिएको syntax, र अन्य खतरनाक जानकारी बाहिर ल्याइदिन सक्छ। अझ विशेष गरी खतरनाक कुरा के हो भने, built-in debugging handlers भएका परिचित स्रोतका code चलाउनु वा सामान्य debugging तरिकाहरू प्रयोग गर्नु। यदि attacker ले तपाईंले कुन सामान्य तरिका प्रयोग गरिरहनुभएको छ भनी पत्ता लगाउन सक्यो भने, उसले विभिन्न प्रचलित debugging strings पठाएर page मा brute-force गर्ने प्रयास गर्न सक्छ:
+    <example>
+     <title>प्रचलित debugging variables को दुरुपयोग गर्ने</title>
+     <programlisting role="html">
+<![CDATA[
+<form method="post" action="attacktarget?errors=Y&amp;showerrors=1&amp;debug=1">
+<input type="hidden" name="errors" value="Y" />
+<input type="hidden" name="showerrors" value="1" />
+<input type="hidden" name="debug" value="1" />
+</form>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <para>
+    Error handling को तरिका जुनसुकै भए पनि, errors का लागि system लाई जाँच्न (probe गर्न) सक्ने क्षमताले attacker लाई थप जानकारी उपलब्ध गराउँछ।
+   </para>
+   <para>
+    उदाहरणका लागि, एउटा सामान्य PHP error को शैलीले नै त्यो system मा PHP चलिरहेको छ भन्ने देखाउँछ। यदि attacker ले कुनै <literal>.html</literal> page हेरिरहेको थियो र back-end पत्ता लगाउन (system मा रहेका ज्ञात कमजोरीहरू खोज्न) जाँच गर्न चाहन्थ्यो भने, गलत data पठाएर उसले त्यो system PHP बाट बनेको रहेछ भनी पत्ता लगाउन सक्छ।
+   </para>
+   <simpara>
+    कुनै function error ले system मा कुन विशेष database engine चलिरहेको छ वा web page कसरी program र design गरिएको छ भन्ने कुरा देखाउन सक्छ। यसले खुल्ला रहेका database ports बारे अझ गहिरिएर खोजी गर्न वा web page मा रहेका विशेष bugs र कमजोरीहरू पत्ता लगाउन बाटो खोलिदिन्छ। उदाहरणका लागि, फरक-फरक खराब data पठाएर attacker ले (line number भएका errors बाट) script मा authentication को क्रम के छ भनी पत्ता लगाउन र script का विभिन्न ठाउँमा हुन सक्ने exploits को खोजी गर्न सक्छ।
+   </simpara>
+   <simpara>
+    Filesystem वा सामान्य PHP error ले web server सँग के-कस्ता permissions छन्, साथै web server मा files को संरचना र व्यवस्था कस्तो छ भन्ने कुरा देखाउन सक्छ। Developer ले लेखेको error code ले यो समस्यालाई अझ बढाउन सक्छ, जसले गर्दा पहिले "लुकेको" जानकारी सजिलै दुरुपयोग हुन पुग्छ।
+   </simpara>
+   <para>
+    यस समस्याका तीन मुख्य समाधानहरू छन्। पहिलो हो, सबै functions लाई ध्यानपूर्वक जाँच्नु र अधिकांश errors लाई code भित्रै सम्हाल्ने प्रयास गर्नु। दोस्रो हो, चलिरहेको (production) code मा error reporting लाई पूर्ण रूपमा बन्द (disable) गर्नु। तेस्रो हो, PHP का custom error handling functions प्रयोग गरेर आफ्नै error handler बनाउनु। तपाईंको सुरक्षा नीति अनुसार, तपाईंको अवस्थामा यी तीनवटै उपाय लागू हुन सक्छन्।
+   </para>
+   <para>
+    यो समस्यालाई समयअगावै समात्ने एउटा तरिका भनेको PHP कै <function>error_reporting</function> प्रयोग गर्नु हो, जसले तपाईंको code सुरक्षित बनाउन र खतरनाक हुन सक्ने variable प्रयोग पत्ता लगाउन मद्दत गर्छ। Deployment गर्नुअघि <constant>E_ALL</constant> राखेर आफ्नो code test गर्दा, तपाईंले आफ्ना variables मा गलत value पठाउन (poisoning गर्न) वा अन्य तरिकाले परिवर्तन गर्न सकिने ठाउँहरू तुरुन्तै पत्ता लगाउन सक्नुहुन्छ। एक पटक deployment का लागि तयार भएपछि, तपाईंको code लाई बाह्य जाँचबुझ (probing) बाट जोगाउन <function>error_reporting</function> लाई 0 मा सेट गरेर error reporting पूर्ण रूपमा बन्द गर्नुपर्छ, वा &php.ini; को <literal>display_errors</literal> option प्रयोग गरेर error देखाउन (display) बन्द गर्नुपर्छ। यदि तपाईंले दोस्रो विकल्प रोज्नुहुन्छ भने, <literal>error_log</literal> ini directive प्रयोग गरेर आफ्नो log file को path पनि तोक्नुपर्छ र <literal>log_errors</literal> लाई on गर्नुपर्छ।
+    <example>
+     <title>E_ALL को मद्दतले खतरनाक variables पत्ता लगाउने</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+if ($username) {  // Not initialized or checked before usage
+    $good_login = 1;
+}
+if ($good_login == 1) { // If above test fails, not initialized or checked before usage
+    readfile ("/highly/sensitive/data/index.html");
+}
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+  </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
+

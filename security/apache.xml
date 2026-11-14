@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: f5b71e9150fddd14fa56c3c8f7197ef08e966c0b Maintainer: prateekbhujel Status: ready -->
+<!-- split from ./index.xml, last change in rev 1.66 -->
+  <chapter xml:id="security.apache" xmlns="http://docbook.org/ns/docbook">
+   <title>Apache module को रूपमा install गरिएको</title>
+   <simpara>
+    जब <acronym>PHP</acronym> लाई Apache module को रूपमा प्रयोग गरिन्छ, यसले Apache को user permissions
+    (प्रायः "nobody" user को permissions) ग्रहण गर्छ। यसको security र authorization मा
+    विभिन्न असरहरू पर्छन्। उदाहरणका लागि, यदि तपाईँ database access गर्न
+    <acronym>PHP</acronym> प्रयोग गर्दै हुनुहुन्छ र त्यो database मा built-in access control छैन भने,
+    तपाईँले उक्त database लाई "nobody" user बाट access गर्न मिल्ने बनाउनुपर्ने हुन्छ।
+    यसको अर्थ कुनै malicious script ले username र password बिना नै त्यो database access गर्न
+    र परिवर्तन गर्न सक्छ। कुनै web spider ले database administrator को web page फेला पारेर
+    तपाईँका सबै databases हटाउने (drop गर्ने) सम्भावना पनि पूर्ण रूपमा रहन्छ। तपाईँ Apache
+    authorization मार्फत यसबाट सुरक्षित रहन सक्नुहुन्छ, अथवा LDAP, &htaccess; files आदि प्रयोग
+    गरेर आफ्नै access model तयार पारी त्यसको code लाई आफ्ना <acronym>PHP</acronym> scripts को
+    हिस्साको रूपमा समावेश गर्न सक्नुहुन्छ।
+   </simpara>
+   <simpara>
+    प्रायःजसो जब <acronym>PHP</acronym> user (यस अवस्थामा, Apache user) सँग जोडिएको जोखिम एकदमै कम
+    हुने गरी security कायम गरिन्छ, तब <acronym>PHP</acronym> लाई user directories मा कुनै पनि files
+    लेख्नबाट रोकिएको पाइन्छ। अथवा यसलाई databases access गर्न वा परिवर्तन गर्नबाट रोकिएको
+    हुन सक्छ। राम्रो र नराम्रो दुवै खालका files लेख्नबाट, वा राम्रा र नराम्रा दुवै database
+    transactions गर्नबाट यसलाई समान रूपमा रोकिएको हुन्छ।
+   </simpara>
+   <simpara>
+    यस्तो अवस्थामा प्रायः गरिने एक साझा security गल्ती भनेको Apache लाई root permissions दिनु,
+    वा अन्य कुनै तरिकाले Apache का अधिकारहरू बढाउनु हो।
+   </simpara>
+   <simpara>
+    Apache user को permissions लाई root स्तरसम्म बढाउनु अत्यन्तै खतरनाक हुन्छ र यसले पूरै
+    system लाई जोखिममा पार्न (compromise गर्न) सक्छ; त्यसैले security विज्ञ नभएका व्यक्तिहरूले
+    sudo गर्ने, chroot गर्ने वा अन्य कुनै तरिकाले root को रूपमा चलाउने बारे सोच्नु नै हुँदैन।
+   </simpara>
+   <simpara>
+    यसका केही सरल समाधानहरू छन्। <link linkend="ini.open-basedir">open_basedir</link> प्रयोग गरेर
+    तपाईँले <acronym>PHP</acronym> का लागि कुन-कुन directories प्रयोग गर्न अनुमति दिने भन्ने कुरा
+    नियन्त्रण र सीमित गर्न सक्नुहुन्छ। साथै, सबै web-based गतिविधिहरूलाई non-user वा non-system
+    files मा मात्र सीमित राख्न Apache-only क्षेत्रहरू (areas) पनि set up गर्न सक्नुहुन्छ।
+   </simpara>
+  </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

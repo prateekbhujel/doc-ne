@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: f5b71e9150fddd14fa56c3c8f7197ef08e966c0b Maintainer: prateekbhujel Status: ready -->
+  <chapter xml:id="security.database" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+   <title>Database सुरक्षा</title>
+
+   <simpara>
+    आजभोलि वेबसाइटहरूले विभिन्न dynamic content प्रदान गर्न सक्ने हुनाले database जुनसुकै web-based application को एक अत्यन्त महत्वपूर्ण हिस्सा बनेको छ। Database मा निकै संवेदनशील वा गोप्य जानकारीहरू store हुन सक्ने भएकाले, तपाईंले आफ्नो database सुरक्षित राख्ने विषयमा गम्भीरतापूर्वक ध्यान दिनुपर्छ।
+   </simpara>
+   <simpara>
+    कुनै पनि जानकारी निकाल्न वा store गर्नका लागि पहिले database मा connect गर्नुपर्छ, मान्य (legitimate) query पठाउनुपर्छ, result प्राप्त गर्नुपर्छ र अन्त्यमा connection बन्द गर्नुपर्छ। आजकाल यस्तो कामका लागि सबैभन्दा बढी प्रयोग हुने query language भनेको Structured Query Language (SQL) हो। कुनै attacker ले <link
+    linkend="security.database.sql-injection">SQL query मा कसरी छेडछाड (tamper) गर्न सक्छ</link> भन्ने कुरा अगाडि हेर्नुहोस्।
+   </simpara>
+   <simpara>
+    तपाईंले अनुमान गर्न सक्नुहुन्छ कि <acronym>PHP</acronym> ले एक्लै तपाईंको database लाई सुरक्षित राख्न सक्दैन। तलका खण्डहरूले <acronym>PHP</acronym> scripts भित्रबाट database कसरी access र manipulate गर्ने भन्ने आधारभूत कुराहरूको परिचय दिन्छन्।
+   </simpara>
+   <simpara>
+    यो सरल नियम सधैँ याद राख्नुहोस्: defense in depth (तहगत सुरक्षा)। तपाईंले जति धेरै तहमा आफ्नो database को सुरक्षा बढाउने कदम चाल्नुहुन्छ, attacker ले त्यहाँ store गरिएको जानकारी बाहिर ल्याउन वा दुरुपयोग गर्न सफल हुने सम्भावना त्यति नै कम हुन्छ। Database schema र application को राम्रो design ले तपाईंको सबैभन्दा ठूला जोखिमहरूलाई समाधान गर्छ।
+   </simpara>
+
+   <sect1 xml:id="security.database.design">
+    <title>Databases Design गर्ने</title>
+     <simpara>
+      यदि तपाईं third-party बाट बनेको database प्रयोग गर्न चाहनुहुन्न भने, पहिलो कदम सधैँ database create गर्नु नै हुन्छ। जब database बनाइन्छ, तब बनाउने statement चलाउने व्यक्ति त्यसको owner बन्छ। सामान्यतया, त्यो database भित्रका objects माथि जे पनि गर्ने अधिकार केवल owner (वा superuser) सँग मात्र हुन्छ, र अरू users लाई त्यसको प्रयोग गर्न दिनका लागि आवश्यक privileges दिनुपर्छ।
+     </simpara>
+     <simpara>
+      Applications ले कहिल्यै पनि database को owner वा superuser को रूपमा connect गर्नु हुँदैन, किनभने यस्ता users ले चाहेको जुनसुकै query चलाउन सक्छन् — जस्तै, schema परिवर्तन गर्ने (उदाहरणका लागि tables drop गर्ने) वा पूरा डेटा नै मेटाउने।
+     </simpara>
+     <simpara>
+      तपाईंले आफ्नो application को हरेक कामका लागि database objects मा निकै सीमित अधिकार भएका फरक-फरक database users बनाउन सक्नुहुन्छ। केवल चाहिने जति मात्र privileges दिनुहोस्, र एउटै user ले फरक-फरक use cases मा database सँग काम गर्न मिल्ने अवस्था नराख्नुहोस्। यसो गर्दा यदि कुनै intruder ले तपाईंको application को credentials प्रयोग गरेर database मा पहुँच पाइहाले पनि, उसले तपाईंको application ले गर्न सक्ने जति मात्र परिवर्तन गर्न सक्छ।
+     </simpara>
+   </sect1>
+
+   <sect1 xml:id="security.database.connection">
+    <title>Database मा Connect गर्ने</title>
+    <simpara>
+     थप सुरक्षाका लागि client र server बीचको communication encrypt गर्न तपाईंले SSL मार्फत connection स्थापना गर्न सक्नुहुन्छ, वा clients र database server बीचको network connection encrypt गर्न ssh प्रयोग गर्न सक्नुहुन्छ। यीमध्ये कुनै एक प्रयोग गरिएमा, सम्भावित attacker लाई तपाईंको traffic निगरानी गर्न र database बारे जानकारी निकाल्न गाह्रो हुनेछ।
+    </simpara>
+    <!--simpara>
+     If your database server has native SSL support, consider using <link
+     linkend="ref.openssl">OpenSSL functions</link> in communication between
+     <acronym>PHP</acronym> and database via SSL.
+    </simpara-->
+   </sect1>
+
+   <sect1 xml:id="security.database.storage">
+    <title>Encrypt गरिएको Storage Model</title>
+    <simpara>
+     SSL/SSH ले client बाट server तर्फ गइरहेको data लाई मात्र सुरक्षित राख्छ: SSL/SSH ले database भित्र सधैँका लागि store भएर बसेको data लाई सुरक्षित गर्दैन। SSL एउटा on-the-wire protocol (डेटा पठाउँदाको समयमा मात्र काम गर्ने protocol) हो।
+    </simpara>
+    <simpara>
+     यदि database आफैँले जानकारीलाई सुरक्षित गरेको छैन भने, एक पटक attacker ले (webserver लाई bypass गर्दै) सिधै तपाईंको database मा पहुँच पायो भने त्यहाँ store गरिएको संवेदनशील data बाहिरिन वा दुरुपयोग हुन सक्छ। Data लाई encrypt गर्नु यो जोखिम कम गर्ने राम्रो उपाय हो, तर निकै कम databases ले मात्र यस किसिमको data encryption सुविधा दिन्छन्।
+    </simpara>
+    <simpara>
+     यो समस्या समाधान गर्ने सबैभन्दा सजिलो उपाय भनेको पहिले आफ्नै encryption package बनाउनु र त्यसपछि आफ्नो <acronym>PHP</acronym> scripts भित्रबाट त्यसलाई प्रयोग गर्नु हो। <acronym>PHP</acronym> ले यसमा <link
+     linkend="book.openssl">OpenSSL</link> र <link
+     linkend="book.sodium">Sodium</link> जस्ता विभिन्न extensions मार्फत सहयोग गर्न सक्छ, जसले थुप्रै encryption algorithms समेट्छन्। Script ले database मा राख्नुअघि data लाई encrypt गर्छ र निकाल्दाखेरी decrypt गर्छ। Encryption कसरी काम गर्छ भन्ने थप उदाहरणका लागि सम्बन्धित reference खण्डहरू हेर्नुहोस्।
+    </simpara>
+
+    <sect2 xml:id="security.database.storage.hashing">
+    <title>Hashing (ह्यासिङ)</title>
+     <simpara>
+      पूर्ण रूपमा गोप्य राख्नुपर्ने data को हकमा, यदि त्यसको वास्तविक (raw) रूप आवश्यक पर्दैन (अर्थात् कहिल्यै देखाउनुपर्दैन) भने, hashing बारे विचार गर्नुपर्छ। Hashing को सबैभन्दा चिरपरिचित उदाहरण भनेको database मा password को सट्टा त्यसको cryptographic hash store गर्नु हो।
+     </simpara>
+     <simpara>
+      <link linkend="ref.password">Password</link> functions ले संवेदनशील data लाई hash गर्न र ती hashes सँग काम गर्न सजिलो तरिका उपलब्ध गराउँछन्।
+     </simpara>
+     <simpara>
+      दिइएको string लाई हाल उपलब्ध सबैभन्दा बलियो algorithm प्रयोग गरेर hash गर्न <function>password_hash</function> प्रयोग गरिन्छ, र दिइएको password database मा store गरिएको hash सँग मिल्छ कि मिल्दैन भनी जाँच्न <function>password_verify</function> प्रयोग गरिन्छ।
+     </simpara>
+     <example>
+      <title>Password field लाई hash गर्ने</title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+
+// storing password hash
+$query  = sprintf("INSERT INTO users(name,pwd) VALUES('%s','%s');",
+            pg_escape_string($username),
+            password_hash($password, PASSWORD_DEFAULT));
+$result = pg_query($connection, $query);
+
+// querying if user submitted the right password
+$query = sprintf("SELECT pwd FROM users WHERE name='%s';",
+            pg_escape_string($username));
+$row = pg_fetch_assoc(pg_query($connection, $query));
+
+if ($row && password_verify($password, $row['pwd'])) {
+    echo 'Welcome, ' . htmlspecialchars($username) . '!';
+} else {
+    echo 'Authentication failed for ' . htmlspecialchars($username) . '.';
+}
+
+?>
+]]>
+      </programlisting>
+     </example>
+    </sect2>
+   </sect1>
+
+   <sect1 xml:id="security.database.sql-injection">
+    <title>SQL Injection</title>
+    <simpara>
+     SQL injection एउटा यस्तो तरिका हो जहाँ attacker ले dynamic SQL queries बनाउने application code मा रहेका कमजोरीहरूको फाइदा उठाउँछ। यसबाट attacker ले application का विशेष अधिकार (privileged) भएका खण्डहरूमा पहुँच पाउन, database बाट सबै जानकारी निकाल्न, पहिलेदेखि रहेको data मा छेडछाड गर्न, वा database host मा खतरनाक system-level commands समेत चलाउन सक्छ। Developers ले जथाभावी input लाई सिधै आफ्नो SQL statements मा जोड्दा (concatenate) वा मिसाउँदा (interpolate) यस्तो सुरक्षा कमजोरी (vulnerability) पैदा हुन्छ।
+    </simpara>
+    <para>
+     <example>
+      <title>
+       Result set लाई pages मा बाँड्ने ... र superusers बनाउने
+       (PostgreSQL)
+      </title>
+      <simpara>
+       तलको उदाहरणमा, user input लाई सिधै SQL query भित्र राखिएको छ, जसले गर्दा attacker ले database मा superuser account प्राप्त गर्न सक्छ।
+      </simpara>
+      <programlisting role="php">
+<![CDATA[
+<?php
+
+$offset = $_GET['offset']; // beware, no input validation!
+$query  = "SELECT id, name FROM products ORDER BY name LIMIT 20 OFFSET $offset;";
+$result = pg_query($conn, $query);
+
+?>
+]]>
+      </programlisting>
+     </example>
+      सामान्य users ले 'next', 'prev' links मा click गर्छन्, जहाँ <varname>$offset</varname> लाई <acronym>URL</acronym> मा encode गरिएको हुन्छ। Script ले आउने <varname>$offset</varname> एउटा संख्या (number) होला भन्ने अपेक्षा गर्छ। तर, यदि कसैले <acronym>URL</acronym> को पछाडि निम्न कुरा थपेर system भित्र छिर्ने प्रयास गर्‍यो भने के होला
+      <informalexample>
+       <programlisting role="sql">
+<![CDATA[
+0;
+insert into pg_shadow(usename,usesysid,usesuper,usecatupd,passwd)
+    select 'crack', usesysid, 't','t','crack'
+    from pg_shadow where usename='postgres';
+--
+]]>
+       </programlisting>
+      </informalexample>
+      यस्तो भएमा, script ले attacker लाई superuser को पहुँच दिनेछ। ध्यान दिनुहोस् कि <literal>0;</literal> ले मूल query लाई एउटा मान्य offset दिन र त्यो query लाई त्यहीँ समाप्त गर्न काम गर्छ।
+    </para>
+    <note>
+     <para>
+      SQL मा comment चिह्न मानिने <literal>--</literal> को प्रयोग गरेर developer ले लेखेको बाँकी query लाई SQL parser बाट बेवास्ता (ignore) गराउनु एक सामान्य तरिका हो।
+     </para>
+    </note>
+    <para>
+     Passwords हात पार्ने एउटा सम्भावित तरिका तपाईंको search result pages लाई छल्नु (circumvent गर्नु) हो। Attacker ले केवल SQL statements मा प्रयोग गरिएका तर राम्ररी handle नगरिएका कुनै submitted variables छन् कि छैनन् भनेर हेरे पुग्छ। यस्ता filters प्रायः अघिल्लो form मा <literal>SELECT</literal> statements का <literal>WHERE, ORDER BY,
+     LIMIT</literal> र <literal>OFFSET</literal> clauses लाई आफूअनुकूल मिलाउन सेट गरिएका हुन्छन्। यदि तपाईंको database ले <literal>UNION</literal> construct समर्थन गर्छ भने, attacker ले जुनसुकै table बाट passwords को सूची निकाल्न मूल query को पछाडि अर्को पूरा query नै थप्ने प्रयास गर्न सक्छ। वास्तविक passwords को सट्टा तिनका सुरक्षित hashes मात्र store गर्न कडा सिफारिस गरिन्छ।
+     <example>
+      <title>
+       Articles को सूची निकाल्ने ... अनि केही passwords पनि (जुनसुकै database server)
+      </title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+
+$query  = "SELECT id, name, inserted, size FROM products
+           WHERE size = '$size'";
+$result = odbc_exec($conn, $query);
+
+?>
+]]>
+      </programlisting>
+     </example>
+     Query को static भागलाई अर्को <literal>SELECT</literal> statement सँग जोड्न सकिन्छ जसले सबै passwords बाहिर ल्याइदिन्छ:
+     <informalexample>
+      <programlisting role="sql">
+<![CDATA[
+'
+union select '1', concat(uname||'-'||passwd) as name, '1971-01-01', '0' from usertable;
+--
+]]>
+      </programlisting>
+     </informalexample>
+    </para>
+    <para>
+     <literal>UPDATE</literal> र <literal>INSERT</literal> statements मा पनि यस्ता आक्रमणहरूको जोखिम हुन्छ।
+     <example>
+     <title>
+      Password reset गर्नेदेखि ... थप privileges पाउनेसम्म (जुनसुकै database server)
+     </title>
+      <programlisting role="php">
+<![CDATA[
+<?php
+$query = "UPDATE usertable SET pwd='$pwd' WHERE uid='$uid';";
+?>
+]]>
+      </programlisting>
+     </example>
+     यदि कुनै खराब नियत भएको user ले admin को password फेर्नका लागि <varname>$uid</varname> मा
+     <literal>' or uid like'%admin%</literal> value पठायो, वा थप privileges पाउनका लागि <varname>$pwd</varname> मा सिधै
+     <literal>hehehe', trusted=100, admin='yes</literal> सेट गर्‍यो भने, query यसरी बङ्गिनेछ (twist हुनेछ):
+     <informalexample>
+      <programlisting role="php">
+<![CDATA[
+<?php
+
+// $uid: ' or uid like '%admin%
+$query = "UPDATE usertable SET pwd='...' WHERE uid='' or uid like '%admin%';";
+
+// $pwd: hehehe', trusted=100, admin='yes
+$query = "UPDATE usertable SET pwd='hehehe', trusted=100, admin='yes' WHERE
+...;";
+
+?>
+]]>
+      </programlisting>
+     </informalexample>
+    </para>
+    <simpara>
+     सफल आक्रमण गर्नका लागि attacker सँग database संरचना (architecture) बारे कम्तीमा केही जानकारी हुनैपर्छ भन्ने कुरा स्पष्ट भए पनि, यस्तो जानकारी पत्ता लगाउन प्रायः निकै सजिलो हुन्छ। उदाहरणका लागि, code कुनै open-source software को हिस्सा भएर सार्वजनिक रूपमा उपलब्ध हुन सक्छ। यो जानकारी closed-source code बाट पनि — चाहे त्यो encode, obfuscate वा compile गरिएको नै किन नहोस् — र तपाईंको आफ्नै code ले देखाउने error messages मार्फत पनि बाहिरिन सक्छ। अन्य तरिकाहरूमा सामान्यतया प्रयोग हुने table र column नामहरू अनुमान गर्नु पर्छ। जस्तै, 'id', 'username', र 'password' जस्ता column नामहरू भएको 'users' table प्रयोग गर्ने login form।
+    </simpara>
+    <para>
+     <example>
+     <title>Database host operating system मा आक्रमण गर्ने (MSSQL Server)</title>
+      <simpara>
+       केही database hosts मा operating system-level commands सम्म कसरी पहुँच पाउन सकिन्छ भन्ने कुराको एउटा डरलाग्दो उदाहरण।
+      </simpara>
+      <programlisting role="php">
+<![CDATA[
+<?php
+
+$query  = "SELECT * FROM products WHERE id LIKE '%$prod%'";
+$result = mssql_query($query);
+
+?>
+]]>
+      </programlisting>
+     </example>
+     यदि attacker ले <varname>$prod</varname> मा
+     <literal>a%' exec master..xp_cmdshell 'net user test testpass /ADD' --</literal>
+     value पठायो भने, <varname>$query</varname> यस्तो बन्नेछ:
+     <informalexample>
+      <programlisting role="php">
+<![CDATA[
+<?php
+
+$query  = "SELECT * FROM products
+           WHERE id LIKE '%a%'
+           exec master..xp_cmdshell 'net user test testpass /ADD' --%'";
+$result = mssql_query($query);
+
+?>
+]]>
+      </programlisting>
+     </informalexample>
+     MSSQL Server ले batch मा रहेका SQL statements चलाउँछ, जसमा local accounts database मा नयाँ user थप्ने command पनि समावेश हुन्छ। यदि यो application <literal>sa</literal> का रूपमा चलिरहेको थियो र MSSQLSERVER service सँग पर्याप्त privileges थियो भने, attacker सँग अब यो machine मा पहुँच पाउनका लागि एउटा account तयार भइसकेको हुनेछ।
+    </para>
+    <note>
+     <simpara>
+      <function>mssql_query</function> function <literal>mssql</literal> extension को हिस्सा थियो, जसलाई
+      <link linkend="migration70.removed-exts-sapis">PHP 7.0.0 मा हटाइएको थियो</link>।
+      यहाँ आक्रमणको तरिका देखाउनका लागि मात्र यसको प्रयोग गरिएको हो; MSSQL Server सँग connect गर्ने हालको code मा यसको सट्टा <link linkend="book.sqlsrv">sqlsrv</link> वा
+      <link linkend="ref.pdo-sqlsrv">pdo_sqlsrv</link> extensions प्रयोग गर्नुपर्छ।
+     </simpara>
+    </note>
+    <note>
+     <para>
+      माथिका केही उदाहरणहरू कुनै निश्चित database server सँग सम्बन्धित छन्, तर यसको मतलब अन्य उत्पादनहरू विरुद्ध यस्तै आक्रमण असम्भव छ भन्ने होइन। तपाईंको database server पनि अन्य तरिकाबाट यस्तै जोखिममा हुन सक्छ।
+     </para>
+    </note>
+    <para>
+     <mediaobject>
+      <alt>SQL injection सम्बन्धी समस्याहरूको एउटा रमाइलो उदाहरण</alt>
+      <imageobject>
+       <imagedata fileref="en/security/figures/xkcd-bobby-tables.png" format="PNG"/>
+      </imageobject>
+      <caption>
+       <simpara>
+        तस्बिर सौजन्य: <link xlink:href="&url.xkcd;327">xkcd</link>
+       </simpara>
+      </caption>
+     </mediaobject>
+    </para>
+
+    <sect2 xml:id="security.database.avoiding">
+     <title>बच्ने उपायहरू</title>
+     <para>
+      SQL injection बाट बच्ने सिफारिस गरिएको तरिका भनेको सबै data लाई prepared statements मार्फत bind गर्नु हो। Parameterized queries प्रयोग गर्नु मात्रै SQL injection बाट पूर्ण रूपमा बच्न पर्याप्त त हुँदैन, तर SQL statements मा input पठाउने यो सबैभन्दा सजिलो र सुरक्षित तरिका हो। <literal>WHERE</literal>,
+      <literal>SET</literal>, र <literal>VALUES</literal> clauses भित्रका सबै dynamic data literals लाई placeholders ले प्रतिस्थापन (replace) गर्नुपर्छ। वास्तविक data चाहिँ query चल्ने (execution) बेला bind गरिन्छ र SQL command भन्दा छुट्टै पठाइन्छ।
+     </para>
+     <para>
+      Parameter binding केवल data का लागि मात्र प्रयोग गर्न सकिन्छ। SQL query का अन्य dynamic भागहरूलाई अनुमति दिइएका (allowed) values को ज्ञात सूचीसँग मिलाएर filter गर्नुपर्छ।
+     </para>
+     <para>
+      <example>
+      <title>PDO prepared statements प्रयोग गरेर SQL injection बाट बच्ने तरिका</title>
+       <programlisting role="php">
+<![CDATA[
+<?php
+
+// The dynamic SQL part is validated against expected values
+$sortingOrder = $_GET['sortingOrder'] === 'DESC' ? 'DESC' : 'ASC';
+$productId = $_GET['productId'];
+// The SQL is prepared with a placeholder
+$stmt = $pdo->prepare("SELECT * FROM products WHERE id LIKE ? ORDER BY price {$sortingOrder}");
+// The value is provided with LIKE wildcards
+$stmt->execute(["%{$productId}%"]);
+
+?>
+]]>
+       </programlisting>
+      </example>
+     </para>
+
+     <simpara>
+      Prepared statements हरू
+      <link linkend="pdo.prepared-statements">PDO मार्फत</link>,
+      <link linkend="mysqli.quickstart.prepared-statements">MySQLi मार्फत</link>,
+      र अन्य database libraries मार्फत उपलब्ध हुन्छन्।
+     </simpara>
+
+     <simpara>
+      SQL injection आक्रमणहरू मुख्यतः सुरक्षामा ध्यान नदिई लेखिएको code को कमजोरीमाथि आधारित हुन्छन्। कुनै पनि input मा कहिल्यै विश्वास नगर्नुहोस्, विशेष गरी client side बाट आउने input मा — चाहे त्यो select box, hidden input field, वा cookie बाट नै आएको किन नहोस्। पहिलो उदाहरणले देखाउँछ कि यति सामान्य देखिने query ले पनि कति ठूलो क्षति निम्त्याउन सक्छ।
+     </simpara>
+
+     <para>
+      Defense-in-depth (तहगत सुरक्षा) रणनीतिमा थुप्रै राम्रा coding अभ्यासहरू समावेश हुन्छन्:
+      <itemizedlist>
+       <listitem>
+        <simpara>
+         कहिल्यै पनि database मा superuser वा database owner को रूपमा connect नगर्नुहोस्। सधैँ न्यूनतम privileges भएका custom users मात्र प्रयोग गर्नुहोस्।
+        </simpara>
+       </listitem>
+       <listitem>
+        <simpara>
+         दिइएको input अपेक्षा गरिएको data type अनुसारको छ कि छैन जाँच गर्नुहोस्। <acronym>PHP</acronym> सँग input validate गर्ने functions को ठूलो दायरा छ — जसमा <link linkend="ref.var">Variable Functions</link> र
+         <link linkend="ref.ctype">Character Type Functions</link>
+         (जस्तै क्रमशः <function>is_numeric</function>, <function>ctype_digit</function>) मा पाइने सरल functions देखि लिएर
+         <link linkend="ref.pcre">Perl Compatible Regular Expressions</link>
+         को समर्थनसम्म पर्दछन्।
+        </simpara>
+       </listitem>
+       <listitem>
+        <simpara>
+         यदि application ले संख्यात्मक (numerical) input अपेक्षा गर्छ भने, <function>ctype_digit</function> बाट data जाँच गर्ने, <function>settype</function> प्रयोग गरेर त्यसको type परिवर्तन गर्ने, वा <function>sprintf</function> मार्फत त्यसको numeric रूप प्रयोग गर्ने विकल्प अपनाउनुहोस्।
+        </simpara>
+       </listitem>
+       <listitem>
+        <simpara>
+         यदि database layer ले variables bind गर्ने सुविधा दिँदैन भने, database मा पठाइने हरेक non-numeric र user ले दिएको value लाई त्यही database को आफ्नै string escape function (जस्तै
+         <function>mysql_real_escape_string</function>,
+         <function>sqlite_escape_string</function>, आदि) प्रयोग गरेर quote गर्नुहोस्। <function>addslashes</function> जस्ता सामान्य functions हरू निकै विशेष वातावरणमा मात्र उपयोगी हुन्छन् (जस्तै <varname>NO_BACKSLASH_ESCAPES</varname> बन्द गरिएको र single-byte character set प्रयोग भएको MySQL मा), त्यसैले यिनको प्रयोग नगर्नु नै राम्रो हुन्छ।
+        </simpara>
+       </listitem>
+       <listitem>
+        <simpara>
+         कुनै पनि हालतमा database-सम्बन्धी जानकारी, विशेष गरी schema बारे विवरणहरू, बाहिर print नगर्नुहोस्। यसबारे थप जानकारीका लागि <link
+         linkend="security.errors">Error रिपोर्टिङ</link> र <link
+         linkend="ref.errorfunc">Error Handling तथा Logging Functions</link> पनि हेर्नुहोस्।
+        </simpara>
+       </listitem>
+      </itemizedlist>
+     </para>
+
+     <simpara>
+      यिनका अतिरिक्त, तपाईंले आफ्नो script भित्र वा database आफैँले समर्थन गर्छ भने database मार्फत नै queries log गरेर पनि फाइदा लिन सक्नुहुन्छ। स्पष्ट रूपमा, logging ले कुनै हानिकारक प्रयासलाई रोक्न त सक्दैन, तर कुन application मा कमजोरी प्रयोग गरी आक्रमण भयो भनेर पछि पत्ता लगाउन (trace back गर्न) यो निकै उपयोगी हुन सक्छ। Log आफैँमा होइन, त्यसमा भएको जानकारीका कारण उपयोगी हुन्छ। सामान्यतया थोरैभन्दा धेरै विवरण राख्नु नै राम्रो हुन्छ।
+     </simpara>
+    </sect2>
+   </sect1>
+  </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
+
