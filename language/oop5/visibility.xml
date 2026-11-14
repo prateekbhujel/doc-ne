@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: ready -->
+ <sect1 xml:id="language.oop5.visibility" xmlns="http://docbook.org/ns/docbook">
+  <title>Visibility</title>
+  <para>
+   कुनै property, method वा (PHP 7.1.0 देखि) constant को घोषणाको अगाडि
+   <literal>public</literal>, <literal>protected</literal> वा
+   <literal>private</literal> किवर्डहरू राखेर त्यसको visibility परिभाषित गर्न सकिन्छ।
+   Public घोषणा गरिएका class members लाई जहाँबाट पनि access गर्न सकिन्छ। Protected
+   घोषणा गरिएका members लाई उक्त class भित्रबाट तथा यसलाई inherit गर्ने र parent
+   classes बाट मात्र access गर्न सकिन्छ। Private घोषणा गरिएका members लाई उक्त
+   member परिभाषित गर्ने class ले मात्र access गर्न सक्छ।
+  </para>
+
+  <sect2 xml:id="language.oop5.visibility-members">
+   <title>Property Visibility</title>
+   <para>
+    Class properties लाई public, private, वा protected का रूपमा परिभाषित गर्न सकिन्छ।
+    कुनै स्पष्ट visibility किवर्ड बिना घोषणा गरिएका properties लाई public का रूपमा
+    परिभाषित गरिन्छ।
+   </para>
+   <example>
+    <title>Property घोषणा</title>
+    <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+/**
+ * Define MyClass
+ */
+class MyClass
+{
+    public $public = 'Public';
+    protected $protected = 'Protected';
+    private $private = 'Private';
+
+    function printHello()
+    {
+        echo $this->public;
+        echo $this->protected;
+        echo $this->private;
+    }
+}
+
+$obj = new MyClass();
+echo $obj->public; // Works
+echo $obj->protected; // Fatal Error
+echo $obj->private; // Fatal Error
+$obj->printHello(); // Shows Public, Protected and Private
+
+
+/**
+ * Define MyClass2
+ */
+class MyClass2 extends MyClass
+{
+    // We can redeclare the public and protected properties, but not private
+    public $public = 'Public2';
+    protected $protected = 'Protected2';
+
+    function printHello()
+    {
+        echo $this->public;
+        echo $this->protected;
+        echo $this->private;
+    }
+}
+
+$obj2 = new MyClass2();
+echo $obj2->public; // Works
+echo $obj2->protected; // Fatal Error
+echo $obj2->private; // Undefined
+$obj2->printHello(); // Shows Public2, Protected2, Undefined
+
+?> 
+]]>
+    </programlisting>
+   </example>
+   <sect3 xml:id="language.oop5.visibility-members-aviz">
+    <title>Asymmetric Property Visibility</title>
+    <simpara>
+     PHP 8.4 देखि, object properties को visibility लाई असमान रूपले
+     (asymmetrically) पनि सेट गर्न सकिन्छ, जसमा पढ्नका लागि (<literal>get</literal>)
+     र लेख्नका लागि (<literal>set</literal>) फरक-फरक scope राख्न मिल्छ। विशेष गरी,
+     <literal>set</literal> visibility लाई छुट्टै तोक्न सकिन्छ, तर यो default
+     visibility भन्दा बढी खुकुलो (permissive) हुनु हुँदैन।
+    </simpara>
+    <example>
+     <title>Asymmetric Property visibility</title>
+     <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+class Book
+{
+    public function __construct(
+        public private(set) string $title,
+        public protected(set) string $author,
+        protected private(set) int $pubYear,
+    ) {}
+}
+
+class SpecialBook extends Book
+{
+    public function update(string $author, int $year): void
+    {
+        $this->author = $author; // OK
+        $this->pubYear = $year; // Fatal Error
+    }
+}
+
+$b = new Book('How to PHP', 'Peter H. Peterson', 2024);
+
+echo $b->title; // Works
+echo $b->author; // Works
+echo $b->pubYear; // Fatal Error
+
+$b->title = 'How not to PHP'; // Fatal Error
+$b->author = 'Pedro H. Peterson'; // Fatal Error
+$b->pubYear = 2023; // Fatal Error
+?>
+]]>
+     </programlisting>
+    </example>
+    <simpara>
+     PHP 8.5 देखि, classes का static properties मा पनि <literal>set</literal>
+     visibility लागू गर्न सकिन्छ।
+    </simpara>
+    <example>
+     <title>Asymmetric Static Property Visibility</title>
+     <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+class Manager
+{
+    public private(set) static int $calls = 0;
+
+    public function doAThing(): string
+    {
+        self::$calls++;
+        // Do other stuff.
+        return "some string";
+    }
+}
+
+$m = new Manager();
+
+$m->doAThing(); // Works
+echo Manager::$calls; // Works
+Manager::$calls = 5; // Fatal error
+?>
+]]>
+     </programlisting>
+     &example.outputs;
+     <screen>
+<![CDATA[
+1
+Fatal error: Uncaught Error: Cannot modify private(set) property Manager::$calls from global scope in /some/file.php
+]]>
+     </screen>
+    </example>
+    <para>Asymmetric visibility का सम्बन्धमा केही सावधानीका बुँदाहरू (caveats) छन्:</para>
+    <itemizedlist>
+     <listitem>
+      <simpara>
+       Typed properties मा मात्र छुट्टै <literal>set</literal> visibility राख्न सकिन्छ।
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <literal>set</literal> visibility कि त <literal>get</literal> सँग समान वा
+       त्योभन्दा बढी प्रतिबन्धित (restrictive) हुनुपर्छ। अर्थात्,
+       <code>public protected(set)</code> र <code>protected protected(set)</code>
+       अनुमति छ, तर <code>protected public(set)</code> ले syntax error निम्त्याउँछ।
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       यदि कुनै property <literal>public</literal> छ भने, मुख्य visibility नलेख्न पनि
+       सकिन्छ। अर्थात्, <code>public private(set)</code> र <code>private(set)</code>
+       को नतिजा उस्तै हुन्छ।
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <literal>private(set)</literal> visibility भएको property स्वतः
+       <literal>final</literal> हुन्छ, र यसलाई child class मा पुन: घोषणा (redeclare)
+       गर्न सकिँदैन।
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       कुनै property को reference प्राप्त गर्दा त्यसले <literal>get</literal> नभई
+       <literal>set</literal> visibility लाई पछ्याउँछ। किनभने reference को प्रयोग
+       property को मान परिवर्तन गर्नका लागि हुन सक्छ।
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       त्यस्तै गरी, कुनै array property मा लेख्ने प्रयास गर्दा भित्रि रूपमा
+       <literal>get</literal> र <literal>set</literal> दुवै operation हुने भएकाले,
+       यसले पनि <literal>set</literal> visibility लाई नै पछ्याउँछ, किनकि त्यो सधैँ
+       बढी प्रतिबन्धित हुन्छ।
+      </simpara>
+     </listitem>
+    </itemizedlist>
+    <note>
+     <simpara>
+      Set-visibility घोषणामा खाली स्थान (spaces) राख्न अनुमति छैन।
+      <literal>private(set)</literal> सही हो।
+      <literal>private( set )</literal> सही होइन र यसले parse error निम्त्याउँछ।
+     </simpara>
+    </note>
+    <simpara>
+     जब एक class ले अर्को class लाई extend गर्छ, child class ले
+     <literal>final</literal> नभएका जुनसुकै property लाई पुन: परिभाषित (redefine) गर्न
+     सक्छ। त्यसो गर्दा, यसले मुख्य visibility वा <literal>set</literal> visibility
+     मध्ये कुनै एक वा दुवैलाई फराकिलो (widen) बनाउन सक्छ, तर नयाँ visibility parent
+     class को बराबर वा त्योभन्दा फराकिलो हुनुपर्छ। यद्यपि, ध्यान राख्नुहोस् कि यदि कुनै
+     <literal>private</literal> property लाई override गरियो भने, यसले वास्तवमा parent
+     को property परिवर्तन गर्दैन बरु फरक आन्तरिक नाम भएको नयाँ property सिर्जना गर्छ।
+    </simpara>
+    <example>
+     <title>Asymmetric Property inheritance</title>
+     <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+class Book
+{
+    protected string $title;
+    public protected(set) string $author;
+    protected private(set) int $pubYear;
+}
+
+class SpecialBook extends Book
+{
+    public protected(set) string $title; // OK, as reading is wider and writing the same.
+    public string $author; // OK, as reading is the same and writing is wider.
+    public protected(set) int $pubYear; // Fatal Error. private(set) properties are final.
+}
+?>
+]]>
+     </programlisting>
+    </example>
+   </sect3>
+  </sect2>
+
+  <sect2 xml:id="language.oop5.visiblity-methods">
+   <title>Method Visibility</title>
+   <para>
+    Class methods लाई public, private, वा protected का रूपमा परिभाषित गर्न सकिन्छ।
+    कुनै स्पष्ट visibility किवर्ड बिना घोषणा गरिएका methods लाई public का रूपमा
+    परिभाषित गरिन्छ।
+   </para>
+   <example>
+    <title>Method घोषणा</title>
+    <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+/**
+ * Define MyClass
+ */
+class MyClass
+{
+    // Declare a public constructor
+    public function __construct() { }
+
+    // Declare a public method
+    public function MyPublic() { }
+
+    // Declare a protected method
+    protected function MyProtected() { }
+
+    // Declare a private method
+    private function MyPrivate() { }
+
+    // This is public
+    function Foo()
+    {
+        $this->MyPublic();
+        $this->MyProtected();
+        $this->MyPrivate();
+    }
+}
+
+$myclass = new MyClass;
+$myclass->MyPublic(); // Works
+$myclass->MyProtected(); // Fatal Error
+$myclass->MyPrivate(); // Fatal Error
+$myclass->Foo(); // Public, Protected and Private work
+
+
+/**
+ * Define MyClass2
+ */
+class MyClass2 extends MyClass
+{
+    // This is public
+    function Foo2()
+    {
+        $this->MyPublic();
+        $this->MyProtected();
+        $this->MyPrivate(); // Fatal Error
+    }
+}
+
+$myclass2 = new MyClass2;
+$myclass2->MyPublic(); // Works
+$myclass2->Foo2(); // Public and Protected work, not Private
+
+class Bar 
+{
+    public function test() {
+        $this->testPrivate();
+        $this->testPublic();
+    }
+
+    public function testPublic() {
+        echo "Bar::testPublic\n";
+    }
+    
+    private function testPrivate() {
+        echo "Bar::testPrivate\n";
+    }
+}
+
+class Foo extends Bar 
+{
+    public function testPublic() {
+        echo "Foo::testPublic\n";
+    }
+    
+    private function testPrivate() {
+        echo "Foo::testPrivate\n";
+    }
+}
+
+$myFoo = new Foo();
+$myFoo->test(); // Bar::testPrivate 
+                // Foo::testPublic
+?>
+]]>
+    </programlisting>
+   </example>
+  </sect2>
+
+  <sect2 xml:id="language.oop5.visiblity-constants">
+   <title>Constant Visibility</title>
+   <para>
+    PHP 7.1.0 देखि, class constants लाई public, private, वा protected का रूपमा
+    परिभाषित गर्न सकिन्छ। कुनै स्पष्ट visibility किवर्ड बिना घोषणा गरिएका constants
+    लाई public का रूपमा परिभाषित गरिन्छ।
+   </para>
+   <example>
+    <title>PHP 7.1.0 देखि Constant घोषणा</title>
+    <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+/**
+ * Define MyClass
+ */
+class MyClass
+{
+    // Declare a public constant
+    public const MY_PUBLIC = 'public';
+
+    // Declare a protected constant
+    protected const MY_PROTECTED = 'protected';
+
+    // Declare a private constant
+    private const MY_PRIVATE = 'private';
+
+    public function foo()
+    {
+        echo self::MY_PUBLIC;
+        echo self::MY_PROTECTED;
+        echo self::MY_PRIVATE;
+    }
+}
+
+$myclass = new MyClass();
+MyClass::MY_PUBLIC; // Works
+MyClass::MY_PROTECTED; // Fatal Error
+MyClass::MY_PRIVATE; // Fatal Error
+$myclass->foo(); // Public, Protected and Private work
+
+
+/**
+ * Define MyClass2
+ */
+class MyClass2 extends MyClass
+{
+    // This is public
+    function foo2()
+    {
+        echo self::MY_PUBLIC;
+        echo self::MY_PROTECTED;
+        echo self::MY_PRIVATE; // Fatal Error
+    }
+}
+
+$myclass2 = new MyClass2;
+echo MyClass2::MY_PUBLIC; // Works
+$myclass2->foo2(); // Public and Protected work, not Private
+?>
+]]>
+    </programlisting>
+   </example>
+  </sect2>
+
+  <sect2 xml:id="language.oop5.visibility-other-objects">
+   <title>अन्य objects बाट Visibility (Visibility from other objects)</title>
+   <para>
+    एउटै type का objects फरक-फरक instances भए तापनि तीसँग एकअर्काका private र
+    protected members मा पहुँच (access) हुन्छ। किनभने ती objects भित्र हुँदा
+    कार्यान्वयनका विशेष विवरणहरू पहिल्यै ज्ञात हुन्छन्।
+   </para>
+   <example>
+    <title>एउटै object type का private members access गर्ने उदाहरण</title>
+    <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+class Test
+{
+    private $foo;
+
+    public function __construct($foo)
+    {
+        $this->foo = $foo;
+    }
+
+    private function bar()
+    {
+        echo 'Accessed the private method.';
+    }
+
+    public function baz(Test $other)
+    {
+        // We can change the private property:
+        $other->foo = 'hello';
+        var_dump($other->foo);
+
+        // We can also call the private method:
+        $other->bar();
+    }
+}
+
+$test = new Test('test');
+
+$test->baz(new Test('other'));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(5) "hello"
+Accessed the private method.
+]]>
+    </screen>
+   </example>
+  </sect2>
+ </sect1>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

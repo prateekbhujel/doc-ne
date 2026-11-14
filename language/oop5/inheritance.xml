@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: dff848b17dafaabfb7662ffb5fecfcb04e3b771d Maintainer: prateekbhujel Status: ready -->
+ <sect1 xml:id="language.oop5.inheritance" xmlns="http://docbook.org/ns/docbook">
+  <title>Object Inheritance</title>
+  <para>
+   Inheritance एक सुस्थापित programming सिद्धान्त हो, र PHP ले आफ्नो object model
+   मा यो सिद्धान्तको प्रयोग गर्छ। यो सिद्धान्तले धेरै classes र objects एकअर्कासँग
+   कसरी सम्बन्धित हुन्छन् भन्ने कुरामा प्रभाव पार्छ।
+  </para>
+  <para>
+   उदाहरणका लागि, कुनै class लाई extend गर्दा, subclass ले parent class का सबै
+   public र protected methods, properties र constants लाई inherit गर्छ। यदि कुनै
+   class ले ती methods लाई override गर्दैन भने, तिनले आफ्नो मूल कार्यक्षमता कायमै
+   राख्छन्।
+  </para>
+  <para>
+   यो कार्यक्षमता परिभाषित गर्न र abstract गर्न उपयोगी हुन्छ, र यसले सबै साझा
+   कार्यक्षमता पुन: लेख्नुपर्ने आवश्यकता बिना नै उस्तै प्रकारका objects मा अतिरिक्त
+   कार्यक्षमता थप्न अनुमति दिन्छ।
+  </para>
+  <para>
+   Parent class का private methods मा child class को पहुँच (access) हुँदैन।
+   फलस्वरूप, child classes ले सामान्य inheritance नियमहरूको वास्ता नगरी आफैँले कुनै
+   private method लाई पुन: लागू (reimplement) गर्न सक्छन्। यद्यपि, PHP 8.0.0 भन्दा
+   पहिले, private methods मा <literal>final</literal> र <literal>static</literal>
+   प्रतिबन्धहरू लागू हुन्थे। PHP 8.0.0 देखि, लागू गरिने एकमात्र private method प्रतिबन्ध
+   <literal>private final</literal> constructors हो, किनकि static factory methods
+   प्रयोग गर्दा constructor लाई "disable" गर्ने यो एक सामान्य तरिका हो।
+  </para>
+ <simpara>
+  Methods, properties र constants को
+  <link linkend="language.oop5.visibility">visibility</link> लाई खुकुलो (relax)
+  बनाउन सकिन्छ, जस्तै <literal>protected</literal> method लाई
+  <literal>public</literal> का रूपमा चिन्ह लगाउन सकिन्छ, तर तिनलाई कडा (restrict)
+  बनाउन सकिँदैन, जस्तै <literal>public</literal> property लाई
+  <literal>private</literal> का रूपमा चिन्ह लगाउनु। यसको एक अपवाद constructors हो,
+  जसको visibility लाई कडा बनाउन सकिन्छ, जस्तै child class मा
+  <literal>public</literal> constructor लाई <literal>private</literal> का रूपमा चिन्ह
+  लगाउन सकिन्छ।
+ </simpara>
+
+  <note>
+   <para>
+    Autoloading प्रयोग नगरिएको खण्डमा, classes लाई प्रयोग गर्नुअघि नै परिभाषित
+    गरिनुपर्छ। यदि एक class ले अर्को class लाई extend गर्छ भने, child class संरचनाभन्दा
+    पहिले parent class घोषणा गरिएको हुनुपर्छ। यो नियम अन्य classes र interfaces लाई
+    inherit गर्ने classes मा लागू हुन्छ।
+   </para>
+  </note>
+  <note>
+   <para>
+    कुनै read-write property लाई <link linkend="language.oop5.properties.readonly-properties">readonly property</link> ले override गर्न वा यसको उल्टो (readonly लाई read-write ले override गर्न) अनुमति छैन।
+    <informalexample>
+     <programlisting role="php">
+<![CDATA[
+<?php
+
+class A {
+    public int $prop;
+}
+class B extends A {
+    // Illegal: read-write -> readonly
+    public readonly int $prop;
+}
+?>
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+  </note>
+
+ <example>
+  <title>Inheritance उदाहरण</title>
+  <programlisting role="php">
+<![CDATA[
+<?php
+
+class Foo
+{
+    public function printItem($string)
+    {
+        echo 'Foo: ' . $string . PHP_EOL;
+    }
+    
+    public function printPHP()
+    {
+        echo 'PHP is great.' . PHP_EOL;
+    }
+}
+
+class Bar extends Foo
+{
+    public function printItem($string)
+    {
+        echo 'Bar: ' . $string . PHP_EOL;
+    }
+}
+
+$foo = new Foo();
+$bar = new Bar();
+$foo->printItem('baz'); // Output: 'Foo: baz'
+$foo->printPHP();       // Output: 'PHP is great.'
+$bar->printItem('baz'); // Output: 'Bar: baz'
+$bar->printPHP();       // Output: 'PHP is great.'
+
+?>
+]]>
+  </programlisting>
+ </example>
+
+  <sect2 xml:id="language.oop5.inheritance.internal-classes">
+   <title>Internal Classes सँग Return Type Compatibility (Return Type Compatibility with Internal Classes)</title>
+ 
+   <para>
+    PHP 8.1 भन्दा पहिले, अधिकांश internal classes वा methods ले आफ्ना return types
+    घोषणा गर्दैनथे, र तिनलाई extend गर्दा जुनसुकै return type राख्न अनुमति थियो।
+   </para>
+ 
+   <para>
+    PHP 8.1.0 देखि, अधिकांश internal methods ले "अस्थायी रूपमा" (tentatively) आफ्ना
+    return type घोषणा गर्न थाले, जस्तो अवस्थामा methods को return type extend
+    गरिँदै गरेको parent सँग मिल्दोजुल्दो (compatible) हुनुपर्छ; अन्यथा, deprecation
+    notice जारी हुन्छ। ध्यान दिनुहोस् कि स्पष्ट return declaration नहुनुलाई पनि
+    signature mismatch नै मानिन्छ, र यसले पनि deprecation notice निम्त्याउँछ।
+   </para>
+ 
+   <para>
+    यदि PHP cross-version compatibility का कारणले गर्दा overriding method का लागि
+    return type घोषणा गर्न सकिँदैन भने, deprecation notice लाई दबाउन (silence गर्न)
+    <classname>ReturnTypeWillChange</classname> attribute थप्न सकिन्छ।
+   </para>
+ 
+   <example>
+    <title>Overriding method ले कुनै return type घोषणा नगरेको अवस्था</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class MyDateTime extends DateTime
+{
+    public function modify(string $modifier) { return false; }
+}
+ 
+// "Deprecated: Return type of MyDateTime::modify(string $modifier) should either be compatible with DateTime::modify(string $modifier): DateTime|false, or the #[\ReturnTypeWillChange] attribute should be used to temporarily suppress the notice" as of PHP 8.1.0
+?> 
+]]>
+    </programlisting>
+   </example>
+ 
+   <example>
+    <title>Overriding method ले गलत return type घोषणा गरेको अवस्था</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class MyDateTime extends DateTime
+{
+    public function modify(string $modifier): ?DateTime { return null; }
+}
+ 
+// "Deprecated: Return type of MyDateTime::modify(string $modifier): ?DateTime should either be compatible with DateTime::modify(string $modifier): DateTime|false, or the #[\ReturnTypeWillChange] attribute should be used to temporarily suppress the notice" as of PHP 8.1.0
+?> 
+]]>
+    </programlisting>
+   </example>
+ 
+   <example>
+    <title>Deprecation notice बिना गलत return type घोषणा गर्ने overriding method</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class MyDateTime extends DateTime
+{
+    /**
+     * @return DateTime|false
+     */
+    #[\ReturnTypeWillChange]
+    public function modify(string $modifier) { return false; }
+}
+ 
+// No notice is triggered 
+?> 
+]]>
+    </programlisting>
+   </example>
+ 
+  </sect2>
+
+ </sect1>
+ 
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

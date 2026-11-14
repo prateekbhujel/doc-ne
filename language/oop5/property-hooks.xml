@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: dff848b17dafaabfb7662ffb5fecfcb04e3b771d Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.oop5.property-hooks" xmlns="http://docbook.org/ns/docbook">
+ <title>Property Hooks</title>
+
+ <simpara>
+  अन्य केही भाषाहरूमा "property accessors" भनेर पनि चिनिने property hooks,
+  कुनै property को read र write व्यवहारलाई बीचमै रोक्ने (intercept) र override गर्ने तरिका हो।
+  यस सुविधाले दुईवटा उद्देश्यहरू पूरा गर्दछ:
+ </simpara>
+ <orderedlist>
+  <listitem>
+   <simpara>
+    यसले get र set methods बिना नै properties लाई सिधै प्रयोग गर्न दिन्छ,
+    र भविष्यमा थप व्यवहार जोड्ने विकल्प पनि खुला राख्छ।
+    यसले hooks प्रयोग नगर्दा पनि अधिकांश boilerplate get/set methods लाई
+    अनावश्यक बनाइदिन्छ।
+   </simpara>
+  </listitem>
+  <listitem>
+   <simpara>
+    यसले सिधै value store नगरीकनै कुनै object को वर्णन गर्ने properties राख्न
+    अनुमति दिन्छ।
+   </simpara>
+  </listitem>
+ </orderedlist>
+ <simpara>
+  Non-static properties मा दुईवटा hooks उपलब्ध छन्: <literal>get</literal> र <literal>set</literal>।
+  तिनले क्रमशः कुनै property को read र write व्यवहारलाई override गर्न दिन्छन्।
+  Hooks हरू typed र untyped दुवै प्रकारका properties का लागि उपलब्ध छन्।
+ </simpara>
+ <simpara>
+  कुनै property "backed" वा "virtual" हुन सक्छ।
+  Backed property भन्नाले वास्तवमा value store गर्ने property हो।
+  कुनै पनि hooks नभएको property सधैँ backed हुन्छ।
+  Virtual property भन्नाले त्यस्तो property हो जसमा hooks हुन्छन् र ती hooks ले उक्त property स्वयंलाई सन्दर्भ गर्दैनन्।
+  यस्तो अवस्थामा, hooks हरू प्रभावकारी रूपमा methods जस्तै हुन्छन्,
+  र object ले त्यस property को value store गर्न कुनै space प्रयोग गर्दैन।
+ </simpara>
+ <simpara>
+  Property hooks हरू <literal>readonly</literal> properties सँग मिल्दैनन्।
+  यदि <literal>get</literal> वा <literal>set</literal> operation को व्यवहार परिवर्तन गर्नुका साथै
+  त्यसमाथिको पहुँच पनि सीमित गर्न आवश्यक छ भने,
+  <link linkend="language.oop5.visibility-members-aviz">asymmetric property visibility</link> प्रयोग गर्नुहोस्।
+ </simpara>
+
+ <note>
+  <title>Version जानकारी</title>
+  <simpara>
+   Property hooks PHP 8.4 मा सुरु गरिएको थियो।
+  </simpara>
+ </note>
+
+ <sect2>
+  <title>आधारभूत Hook Syntax</title>
+  <simpara>
+   Hook घोषणा गर्ने सामान्य syntax निम्न अनुसार छ।
+  </simpara>
+  <example>
+   <title>Property hooks (पूर्ण संस्करण)</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class Example
+{
+    private bool $modified = false;
+
+    public string $foo = 'default value' {
+        get {
+            if ($this->modified) {
+                return $this->foo . ' (modified)';
+            }
+            return $this->foo;
+        }
+        set(string $value) {
+            $this->foo = strtolower($value);
+            $this->modified = true;
+        }
+    }
+}
+
+$example = new Example();
+$example->foo = 'changed';
+print $example->foo;
+?>
+]]>
+   </programlisting>
+  </example>
+  <simpara>
+   <varname>$foo</varname> property semicolon को सट्टा <literal>{}</literal> मा टुङ्गिन्छ।
+   यसले hooks को उपस्थिति जनाउँछ।
+   यहाँ <literal>get</literal> र <literal>set</literal> दुवै hook परिभाषित गरिएका छन्,
+   यद्यपि तीमध्ये कुनै एक मात्र परिभाषित गर्न पनि पाइन्छ।
+   दुवै hooks मा <literal>{}</literal> द्वारा दर्शाइएको body हुन्छ, जसमा जुनसुकै code रहन सक्छ।
+  </simpara>
+  <simpara>
+   <literal>set</literal> hook ले method कै जस्तो syntax प्रयोग गरेर भित्र आउने value को type र नाम
+   समेत तोक्न अनुमति दिन्छ।
+   उक्त type या त property को type सँग मिल्दो हुनुपर्छ,
+   वा त्योभन्दा <link linkend="language.oop5.variance.contravariance">contravariant</link> (फराकिलो) हुनुपर्छ।
+   उदाहरणका लागि, <type>string</type> type को property मा
+   <type class="union"><type>string</type><type>Stringable</type></type> स्वीकार गर्ने
+   <literal>set</literal> hook हुन सक्छ, तर <type>array</type> मात्र स्वीकार गर्ने hook हुन सक्दैन।
+  </simpara>
+  <simpara>
+   कम्तीमा एउटा hook ले <code>$this->foo</code> अर्थात् property स्वयंलाई सन्दर्भ गर्दछ।
+   यसको अर्थ उक्त property "backed" हुनेछ।
+   <code>$example->foo = 'changed'</code> चलाउँदा,
+   दिइएको string लाई पहिले lowercase मा रूपान्तरण गरिन्छ, र त्यसपछि backing value मा save गरिन्छ।
+   उक्त property बाट read गर्दा, पहिले save गरिएको value मा सर्त अनुसार
+   थप text जोडिन सक्छ।
+  </simpara>
+  <simpara>
+   सामान्य अवस्थाहरू सम्हाल्नका लागि यसका थुप्रै shorthand syntax रूपहरू पनि उपलब्ध छन्।
+  </simpara>
+  <simpara>
+   यदि <literal>get</literal> hook एउटै मात्र expression हो भने,
+   <literal>{}</literal> हटाएर त्यसको सट्टा arrow expression राख्न सकिन्छ।
+  </simpara>
+  <example>
+   <title>Property get expression</title>
+   <simpara>
+    यो उदाहरण अघिल्लो उदाहरणकै समतुल्य छ।
+   </simpara>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class Example
+{
+    private bool $modified = false;
+
+    public string $foo = 'default value' {
+        get => $this->foo . ($this->modified ? ' (modified)' : '');
+
+        set(string $value) {
+            $this->foo = strtolower($value);
+            $this->modified = true;
+        }
+    }
+}
+?>
+]]>
+   </programlisting>
+  </example>
+  <simpara>
+   यदि <literal>set</literal> hook को parameter type र property को type एउटै छ (जुन सामान्यतया हुन्छ),
+   भने त्यसलाई छोड्न सकिन्छ। त्यस्तो अवस्थामा, set गरिने value लाई स्वतः <varname>$value</varname> नाम दिइन्छ।
+  </simpara>
+  <example>
+   <title>Property set defaults</title>
+   <simpara>
+    यो उदाहरण अघिल्लो उदाहरणकै समतुल्य छ।
+   </simpara>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class Example
+{
+    private bool $modified = false;
+
+    public string $foo = 'default value' {
+        get => $this->foo . ($this->modified ? ' (modified)' : '');
+
+        set {
+            $this->foo = strtolower($value);
+            $this->modified = true;
+        }
+    }
+}
+?>
+]]>
+   </programlisting>
+  </example>
+  <simpara>
+   यदि <literal>set</literal> hook ले पठाइएको value को परिमार्जित रूप मात्र set गरिरहेको छ भने,
+   त्यसलाई पनि arrow expression मा सरल बनाउन सकिन्छ।
+   उक्त expression ले मूल्याङ्कन (evaluate) गरेर निकाल्ने value लाई backing value मा set गरिनेछ।
+  </simpara>
+  <example>
+   <title>Property set expression</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class Example
+{
+    private bool $modified = false;
+
+    public string $foo = 'default value' {
+        get => $this->foo . ($this->modified ? ' (modified)' : '');
+        set => strtolower($value);
+    }
+}
+?>
+]]>
+   </programlisting>
+  </example>
+  <simpara>
+   यो उदाहरण अघिल्लो जस्तै ठ्याक्कै समतुल्य भने छैन,
+   किनभने यसले <code>$this->modified</code> लाई परिवर्तन गर्दैन।
+   यदि set hook को body मा एकभन्दा बढी statements आवश्यक छन् भने, curly braces वाला संस्करण प्रयोग गर्नुहोस्।
+  </simpara>
+  <simpara>
+   आवश्यकता अनुसार कुनै property ले शून्य, एक, वा दुवै hooks implement गर्न सक्छ।
+   सबै shorthand संस्करणहरू एकअर्काबाट स्वतन्त्र हुन्छन्।
+   अर्थात्, short-get सँग long-set प्रयोग गर्नु, स्पष्ट type का साथ
+   short-set प्रयोग गर्नु, आदि सबै मान्य हुन्छन्।
+  </simpara>
+  <simpara>
+   Backed property मा <literal>get</literal> वा <literal>set</literal> hook छोड्नुको अर्थ
+   त्यसका लागि default read वा write व्यवहार प्रयोग गरिनेछ भन्ने हो।
+  </simpara>
+  <note>
+   <simpara>
+    <link linkend="language.oop5.decon.constructor.promotion">Constructor property promotion</link>
+    प्रयोग गर्दा पनि hooks परिभाषित गर्न सकिन्छ।
+    तर त्यसो गर्दा, <literal>set</literal> hook ले जेसुकै अनुमति दिए पनि,
+    constructor मा दिइने values property सँग जोडिएको type सँग मिल्नैपर्छ।
+   </simpara>
+   <simpara>
+    निम्न उदाहरण हेर्नुहोस्:
+   </simpara>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class Example
+{
+    public function __construct(
+        public private(set) DateTimeInterface $created {
+            set (string|DateTimeInterface $value) {
+                if (is_string($value)) {
+                    $value = new DateTimeImmutable($value);
+                }
+                $this->created = $value;
+            }
+        },
+    ) {
+    }
+}
+]]>
+   </programlisting>
+   <simpara>
+    आन्तरिक रूपमा, engine ले यसलाई निम्न अनुसार विभाजन (decompose) गर्छ:
+   </simpara>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class Example
+{
+    public private(set) DateTimeInterface $created {
+        set (string|DateTimeInterface $value) {
+            if (is_string($value)) {
+                $value = new DateTimeImmutable($value);
+            }
+            $this->created = $value;
+        }
+    }
+
+    public function __construct(
+        DateTimeInterface $created,
+    ) {
+        $this->created = $created;
+    }
+}
+]]>
+   </programlisting>
+   <simpara>
+    Constructor बाहिरबाट उक्त property set गर्ने कुनै पनि प्रयासले
+    <type>string</type> वा <interfacename>DateTimeInterface</interfacename>
+    मध्ये कुनै एक value लाई अनुमति दिनेछ, तर constructor ले भने <interfacename>DateTimeInterface</interfacename> लाई मात्र अनुमति दिन्छ।
+    यस्तो हुनुको कारण के हो भने <literal>set</literal> hook ले जे अनुमति दिए पनि,
+    property का लागि परिभाषित type (<interfacename>DateTimeInterface</interfacename>)
+    लाई नै constructor signature भित्र parameter type को रूपमा प्रयोग गरिन्छ।
+   </simpara>
+   <simpara>
+    यदि constructor बाटै यस्तो खालको व्यवहार आवश्यक छ भने,
+    constructor property promotion प्रयोग गर्न सकिँदैन।
+   </simpara>
+  </note>
+ </sect2>
+ <sect2 xml:id="language.oop5.property-hooks.virtual">
+  <title>Virtual properties</title>
+  <simpara>
+   Virtual properties भन्नाले कुनै backing value नभएका properties हुन्।
+   यदि कुनै property का न त <literal>get</literal> न त <literal>set</literal> hook ले
+   ठ्याक्कै उही syntax प्रयोग गरेर उक्त property स्वयंलाई सन्दर्भ (reference) गर्छ भने त्यो property virtual हुन्छ।
+   अर्थात्, <code>$foo</code> नामको property जसको hook मा <code>$this->foo</code> हुन्छ, त्यो backed हुनेछ।
+   तर निम्न उदाहरण backed property होइन, र यसले error दिनेछ:
+  </simpara>
+  <example>
+   <title>अमान्य virtual property</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class Example
+{
+    public string $foo {
+        get {
+            $temp = __PROPERTY__;
+            return $this->$temp; // Doesn't refer to $this->foo, so it doesn't count.
+        }
+    }
+}
+?>
+]]>
+   </programlisting>
+  </example>
+  <simpara>
+   Virtual properties का लागि, यदि कुनै hook छोडियो भने त्यो operation
+   अस्तित्वमा रहँदैन र त्यसलाई प्रयोग गर्न खोज्दा error आउँछ।
+   Virtual properties ले object मा कुनै memory space लिँदैनन्।
+   Virtual properties "derived" properties का लागि उपयुक्त हुन्छन्,
+   जस्तै अन्य दुई properties को संयोजनबाट बन्ने properties।
+  </simpara>
+  <example>
+   <title>Virtual property</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class Rectangle
+{
+    // A virtual property.
+    public int $area {
+        get => $this->h * $this->w;
+    }
+
+    public function __construct(public int $h, public int $w) {}
+}
+
+$s = new Rectangle(4, 5);
+print $s->area; // prints 20
+$s->area = 30; // Error, as there is no set operation defined.
+?>
+]]>
+   </programlisting>
+  </example>
+  <simpara>
+   कुनै virtual property मा <literal>get</literal> र <literal>set</literal> दुवै hook परिभाषित गर्न पनि पाइन्छ।
+  </simpara>
+ </sect2>
+ <sect2>
+  <title>Scoping</title>
+  <simpara>
+   सबै hooks हरू परिमार्जन भइरहेको object को scope मा सञ्चालन हुन्छन्।
+   यसको अर्थ तिनीहरूसँग उक्त object का सबै public, private, वा protected methods का साथै
+   सबै public, private, वा protected properties (आफ्नै property hooks भएका properties समेत) मा पहुँच हुन्छ।
+   कुनै hook भित्रबाट अर्को property access गर्दा उक्त property मा परिभाषित hooks लाई bypass गरिँदैन।
+  </simpara>
+  <simpara>
+   यसको सबैभन्दा उल्लेखनीय प्रभाव के हो भने जटिल प्रकृतिका hooks ले चाहेमा
+   जतिसुकै जटिल method लाई पनि भित्रैबाट call गर्न सक्छन्।
+  </simpara>
+  <example>
+   <title>Hook बाट method call गर्ने उदाहरण</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+class Person {
+    public string $phone {
+        set => $this->sanitizePhone($value);
+    }
+
+    private function sanitizePhone(string $value): string {
+        $value = ltrim($value, '+');
+        $value = ltrim($value, '1');
+
+        if (!preg_match('/\d\d\d\-\d\d\d\-\d\d\d\d/', $value)) {
+            throw new \InvalidArgumentException();
+        }
+        return $value;
+    }
+}
+?>
+]]>
+   </programlisting>
+  </example>
+ </sect2>
+ <sect2>
+  <title>References</title>
+  <simpara>
+   Hooks को उपस्थितिले properties को read र write प्रक्रियालाई बीचमै रोक्ने (intercept गर्ने) हुनाले,
+   कुनै property को reference लिँदा वा <code>$this->arrayProp['key'] = 'value';</code> जस्ता
+   अप्रत्यक्ष परिवर्तन (indirect modification) गर्दा समस्या उत्पन्न हुन्छ।
+   यसो हुनुको कारण के हो भने यदि set hook परिभाषित छ भने, reference मार्फत value परिवर्तन गर्ने कुनै पनि प्रयासले उक्त set hook लाई bypass गर्नेछ।
+  </simpara>
+  <simpara>
+   Hooks परिभाषित भएको property को reference लिनैपर्ने दुर्लभ अवस्थामा,
+   reference द्वारा return गराउनका लागि <literal>get</literal> hook को अगाडि
+   <literal>&amp;</literal> राख्न सकिन्छ।
+   एउटै property मा <literal>get</literal> र <literal>&amp;get</literal> दुवै परिभाषित गर्नु
+   syntax error हो।
+  </simpara>
+  <simpara>
+   Backed property मा <literal>&amp;get</literal> र <literal>set</literal> दुवै hooks परिभाषित गर्न अनुमति छैन।
+   माथि उल्लेख गरिए झैँ, reference द्वारा return भएको value मा write गर्नाले <literal>set</literal> hook bypass हुनेछ।
+   Virtual properties मा दुई hooks बीच साझा (common) value हुनैपर्छ भन्ने नहुने भएकाले, दुवै परिभाषित गर्न अनुमति दिइन्छ।
+  </simpara>
+  <simpara>
+   Array property को कुनै index मा write गर्दा पनि अप्रत्यक्ष (implicit) reference संलग्न हुन्छ।
+   त्यसकारण, hooks परिभाषित भएको backed array property मा write गर्न
+   तब मात्र अनुमति हुन्छ जब त्यसमा <literal>&amp;get</literal> hook मात्र परिभाषित गरिएको हुन्छ।
+   Virtual property मा भने, <literal>get</literal> वा <literal>&amp;get</literal> मध्ये जुनसुकैबाट
+   return भएको array मा write गर्नु वैध हुन्छ,
+   तर त्यसले object मा कुनै असर पार्छ वा पार्दैन भन्ने कुरा hook को implementation मा भर पर्छ।
+  </simpara>
+  <simpara>
+   सम्पूर्ण array property लाई नै overwrite गर्नु ठीकै छ, र यसले अन्य कुनै पनि property ले जस्तै व्यवहार गर्छ।
+   Array का elements सँग काम गर्दा मात्र विशेष सावधानी अपनाउन आवश्यक हुन्छ।
+  </simpara>
+ </sect2>
+ <sect2>
+  <title>Inheritance</title>
+  <sect3>
+   <title>Final hooks</title>
+   <simpara>
+    Hooks लाई <link linkend="language.oop5.final">final</link> को रूपमा पनि घोषणा गर्न सकिन्छ,
+    त्यस्तो अवस्थामा तिनलाई override गर्न सकिँदैन।
+   </simpara>
+   <example>
+    <title>Final hooks</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class User
+{
+    public string $username {
+        final set => strtolower($value);
+    }
+}
+
+class Manager extends User
+{
+    public string $username {
+        // This is allowed
+        get => strtoupper($this->username);
+
+        // But this is NOT allowed, because set is final in the parent.
+        set => strtoupper($value);
+    }
+}
+?>
+]]>
+    </programlisting>
+   </example>
+   <simpara>
+    कुनै property लाई पनि <link linkend="language.oop5.final">final</link> को रूपमा घोषणा गर्न सकिन्छ।
+    Final property लाई child class ले कुनै पनि तरिकाले पुनः घोषणा (redeclare) गर्न सक्दैन,
+    जसले hooks परिवर्तन गर्न वा त्यसको पहुँच (access) फराकिलो बनाउन रोक्छ।
+   </simpara>
+   <simpara>
+    Final घोषणा गरिएको property मा hooks लाई पनि final घोषणा गर्नु अनावश्यक दोहोरोपन (redundant) हो,
+    र यसलाई चुपचाप बेवास्ता (ignore) गरिनेछ।
+    यो व्यवहार final methods कै जस्तो हो।
+   </simpara>
+   <simpara>
+    Child class ले property लाई र आफूले override गर्न चाहेका hooks लाई मात्र पुनः परिभाषित गरेर
+    उक्त property का व्यक्तिगत hooks परिभाषित वा पुनः परिभाषित गर्न सक्छ।
+    Child class ले पहिले hooks नभएको property मा hooks थप्न पनि सक्छ।
+    यो मूलतः hooks लाई methods माने जस्तै हो।
+   </simpara>
+   <example>
+    <title>Hook inheritance</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Point
+{
+    public int $x;
+    public int $y;
+}
+
+class PositivePoint extends Point
+{
+    public int $x {
+        set {
+            if ($value < 0) {
+                throw new \InvalidArgumentException('Too small');
+            }
+            $this->x = $value;
+        }
+    }
+}
+?>
+]]>
+    </programlisting>
+   </example>
+   <simpara>
+    प्रत्येक hook ले parent का implementations लाई एकअर्काबाट स्वतन्त्र रूपमा override गर्दछन्।
+    यदि child class ले hooks थप्यो भने, property मा set गरिएको कुनै पनि default value हट्छ, र त्यसलाई पुनः घोषणा गर्नुपर्ने हुन्छ।
+    यो hooks बिनाका properties मा inheritance ले काम गर्ने तरिकासँगै मिल्दोजुल्दो छ।
+   </simpara>
+  </sect3>
+  <sect3>
+   <title>Parent hooks access गर्ने तरिका</title>
+   <simpara>
+    Child class मा रहेको hook ले <code>parent::$prop</code> keyword र त्यसपछि चाहेको hook राखेर
+    parent class को property लाई access गर्न सक्छ।
+    उदाहरणका लागि, <code>parent::$propName::get()</code>।
+    यसलाई "parent class मा परिभाषित <varname>prop</varname> लाई access गर्नुहोस्,
+    र त्यसपछि त्यसको get operation चलाउनुहोस्" (वा अवस्था अनुसार set operation) भनेर बुझ्न सकिन्छ।
+   </simpara>
+   <simpara>
+    यदि यस तरिकाले access गरिएन भने, parent class को hook लाई बेवास्ता गरिन्छ।
+    यो व्यवहार सबै methods ले काम गर्ने तरिकासँग मिल्दोजुल्दो छ।
+    यदि parent class को आफ्नै storage छ भने, यसले त्यसलाई access गर्ने तरिका पनि प्रदान गर्छ।
+    यदि parent property मा कुनै hook छैन भने,
+    त्यसको default get/set व्यवहार प्रयोग गरिनेछ।
+    Hooks ले आफ्नै property मा रहेको आफ्नै parent बाहेक अरू कुनै hook लाई access गर्न पाउँदैनन्।
+   </simpara>
+   <simpara>
+    माथिको उदाहरणलाई निम्न अनुसार पुनः लेख्न सकिन्छ, जसले <literal>Point</literal> class लाई
+    भविष्यमा कुनै समस्या बिना नै आफ्नै <literal>set</literal> hook थप्न अनुमति दिनेछ
+    (अघिल्लो उदाहरणमा, parent class मा थपिएको hook लाई child मा बेवास्ता गरिने थियो)।
+   </simpara>
+   <example>
+    <title>Parent hook access (set)</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Point
+{
+    public int $x;
+    public int $y;
+}
+
+class PositivePoint extends Point
+{
+    public int $x {
+        set {
+            if ($value < 0) {
+                throw new \InvalidArgumentException('Too small');
+            }
+            parent::$x::set($value);
+        }
+    }
+}
+?>
+]]>
+    </programlisting>
+   </example>
+   <simpara>
+    Get hook मात्र override गर्ने उदाहरण यस्तो हुन सक्छ:
+   </simpara>
+   <example>
+    <title>Parent hook access (get)</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Strings
+{
+    public string $val;
+}
+
+class CaseFoldingStrings extends Strings
+{
+    public bool $uppercase = true;
+
+    public string $val {
+        get => $this->uppercase
+            ? strtoupper(parent::$val::get())
+            : strtolower(parent::$val::get());
+    }
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </sect3>
+ </sect2>
+ <sect2>
+  <title>Serialization</title>
+  <simpara>
+   PHP मा कुनै object लाई सार्वजनिक प्रयोगका लागि वा debugging उद्देश्यका लागि
+   serialize गर्ने विभिन्न तरिकाहरू छन्।
+   प्रयोगको अवस्था अनुसार hooks को व्यवहार फरक-फरक हुन्छ।
+   कतिपय अवस्थामा, सबै hooks लाई bypass गर्दै property को कच्चा (raw) backing value प्रयोग गरिन्छ।
+   अन्य अवस्थामा भने, सामान्य read/write कार्य जस्तै गरी property लाई hook "मार्फत"
+   read वा write गरिन्छ।
+  </simpara>
+  <simplelist>
+   <member><function>var_dump</function>: Raw value प्रयोग गर्छ</member>
+   <member><function>serialize</function>: Raw value प्रयोग गर्छ</member>
+   <member><function>unserialize</function>: Raw value प्रयोग गर्छ</member>
+   <member><link linkend="object.serialize">__serialize()</link>/<link linkend="object.unserialize">__unserialize()</link>: Custom logic, get/set hook प्रयोग गर्छ</member>
+   <member>Array casting: Raw value प्रयोग गर्छ</member>
+   <member><function>var_export</function>: get hook प्रयोग गर्छ</member>
+   <member><function>json_encode</function>: get hook प्रयोग गर्छ</member>
+   <member><interfacename>JsonSerializable</interfacename>: Custom logic, get hook प्रयोग गर्छ</member>
+   <member><function>get_object_vars</function>: get hook प्रयोग गर्छ</member>
+   <member><function>get_mangled_object_vars</function>: Raw value प्रयोग गर्छ</member>
+  </simplelist>
+ </sect2>
+</sect1>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

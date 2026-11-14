@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: dff848b17dafaabfb7662ffb5fecfcb04e3b771d Maintainer: prateekbhujel Status: ready -->
+ <sect1 xml:id="language.oop5.autoload" xmlns="http://docbook.org/ns/docbook">
+  <title>Autoloading Classes</title>
+  <para>
+   Object-oriented applications लेख्ने धेरैजसो developers ले प्रत्येक class परिभाषाका
+   लागि छुट्टै एक PHP source file बनाउने गर्छन्। प्रत्येक script को सुरुमा आवश्यक पर्ने
+   सबै includes को लामो सूची (प्रत्येक class का लागि एउटा) लेखिरहनुपर्ने बाध्यता
+   सबैभन्दा झन्झटिलो कुराहरू मध्ये एक हो।
+  </para>
+  <simpara>
+   <function>spl_autoload_register</function> function ले जतिसुकै सङ्ख्यामा
+   autoloaders register गर्छ, जसले गर्दा हाल परिभाषित नभएका classes र interfaces
+   लाई स्वतः load गर्न सम्भव हुन्छ। Autoloaders register गरेर, error आई fail हुनुअघि
+   नै PHP लाई उक्त class वा interface load गर्ने अन्तिम अवसर दिइन्छ।
+  </simpara>
+  <para>
+   जुनसुकै class जस्तै construct लाई पनि यही तरिकाले autoload गर्न सकिन्छ। यसमा
+   classes, interfaces, traits, र enumerations पर्दछन्।
+  </para>
+  <caution>
+   <simpara>
+    PHP 8.0.0 भन्दा पहिले, classes र interfaces लाई autoload गर्न
+    <function>__autoload</function> प्रयोग गर्न सम्भव थियो। यद्यपि, यो
+    <function>spl_autoload_register</function> को तुलनामा कम लचिलो विकल्प हो र
+    <function>__autoload</function> लाई PHP 7.2.0 देखि deprecated गरिएको छ, र
+    PHP 8.0.0 देखि हटाइएको छ।
+   </simpara>
+  </caution>
+  <note>
+   <para>
+    एकभन्दा बढी autoloaders register गर्न <function>spl_autoload_register</function>
+    लाई पटक-पटक call गर्न सकिन्छ। तर, कुनै autoload function बाट exception throw
+    गर्दा उक्त प्रक्रिया बीचमै अवरुद्ध हुन्छ र थप autoload functions लाई चल्न दिँदैन।
+    त्यसकारण, autoload function बाट exceptions throw नगर्न कडा रूपमा सुझाव दिइन्छ।
+   </para>
+  </note>
+  <para>
+   <example>
+    <title>Autoload उदाहरण</title>
+    <para>
+     यो उदाहरणले <literal>MyClass1</literal> र <literal>MyClass2</literal> classes
+     लाई क्रमशः <filename>MyClass1.php</filename> र <filename>MyClass2.php</filename>
+     files बाट load गर्ने प्रयास गर्छ।
+    </para>
+    <programlisting role="php" annotations="interactive">
+<![CDATA[
+<?php
+spl_autoload_register(function ($class_name) {
+    include $class_name . '.php';
+});
+
+$obj  = new MyClass1();
+$obj2 = new MyClass2(); 
+?>
+]]>
+    </programlisting>
+   </example>
+   <example>
+    <title>अर्को Autoload उदाहरण</title>
+    <para>
+     यो उदाहरणले <literal>ITest</literal> interface लाई load गर्ने प्रयास गर्छ।
+    </para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+spl_autoload_register(function ($name) {
+    var_dump($name);
+});
+
+class Foo implements ITest {
+}
+
+/*
+string(5) "ITest"
+
+Fatal error: Interface 'ITest' not found in ...
+*/
+?>
+]]>
+    </programlisting>
+   </example>
+   <example>
+    <title>Composer को autoloader प्रयोग गर्ने उदाहरण</title>
+    <simpara>
+     &link.composer; ले एउटा <literal>vendor/autoload.php</literal> फाइल सिर्जना गर्छ
+     जुन Composer द्वारा व्यवस्थापन गरिएका packages लाई स्वतः load गर्न सेटअप गरिएको
+     हुन्छ। यो फाइल include गरेर, कुनै अतिरिक्त काम बिना नै ती packages प्रयोग गर्न
+     सकिन्छ।
+    </simpara>
+    <programlisting role="php" annotations="interactive">
+<![CDATA[
+<?php
+require __DIR__ . '/vendor/autoload.php';
+
+$uuid = Ramsey\Uuid\Uuid::uuid7();
+
+echo "Generated new UUID -> ", $uuid->toString(), "\n";
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+
+  <simplesect role="seealso">
+   &reftitle.seealso;
+   <para>
+    <simplelist>
+     <member><function>unserialize</function></member>
+     <member><link linkend="ini.unserialize-callback-func">unserialize_callback_func</link></member>
+     <member><link linkend="ini.unserialize-max-depth">unserialize_max_depth</link></member>
+     <member><function>spl_autoload_register</function></member>
+     <member><function>spl_autoload</function></member>
+     <member><function>__autoload</function></member>
+    </simplelist>
+   </para>
+  </simplesect>
+
+ </sect1>
+ 
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

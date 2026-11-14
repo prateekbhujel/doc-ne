@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: dff848b17dafaabfb7662ffb5fecfcb04e3b771d Maintainer: prateekbhujel Status: ready -->
+<sect1 xml:id="language.oop5.paamayim-nekudotayim" xmlns="http://docbook.org/ns/docbook">
+ <title>Scope Resolution Operator (::)</title>
+
+ <para>
+  Scope Resolution Operator (जसलाई Paamayim Nekudotayim पनि भनिन्छ) वा सरल शब्दमा
+  double colon, एउटा token हो जसले कुनै class वा त्यसको कुनै parent class को
+  <link linkend="language.oop5.constants">constant</link>,
+  <link linkend="language.oop5.static">static</link> property,
+  वा <link linkend="language.oop5.static">static</link> method
+  लाई access गर्न अनुमति दिन्छ। यसबाहेक, static properties वा methods लाई
+  <link linkend="language.oop5.late-static-bindings">late static binding</link>
+  मार्फत override गर्न सकिन्छ।
+ </para>
+
+ <para>
+  Class परिभाषा बाहिरबाट यी items लाई सन्दर्भ गर्दा, class को नाम प्रयोग गर्नुहोस्।
+ </para>
+
+ <para>
+  Variable प्रयोग गरेर class लाई सन्दर्भ गर्न सकिन्छ।
+  उक्त variable को value कुनै keyword (जस्तै <literal>self</literal>,
+  <literal>parent</literal> र <literal>static</literal>) हुन सक्दैन।
+ </para>
+
+ <para>
+  Double-colon को नामकरणका लागि Paamayim Nekudotayim सुरुमा अनौठो छनोट जस्तो लाग्न
+  सक्छ। यद्यपि, Zend Engine 0.5 (जसले PHP 3 सञ्चालन गर्छ) लेख्दा, Zend टोलीले यसलाई
+  यही नाम दिने निर्णय गरेको थियो। हिब्रू भाषामा यसको अर्थ वास्तवमै double-colon नै
+  हुन्छ!
+ </para>
+
+ <example>
+  <title>Class परिभाषा बाहिरबाट :: प्रयोग गर्ने उदाहरण</title>
+  <programlisting role="php">
+<![CDATA[
+<?php
+class MyClass {
+    const CONST_VALUE = 'A constant value';
+}
+
+$classname = 'MyClass';
+echo $classname::CONST_VALUE;
+
+echo MyClass::CONST_VALUE;
+?>
+]]>
+  </programlisting>
+ </example>
+
+ <para>
+  Class परिभाषा भित्रबाट properties वा methods access गर्न तीन विशेष किवर्डहरू
+  <varname>self</varname>, <varname>parent</varname> र <varname>static</varname>
+  प्रयोग गरिन्छन्।
+ </para>
+
+ <example>
+  <title>Class परिभाषा भित्रबाट :: प्रयोग गर्ने उदाहरण</title>
+  <programlisting role="php">
+<![CDATA[
+<?php
+class MyClass {
+    const CONST_VALUE = 'A constant value';
+}
+
+class OtherClass extends MyClass
+{
+    public static $my_static = 'static var';
+
+    public static function doubleColon() {
+        echo parent::CONST_VALUE . "\n";
+        echo self::$my_static . "\n";
+    }
+}
+
+$classname = 'OtherClass';
+$classname::doubleColon();
+
+OtherClass::doubleColon();
+?>
+]]>
+  </programlisting>
+ </example>
+
+ <simpara>
+  जब कुनै extending class ले parent को method परिभाषालाई override गर्छ, तब PHP ले
+  parent को method लाई स्वतः call गर्दैन। Parent को method call गर्ने कि नगर्ने
+  भन्ने कुरा extended class मा भर पर्छ। यो नियम <link
+  linkend="language.oop5.decon">Constructors and Destructors</link>, <link
+  linkend="language.oop5.overloading">Overloading</link>, र <link
+  linkend="language.oop5.magic">Magic</link> method परिभाषाहरूमा पनि लागू हुन्छ।
+ </simpara>
+
+ <example>
+  <title>Parent को method call गर्ने उदाहरण</title>
+  <programlisting role="php">
+<![CDATA[
+<?php
+class MyClass
+{
+    protected function myFunc() {
+        echo "MyClass::myFunc()\n";
+    }
+}
+
+class OtherClass extends MyClass
+{
+    // Override parent's definition
+    public function myFunc()
+    {
+        // But still call the parent function
+        parent::myFunc();
+        echo "OtherClass::myFunc()\n";
+    }
+}
+
+$class = new OtherClass();
+$class->myFunc();
+?>
+]]>
+  </programlisting>
+ </example>
+ <para>
+  <link linkend="language.oop5.basic.class.this">Static call trickery का केही
+  उदाहरणहरू</link> पनि हेर्नुहोस्।
+ </para>
+
+</sect1>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
