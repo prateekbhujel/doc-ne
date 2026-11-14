@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 6b099f8dcc7a8f4a6863a6149d7cd97c7f43c470 Maintainer: prateekbhujel Status: ready -->
+<chapter xml:id="language.error-handling" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" annotations="interactive">
+ <title>Error Handling</title>
+ <simpara>
+  Errors जुनसुकै application को development र life cycle को एक सामान्य हिस्सा हुन्।
+  त्यसैले, PHP ले errors report गर्न र तिनलाई handle गर्न विभिन्न तरिकाहरू उपलब्ध गराउँछ।
+ </simpara>
+ <para>
+  PHP मा errors report गर्ने दुई मुख्य mechanisms छन्:
+  <itemizedlist>
+   <listitem>
+    <simpara>
+     <exceptionname>Throwable</exceptionname> errors, जुन <exceptionname>Error</exceptionname>
+     class hierarchy मार्फत <emphasis>programming</emphasis> errors र
+     <exceptionname>Exception</exceptionname> class hierarchy मार्फत <emphasis>recoverable</emphasis>
+     errors गरी थप दुई भागमा विभाजित हुन्छन्। यी errors लाई &throw; keyword बाट throw गर्न र
+     &catch; keyword बाट catch गर्न सकिन्छ।
+    </simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     Diagnostic errors, जसलाई विभिन्न
+     <link linkend="errorfunc.constants">severities</link> अनुसार वर्गीकरण गरिएको हुन्छ।
+    </simpara>
+   </listitem>
+  </itemizedlist>
+ </para>
+
+ <sect1 xml:id="language.error-handling.throwable">
+  <title><exceptionname>Throwable</exceptionname> errors</title>
+  <anchor xml:id="language.exceptions"/>
+  <simpara>
+   <exceptionname>Throwable</exceptionname> error भनेको instructions को सामान्य प्रवाहलाई रोक्ने एउटा
+   execution event हो। जब कुनै <exceptionname>Throwable</exceptionname> error &throw; गरिन्छ,
+   तब त्यो &catch; block बाट catch नहुँदासम्म वा global scope मा नपुग्दासम्म call stack क्रमशः
+   unwind हुँदै जान्छ। यस क्रममा बाटोमा भेटिने सबै &finally; blocks चल्छन्।
+   यदि <exceptionname>Throwable</exceptionname> error catch भएन र
+   <function>set_exception_handler</function> बाट exception handler सेट गरिएको छ भने त्यो handler मा
+   पठाइन्छ; अन्यथा, fatal error का साथ program समाप्त हुन्छ।
+  </simpara>
+  <simpara>
+   PHP code भित्रबाट <exceptionname>Throwable</exceptionname> error throw गर्नका लागि &throw; keyword प्रयोग गर्नुहोस्।
+  </simpara>
+  <tip>
+   <simpara>
+    <link linkend="intro.spl">Standard PHP Library (SPL)</link> ले विभिन्न
+    <link linkend="spl.exceptions">built-in exceptions</link> उपलब्ध गराउँछ।
+    साथै, <link linkend="language.error-handling.throwable.extending">Exception class लाई extend गरेर</link>
+    custom exceptions बनाउन पनि सकिन्छ।
+   </simpara>
+  </tip>
+  <simpara>
+   Error throw गर्न सक्ने code लाई &try; block भित्र राखेर PHP भित्रै
+   <exceptionname>Throwable</exceptionname> error लाई handle गर्न सकिन्छ।
+  </simpara>
+  <warning>
+   <simpara>
+    <exceptionname>Throwable</exceptionname> objects लाई clone गर्न सकिँदैन।
+    यस्तो object लाई <link linkend="language.oop5.cloning">clone</link> गर्ने प्रयास गर्दा यो message सहितको
+    <exceptionname>Error</exceptionname> throw हुन्छ:
+    <literal>Trying to clone an uncloneable object of class <replaceable>ClassName</replaceable></literal>।
+    कुनै subclass ले आफ्नै <link linkend="object.clone">__clone()</link> method घोषणा गरेको भए पनि यस्तो हुन्छ।
+    थप जानकारीका लागि <methodname>Exception::__clone</methodname> र
+    <methodname>Error::__clone</methodname> हेर्नुहोस्।
+   </simpara>
+  </warning>
+
+  <sect2 xml:id="language.error-handling.throwable.user">
+   <title>Global exception handler</title>
+   <simpara>
+    Catch नभएका जुनसुकै <exceptionname>Throwable</exceptionname> का लागि
+    <function>set_exception_handler</function> प्रयोग गरेर handler थप्न सकिन्छ।
+    यो पूरै code लाई &try;-&catch; block भित्र राख्नु जस्तै हो,
+    फरक यत्ति हो कि त्यसपछि execution पुनः सुरु हुँदैन:
+    handler बाट return भएपछि script समाप्त हुन्छ।
+   </simpara>
+  </sect2>
+
+  <sect2 xml:id="language.error-handling.throwable.extending">
+   <title>Exceptions extend गर्ने</title>
+   <simpara>
+    Built-in <exceptionname>Exception</exceptionname> class लाई extend गरेर
+    प्रयोगकर्ता-परिभाषित (user-defined) exception बनाउन सकिन्छ।
+   </simpara>
+   <simpara>
+    यदि कुनै class ले built-in <exceptionname>Exception</exceptionname> class लाई extend गर्छ र
+    <link linkend="language.oop5.decon">constructor</link> लाई पुनः परिभाषित (redefine) गर्छ भने,
+    सबै उपलब्ध data राम्ररी assign भएको सुनिश्चित गर्न <code>parent::__construct()</code> पनि call गर्न अत्यन्त सिफारिस गरिन्छ।
+    Object लाई string का रूपमा प्रयोग गर्दा custom output दिनका लागि
+    <link linkend="object.tostring">__toString()</link> method लाई override गर्न सकिन्छ।
+   </simpara>
+   <example>
+    <title><exceptionname>Exception</exceptionname> लाई extend गर्ने</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class CustomException extends Exception
+{
+    // Redefine the constructor so message isn't optional
+    public function __construct($message, $code = 0, ?Throwable $previous = null) {
+        // some code
+
+        // Ensure everything is assigned properly
+        parent::__construct($message, $code, $previous);
+    }
+
+    // Custom string representation of object
+    public function __toString() {
+        return __CLASS__ . ": [{$this->code}]: {$this->message}\n";
+    }
+
+    public function customFunction() {
+        echo "A custom function for this type of exception\n";
+    }
+}
+
+try {
+    throw new CustomException("Something happened", 5);
+} catch (CustomException $e) {
+    echo "Caught custom exception\n", $e;
+    $e->customFunction();
+}
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Caught custom exception
+CustomException: [5]: Something happened
+A custom function for this type of exception
+]]>
+    </screen>
+   </example>
+  </sect2>
+
+  <sect2 xml:id="language.error-handling.throwable.hierarchy">
+   <title><exceptionname>Throwable</exceptionname> hierarchy</title>
+
+   <itemizedlist>
+    <listitem>
+     <simpara><exceptionname>Throwable</exceptionname></simpara>
+     <itemizedlist>
+      <listitem>
+       <simpara><exceptionname>Error</exceptionname></simpara>
+       <itemizedlist>
+        <listitem>
+         <simpara><exceptionname>ArithmeticError</exceptionname></simpara>
+         <itemizedlist>
+          <listitem>
+           <simpara><exceptionname>DivisionByZeroError</exceptionname></simpara>
+          </listitem>
+         </itemizedlist>
+        </listitem>
+        <listitem>
+         <simpara><exceptionname>AssertionError</exceptionname></simpara>
+        </listitem>
+        <listitem>
+         <simpara><exceptionname>CompileError</exceptionname></simpara>
+         <itemizedlist>
+          <listitem>
+           <simpara><exceptionname>ParseError</exceptionname></simpara>
+          </listitem>
+         </itemizedlist>
+        </listitem>
+        <listitem>
+         <simpara><exceptionname>TypeError</exceptionname></simpara>
+         <itemizedlist>
+          <listitem>
+           <simpara><exceptionname>ArgumentCountError</exceptionname></simpara>
+          </listitem>
+         </itemizedlist>
+        </listitem>
+        <listitem>
+         <simpara><exceptionname>ValueError</exceptionname></simpara>
+        </listitem>
+        <listitem>
+         <simpara><exceptionname>UnhandledMatchError</exceptionname></simpara>
+        </listitem>
+        <listitem>
+         <simpara><exceptionname>FiberError</exceptionname></simpara>
+        </listitem>
+       </itemizedlist>
+      </listitem>
+      <listitem>
+       <simpara><exceptionname>Exception</exceptionname></simpara>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </itemizedlist>
+
+   <simpara>
+    <exceptionname>Exception</exceptionname> class का धेरै subclasses छन्, जसमा
+    <link linkend="spl.exceptions">SPL exceptions</link> र extensions द्वारा परिभाषित गरिएका exceptions पर्दछन्।
+   </simpara>
+  </sect2>
+ </sect1>
+
+ <sect1 xml:id="language.error-handling.diagnostic">
+  <title>Diagnostic errors</title>
+  <simpara>
+   Diagnostic errors, जसलाई परम्परागत errors पनि भनिन्छ, विभिन्न अवस्थाहरूको सङ्केत दिन प्रयोग गरिन्छन्,
+   र आवश्यकता अनुसार तिनलाई screen मा देखाउन र/वा log गर्न सकिन्छ।
+   पूर्वनिर्धारित (default) रूपमा PHP ले सबै diagnostic errors report गर्छ। (PHP 8.0.0 भन्दा पहिले,
+   <constant>E_NOTICE</constant> र <constant>E_DEPRECATED</constant> diagnostics हरू default रूपमा report गरिँदैनथे।)
+  </simpara>
+  <simpara>
+   <exceptionname>Throwable</exceptionname> errors को विपरीत, अधिकांश diagnostic errors ले
+   execution को सामान्य प्रवाहलाई अवरुद्ध <emphasis>गर्दैनन्</emphasis>।
+   <constant>E_ERROR</constant> जस्ता fatal diagnostics ले भने script लाई समाप्त गरिदिन्छन्।
+  </simpara>
+  <simpara>
+   कुन diagnostics report गर्ने र कुनलाई बेवास्ता (ignore) गर्ने भन्ने कुरा
+   <link linkend="ini.error-reporting"><parameter>error_reporting</parameter></link>
+   &php.ini; directive मार्फत, वा runtime मा <function>error_reporting</function> call गरेर नियन्त्रण गरिन्छ।
+   तपाईँको script चल्न सुरु हुनुअघि नै केही errors आउन सक्ने भएकाले यो configuration directive सेट गर्न कडा सिफारिस गरिन्छ।
+  </simpara>
+  <note>
+   <simpara>
+    Development environment मा, PHP ले देखाएका समस्याहरू थाहा पाउन र समाधान गर्न
+    <link linkend="ini.error-reporting"><parameter>error_reporting</parameter></link>
+    सधैँ <constant>E_ALL</constant> मा सेट गरिएको हुनुपर्छ।
+    Production मा, verbosity को स्तर घटाएर
+    <code>E_ALL &amp; ~E_NOTICE &amp; ~E_DEPRECATED</code> मा राख्न सकिन्छ, यद्यपि धेरै अवस्थामा
+    <constant>E_ALL</constant> नै उपयुक्त हुन्छ, किनकि यसले सम्भावित समस्याहरूको पूर्वसूचना दिन सक्छ।
+   </simpara>
+  </note>
+
+  <simpara>
+   Diagnostics लाई के गर्ने भन्ने कुरा थप दुईवटा &php.ini; directives मा निर्भर गर्छ।
+   <link linkend="ini.display-errors"><parameter>display_errors</parameter></link> ले
+   diagnostic लाई script को output को हिस्साका रूपमा देखाउने कि नदेखाउने भन्ने कुरा नियन्त्रण गर्छ।
+   Production environment मा यसलाई सधैँ disable राख्नुपर्छ, किनकि output मा
+   database passwords जस्ता गोप्य जानकारीहरू पर्न सक्छन्; तर development मा भने समस्याहरू तुरुन्तै देखिने भएकाले यसलाई enable राख्नु उपयोगी हुन्छ।
+  </simpara>
+
+  <simpara>
+   Errors देखाउनुका साथै, <link linkend="ini.log-errors"><parameter>log_errors</parameter></link>
+   directive enable गरिएको छ भने PHP ले diagnostics लाई log गर्न पनि सक्छ। यसले जुनसुकै diagnostic लाई
+   <link linkend="ini.error-log"><parameter>error_log</parameter></link> द्वारा तोकिएको file वा syslog मा log गर्छ।
+   Production environment मा यो अत्यन्त उपयोगी हुन सक्छ, किनकि diagnostics उत्पन्न हुनासाथ log हुन्छन् र पछि ती logs बाट reports तयार गर्न सकिन्छ।
+  </simpara>
+  <simpara>
+   <literal linkend="language.operators.errorcontrol">@</literal> operator प्रयोग गरेर व्यक्तिगत diagnostics लाई suppress गर्न सकिन्छ।
+  </simpara>
+
+  <warning>
+   <simpara>
+    PHP 8.0.0 भन्दा पहिले, PHP script को execution नै समाप्त गर्ने गम्भीर (critical) diagnostics लाई पनि suppress गर्न सम्भव थियो।
+   </simpara>
+  </warning>
+
+  <note>
+   <simpara>
+    PHP का विभिन्न versions बीचमा diagnostics थपिने वा हटाइने, तिनको severity परिवर्तन हुने,
+    वा <exceptionname>Throwable</exceptionname> errors मा स्तरोन्नति हुने हुन सक्छ।
+   </simpara>
+  </note>
+
+  <sect2 xml:id="language.error-handling.diagnostic.user">
+   <title>प्रयोगकर्ता-परिभाषित diagnostic handler</title>
+
+   <simpara>
+    यदि PHP को default diagnostic handling पर्याप्त छैन भने, <function>set_error_handler</function>
+    प्रयोग गरेर default diagnostic handler लाई custom handler ले प्रतिस्थापन (override) गर्न सकिन्छ।
+    <constant>E_ERROR</constant> र <constant>E_PARSE</constant> जस्ता केही diagnostics लाई यसरी handle गर्न सकिँदैन
+    (पूरा सूचीका लागि <function>set_error_handler</function> हेर्नुहोस्)।
+    अन्य diagnostics लाई विभिन्न तरिकाले handle गर्न सकिन्छ। उदाहरणका लागि, custom handler ले प्रयोगकर्तालाई एउटा error page देखाउन सक्छ र
+    log मा मात्र राख्नुको सट्टा email पठाउने जस्ता माध्यमबाट error को जानकारी अझ सिधै पठाउन सक्छ।
+   </simpara>
+
+   <simpara>
+    अर्को सामान्य प्रयोग भनेको <link linkend="class.errorexception">ErrorException</link> मार्फत
+    diagnostic errors लाई exceptions मा रूपान्तरण (elevate) गर्नु हो।
+   </simpara>
+   <example>
+    <title>Diagnostic errors लाई exceptions मा रूपान्तरण गर्ने</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function exceptions_error_handler($severity, $message, $filename, $lineno) {
+    if (error_reporting() & $severity) {
+        throw new ErrorException($message, 0, $severity, $filename, $lineno);
+    }
+}
+
+set_error_handler('exceptions_error_handler');
+]]>
+    </programlisting>
+    <note>
+     <simpara>
+      उक्त severity हालको reportable diagnostics को सूचीमा समावेश छ कि छैन भनी जाँच गर्नु महत्वपूर्ण हुन्छ; अन्यथा,
+      <literal linkend="language.operators.errorcontrol">@</literal> operator ले काम गर्ने छैन,
+      किनकि suppress गरिएको diagnostic का लागि पनि exception throw हुनेछ।
+      <!-- TODO: add an example? -->
+     </simpara>
+    </note>
+   </example>
+  </sect2>
+
+  <sect2 role="changelog">
+   &reftitle.changelog;
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>8.5.0</entry>
+       <entry>
+        Fatal errors (जस्तै अधिकतम execution time नाघ्दा आउने error) मा अब तिनको error message भित्र stack trace पनि समावेश हुन्छ।
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </sect2>
+ </sect1>
+</chapter>
