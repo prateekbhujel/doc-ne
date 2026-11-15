@@ -25,7 +25,7 @@
   <a href="https://creativecommons.org/licenses/by/3.0/"><img src="https://img.shields.io/badge/license-CC--BY%203.0-orange.svg" alt="License: CC-BY 3.0"></a>
 </p>
 
-यो आधिकारिक **PHP Manual** को नेपाली अनुवाद भण्डार हो, जसको लक्ष्य अपस्ट्रिम PHP Documentation Project अन्तर्गत [`php/doc-ne`](https://github.com/php/doc-ne) को रूपमा आधिकारिक मान्यता प्राप्त गरी [php.net](https://www.php.net) मा प्रकाशन हुनु हो।
+यो **PHP Manual** को सामग्री नेपाली भाषामा अनुवाद गर्ने समुदाय-आधारित परियोजना हो। यसको लक्ष्य PHP Documentation Project अन्तर्गत [`php/doc-ne`](https://github.com/php/doc-ne) को रूपमा आधिकारिक मान्यता प्राप्त गरी [php.net](https://www.php.net) मा प्रकाशन हुनु हो। हाल यो स्वतन्त्र अनुवाद परियोजना हो, आधिकारिक `php.net` नेपाली म्यानुअल होइन।
 
 - **भाषा (Language)**: नेपाली / Nepali (`ne`)
 - **प्रबन्धक (Maintainer)**: Pratik Bhujel ([@prateekbhujel](https://github.com/prateekbhujel))
@@ -39,19 +39,20 @@
 यस परियोजनाको मुख्य नीति **स्वाभाविक देवनागरी नेपाली र स्थापित अङ्ग्रेजी प्राविधिक शब्दावलीको सन्तुलित संयोजन** हो।
 - यान्त्रिक, शाब्दिक वा अनावश्यक संस्कृतनिष्ठ अनुवाद निषेध छ।
 - `PHP`, `variable`, `value`, `function`, `method`, `class`, `object`, `property`, `array`, `string`, `integer`, `float`, `boolean`, `null`, `type`, `interface`, `trait`, `namespace`, `exception`, `return`, `loop` जस्ता स्थापित प्राविधिक शब्दहरू आफ्नै अङ्ग्रेजी रूपमा राखिन्छन्।
+- मानक नेपाली व्याकरण (नेपाल प्रज्ञा-प्रतिष्ठान), चन्द्रबिन्दु (ँ), ह्रस्व-दीर्घ र स्वाभाविक वर्गीकरण (एउटा, दुईवटा) को पूर्ण पालना गरिन्छ।
 - विस्तृत नियमहरू [STYLE_GUIDE.md](STYLE_GUIDE.md) र शब्दावली वर्गीकरण [GLOSSARY.md](GLOSSARY.md) मा उल्लिखित छन्।
 
 ---
 
 ## अनुवाद स्थिति (Translation Status)
 
-सिकारु र कार्यरत विकासकर्ताहरूका लागि आवश्यक आधारभूत अध्यायहरू पूर्ण रूपमा अनुवाद गरी प्रमाणीकरण गरिएको छ:
-- **अनुवादित फाइलहरू**: ४६
-- **प्रकाशित तथा स्वीकृत फाइलहरू (`ready`)**: २१
-- **समीक्षाधीन मस्यौदा (`draft`)**: २५
-- **अनुमानित शब्द सङ्ख्या**: ~५२,१००+ शब्द
+१५ नोभेम्बर २०२६ मा जाँच गरिएको [STATUS.md](STATUS.md) अनुसार:
+- **अनुवादित XML फाइलहरू**: १७७
+- **`ready` चिह्न लगाइएका फाइलहरू**: १७७
+- **`draft` चिह्न लगाइएका फाइलहरू**: ०
+- **अनुमानित शब्द सङ्ख्या**: ~२,८८,६००+ शब्द
 
-अध्याय-वार विस्तृत प्रगति विवरण [STATUS.md](STATUS.md) मा हेर्न सकिन्छ।
+यी सङ्ख्याहरू अनुवाद भइसकेका फाइलहरूको समीक्षा-स्थिति हुन्; यसले सम्पूर्ण PHP Manual को अनुवाद पूरा भएको जनाउँदैन। अनुवाद नभएका पृष्ठहरूमा मूल अङ्ग्रेजी सामग्री स्वतः प्रयोग हुन्छ। अद्यावधिक फाइल-वार विवरण [STATUS.md](STATUS.md) मा छ।
 
 ---
 
@@ -67,6 +68,13 @@ php tools/validate.php
 php tools/build.php
 ```
 निर्माण सम्पन्न भएपछि `preview/php-chunked-xhtml/index.html` खोलेर स्थानीय preview हेर्न सकिन्छ।
+
+### ३. नेपाली अक्षरको प्रस्तुति (Typography)
+
+Preview ले PHP Manual को मूल PhD theme कायम राख्छ। नेपाली देवनागरी पाठ स्पष्ट र सहज रूपमा पढ्न सकियोस् भनेर अतिरिक्त [typography stylesheet](resources/styles/ne-typography.css) मा **Noto Sans Devanagari** (Google Fonts) लाई प्राथमिक वेब फन्टका रूपमा प्रयोग गरिएको छ, साथै **Annapurna SIL** र अन्य स्थानीय system fonts लाई fallback को रूपमा राखिएको छ।
+- English programming terms का लागि विद्यमान Latin font fallback कायम छ।
+- Code blocks को monospace styling बदलिएको छैन।
+- नेपाली मात्रा (ु, ू, ृ, े, ै, ं, ँ) नखप्टिऊन् भनेर उपयुक्त line-height (1.65) कायम गरिएको छ।
 
 ---
 

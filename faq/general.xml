@@ -80,7 +80,7 @@
      <para>
       तपाईँ PHP Bug Database मा गएर उक्त bug पहिले नै चिनिएको (known) bug होइन भन्ने यकिन गर्नुपर्छ।
       यदि तपाईँले त्यो database मा देख्नुभएन भने, bug report गर्न reporting form प्रयोग गर्नुहोस्।
-      कुनै mailing list मा सिधै email पठाउनुको साटो bug database प्रयोग गर्नु महत्वपूर्ण हुन्छ किनकि
+      कुनै mailing list मा सिधै email पठाउनुको साटो bug database प्रयोग गर्नु महत्त्वपूर्ण हुन्छ किनकि
       त्यसो गर्दा bug लाई एउटा tracking number दिइन्छ र पछि फर्किएर उक्त bug को status जाँच गर्न
       तपाईँलाई सजिलो हुन्छ। Bug database
       <link xlink:href="&url.php.bugs;">&url.php.bugs;</link> मा पाउन सकिन्छ।

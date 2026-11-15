@@ -289,7 +289,7 @@ set_error_handler('exceptions_error_handler');
     </programlisting>
     <note>
      <simpara>
-      उक्त severity हालको reportable diagnostics को सूचीमा समावेश छ कि छैन भनी जाँच गर्नु महत्वपूर्ण हुन्छ; अन्यथा,
+      उक्त severity हालको reportable diagnostics को सूचीमा समावेश छ कि छैन भनी जाँच गर्नु महत्त्वपूर्ण हुन्छ; अन्यथा,
       <literal linkend="language.operators.errorcontrol">@</literal> operator ले काम गर्ने छैन,
       किनकि suppress गरिएको diagnostic का लागि पनि exception throw हुनेछ।
       <!-- TODO: add an example? -->

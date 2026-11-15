@@ -4,10 +4,10 @@
  <title>Assignment Operators (तोक्ने अपरेटरहरू)</title>
  <titleabbrev>Assignment</titleabbrev>
  <simpara>
-  आधारभूत assignment operator "=" हो। तपाईंको पहिलो सोचाइ यसलाई "equal to" (बराबर) सम्झने हुन सक्छ। त्यसो नसम्झनुहोस्। यसको वास्तविक अर्थ बाँया तर्फको operand लाई दायाँ तर्फको expression को मानमा तोक्ने (अर्थात् "मान सेट गर्ने") हो।
+  आधारभूत assignment operator "=" हो। तपाईँको पहिलो सोचाइ यसलाई "equal to" (बराबर) सम्झने हुन सक्छ। त्यसो नसम्झनुहोस्। यसको वास्तविक अर्थ बाँया तर्फको operand लाई दायाँ तर्फको expression को मानमा तोक्ने (अर्थात् "मान सेट गर्ने") हो।
  </simpara>
  <para>
-  Assignment expression को मान भनेको तोकिएको मान (assigned value) नै हो। अर्थात्, "<literal>$a = 3</literal>" को मान ३ हुन्छ। यसले तपाईंलाई केही रोचक कामहरू गर्न अनुमति दिन्छ:
+  Assignment expression को मान भनेको तोकिएको मान (assigned value) नै हो। अर्थात्, "<literal>$a = 3</literal>" को मान ३ हुन्छ। यसले तपाईँलाई केही रोचक कामहरू गर्न अनुमति दिन्छ:
   <example>
    <title>Nested Assignments (खप्टिएका Assignments)</title>
    <programlisting role="php">
@@ -21,7 +21,7 @@ var_dump($a);
   </example>
  </para>
  <para>
-  आधारभूत assignment operator का अतिरिक्त, सबै <link linkend="language.operators">binary arithmetic</link>, array union र string operators का लागि "combined operators" छन् जसले तपाईंलाई कुनै expression मा मान प्रयोग गर्न र त्यसपछि त्यसको मानलाई सोही expression को नतिजामा तोक्न अनुमति दिन्छ। उदाहरणका लागि:
+  आधारभूत assignment operator का अतिरिक्त, सबै <link linkend="language.operators">binary arithmetic</link>, array union र string operators का लागि "combined operators" छन् जसले तपाईँलाई कुनै expression मा मान प्रयोग गर्न र त्यसपछि त्यसको मानलाई सोही expression को नतिजामा तोक्न अनुमति दिन्छ। उदाहरणका लागि:
   <example>
    <title>Combined Assignments (संयुक्त Assignments)</title>
    <programlisting role="php">

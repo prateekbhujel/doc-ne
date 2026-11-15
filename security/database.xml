@@ -4,36 +4,36 @@
    <title>Database सुरक्षा</title>
 
    <simpara>
-    आजभोलि वेबसाइटहरूले विभिन्न dynamic content प्रदान गर्न सक्ने हुनाले database जुनसुकै web-based application को एक अत्यन्त महत्वपूर्ण हिस्सा बनेको छ। Database मा निकै संवेदनशील वा गोप्य जानकारीहरू store हुन सक्ने भएकाले, तपाईंले आफ्नो database सुरक्षित राख्ने विषयमा गम्भीरतापूर्वक ध्यान दिनुपर्छ।
+    आजभोलि वेबसाइटहरूले विभिन्न dynamic content प्रदान गर्न सक्ने हुनाले database जुनसुकै web-based application को एक अत्यन्त महत्त्वपूर्ण हिस्सा बनेको छ। Database मा निकै संवेदनशील वा गोप्य जानकारीहरू store हुन सक्ने भएकाले, तपाईँले आफ्नो database सुरक्षित राख्ने विषयमा गम्भीरतापूर्वक ध्यान दिनुपर्छ।
    </simpara>
    <simpara>
     कुनै पनि जानकारी निकाल्न वा store गर्नका लागि पहिले database मा connect गर्नुपर्छ, मान्य (legitimate) query पठाउनुपर्छ, result प्राप्त गर्नुपर्छ र अन्त्यमा connection बन्द गर्नुपर्छ। आजकाल यस्तो कामका लागि सबैभन्दा बढी प्रयोग हुने query language भनेको Structured Query Language (SQL) हो। कुनै attacker ले <link
     linkend="security.database.sql-injection">SQL query मा कसरी छेडछाड (tamper) गर्न सक्छ</link> भन्ने कुरा अगाडि हेर्नुहोस्।
    </simpara>
    <simpara>
-    तपाईंले अनुमान गर्न सक्नुहुन्छ कि <acronym>PHP</acronym> ले एक्लै तपाईंको database लाई सुरक्षित राख्न सक्दैन। तलका खण्डहरूले <acronym>PHP</acronym> scripts भित्रबाट database कसरी access र manipulate गर्ने भन्ने आधारभूत कुराहरूको परिचय दिन्छन्।
+    तपाईँले अनुमान गर्न सक्नुहुन्छ कि <acronym>PHP</acronym> ले एक्लै तपाईँको database लाई सुरक्षित राख्न सक्दैन। तलका खण्डहरूले <acronym>PHP</acronym> scripts भित्रबाट database कसरी access र manipulate गर्ने भन्ने आधारभूत कुराहरूको परिचय दिन्छन्।
    </simpara>
    <simpara>
-    यो सरल नियम सधैँ याद राख्नुहोस्: defense in depth (तहगत सुरक्षा)। तपाईंले जति धेरै तहमा आफ्नो database को सुरक्षा बढाउने कदम चाल्नुहुन्छ, attacker ले त्यहाँ store गरिएको जानकारी बाहिर ल्याउन वा दुरुपयोग गर्न सफल हुने सम्भावना त्यति नै कम हुन्छ। Database schema र application को राम्रो design ले तपाईंको सबैभन्दा ठूला जोखिमहरूलाई समाधान गर्छ।
+    यो सरल नियम सधैँ याद राख्नुहोस्: defense in depth (तहगत सुरक्षा)। तपाईँले जति धेरै तहमा आफ्नो database को सुरक्षा बढाउने कदम चाल्नुहुन्छ, attacker ले त्यहाँ store गरिएको जानकारी बाहिर ल्याउन वा दुरुपयोग गर्न सफल हुने सम्भावना त्यति नै कम हुन्छ। Database schema र application को राम्रो design ले तपाईँको सबैभन्दा ठूला जोखिमहरूलाई समाधान गर्छ।
    </simpara>
 
    <sect1 xml:id="security.database.design">
     <title>Databases Design गर्ने</title>
      <simpara>
-      यदि तपाईं third-party बाट बनेको database प्रयोग गर्न चाहनुहुन्न भने, पहिलो कदम सधैँ database create गर्नु नै हुन्छ। जब database बनाइन्छ, तब बनाउने statement चलाउने व्यक्ति त्यसको owner बन्छ। सामान्यतया, त्यो database भित्रका objects माथि जे पनि गर्ने अधिकार केवल owner (वा superuser) सँग मात्र हुन्छ, र अरू users लाई त्यसको प्रयोग गर्न दिनका लागि आवश्यक privileges दिनुपर्छ।
+      यदि तपाईँ third-party बाट बनेको database प्रयोग गर्न चाहनुहुन्न भने, पहिलो कदम सधैँ database create गर्नु नै हुन्छ। जब database बनाइन्छ, तब बनाउने statement चलाउने व्यक्ति त्यसको owner बन्छ। सामान्यतया, त्यो database भित्रका objects माथि जे पनि गर्ने अधिकार केवल owner (वा superuser) सँग मात्र हुन्छ, र अरू users लाई त्यसको प्रयोग गर्न दिनका लागि आवश्यक privileges दिनुपर्छ।
      </simpara>
      <simpara>
       Applications ले कहिल्यै पनि database को owner वा superuser को रूपमा connect गर्नु हुँदैन, किनभने यस्ता users ले चाहेको जुनसुकै query चलाउन सक्छन् — जस्तै, schema परिवर्तन गर्ने (उदाहरणका लागि tables drop गर्ने) वा पूरा डेटा नै मेटाउने।
      </simpara>
      <simpara>
-      तपाईंले आफ्नो application को हरेक कामका लागि database objects मा निकै सीमित अधिकार भएका फरक-फरक database users बनाउन सक्नुहुन्छ। केवल चाहिने जति मात्र privileges दिनुहोस्, र एउटै user ले फरक-फरक use cases मा database सँग काम गर्न मिल्ने अवस्था नराख्नुहोस्। यसो गर्दा यदि कुनै intruder ले तपाईंको application को credentials प्रयोग गरेर database मा पहुँच पाइहाले पनि, उसले तपाईंको application ले गर्न सक्ने जति मात्र परिवर्तन गर्न सक्छ।
+      तपाईँले आफ्नो application को हरेक कामका लागि database objects मा निकै सीमित अधिकार भएका फरक-फरक database users बनाउन सक्नुहुन्छ। केवल चाहिने जति मात्र privileges दिनुहोस्, र एउटै user ले फरक-फरक use cases मा database सँग काम गर्न मिल्ने अवस्था नराख्नुहोस्। यसो गर्दा यदि कुनै intruder ले तपाईँको application को credentials प्रयोग गरेर database मा पहुँच पाइहाले पनि, उसले तपाईँको application ले गर्न सक्ने जति मात्र परिवर्तन गर्न सक्छ।
      </simpara>
    </sect1>
 
    <sect1 xml:id="security.database.connection">
     <title>Database मा Connect गर्ने</title>
     <simpara>
-     थप सुरक्षाका लागि client र server बीचको communication encrypt गर्न तपाईंले SSL मार्फत connection स्थापना गर्न सक्नुहुन्छ, वा clients र database server बीचको network connection encrypt गर्न ssh प्रयोग गर्न सक्नुहुन्छ। यीमध्ये कुनै एक प्रयोग गरिएमा, सम्भावित attacker लाई तपाईंको traffic निगरानी गर्न र database बारे जानकारी निकाल्न गाह्रो हुनेछ।
+     थप सुरक्षाका लागि client र server बीचको communication encrypt गर्न तपाईँले SSL मार्फत connection स्थापना गर्न सक्नुहुन्छ, वा clients र database server बीचको network connection encrypt गर्न ssh प्रयोग गर्न सक्नुहुन्छ। यीमध्ये कुनै एक प्रयोग गरिएमा, सम्भावित attacker लाई तपाईँको traffic निगरानी गर्न र database बारे जानकारी निकाल्न गाह्रो हुनेछ।
     </simpara>
     <!--simpara>
      If your database server has native SSL support, consider using <link
@@ -48,7 +48,7 @@
      SSL/SSH ले client बाट server तर्फ गइरहेको data लाई मात्र सुरक्षित राख्छ: SSL/SSH ले database भित्र सधैँका लागि store भएर बसेको data लाई सुरक्षित गर्दैन। SSL एउटा on-the-wire protocol (डेटा पठाउँदाको समयमा मात्र काम गर्ने protocol) हो।
     </simpara>
     <simpara>
-     यदि database आफैँले जानकारीलाई सुरक्षित गरेको छैन भने, एक पटक attacker ले (webserver लाई bypass गर्दै) सिधै तपाईंको database मा पहुँच पायो भने त्यहाँ store गरिएको संवेदनशील data बाहिरिन वा दुरुपयोग हुन सक्छ। Data लाई encrypt गर्नु यो जोखिम कम गर्ने राम्रो उपाय हो, तर निकै कम databases ले मात्र यस किसिमको data encryption सुविधा दिन्छन्।
+     यदि database आफैँले जानकारीलाई सुरक्षित गरेको छैन भने, एक पटक attacker ले (webserver लाई bypass गर्दै) सिधै तपाईँको database मा पहुँच पायो भने त्यहाँ store गरिएको संवेदनशील data बाहिरिन वा दुरुपयोग हुन सक्छ। Data लाई encrypt गर्नु यो जोखिम कम गर्ने राम्रो उपाय हो, तर निकै कम databases ले मात्र यस किसिमको data encryption सुविधा दिन्छन्।
     </simpara>
     <simpara>
      यो समस्या समाधान गर्ने सबैभन्दा सजिलो उपाय भनेको पहिले आफ्नै encryption package बनाउनु र त्यसपछि आफ्नो <acronym>PHP</acronym> scripts भित्रबाट त्यसलाई प्रयोग गर्नु हो। <acronym>PHP</acronym> ले यसमा <link
@@ -143,8 +143,8 @@ insert into pg_shadow(usename,usesysid,usesuper,usecatupd,passwd)
      </para>
     </note>
     <para>
-     Passwords हात पार्ने एउटा सम्भावित तरिका तपाईंको search result pages लाई छल्नु (circumvent गर्नु) हो। Attacker ले केवल SQL statements मा प्रयोग गरिएका तर राम्ररी handle नगरिएका कुनै submitted variables छन् कि छैनन् भनेर हेरे पुग्छ। यस्ता filters प्रायः अघिल्लो form मा <literal>SELECT</literal> statements का <literal>WHERE, ORDER BY,
-     LIMIT</literal> र <literal>OFFSET</literal> clauses लाई आफूअनुकूल मिलाउन सेट गरिएका हुन्छन्। यदि तपाईंको database ले <literal>UNION</literal> construct समर्थन गर्छ भने, attacker ले जुनसुकै table बाट passwords को सूची निकाल्न मूल query को पछाडि अर्को पूरा query नै थप्ने प्रयास गर्न सक्छ। वास्तविक passwords को सट्टा तिनका सुरक्षित hashes मात्र store गर्न कडा सिफारिस गरिन्छ।
+     Passwords हात पार्ने एउटा सम्भावित तरिका तपाईँको search result pages लाई छल्नु (circumvent गर्नु) हो। Attacker ले केवल SQL statements मा प्रयोग गरिएका तर राम्ररी handle नगरिएका कुनै submitted variables छन् कि छैनन् भनेर हेरे पुग्छ। यस्ता filters प्रायः अघिल्लो form मा <literal>SELECT</literal> statements का <literal>WHERE, ORDER BY,
+     LIMIT</literal> र <literal>OFFSET</literal> clauses लाई आफूअनुकूल मिलाउन सेट गरिएका हुन्छन्। यदि तपाईँको database ले <literal>UNION</literal> construct समर्थन गर्छ भने, attacker ले जुनसुकै table बाट passwords को सूची निकाल्न मूल query को पछाडि अर्को पूरा query नै थप्ने प्रयास गर्न सक्छ। वास्तविक passwords को सट्टा तिनका सुरक्षित hashes मात्र store गर्न कडा सिफारिस गरिन्छ।
      <example>
       <title>
        Articles को सूची निकाल्ने ... अनि केही passwords पनि (जुनसुकै database server)
@@ -207,7 +207,7 @@ $query = "UPDATE usertable SET pwd='hehehe', trusted=100, admin='yes' WHERE
      </informalexample>
     </para>
     <simpara>
-     सफल आक्रमण गर्नका लागि attacker सँग database संरचना (architecture) बारे कम्तीमा केही जानकारी हुनैपर्छ भन्ने कुरा स्पष्ट भए पनि, यस्तो जानकारी पत्ता लगाउन प्रायः निकै सजिलो हुन्छ। उदाहरणका लागि, code कुनै open-source software को हिस्सा भएर सार्वजनिक रूपमा उपलब्ध हुन सक्छ। यो जानकारी closed-source code बाट पनि — चाहे त्यो encode, obfuscate वा compile गरिएको नै किन नहोस् — र तपाईंको आफ्नै code ले देखाउने error messages मार्फत पनि बाहिरिन सक्छ। अन्य तरिकाहरूमा सामान्यतया प्रयोग हुने table र column नामहरू अनुमान गर्नु पर्छ। जस्तै, 'id', 'username', र 'password' जस्ता column नामहरू भएको 'users' table प्रयोग गर्ने login form।
+     सफल आक्रमण गर्नका लागि attacker सँग database संरचना (architecture) बारे कम्तीमा केही जानकारी हुनैपर्छ भन्ने कुरा स्पष्ट भए पनि, यस्तो जानकारी पत्ता लगाउन प्रायः निकै सजिलो हुन्छ। उदाहरणका लागि, code कुनै open-source software को हिस्सा भएर सार्वजनिक रूपमा उपलब्ध हुन सक्छ। यो जानकारी closed-source code बाट पनि — चाहे त्यो encode, obfuscate वा compile गरिएको नै किन नहोस् — र तपाईँको आफ्नै code ले देखाउने error messages मार्फत पनि बाहिरिन सक्छ। अन्य तरिकाहरूमा सामान्यतया प्रयोग हुने table र column नामहरू अनुमान गर्नु पर्छ। जस्तै, 'id', 'username', र 'password' जस्ता column नामहरू भएको 'users' table प्रयोग गर्ने login form।
     </simpara>
     <para>
      <example>
@@ -255,7 +255,7 @@ $result = mssql_query($query);
     </note>
     <note>
      <para>
-      माथिका केही उदाहरणहरू कुनै निश्चित database server सँग सम्बन्धित छन्, तर यसको मतलब अन्य उत्पादनहरू विरुद्ध यस्तै आक्रमण असम्भव छ भन्ने होइन। तपाईंको database server पनि अन्य तरिकाबाट यस्तै जोखिममा हुन सक्छ।
+      माथिका केही उदाहरणहरू कुनै निश्चित database server सँग सम्बन्धित छन्, तर यसको मतलब अन्य उत्पादनहरू विरुद्ध यस्तै आक्रमण असम्भव छ भन्ने होइन। तपाईँको database server पनि अन्य तरिकाबाट यस्तै जोखिममा हुन सक्छ।
      </para>
     </note>
     <para>
@@ -353,7 +353,7 @@ $stmt->execute(["%{$productId}%"]);
      </para>
 
      <simpara>
-      यिनका अतिरिक्त, तपाईंले आफ्नो script भित्र वा database आफैँले समर्थन गर्छ भने database मार्फत नै queries log गरेर पनि फाइदा लिन सक्नुहुन्छ। स्पष्ट रूपमा, logging ले कुनै हानिकारक प्रयासलाई रोक्न त सक्दैन, तर कुन application मा कमजोरी प्रयोग गरी आक्रमण भयो भनेर पछि पत्ता लगाउन (trace back गर्न) यो निकै उपयोगी हुन सक्छ। Log आफैँमा होइन, त्यसमा भएको जानकारीका कारण उपयोगी हुन्छ। सामान्यतया थोरैभन्दा धेरै विवरण राख्नु नै राम्रो हुन्छ।
+      यिनका अतिरिक्त, तपाईँले आफ्नो script भित्र वा database आफैँले समर्थन गर्छ भने database मार्फत नै queries log गरेर पनि फाइदा लिन सक्नुहुन्छ। स्पष्ट रूपमा, logging ले कुनै हानिकारक प्रयासलाई रोक्न त सक्दैन, तर कुन application मा कमजोरी प्रयोग गरी आक्रमण भयो भनेर पछि पत्ता लगाउन (trace back गर्न) यो निकै उपयोगी हुन सक्छ। Log आफैँमा होइन, त्यसमा भएको जानकारीका कारण उपयोगी हुन्छ। सामान्यतया थोरैभन्दा धेरै विवरण राख्नु नै राम्रो हुन्छ।
      </simpara>
     </sect2>
    </sect1>

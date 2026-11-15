@@ -3,7 +3,7 @@
  <chapter xml:id="language.expressions" xmlns="http://docbook.org/ns/docbook" annotations="interactive">
    <title>Expressions (अभिव्यक्तिहरू)</title>
    <simpara>
-    Expressions हरू PHP का सबैभन्दा महत्वपूर्ण निर्माण खण्ड (building blocks) हुन्। PHP मा तपाईँले लेख्ने प्रायः सबै कुरा expression नै हो। Expression लाई सबैभन्दा सरल र सटीक रूपमा परिभाषित गर्दा: "कुनै पनि कुरा जसको एउटा value (मान) हुन्छ, त्यो expression हो"।
+    Expressions हरू PHP का सबैभन्दा महत्त्वपूर्ण निर्माण खण्ड (building blocks) हुन्। PHP मा तपाईँले लेख्ने प्रायः सबै कुरा expression नै हो। Expression लाई सबैभन्दा सरल र सटीक रूपमा परिभाषित गर्दा: "कुनै पनि कुरा जसको एउटा value (मान) हुन्छ, त्यो expression हो"।
    </simpara>
    <simpara>
     Expressions को सबैभन्दा आधारभूत रूप constants र variables हुन्। जब तपाईँ <code>$a = 5</code> लेख्नुहुन्छ, तपाईँले <varname>$a</varname> भित्र <code>5</code> assign गरिरहनुभएको हुन्छ। स्पष्ट रूपमा <code>5</code> को मान ५ हो, अर्थात् <code>5</code> एउटा ५ मान भएको expression हो (यस अवस्थामा <code>5</code> एउटा integer constant हो)।

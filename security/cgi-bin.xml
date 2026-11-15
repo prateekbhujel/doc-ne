@@ -50,9 +50,9 @@
     <title>अवस्था १: public files मात्र serve गर्दा</title>
 
     <simpara>
-     यदि तपाईंको server मा password वा IP मा आधारित access control द्वारा सुरक्षित गरिनुपर्ने कुनै content छैन भने, यी configuration options आवश्यक पर्दैनन्। यदि तपाईंको web server ले redirects गर्न दिँदैन, वा request सुरक्षित रूपमा redirect भएर आएको हो भनी PHP binary लाई जानकारी दिने कुनै उपाय server सँग छैन भने, तपाईंले
+     यदि तपाईँको server मा password वा IP मा आधारित access control द्वारा सुरक्षित गरिनुपर्ने कुनै content छैन भने, यी configuration options आवश्यक पर्दैनन्। यदि तपाईँको web server ले redirects गर्न दिँदैन, वा request सुरक्षित रूपमा redirect भएर आएको हो भनी PHP binary लाई जानकारी दिने कुनै उपाय server सँग छैन भने, तपाईँले
      <link linkend="ini.cgi.force-redirect">cgi.force_redirect</link>
-     ini directive सक्षम (enable) गर्न सक्नुहुन्छ। तैपनि, तपाईंको PHP scripts कुनै एउटा निश्चित तरिकाबाट मात्र call गरिने कुरामा निर्भर नरहेको सुनिश्चित गर्नुपर्छ — न त सिधै <filename
+     ini directive सक्षम (enable) गर्न सक्नुहुन्छ। तैपनि, तपाईँको PHP scripts कुनै एउटा निश्चित तरिकाबाट मात्र call गरिने कुरामा निर्भर नरहेको सुनिश्चित गर्नुपर्छ — न त सिधै <filename
      role="php">http://my.host/cgi-bin/php/dir/script.php</filename> बाट, न त redirection मार्फत <filename
      role="php">http://my.host/dir/script.php</filename> बाट।
     </simpara>
@@ -80,7 +80,7 @@ AddHandler php-script .php
     </programlisting>
     <simpara>
      यो option Apache web server सँग मात्र test गरिएको छ, र redirect गरिएका requests मा Apache ले गैर-मानक (non-standard) CGI environment variable
-     <envar>REDIRECT_STATUS</envar> सेट गर्ने कुरामा निर्भर रहन्छ। यदि तपाईंको web server ले request सिधा आएको हो कि redirect भएर आएको हो भनी छुट्याउने कुनै तरिका समर्थन गर्दैन भने, तपाईंले यो option प्रयोग गर्न सक्नुहुन्न र यहाँ उल्लेख गरिएका CGI version चलाउने अन्य तरिकाहरूमध्ये कुनै एक अपनाउनुपर्छ।
+     <envar>REDIRECT_STATUS</envar> सेट गर्ने कुरामा निर्भर रहन्छ। यदि तपाईँको web server ले request सिधा आएको हो कि redirect भएर आएको हो भनी छुट्याउने कुनै तरिका समर्थन गर्दैन भने, तपाईँले यो option प्रयोग गर्न सक्नुहुन्न र यहाँ उल्लेख गरिएका CGI version चलाउने अन्य तरिकाहरूमध्ये कुनै एक अपनाउनुपर्छ।
     </simpara>
    </sect1>
 
@@ -93,9 +93,9 @@ AddHandler php-script .php
      साथै, अघिल्लो खण्डमा बताइए जस्तै requests redirect गरिएका हुन् भनी सुनिश्चित गर्ने तरिका उपलब्ध छैन भने, web document root भन्दा फरक script <link linkend="ini.doc-root">doc_root</link> सेट अप गर्नु आवश्यक हुन्छ।
     </simpara>
     <simpara>
-     तपाईंले <link linkend="configuration.file">configuration file</link> मा <link linkend="ini.doc-root">doc_root</link> configuration directive मार्फत PHP script document root सेट गर्न सक्नुहुन्छ, वा
+     तपाईँले <link linkend="configuration.file">configuration file</link> मा <link linkend="ini.doc-root">doc_root</link> configuration directive मार्फत PHP script document root सेट गर्न सक्नुहुन्छ, वा
      <envar>PHP_DOCUMENT_ROOT</envar> environment variable सेट गर्न सक्नुहुन्छ। यदि यो सेट गरिएको छ भने, PHP को <acronym>CGI</acronym> version ले खोल्ने file को नाम सधैँ यही
-     <parameter>doc_root</parameter> र request मा आएको path जानकारी जोडेर बनाउनेछ, जसले गर्दा यो directory बाहिरको कुनै पनि script execute हुँदैन भन्ने कुरामा तपाईं ढुक्क हुन सक्नुहुन्छ (तल उल्लेखित <parameter>user_dir</parameter> बाहेक)।
+     <parameter>doc_root</parameter> र request मा आएको path जानकारी जोडेर बनाउनेछ, जसले गर्दा यो directory बाहिरको कुनै पनि script execute हुँदैन भन्ने कुरामा तपाईँ ढुक्क हुन सक्नुहुन्छ (तल उल्लेखित <parameter>user_dir</parameter> बाहेक)।
     </simpara>
     <simpara>
      यहाँ प्रयोग गर्न सकिने अर्को option <link
@@ -112,7 +112,7 @@ AddHandler php-script .php
      <filename>/home/user/public_php/doc.php</filename> हुन्छ।
     </simpara>
     <simpara>
-     <parameter>user_dir</parameter> expansion <parameter>doc_root</parameter> setting को परवाह नगरी हुने भएकाले, तपाईंले document root र user directory access लाई छुट्टाछुट्टै नियन्त्रण गर्न सक्नुहुन्छ।
+     <parameter>user_dir</parameter> expansion <parameter>doc_root</parameter> setting को परवाह नगरी हुने भएकाले, तपाईँले document root र user directory access लाई छुट्टाछुट्टै नियन्त्रण गर्न सक्नुहुन्छ।
     </simpara>
    </sect1>
 
@@ -120,7 +120,7 @@ AddHandler php-script .php
     <title>अवस्था ४: Web tree भन्दा बाहिर PHP parser राख्दा</title>
     <para>
      निकै सुरक्षित विकल्प भनेको PHP parser binary लाई files को web tree भन्दा बाहिर कतै राख्नु हो — उदाहरणका लागि <filename
-     role="dir">/usr/local/bin</filename> भित्र। यो विकल्पको एकमात्र वास्तविक बेफाइदा के हो भने, अब तपाईंले PHP tags भएका जुनसुकै file को पहिलो लाइनमा यस्तो लाइन राख्नुपर्ने हुन्छ:
+     role="dir">/usr/local/bin</filename> भित्र। यो विकल्पको एकमात्र वास्तविक बेफाइदा के हो भने, अब तपाईँले PHP tags भएका जुनसुकै file को पहिलो लाइनमा यस्तो लाइन राख्नुपर्ने हुन्छ:
      <informalexample>
       <programlisting>
 <![CDATA[
@@ -128,7 +128,7 @@ AddHandler php-script .php
 ]]>
       </programlisting>
      </informalexample>
-     साथै तपाईंले त्यो file लाई executable पनि बनाउनुपर्ने हुन्छ। अर्थात्, Perl वा sh वा आफूलाई सुरु गर्न <literal>#!</literal> shell-escape mechanism प्रयोग गर्ने अन्य सामान्य scripting language मा लेखिएको कुनै पनि CGI script लाई जस्तै व्यवहार गर्नुपर्छ।
+     साथै तपाईँले त्यो file लाई executable पनि बनाउनुपर्ने हुन्छ। अर्थात्, Perl वा sh वा आफूलाई सुरु गर्न <literal>#!</literal> shell-escape mechanism प्रयोग गर्ने अन्य सामान्य scripting language मा लेखिएको कुनै पनि CGI script लाई जस्तै व्यवहार गर्नुपर्छ।
     </para>
     <para>
      यो setup मा PHP ले <envar>PATH_INFO</envar> र

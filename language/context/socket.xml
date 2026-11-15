@@ -60,7 +60,7 @@
       <note>
        <para>
         विशेष गरी <literal>[::]</literal> मा पहिले नै binding भइरहेको अवस्थामा
-        IPv4 addresses मा छुट्टै listen गर्न खोज्दा यो महत्वपूर्ण हुन्छ।
+        IPv4 addresses मा छुट्टै listen गर्न खोज्दा यो महत्त्वपूर्ण हुन्छ।
        </para>
        <para>
         यो <function>stream_socket_server</function> मा मात्र लागू हुन्छ।

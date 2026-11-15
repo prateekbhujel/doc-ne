@@ -211,7 +211,7 @@ var_dump($unset_array);
   
   <para>
    PHP ले धेरै संख्यामा <link linkend="reserved.variables">predefined variables</link> प्रदान गर्दछ।
-   यसका साथै PHP ले web server (लागू हुने भएमा), वातावरण (environment), र प्रयोगकर्ताको input बाट variable हरू समावेश भएका predefined array हरूको अतिरिक्त सेट पनि उपलब्ध गराउँछ। यी array हरू हरेक scope मा स्वतः उपलब्ध हुन्छन्। यसै कारणले गर्दा, यिनीहरूलाई प्रायः "superglobals" भनिन्छ। (प्रयोगकर्ता आफैंले superglobals define गर्ने संयन्त्र PHP मा छैन।) थप विवरणका लागि <link linkend="language.variables.superglobals">superglobals को सूची</link> हेर्नुहोस्।
+   यसका साथै PHP ले web server (लागू हुने भएमा), वातावरण (environment), र प्रयोगकर्ताको input बाट variable हरू समावेश भएका predefined array हरूको अतिरिक्त सेट पनि उपलब्ध गराउँछ। यी array हरू हरेक scope मा स्वतः उपलब्ध हुन्छन्। यसै कारणले गर्दा, यिनीहरूलाई प्रायः "superglobals" भनिन्छ। (प्रयोगकर्ता आफैँले superglobals define गर्ने संयन्त्र PHP मा छैन।) थप विवरणका लागि <link linkend="language.variables.superglobals">superglobals को सूची</link> हेर्नुहोस्।
   </para>
 
   <note>
@@ -830,7 +830,7 @@ echo $_REQUEST['username'];
 
    <simpara>
     PHP ले form variables को सन्दर्भमा array हरूलाई पनि बुझ्दछ (<link linkend="faq.html">सम्बन्धित FAQ</link> हेर्नुहोस्)।
-    उदाहरणका लागि, सम्बन्धित variable हरूलाई समूहबद्ध गर्न सकिन्छ, वा multiple select input बाट value हरू प्राप्त गर्न यो सुविधा प्रयोग गर्न सकिन्छ। उदाहरणका लागि, एउटा form लाई आफ्नै script मा post गरौं र submission पछि data प्रदर्शन गरौं:
+    उदाहरणका लागि, सम्बन्धित variable हरूलाई समूहबद्ध गर्न सकिन्छ, वा multiple select input बाट value हरू प्राप्त गर्न यो सुविधा प्रयोग गर्न सकिन्छ। उदाहरणका लागि, एउटा form लाई आफ्नै script मा post गरौं र submission पछि data प्रदर्शन गरौँ:
    </simpara>
 
    <para>

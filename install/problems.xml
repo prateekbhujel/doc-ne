@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 8a4f1c0069f2f5ad08dfd5dfbd8ddc6a4107f110 Maintainer: prateekbhujel Status: ready -->
+
+  <chapter xml:id="install.problems" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+   <title>Problems? (समस्याहरू?)</title>
+
+   <sect1 xml:id="install.problems.faq">
+    <title>FAQ पढ्नुहोस् (Read the FAQ)</title>
+    <simpara>
+     केही समस्याहरू अन्यभन्दा बढी सामान्य हुन्छन्। सबैभन्दा सामान्य समस्याहरू यस म्यानुअलको भागको रूपमा रहेको <link linkend="faq">PHP FAQ</link> मा सूचीबद्ध छन्।
+    </simpara>
+   </sect1>
+
+   <sect1 xml:id="install.problems.support">
+    <title>अन्य समस्याहरू (Other problems)</title>
+
+    <simpara>
+     यदि तपाईँ अझै पनि अड्कनुभएको छ भने, PHP स्थापना मेलिङ लिस्टमा कसैले तपाईँलाई मद्दत गर्न सक्छ। पहिले तपाईँले सङ्ग्रह (archive) जाँच गर्नुपर्छ, किनकि तपाईँको जस्तै समस्या भएको कसैलाई पहिले नै कसैले जवाफ दिइसकेको हुन सक्छ। सङ्ग्रहहरू <link xlink:href="&url.php.support;">&url.php.support;</link> मा रहेको support पृष्ठबाट उपलब्ध छन्। PHP installation mailing list मा subscribe गर्न, <link xlink:href="mailto:&email.php.install.subscribe;">&email.php.install.subscribe;</link> मा एउटा खाली इमेल पठाउनुहोस्। मेलिङ लिस्टको ठेगाना <link xlink:href="mailto:&email.php.install;">&email.php.install;</link> हो।
+    </simpara>
+    <simpara>
+     यदि तपाईँ मेलिङ लिस्टमा मद्दत प्राप्त गर्न चाहनुहुन्छ भने, कृपया स्पष्ट हुनुहोस् र आफ्नो वातावरण सम्बन्धी आवश्यक विवरणहरू (कुन operating system, कुन PHP संस्करण, कुन web server, तपाईँले PHP लाई CGI वा server module का रूपमा चलाइरहनुभएको छ कि छैन, आदि), र प्राथमिकताका साथ अरूले तपाईँको समस्या पुनरुत्पादन र परीक्षण गर्न सक्ने गरी पर्याप्त कोड प्रदान गर्नुहोस्।
+    </simpara>
+   </sect1>
+
+   <sect1 xml:id="install.problems.bugs">
+    <title>Bug reports (बग रिपोर्टहरू)</title>
+    <simpara>
+     यदि तपाईँलाई लाग्छ कि तपाईँले PHP मा कुनै bug फेला पार्नुभएको छ भने, कृपया यसलाई रिपोर्ट गर्नुहोस्। PHP developers लाई सम्भवतः यसको बारेमा थाहा नहुन सक्छ, र तपाईँले रिपोर्ट नगरेसम्म, यो ठीक हुने सम्भावना निकै कम हुन्छ। तपाईँले <link xlink:href="&url.php.bugs;">&url.php.bugs;</link> मा रहेको bug-tracking प्रणाली प्रयोग गरेर bugs रिपोर्ट गर्न सक्नुहुन्छ। कृपया mailing lists वा व्यक्तिगत पत्रहरूमा bug reports नपठाउनुहोस्। Bug प्रणाली feature requests पेश गर्नका लागि पनि उपयुक्त छ।
+    </simpara>
+    <simpara>
+     कुनै पनि bug reports पेश गर्नुअघि <link xlink:href="&url.php.bugs.howtoreport;">How to report a bug</link> कागजात पढ्नुहोस्!
+    </simpara>
+   </sect1>
+  </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

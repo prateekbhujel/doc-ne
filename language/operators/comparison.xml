@@ -5,7 +5,7 @@
  <titleabbrev>Comparison</titleabbrev>
  <simpara>
   Comparison operators (तुलना अपरेटरहरू) ले तिनीहरूको नामले सङ्केत गरे झैँ दुईवटा मानहरू (values) बीच तुलना गर्न अनुमति दिन्छन्।
-  विभिन्न प्रकारका type-सम्बन्धित तुलनाका उदाहरणहरू हेर्न तपाईं
+  विभिन्न प्रकारका type-सम्बन्धित तुलनाका उदाहरणहरू हेर्न तपाईँ
   <link linkend="types.comparisons">type comparison tables</link> पनि हेर्न सक्नुहुन्छ।
  </simpara>
  <table>
@@ -299,7 +299,7 @@ function standard_array_compare($op1, $op2)
   <title>Floating point numbers को तुलना</title>
 
   <para>
-   <type>float</type>s आन्तरिक रूपमा प्रतिनिधित्व हुने तरिकाको कारणले, तपाईंले बराबरीका लागि दुईवटा <type>float</type>s परीक्षण गर्नु हुँदैन।
+   <type>float</type>s आन्तरिक रूपमा प्रतिनिधित्व हुने तरिकाको कारणले, तपाईँले बराबरीका लागि दुईवटा <type>float</type>s परीक्षण गर्नु हुँदैन।
   </para>
 
   <para>
@@ -378,7 +378,7 @@ if (empty($_POST['action'])) {
   </para>
   <note>
    <simpara>
-    कृपया ध्यान दिनुहोस् कि ternary operator एक expression हो, र यो कुनै variable मा होइन, बरु expression को नतिजामा मूल्याङ्कन हुन्छ। यदि तपाईं reference द्वारा variable फर्काउन चाहनुहुन्छ भने यो जान्न महत्त्वपूर्ण छ। त्यसैले reference द्वारा फर्काउने function भित्र <literal>return $var == 42 ? $a : $b;</literal> statement ले काम गर्दैन र चेतावनी (warning) जारी गरिन्छ।
+    कृपया ध्यान दिनुहोस् कि ternary operator एक expression हो, र यो कुनै variable मा होइन, बरु expression को नतिजामा मूल्याङ्कन हुन्छ। यदि तपाईँ reference द्वारा variable फर्काउन चाहनुहुन्छ भने यो जान्न महत्त्वपूर्ण छ। त्यसैले reference द्वारा फर्काउने function भित्र <literal>return $var == 42 ? $a : $b;</literal> statement ले काम गर्दैन र चेतावनी (warning) जारी गरिन्छ।
    </simpara>
   </note>
   <note>
@@ -461,7 +461,7 @@ if (isset($_POST['action'])) {
   </para>
   <note>
    <simpara>
-    कृपया ध्यान दिनुहोस् कि null coalescing operator एक expression हो, र यो कुनै variable मा होइन, बरु expression को नतिजामा मूल्याङ्कन हुन्छ। यदि तपाईं reference द्वारा variable फर्काउन चाहनुहुन्छ भने यो जान्न महत्त्वपूर्ण छ। त्यसैले reference द्वारा फर्काउने function भित्र <literal>return $foo ?? $bar;</literal> statement ले काम गर्दैन र चेतावनी (warning) जारी गरिन्छ।
+    कृपया ध्यान दिनुहोस् कि null coalescing operator एक expression हो, र यो कुनै variable मा होइन, बरु expression को नतिजामा मूल्याङ्कन हुन्छ। यदि तपाईँ reference द्वारा variable फर्काउन चाहनुहुन्छ भने यो जान्न महत्त्वपूर्ण छ। त्यसैले reference द्वारा फर्काउने function भित्र <literal>return $foo ?? $bar;</literal> statement ले काम गर्दैन र चेतावनी (warning) जारी गरिन्छ।
    </simpara>
   </note>
   <note>

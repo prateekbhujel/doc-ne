@@ -51,7 +51,7 @@
    </para>
 
    <para>
-    शाब्दिक (literal) single quote लेख्नका लागि त्यसलाई backslash (<literal>\</literal>) ले escape गर्नुहोस्। शाब्दिक backslash लेख्नका लागि त्यसलाई दोहोर्‍याएर (<literal>\\</literal>) लेख्नुहोस्। यस बाहेक अन्य सबै अवस्थामा backslash लाई शाब्दिक backslash कै रूपमा लिइन्छ: यसको अर्थ तपाईंले प्रयोग गर्ने गरेका अन्य escape sequences, जस्तै <literal>\r</literal> वा <literal>\n</literal>, ले कुनै विशेष अर्थ नराखी जस्ताको तस्तै output हुनेछन्।
+    शाब्दिक (literal) single quote लेख्नका लागि त्यसलाई backslash (<literal>\</literal>) ले escape गर्नुहोस्। शाब्दिक backslash लेख्नका लागि त्यसलाई दोहोर्‍याएर (<literal>\\</literal>) लेख्नुहोस्। यस बाहेक अन्य सबै अवस्थामा backslash लाई शाब्दिक backslash कै रूपमा लिइन्छ: यसको अर्थ तपाईँले प्रयोग गर्ने गरेका अन्य escape sequences, जस्तै <literal>\r</literal> वा <literal>\n</literal>, ले कुनै विशेष अर्थ नराखी जस्ताको तस्तै output हुनेछन्।
    </para>
 
    <note>
@@ -897,7 +897,7 @@ echo "C:\\directory\\{$great}.txt" . PHP_EOL;
    <title>Character अनुसार string access र परिमार्जन (String access and modification by character)</title>
 
    <para>
-    Square <type>array</type> brackets प्रयोग गरेर <type>string</type> पछि चाहेको character को शून्य-आधारित (zero-based) offset तोकेर (<varname>$str[42]</varname> जस्तै गरी) <type>string</type> भित्रका characters हरू access र परिमार्जन गर्न सकिन्छ। यस उद्देश्यका लागि <type>string</type> लाई characters को एउटा <type>array</type> जस्तै सोच्नुहोस्। यदि तपाईं 1 भन्दा बढी characters निकाल्न (extract गर्न) वा प्रतिस्थापन गर्न चाहनुहुन्छ भने <function>substr</function> र <function>substr_replace</function> functions प्रयोग गर्न सकिन्छ।
+    Square <type>array</type> brackets प्रयोग गरेर <type>string</type> पछि चाहेको character को शून्य-आधारित (zero-based) offset तोकेर (<varname>$str[42]</varname> जस्तै गरी) <type>string</type> भित्रका characters हरू access र परिमार्जन गर्न सकिन्छ। यस उद्देश्यका लागि <type>string</type> लाई characters को एउटा <type>array</type> जस्तै सोच्नुहोस्। यदि तपाईँ 1 भन्दा बढी characters निकाल्न (extract गर्न) वा प्रतिस्थापन गर्न चाहनुहुन्छ भने <function>substr</function> र <function>substr_replace</function> functions प्रयोग गर्न सकिन्छ।
    </para>
 
    <note>

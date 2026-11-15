@@ -72,6 +72,17 @@ $cmdPhd = "php " . escapeshellarg("{$buildBase}/phd/render.php") .
     " -d " . escapeshellarg("{$buildBase}/doc-base/temp/manual.xml") .
     " -P PHP -f xhtml -L ne -o " . escapeshellarg($outputDir);
 
+// Passing any -C option replaces PhD's default CSS list, so include both
+// stock PHP stylesheets before our local, Devanagari-specific override.
+$stylesheets = [
+    'https://www.php.net/styles/theme-base.css',
+    'https://www.php.net/styles/theme-medium.css',
+    "{$docNeDir}/resources/styles/ne-typography.css",
+];
+foreach ($stylesheets as $stylesheet) {
+    $cmdPhd .= ' -C ' . escapeshellarg($stylesheet);
+}
+
 passthru($cmdPhd, $retPhd);
 
 if ($retPhd !== 0) {

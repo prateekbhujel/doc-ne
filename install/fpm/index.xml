@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 7efe863bc4b65788f652e3d9eff27941b1a74540 Maintainer: prateekbhujel Status: ready -->
+  <chapter xml:id="install.fpm" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+   <title>FastCGI Process Manager (FPM)</title>
+   &fpm.intro;
+   <para>
+    यी सुविधाहरूमा निम्न समावेश छन्:
+    <itemizedlist>
+     <listitem>
+      <para>
+       graceful stop/start सहितको उन्नत प्रक्रिया व्यवस्थापन (process management);
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       विभिन्न uid/gid/chroot/environment सहित workers सुरु गर्ने क्षमता, विभिन्न ports मा सुन्ने (listen गर्ने) र फरक php.ini प्रयोग गर्ने pools (safe_mode को विकल्प);
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       कन्फिगर गर्न सकिने stdout र stderr लगिङ;
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       आकस्मिक opcode cache विनाशको अवस्थामा emergency restart;
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       गति तीव्र बनाइएको अपलोड समर्थन (accelerated upload support);
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       "slowlog" - असामान्य रूपमा ढिलो चल्ने स्क्रिप्टहरूको लगिङ (तिनीहरूको नाम मात्र होइन, बरु दूरवर्ती प्रक्रियाको execute_data पढ्न ptrace र समान उपकरणहरू प्रयोग गरी तिनीहरूको PHP backtraces समेत);
+      </para>
+     </listitem>
+     <listitem>
+      <simpara>
+       <function>fastcgi_finish_request</function> - धेरै समय लाग्ने कामहरू (video conversion, stats processing आदि) पृष्ठभूमिमा जारी राख्दै अनुरोध अन्त्य गर्न र सबै डाटा flush गर्न विशेष function;
+      </simpara>
+     </listitem>
+     <listitem>
+      <para>
+       dynamic/ondemand/static child प्रक्रियाहरू सिर्जना गर्ने सुविधा (spawning);
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       json, xml र openmetrics जस्ता विभिन्न ढाँचाहरू समर्थन गर्ने आधारभूत र विस्तारित स्थिति जानकारी (Apache mod_status जस्तै);
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       php.ini-मा आधारित कन्फिगरेसन फाइल।
+      </para>
+     </listitem>
+    </itemizedlist>
+   </para>
+   
+   <warning>
+    <simpara>
+     php-fpm अविश्वसनीय (untrusted) नेटवर्कबाट पहुँचयोग्य हुनु हुँदैन।
+     FastCGI connection खोल्न सक्ने कुनै पनि client ले अनुरोधका लागि प्रयोग हुने
+     कन्फिगरेसन नियन्त्रण गर्न सक्छ, जसमा <link linkend="ini.auto-prepend-file">auto_prepend_file</link>
+     पनि समावेश छ, र यसले गर्दा जथाभावी मनपरी कोड (arbitrary code) चलाउन सक्छ।
+     पहुँचलाई <link linkend="listen">listen</link> र
+     <link linkend="listen-allowed-clients">listen.allowed_clients</link>
+     directives मार्फत प्रतिबन्धित गरिन्छ।
+    </simpara>
+   </warning>
+
+   &install.fpm.install;
+   &install.fpm.configuration;
+  </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

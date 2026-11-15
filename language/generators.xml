@@ -348,7 +348,7 @@ foreach (gen_reference() as &$number) {
       </para>
 
       <para>
-       यो कुरा महत्वपूर्ण हुने एउटा सामान्य अवस्था भनेको <function>iterator_to_array</function>
+       यो कुरा महत्त्वपूर्ण हुने एउटा सामान्य अवस्था भनेको <function>iterator_to_array</function>
        ले डिफल्ट रूपमा keys सहितको array return गर्नु हो, जसले गर्दा अनपेक्षित नतिजा आउन
        सक्छ। <function>iterator_to_array</function> मा दोस्रो parameter
        <parameter>preserve_keys</parameter> हुन्छ, जसलाई &false; सेट गरेर

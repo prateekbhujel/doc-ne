@@ -22,7 +22,7 @@
    चाहिँ <varname>$http_response_header</varname> variable मा store हुन्छन्।
   </simpara>
   <simpara>
-   यदि तपाईँको document कुन resource को URL बाट आएको हो भनी थाहा पाउनु महत्वपूर्ण
+   यदि तपाईँको document कुन resource को URL बाट आएको हो भनी थाहा पाउनु महत्त्वपूर्ण
    छ भने (सबै redirects process भइसकेपछि), तपाईँले stream ले return गरेको
    response headers को शृङ्खला (series) लाई process गर्नुपर्ने हुन्छ।
   </simpara>

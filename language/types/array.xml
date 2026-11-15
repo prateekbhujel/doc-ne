@@ -254,7 +254,7 @@ array(4) {
 ]]>
     </screen>
     <para>
-     तपाईंले देख्न सक्नुहुन्छ, अन्तिम मान <literal>"d"</literal> ले <literal>7</literal> key पाएको छ।
+     तपाईँले देख्न सक्नुहुन्छ, अन्तिम मान <literal>"d"</literal> ले <literal>7</literal> key पाएको छ।
      किनकि त्यसअघिको सबैभन्दा ठूलो integer key <literal>6</literal> थियो।
     </para>
    </example>

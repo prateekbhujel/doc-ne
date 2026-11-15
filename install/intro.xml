@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 8a4f1c0069f2f5ad08dfd5dfbd8ddc6a4107f110 Maintainer: prateekbhujel Status: ready -->
+  <chapter xml:id="install.general" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+   <title>General Installation Considerations (स्थापना सम्बन्धी सामान्य जानकारी)</title>
+   <para>
+    स्थापना (installation) सुरु गर्नुअघि, पहिले तपाईँले PHP लाई के कामका लागि प्रयोग गर्न चाहनुहुन्छ भन्ने कुरा जान्न आवश्यक छ।
+    <link linkend="intro-whatcando">PHP ले के गर्न सक्छ?</link> शीर्षकको खण्डमा वर्णन गरिए अनुसार मुख्यतया दुईवटा क्षेत्रहरू छन् जसमा तपाईँ PHP प्रयोग गर्न सक्नुहुन्छ:
+    <itemizedlist>
+     <listitem><simpara>वेबसाइट र वेब एप्लिकेसनहरू (server-side scripting)</simpara></listitem>
+     <listitem><simpara>कमान्ड लाइन स्क्रिप्टिङ (Command line scripting)</simpara></listitem>
+    </itemizedlist>
+   </para>
+   <para>
+    पहिलो र सबैभन्दा सामान्य कामका लागि तपाईँलाई तीनवटा कुराहरू चाहिन्छ:
+    स्वयं PHP, एउटा web server र एउटा web browser।
+    तपाईँसँग सम्भवतः पहिले नै एउटा web browser उपलब्ध छ, र तपाईँको operating system सेटअप अनुसार,
+    तपाईँसँग एउटा web server (जस्तै Linux र macOS मा Apache; Windows मा IIS) पनि हुन सक्छ।
+    तपाईँ कुनै कम्पनीबाट webspace (होस्टिङ) भाडामा पनि लिन सक्नुहुन्छ। यसो गर्दा,
+    तपाईँले आफ्नो कम्प्युटरमा केही पनि सेटअप गर्नु पर्दैन, केवल आफ्ना PHP scripts लेख्ने,
+    ती स्क्रिप्टहरू आफूले भाडामा लिएको सर्भरमा upload गर्ने, र आफ्नो ब्राउजरमा नतिजाहरू हेर्ने मात्र हो।
+   </para>
+   <para>
+    यदि सर्भर र PHP आफ्नै कम्प्युटरमा सेटअप गर्दै हुनुहुन्छ भने, PHP लाई सर्भरसँग जोड्ने
+    विधिका लागि तपाईँसँग दुईवटा विकल्पहरू छन्। धेरैजसो सर्भरहरूका लागि PHP सँग प्रत्यक्ष
+    module interface (जसलाई SAPI पनि भनिन्छ) उपलब्ध छ। यी सर्भरहरूमा
+    Apache, Microsoft Internet Information Server,
+    Netscape र iPlanet सर्भरहरू पर्दछन्।
+    यदि PHP मा तपाईँको web server का लागि module support छैन भने,
+    तपाईँले यसलाई सधैँ CGI वा FastCGI processor का रूपमा प्रयोग गर्न सक्नुहुन्छ।
+    यसको अर्थ तपाईँले सर्भरमा आउने सबै PHP फाइलका requests प्रक्रिया (process) गर्न
+    PHP को CGI executable प्रयोग गर्ने गरी आफ्नो सर्भर सेटअप गर्नुहुन्छ।
+   </para>
+   <para>
+    यदि तपाईँ command line scripting का लागि पनि PHP प्रयोग गर्न इच्छुक हुनुहुन्छ भने
+    (जस्तै अफलाइनमा तपाईँका लागि केही images स्वतः उत्पन्न गर्ने scripts लेख्न, वा तपाईँले पास गरेका
+    केही arguments का आधारमा text files process गर्न), तपाईँलाई सधैँ
+    command line executable चाहिन्छ। थप जानकारीका लागि,
+    <link linkend="features.commandline">command line PHP applications लेख्ने</link>
+    सम्बन्धी खण्ड पढ्नुहोस्। यस अवस्थामा तपाईँलाई कुनै सर्भर र ब्राउजरको आवश्यकता पर्दैन।
+   </para>
+   <para>
+    अबदेखि, यो खण्डले Unix र Windows मा server module interfaces र CGI executables का साथ
+    web servers का लागि PHP सेटअप गर्ने विषयलाई समेट्दछ। तपाईँले तलका खण्डहरूमा
+    command line executable सम्बन्धी जानकारी पनि पाउनुहुनेछ।
+   </para>
+   <para>
+    Windows का लागि PHP source code र binary distributions
+    <link xlink:href="&url.php.downloads;">&url.php.downloads;</link> मा पाउन सकिन्छ।
+   </para>
+  </chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

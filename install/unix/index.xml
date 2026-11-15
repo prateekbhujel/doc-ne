@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 5a5899391ef91a4d42bca9495c8a1d323d38f23a Maintainer: prateekbhujel Status: ready -->
+<chapter xml:id="install.unix" xmlns="http://docbook.org/ns/docbook">
+ <title>Installation on Unix systems (Unix प्रणालीहरूमा स्थापना)</title>
+ <simpara>
+  अधिकांश Unix (र Linux) operating systems तथा distributions हरूसँग तिनीहरूको packaging प्रणाली मार्फत PHP र extensions को packaged संस्करण उपलब्ध हुन्छ। ती प्रणालीहरू प्रयोग गरेर PHP स्थापना गर्ने आधारभूत जानकारी सहितका खण्डहरू यहाँ दिइएका छन्।
+ </simpara>
+ <simpara>
+  केही distributions का लागि तेस्रो-पक्ष package repositories पनि उपलब्ध हुन्छन् जसमा सामान्यतया उपलब्ध संस्करणहरू र extensions को फराकिलो विविधता समावेश हुन्छ।
+ </simpara>
+ <simpara>
+  PHP लाई केही तेस्रो-पक्ष application servers का एक घटक (component) को रूपमा पनि स्थापना गर्न सकिन्छ।
+ </simpara>
+ <simpara>
+  अन्तमा, PHP लाई सधैँ source distributions बाट स्थापना गर्न सकिन्छ, जसले कुन सुविधाहरू, extensions, र server APIs सक्षम गर्ने भन्ने छनोटमा सबैभन्दा ठूलो लचकता प्रदान गर्दछ। विशेष गरी विभिन्न server APIs सँग प्रयोग गर्न PHP लाई compile र configure गर्ने बारे जानकारी सहितका खण्डहरू यहाँ दिइएका छन्।
+ </simpara>
+
+ <!-- distribution specific nodes -->
+ &install.unix.debian;
+ &install.unix.dnf;
+ &install.unix.alpine;
+ &install.unix.pacman;
+ &install.unix.openbsd;
+ <!-- general from-source instructions -->
+ &install.unix.source;
+ <!-- web server specific nodes -->
+ &install.unix.commandline;
+ &install.unix.apache2;
+ &install.unix.nginx;
+ &install.unix.lighttpd-14;
+ &install.unix.litespeed;
+ <!-- operating system specific nodes -->
+ &install.unix.solaris;
+
+</chapter>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

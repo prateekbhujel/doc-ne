@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: ready -->
+
+<chapter xml:id="install.composer" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" annotations="chunk:false">
+ <title>Installation of Composer and third-party packages (Composer र तेस्रो-पक्ष प्याकेजहरूको स्थापना)</title>
+
+ <sect1 xml:id="install.composer.intro">
+  <title>Introduction to Composer (Composer को परिचय)</title>
+  <simpara>
+   &link.composer; PHP का लागि एउटा dependency manager हो जसले कुनै परियोजना (project) मा प्रयोग हुने तेस्रो-पक्ष (third-party) कोड प्याकेजहरू परिभाषित गर्न, सजिलै स्थापना गर्न र अद्यावधिक (update) गर्न सम्भव बनाउँछ। यसले PHP को built-in
+   <link linkend="language.oop5.autoload">class autoloading सुविधा</link>,
+   <link xlink:href="&url.packagist;">Packagist</link> जस्ता PHP package repositories, र सामान्य project संरचना तथा कोडिङ नियमहरूको फाइदा उठाउँछ।
+  </simpara>
+  <simpara>
+   उदाहरणका लागि, यदि कुनै PHP application वा वेबसाइटलाई <abbrev>UUID</abbrev> मानहरूसँग काम गर्न आवश्यक छ भने,
+   <link xlink:href="&url.rfc;4122">RFC 4122</link> द्वारा परिभाषित व्यापक रूपमा परिचित र प्रयोग गरिने UUID का प्रकारहरू कार्यान्वयन गर्ने
+   <link xlink:href="&url.packagist.package;ramsey/uuid">Ben Ramsey को <literal>ramsey/uuid</literal> package</link> प्रयोग गर्न सकिन्छ।
+  </simpara>
+  <simpara>
+   संक्षेपमा, यो कार्य परियोजनामा <literal>composer.json</literal> फाइल बनाएर, त्यो प्याकेजको नवीनतम संस्करण स्थापना गर्न Composer प्रयोग गरेर, र आफ्नो कोडमा त्यो उपलब्ध गराउन Composer को autoload script समावेश (include) गरेर गरिन्छ। थप विस्तृत जानकारीका लागि
+   <link xlink:href="&url.composer;doc/01-basic-usage.md">Composer "Basic Usage" documentation</link> हेर्नुहोस्।
+  </simpara>
+  <example>
+   <title>
+    एउटा मात्र package आवश्यक पर्ने <literal>composer.json</literal>
+   </title>
+   <programlisting role="javascript">
+<![CDATA[
+{
+    "require": {
+        "ramsey/uuid": "^4.7"
+    }
+}
+]]>
+   </programlisting>
+  </example>
+
+ </sect1>
+</chapter>

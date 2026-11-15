@@ -1,0 +1,33 @@
+/*
+ * Nepali documentation typography configuration.
+ *
+ * Primary screen web font: Noto Sans Devanagari (clean sans-serif UI matching php.net).
+ * Specialized linguistic fallback: Annapurna SIL (SIL International).
+ * Native OS fallbacks: Kohinoor Devanagari (macOS), Nirmala UI (Windows), Mangal, Lohit.
+ * Monospace code blocks retain standard developer fonts.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap");
+
+body.docs,
+body.docs input,
+body.docs textarea,
+body.docs button,
+body.docs select {
+    font-family: "Fira Sans", "Source Sans Pro", "Noto Sans Devanagari",
+        "Annapurna SIL", "Kohinoor Devanagari", "Nirmala UI", "Mangal",
+        "Lohit Devanagari", ui-sans-serif, system-ui, sans-serif;
+    line-height: 1.65;
+}
+
+/* Ensure code blocks and inline technical literals preserve monospace */
+body.docs code,
+body.docs pre,
+body.docs tt,
+body.docs kbd,
+body.docs samp,
+body.docs .programlisting,
+body.docs .screen {
+    font-family: "Fira Mono", "Source Code Pro", Menlo, Monaco, Consolas,
+        "Courier New", monospace;
+    line-height: 1.45;
+}

@@ -31,7 +31,7 @@
    <orderedlist>
     <listitem>
      <simpara>
-      तपाईंले बनाउनुभएको code र PHP का internal classes/functions/constants वा
+      तपाईँले बनाउनुभएको code र PHP का internal classes/functions/constants वा
       third-party classes/functions/constants बीच नाम जुध्ने (name collision) समस्या।
      </simpara>
     </listitem>
@@ -297,8 +297,8 @@ MyProject\Connection::start();
   <titleabbrev>आधारभूत कुराहरू</titleabbrev>
   <?phpdoc print-version-for="namespaces"?>
   <para>
-   Namespaces को प्रयोगबारे चर्चा गर्नुअघि, तपाईंको code ले कुन namespaced element
-   मागिरहेको छ भन्ने कुरा PHP ले कसरी थाहा पाउँछ भनेर बुझ्नु महत्वपूर्ण हुन्छ। PHP namespaces र
+   Namespaces को प्रयोगबारे चर्चा गर्नुअघि, तपाईँको code ले कुन namespaced element
+   मागिरहेको छ भन्ने कुरा PHP ले कसरी थाहा पाउँछ भनेर बुझ्नु महत्त्वपूर्ण हुन्छ। PHP namespaces र
    filesystem बीच एउटा सरल तुलना गर्न सकिन्छ। Filesystem मा कुनै file पहुँच गर्ने तीनवटा
    तरिकाहरू हुन्छन्:
    <orderedlist>
@@ -306,7 +306,7 @@ MyProject\Connection::start();
      <simpara>
       <literal>foo.txt</literal> जस्तो relative file name। यो
       <literal>currentdirectory/foo.txt</literal> मा resolve हुन्छ, जहाँ
-      <literal>currentdirectory</literal> भन्नाले हाल तपाईं रहेको directory बुझिन्छ।
+      <literal>currentdirectory</literal> भन्नाले हाल तपाईँ रहेको directory बुझिन्छ।
       त्यसैले यदि हालको directory <literal>/home/foo</literal> हो भने, यो नाम
       <literal>/home/foo/foo.txt</literal> मा resolve हुन्छ।
      </simpara>
@@ -609,7 +609,7 @@ $b = namespace\CONSTANT; // $b मा constant CONSTANT को मान रा�
   <?phpdoc print-version-for="namespaces"?>
   <para>
    बाह्य fully qualified name लाई alias मार्फत सन्दर्भ गर्न सकिने सुविधा, अर्थात् importing,
-   namespaces को एक महत्वपूर्ण विशेषता हो। यो Unix-आधारित filesystems मा कुनै file वा
+   namespaces को एक महत्त्वपूर्ण विशेषता हो। यो Unix-आधारित filesystems मा कुनै file वा
    directory का लागि symbolic links सिर्जना गर्ने क्षमता जस्तै हो।
   </para>
   <para>
@@ -864,7 +864,7 @@ if (is_array('hi')) { // "is not array" प्रिन्ट गर्छ
   <titleabbrev>Name resolution नियमहरू</titleabbrev>
   <?phpdoc print-version-for="namespaces"?>
   <para>
-   यी resolution नियमहरू बुझ्नका लागि केही महत्वपूर्ण परिभाषाहरू यहाँ दिइएका छन्:
+   यी resolution नियमहरू बुझ्नका लागि केही महत्त्वपूर्ण परिभाषाहरू यहाँ दिइएका छन्:
    <variablelist>
     <title>Namespace नामका परिभाषाहरू</title>
     <varlistentry>
@@ -1048,7 +1048,7 @@ A\B::foo();   // namespace "A\A" बाट class "B" को method "foo" कल 
   </example>
  </sect1>
  <sect1 xml:id="language.namespaces.faq">
-  <title>FAQ: namespaces बारे तपाईंले जान्नुपर्ने कुराहरू</title>
+  <title>FAQ: namespaces बारे तपाईँले जान्नुपर्ने कुराहरू</title>
   <titleabbrev>FAQ</titleabbrev>
   <?phpdoc print-version-for="namespaces"?>
   <para>
@@ -1143,7 +1143,7 @@ A\B::foo();   // namespace "A\A" बाट class "B" को method "foo" कल 
    <title>यदि म namespaces प्रयोग गर्दिन भने, के मैले यी कुनै कुरामा ध्यान दिनुपर्छ?</title>
    <para>
     पर्दैन। Namespaces ले अवस्थित कुनै पनि code वा namespaces नभएका र भविष्यमा लेखिने
-    कुनै पनि code लाई कुनै तरिकाले असर गर्दैनन्। तपाईंले चाहनुभएमा यो code लेख्न
+    कुनै पनि code लाई कुनै तरिकाले असर गर्दैनन्। तपाईँले चाहनुभएमा यो code लेख्न
     सक्नुहुन्छ:
    </para>
    <para>
@@ -1460,7 +1460,7 @@ namespace my\stuff\nested {
   <sect2 xml:id="language.namespaces.faq.quote">
    <title>Dynamic namespace नामहरू (quoted identifiers) मा backslash escape गर्नुपर्छ</title>
    <para>
-    यो कुरा बुझ्नु अत्यन्त महत्वपूर्ण छ कि backslash लाई strings भित्र escape character को रूपमा
+    यो कुरा बुझ्नु अत्यन्त महत्त्वपूर्ण छ कि backslash लाई strings भित्र escape character को रूपमा
     प्रयोग गरिने भएकाले, string भित्र प्रयोग गर्दा यसलाई सधैँ दोहोरो (double) लेख्नुपर्छ। अन्यथा
     अनपेक्षित परिणाम आउने जोखिम रहन्छ:
     <example>

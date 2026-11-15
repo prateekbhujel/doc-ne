@@ -4,10 +4,10 @@
   <chapter xml:id="security.filesystem" xmlns="http://docbook.org/ns/docbook">
    <title>Filesystem सुरक्षा</title>
    <simpara>
-    अधिकांश server systems मा file र directory को आधारमा बनाइएको permission सम्बन्धी सुरक्षा नियम <acronym>PHP</acronym> मा पनि लागू हुन्छ। यसले तपाईंलाई filesystem मा रहेका कुन files पढ्न (read गर्न) मिल्छ भन्ने कुरा नियन्त्रण गर्न दिन्छ। सबैले पढ्न मिल्ने (world-readable) कुनै पनि files का हकमा, त्यो filesystem मा पहुँच भएका सबै users ले ती files पढ्न सुरक्षित छन् भन्ने सुनिश्चित गर्न विशेष सावधानी अपनाउनुपर्छ।
+    अधिकांश server systems मा file र directory को आधारमा बनाइएको permission सम्बन्धी सुरक्षा नियम <acronym>PHP</acronym> मा पनि लागू हुन्छ। यसले तपाईँलाई filesystem मा रहेका कुन files पढ्न (read गर्न) मिल्छ भन्ने कुरा नियन्त्रण गर्न दिन्छ। सबैले पढ्न मिल्ने (world-readable) कुनै पनि files का हकमा, त्यो filesystem मा पहुँच भएका सबै users ले ती files पढ्न सुरक्षित छन् भन्ने सुनिश्चित गर्न विशेष सावधानी अपनाउनुपर्छ।
    </simpara>
    <simpara>
-    <acronym>PHP</acronym> लाई filesystem मा user-level पहुँच दिन मिल्ने गरी design गरिएको हुनाले, <filename>/etc/passwd</filename> जस्ता system files पढ्न, तपाईंको ethernet connections परिवर्तन गर्न, वा ठूला printer jobs पठाउन सक्ने <acronym>PHP</acronym> script लेख्न पूर्ण रूपमा सम्भव छ। यसको स्पष्ट अर्थ के हो भने, तपाईंले read गर्ने र write गर्ने files सही र उपयुक्त नै छन् भन्ने कुरा सुनिश्चित गर्नुपर्छ।
+    <acronym>PHP</acronym> लाई filesystem मा user-level पहुँच दिन मिल्ने गरी design गरिएको हुनाले, <filename>/etc/passwd</filename> जस्ता system files पढ्न, तपाईँको ethernet connections परिवर्तन गर्न, वा ठूला printer jobs पठाउन सक्ने <acronym>PHP</acronym> script लेख्न पूर्ण रूपमा सम्भव छ। यसको स्पष्ट अर्थ के हो भने, तपाईँले read गर्ने र write गर्ने files सही र उपयुक्त नै छन् भन्ने कुरा सुनिश्चित गर्नुपर्छ।
    </simpara>
    <simpara>
     तलको script मा विचार गर्नुहोस्, जहाँ एक user ले आफ्नो home directory भित्रको कुनै file मेटाउन चाहेको कुरा बताउँछ। यहाँ यस्तो अवस्था मानिएको छ जहाँ file management का लागि <acronym>PHP</acronym> web interface नियमित रूपमा प्रयोग गरिन्छ, त्यसैले Apache user लाई users का home directories भित्रका files मेटाउने अनुमति दिइएको छ।
@@ -32,7 +32,7 @@ echo "The file has been deleted!";
 ]]>
      </programlisting>
     </example>
-   Username र filename दुवै user form बाट पठाउन मिल्ने भएकाले, कसैले अरू कसैको username र filename पठाउन सक्छ र अनुमति नभएको अवस्थामा पनि अरूको file मेटाउन सक्छ। यस्तो अवस्थामा, तपाईंले अर्कै किसिमको authentication तरिका अपनाउनुपर्छ। यदि पठाइएका variables मा
+   Username र filename दुवै user form बाट पठाउन मिल्ने भएकाले, कसैले अरू कसैको username र filename पठाउन सक्छ र अनुमति नभएको अवस्थामा पनि अरूको file मेटाउन सक्छ। यस्तो अवस्थामा, तपाईँले अर्कै किसिमको authentication तरिका अपनाउनुपर्छ। यदि पठाइएका variables मा
    <literal>"../etc/"</literal> र <literal>"passwd"</literal> राखियो भने के हुन सक्छ विचार गर्नुहोस्। तब त्यो code व्यवहारिक रूपमा यस्तो देखिनेछ:
     <example>
      <title>... एक filesystem आक्रमण</title>
@@ -54,7 +54,7 @@ echo "The file has been deleted!";
 ]]>
      </programlisting>
     </example>
-    यस्ता समस्याहरू रोक्नका लागि तपाईंले दुईवटा महत्वपूर्ण उपायहरू अपनाउनुपर्छ।
+    यस्ता समस्याहरू रोक्नका लागि तपाईँले दुईवटा महत्त्वपूर्ण उपायहरू अपनाउनुपर्छ।
     <itemizedlist>
      <listitem>
       <simpara>
@@ -98,7 +98,7 @@ echo htmlentities($logstring, ENT_QUOTES);
 ]]>
      </programlisting>
     </example>
-    तर, यो पनि पूर्ण रूपमा कमजोरीरहित छैन। यदि तपाईंको authentication system ले users लाई आफ्नै user login बनाउन दिन्छ, र कुनै user ले <literal>"../etc/"</literal> लाई login नामका रूपमा चुन्यो भने, system फेरि जोखिममा पर्छ। यही कारणले गर्दा, तपाईंले अझ विशिष्ट (customized) जाँच लेख्न रुचाउन सक्नुहुन्छ:
+    तर, यो पनि पूर्ण रूपमा कमजोरीरहित छैन। यदि तपाईँको authentication system ले users लाई आफ्नै user login बनाउन दिन्छ, र कुनै user ले <literal>"../etc/"</literal> लाई login नामका रूपमा चुन्यो भने, system फेरि जोखिममा पर्छ। यही कारणले गर्दा, तपाईँले अझ विशिष्ट (customized) जाँच लेख्न रुचाउन सक्नुहुन्छ:
     <example>
      <title>अझ सुरक्षित file name जाँच</title>
      <programlisting role="php">
@@ -123,9 +123,9 @@ if (!ctype_alnum($username) || !preg_match('/^(?:[a-z0-9_-]|\.(?!\.))+$/iD', $us
     </example>
    </para>
    <simpara>
-    तपाईंको operating system अनुसार, तपाईंले ध्यान दिनुपर्ने थुप्रै प्रकारका files हुन सक्छन् — जसमा device entries (<filename>/dev/</filename>
+    तपाईँको operating system अनुसार, तपाईँले ध्यान दिनुपर्ने थुप्रै प्रकारका files हुन सक्छन् — जसमा device entries (<filename>/dev/</filename>
     वा <filename>COM1</filename>), configuration files (<filename>/etc/</filename> files र <literal>.ini</literal> files), प्रचलित file राख्ने ठाउँहरू (<filename>/home/</filename>,
-    <filename>My Documents</filename>), आदि पर्दछन्। यही कारणले गर्दा, तपाईंले स्पष्ट रूपमा अनुमति दिएका कुराहरू बाहेक अरू सबैमाथि रोक लगाउने नीति (policy) बनाउनु प्रायः सजिलो हुन्छ।
+    <filename>My Documents</filename>), आदि पर्दछन्। यही कारणले गर्दा, तपाईँले स्पष्ट रूपमा अनुमति दिएका कुराहरू बाहेक अरू सबैमाथि रोक लगाउने नीति (policy) बनाउनु प्रायः सजिलो हुन्छ।
    </simpara>
    <sect1 xml:id="security.filesystem.nullbytes">
     <title>Null bytes सँग सम्बन्धित समस्याहरू</title>

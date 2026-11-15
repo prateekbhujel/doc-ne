@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: aa1fc09144b9ccb5e590eb45e887d6c08095104f Maintainer: prateekbhujel Status: ready -->
+
+<chapter xml:id="install.pie" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" annotations="chunk:false">
+ <title>Installation of PIE and third-party extensions (PIE र तेस्रो-पक्ष extensions को स्थापना)</title>
+
+ <sect1 xml:id="install.pie.intro">
+  <title>Introduction to PIE (PIE को परिचय)</title>
+  <simpara>
+   &link.pie; PHP का लागि एउटा installer हो जसले तेस्रो-पक्ष PHP extensions स्थापना गर्न सम्भव बनाउँछ, जसलाई पछि सजिलै अद्यावधिक गर्न सकिन्छ। यसले extension निर्माण गर्न आवश्यक source code वा (उपलब्ध भएमा) Windows binary फेला पार्न <link xlink:href="&url.packagist;">Packagist</link> को PHP extension repository भाग प्रयोग गर्दछ। यदि यसले source code डाउनलोड गर्छ भने, यसलाई कसरी build र install गर्ने भन्ने तरिका पनि यसलाई थाहा हुन्छ।
+  </simpara>
+  <simpara>
+   <link xlink:href="&url.pie;?tab=readme-ov-file#using-pie---what-do-i-need-to-get-started">आवश्यक पूर्वाधारहरू र स्वयं PIE स्थापना गरिसकेपछि</link>, तपाईँले कमान्ड लाइनमा निम्न आदेश चलाएर <link linkend="mongodb.mongodb">MongoDB extension</link> स्थापना गर्न सक्नुहुन्छ:
+  </simpara>
+  <example>
+   <title>PIE मार्फत MongoDB extension स्थापना गर्ने उदाहरण</title>
+   <programlisting role="shell">
+<![CDATA[
+pie install mongodb/mongodb-extension
+]]>
+   </programlisting>
+  </example>
+  <simpara>
+   यस विषयमा थप जानकारीका लागि <link xlink:href="&url.pie.usage;">"PIE Usage" documentation</link> हेर्नुहोस्।
+  </simpara>
+
+ </sect1>
+</chapter>
