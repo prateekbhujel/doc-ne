@@ -9,7 +9,7 @@
   <section xml:id="intro-whatis" annotations="chunk:false">
    <info><title>PHP के हो?</title></info>
    <para>
-    <acronym>PHP</acronym> (<emphasis>PHP: Hypertext Preprocessor</emphasis> को recursive acronym) व्यापक रूपमा प्रयोग हुने एक open source general-purpose scripting language हो। यो विशेष गरी web development का लागि निकै उपयोगी छ र यसलाई सिधै HTML भित्र embed गर्न सकिन्छ।
+    <acronym>PHP</acronym> (<emphasis>PHP: Hypertext Preprocessor</emphasis> को recursive acronym) व्यापक रूपमा प्रयोग हुने एउटा open source general-purpose scripting language हो। यो विशेष गरी web development का लागि निकै उपयोगी छ र यसलाई सिधै HTML भित्र embed गर्न सकिन्छ।
    </para>
    <para>
     सुन्दा राम्रो लाग्छ, तर यसको वास्तविक अर्थ के हो? एउटा उदाहरण हेरौँ:

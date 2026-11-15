@@ -19,7 +19,7 @@
       <link linkend="preface">म्यानुअलको भूमिका (preface)</link> बाट:
      </para>
      <para>
-      PHP एक HTML-embedded scripting language हो। यसको धेरैजसो syntax
+      PHP एउटा HTML-embedded scripting language हो। यसको धेरैजसो syntax
       C, Java र Perl बाट लिइएको छ र यसमा PHP का आफ्नै केही विशेष सुविधाहरू पनि थपिएका छन्।
       यस language को लक्ष्य web developers लाई छिटोछरितो रूपमा dynamically generated pages
       लेख्न सक्षम बनाउनु हो।

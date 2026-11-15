@@ -11,11 +11,11 @@
    </para>
 
    <para>
-    Enums धेरै प्रोग्रामिङ भाषाहरूमा विभिन्न विशेषताहरूका साथ उपलब्ध हुन्छन्। PHP मा, Enums एक विशेष प्रकारका object हुन्। Enum आफैँमा एउटा class हो, र यसका सम्भावित cases सबै त्यही class का एकल-instance (single-instance) objects हुन्। यसको अर्थ Enum cases वैध objects हुन् र type checks लगायत object प्रयोग गर्न सकिने जुनसुकै ठाउँमा पनि तिनलाई प्रयोग गर्न सकिन्छ।
+    Enums धेरै प्रोग्रामिङ भाषाहरूमा विभिन्न विशेषताहरूका साथ उपलब्ध हुन्छन्। PHP मा, Enums विशेष प्रकारका object हुन्। Enum आफैँमा एउटा class हो, र यसका सम्भावित cases सबै त्यही class का एकल-instance (single-instance) objects हुन्। यसको अर्थ Enum cases वैध objects हुन् र type checks लगायत object प्रयोग गर्न सकिने जुनसुकै ठाउँमा पनि तिनलाई प्रयोग गर्न सकिन्छ।
    </para>
 
    <para>
-    Enumerations को सबैभन्दा प्रचलित उदाहरण built-in boolean type हो, जुन &true; र &false; वैध मानहरू भएको एक enumerated type हो। Enums ले developers लाई आफूले चाहे जति सुदृढ (robust) आफ्नै enumerations परिभाषित गर्न अनुमति दिन्छ।
+    Enumerations को सबैभन्दा प्रचलित उदाहरण built-in boolean type हो, जुन &true; र &false; वैध मानहरू भएको एउटा enumerated type हो। Enums ले developers लाई आफूले चाहे जति सुदृढ (robust) आफ्नै enumerations परिभाषित गर्न अनुमति दिन्छ।
    </para>
   </sect1>
   <sect1 xml:id="language.enumerations.basics">

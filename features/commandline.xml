@@ -1612,7 +1612,7 @@ php >
   </warning>
 
   <para>
-   &cli.sapi; ले एक built-in web server प्रदान गर्दछ।
+   &cli.sapi; ले एउटा built-in web server प्रदान गर्दछ।
   </para>
 
   <para>

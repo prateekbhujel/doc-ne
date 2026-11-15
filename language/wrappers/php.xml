@@ -98,7 +98,7 @@
   <refsect2 xml:id="wrappers.php.filter">
    <title>php://filter</title>
    <simpara>
-    <filename>php://filter</filename> एक प्रकारको meta-wrapper हो, जसलाई stream
+    <filename>php://filter</filename> एउटा meta-wrapper हो, जसलाई stream
     खोल्ने समयमै <link linkend="filters">filters</link> लागू गर्न सकिने गरी डिजाइन
     गरिएको छ। यो <function>readfile</function>, <function>file</function> र
     <function>file_get_contents</function> जस्ता all-in-one file functions सँग

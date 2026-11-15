@@ -8,7 +8,7 @@
  </para>
 
  <para>
-  PHP मा <type>array</type> वास्तवमा एउटा ordered map हो। Map भन्नाले <emphasis>values</emphasis> लाई <emphasis>keys</emphasis> सँग जोड्ने एक प्रकारको data type हो। यो type विभिन्न प्रयोगहरूका लागि अनुकूलित (optimized) गरिएको छ; यसलाई array, list (vector), hash table (map को एक कार्यान्वयन), dictionary, collection, stack, queue, र अझ अन्य धेरै रूपमा प्रयोग गर्न सकिन्छ। <type>array</type> का values अन्य <type>array</type> हरू पनि हुन सक्ने भएकाले, trees र multidimensional <type>array</type> हरू पनि बनाउन सम्भव हुन्छ।
+  PHP मा <type>array</type> वास्तवमा एउटा ordered map हो। Map भन्नाले <emphasis>values</emphasis> लाई <emphasis>keys</emphasis> सँग जोड्ने एउटा data type हो। यो type विभिन्न प्रयोगहरूका लागि अनुकूलित (optimized) गरिएको छ; यसलाई array, list (vector), hash table (map को एउटा कार्यान्वयन), dictionary, collection, stack, queue, र अझ अन्य धेरै रूपमा प्रयोग गर्न सकिन्छ। <type>array</type> का values अन्य <type>array</type> हरू पनि हुन सक्ने भएकाले, trees र multidimensional <type>array</type> हरू पनि बनाउन सम्भव हुन्छ।
  </para>
 
  <para>

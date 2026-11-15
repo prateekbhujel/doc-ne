@@ -10,7 +10,7 @@
  <refsect1 role="description">
   &reftitle.description;
   <para>
-   हालको script मा उपलब्ध session variables समावेश भएको एक associative array।
+   हालको script मा उपलब्ध session variables समावेश भएको एउटा associative array।
    यसको प्रयोग कसरी गरिन्छ भन्ने बारे थप जानकारीका लागि
    <link linkend="ref.session">Session functions</link> documentation हेर्नुहोस्।
   </para>

@@ -4,7 +4,7 @@
  <chapter xml:id="security.intro" xmlns="http://docbook.org/ns/docbook">
   <title>परिचय</title>
   <simpara>
-   PHP एक शक्तिशाली language हो र चाहे web server मा module को रूपमा समावेश गरिएको होस् वा छुट्टै
+   PHP एउटा शक्तिशाली language हो र चाहे web server मा module को रूपमा समावेश गरिएको होस् वा छुट्टै
    <acronym>CGI</acronym> binary को रूपमा चलाइएको होस्, यसको interpreter ले server मा रहेका
    files access गर्न, commands execute गर्न र network connections खोल्न सक्छ। यिनै
    गुणहरूका कारण web server मा चल्ने जुनसुकै कुरा पनि default रूपमा असुरक्षित हुन्छ।

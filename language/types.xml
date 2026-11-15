@@ -22,7 +22,7 @@
   </para>
 
   <para>
-   PHP एक dynamically typed भाषा हो, जसको अर्थ सामान्यतया कुनै variable को type पहिले नै तोक्नु पर्दैन; script चलिरहेको बेला (runtime मा) त्यसको type स्वतः निर्धारण हुन्छ। यद्यपि, <link linkend="language.types.declarations">type declarations</link> प्रयोग गरेर भाषाका केही अङ्गहरूमा statically type तोक्न पनि सकिन्छ।
+   PHP एउटा dynamically typed भाषा हो, जसको अर्थ सामान्यतया कुनै variable को type पहिले नै तोक्नु पर्दैन; script चलिरहेको बेला (runtime मा) त्यसको type स्वतः निर्धारण हुन्छ। यद्यपि, <link linkend="language.types.declarations">type declarations</link> प्रयोग गरेर भाषाका केही अङ्गहरूमा statically type तोक्न पनि सकिन्छ।
    PHP को type system ले समर्थन गर्ने विभिन्न types सम्बन्धी जानकारी <link linkend="language.types.type-system">type system</link> पृष्ठमा पाउन सकिन्छ।
   </para>
 

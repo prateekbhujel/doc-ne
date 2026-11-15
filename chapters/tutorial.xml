@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- EN-Revision: cd7a4b94a4cf282d8fd70803f0e2fdd159557444 Maintainer: prateekbhujel Status: ready -->
  <chapter xml:id="tutorial" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <info><title>A simple tutorial (एक सरल ट्युटोरियल)</title></info>
+  <info><title>A simple tutorial (एउटा सरल ट्युटोरियल)</title></info>
 
   <para>
-   यहाँ हामी एक छोटो र सरल ट्युटोरियलमा PHP का एकदमै आधारभूत कुराहरू देखाउन चाहन्छौँ। यद्यपि PHP केवल वेब पृष्ठहरू बनाउन मात्र सक्षम छैन, तर यो पाठले PHP मार्फत dynamic web page निर्माण गर्ने कुरासँग मात्र सरोकार राख्दछ। थप जानकारीका लागि <link linkend="intro-whatcando">PHP ले के गर्न सक्छ?</link> शीर्षकको खण्ड हेर्नुहोस्।
+   यहाँ हामी एउटा छोटो र सरल ट्युटोरियलमा PHP का एकदमै आधारभूत कुराहरू देखाउन चाहन्छौँ। यद्यपि PHP केवल वेब पृष्ठहरू बनाउन मात्र सक्षम छैन, तर यो पाठले PHP मार्फत dynamic web page निर्माण गर्ने कुरासँग मात्र सरोकार राख्दछ। थप जानकारीका लागि <link linkend="intro-whatcando">PHP ले के गर्न सक्छ?</link> शीर्षकको खण्ड हेर्नुहोस्।
   </para>
   <para>
    PHP-सक्षम वेब पृष्ठहरूलाई सामान्य HTML पृष्ठहरू जस्तै व्यवहार गरिन्छ र तपाईँले सामान्य HTML पृष्ठहरू बनाउने र सम्पादन गर्ने तरिकाले नै यिनीहरूलाई बनाउन र सम्पादन गर्न सक्नुहुन्छ।
@@ -134,7 +134,7 @@ phpinfo();
    </para>
    <note>
     <para>
-     <varname>$_SERVER</varname> एक विशेष आरक्षित (reserved) PHP variable हो जसमा सबै वेब सर्भर सम्बन्धी जानकारी समावेश हुन्छ। यसलाई superglobal को रूपमा चिनिन्छ। थप जानकारीका लागि <link linkend="language.variables.superglobals">superglobals</link> सम्बन्धी सम्बन्धित म्यानुअल पृष्ठ हेर्नुहोस्।
+     <varname>$_SERVER</varname> एउटा विशेष आरक्षित (reserved) PHP variable हो जसमा सबै वेब सर्भर सम्बन्धी जानकारी समावेश हुन्छ। यसलाई superglobal को रूपमा चिनिन्छ। थप जानकारीका लागि <link linkend="language.variables.superglobals">superglobals</link> सम्बन्धी सम्बन्धित म्यानुअल पृष्ठ हेर्नुहोस्।
     </para>
    </note>
    <para>
@@ -197,13 +197,13 @@ You are using Firefox.
     </example>
    </para>
    <para>
-    यहाँ हामी दुई नयाँ अवधारणाहरू परिचय गराउँछौँ। हामीसँग <link linkend="control-structures.if">if</link> statement छ। यदि तपाईँ C भाषाले प्रयोग गर्ने आधारभूत सिन्ट्याक्ससँग परिचित हुनुहुन्छ भने, यो तपाईँलाई तार्किक लाग्नुपर्छ। अन्यथा, तपाईँले प्रारम्भिक PHP पुस्तक लिएर पहिलो दुई अध्यायहरू पढ्नुपर्छ, वा म्यानुअलको <link linkend="langref">Language Reference</link> भाग पढ्नुपर्छ।
+    यहाँ हामी दुईवटा नयाँ अवधारणाहरू प्रस्तुत गर्छौँ। हामीसँग <link linkend="control-structures.if">if</link> statement छ। यदि तपाईँ C भाषाले प्रयोग गर्ने आधारभूत सिन्ट्याक्ससँग परिचित हुनुहुन्छ भने, यो तपाईँलाई तार्किक लाग्नुपर्छ। अन्यथा, तपाईँले प्रारम्भिक PHP पुस्तक लिएर पहिलो दुई अध्यायहरू पढ्नुपर्छ, वा म्यानुअलको <link linkend="langref">Language Reference</link> भाग पढ्नुपर्छ।
    </para>
    <simpara>
-    हामीले प्रस्तुत गरेको दोस्रो अवधारणा <function>str_contains</function> function call थियो। <function>str_contains</function> PHP मा बनेको एक आन्तरिक function हो जसले कुनै दिइएको string भित्र अर्को string समावेश छ कि छैन भनी निर्धारण गर्दछ। यस अवस्थामा हामी <varname>$_SERVER['HTTP_USER_AGENT']</varname> (तथाकथित haystack) भित्र <literal>'Firefox'</literal> (तथाकथित needle) खोज्दैछौँ। यदि haystack भित्र needle भेटियो भने function ले &true; फर्काउँछ। अन्यथा, यसले &false; फर्काउँछ। यदि यसले &true; फर्काउँछ भने, <link linkend="control-structures.if">if</link> expression &true; मा मूल्याङ्कन हुन्छ र यसको {braces} भित्रको कोड कार्यान्वयन हुन्छ। अन्यथा, कोड चल्दैन। <link linkend="control-structures.if">if</link>, <link linkend="control-structures.else">else</link>, र <function>strtoupper</function> तथा <function>strlen</function> जस्ता अन्य functions का साथ समान उदाहरणहरू बनाउन स्वतन्त्र महसुस गर्नुहोस्। प्रत्येक सम्बन्धित म्यानुअल पृष्ठमा उदाहरणहरू पनि छन्। यदि तपाईँ functions कसरी प्रयोग गर्ने भन्ने बारे अनिश्चित हुनुहुन्छ भने, <link linkend="about.prototypes">function परिभाषा कसरी पढ्ने</link> सम्बन्धी म्यानुअल पृष्ठ र <link linkend="language.functions">PHP functions</link> सम्बन्धी खण्ड दुवै पढ्न चाहनुहुनेछ।
+    हामीले प्रस्तुत गरेको दोस्रो अवधारणा <function>str_contains</function> function call थियो। <function>str_contains</function> PHP मा बनेको एउटा आन्तरिक function हो जसले कुनै दिइएको string भित्र अर्को string समावेश छ कि छैन भनी निर्धारण गर्दछ। यस अवस्थामा हामी <varname>$_SERVER['HTTP_USER_AGENT']</varname> (तथाकथित haystack) भित्र <literal>'Firefox'</literal> (तथाकथित needle) खोज्दैछौँ। यदि haystack भित्र needle भेटियो भने function ले &true; फर्काउँछ। अन्यथा, यसले &false; फर्काउँछ। यदि यसले &true; फर्काउँछ भने, <link linkend="control-structures.if">if</link> expression &true; मा मूल्याङ्कन हुन्छ र यसको {braces} भित्रको कोड कार्यान्वयन हुन्छ। अन्यथा, कोड चल्दैन। <link linkend="control-structures.if">if</link>, <link linkend="control-structures.else">else</link>, र <function>strtoupper</function> तथा <function>strlen</function> जस्ता अन्य functions का साथ समान उदाहरणहरू बनाएर अभ्यास गर्न सक्नुहुन्छ। प्रत्येक सम्बन्धित म्यानुअल पृष्ठमा उदाहरणहरू पनि छन्। यदि तपाईँ functions कसरी प्रयोग गर्ने भन्ने बारे अनिश्चित हुनुहुन्छ भने, <link linkend="about.prototypes">function परिभाषा कसरी पढ्ने</link> सम्बन्धी म्यानुअल पृष्ठ र <link linkend="language.functions">PHP functions</link> सम्बन्धी खण्ड दुवै पढ्न सक्नुहुन्छ।
    </simpara>
    <para>
-    हामी यसलाई अझ एक कदम अगाडि बढाउन सक्छौँ र देखाउन सक्छौँ कि कसरी तपाईँ PHP ब्लकको बीचमा पनि PHP मोड भित्र र बाहिर जान सक्नुहुन्छ:
+    हामी यसलाई अझ एक पाइला अगाडि बढाउन सक्छौँ र देखाउन सक्छौँ कि कसरी तपाईँ PHP ब्लकको बीचमा पनि PHP मोड भित्र र बाहिर जान सक्नुहुन्छ:
    </para>
    <para>
     <example>
@@ -248,7 +248,7 @@ if (str_contains($_SERVER['HTTP_USER_AGENT'], 'Firefox')) {
    </simpara>
    <para>
     <example>
-     <info><title>एक सरल HTML Form (A simple HTML form)</title></info>
+     <info><title>एउटा सरल HTML Form (A simple HTML form)</title></info>
      <programlisting role="html">
 <![CDATA[
 <form action="action.php" method="post">
@@ -265,7 +265,7 @@ if (str_contains($_SERVER['HTTP_USER_AGENT'], 'Firefox')) {
     </example>
    </para>
    <para>
-    यस form मा कुनै विशेष कुरा छैन। यो कुनै पनि प्रकारका विशेष ट्यागहरू नभएको एक सीधा HTML form हो। जब प्रयोगकर्ताले यो फारम भर्छ र submit बटन थिच्छ, <filename>action.php</filename> पृष्ठ कल गरिन्छ। यस फाइलमा तपाईँले यस्तो केही लेख्न सक्नुहुन्छ:
+    यस form मा कुनै विशेष कुरा छैन। यो कुनै पनि प्रकारका विशेष ट्यागहरू नभएको एउटा सीधा HTML form हो। जब प्रयोगकर्ताले यो फारम भर्छ र submit बटन थिच्छ, <filename>action.php</filename> पृष्ठ कल गरिन्छ। यस फाइलमा तपाईँले यस्तो केही लेख्न सक्नुहुन्छ:
    </para>
    <para>
     <example>
@@ -287,7 +287,7 @@ Hi Joe. You are 22 years old.
     </example>
    </para>
    <simpara>
-    <function>htmlspecialchars</function> र <literal>(int)</literal> भागहरू बाहेक, यसले के गर्छ भन्ने कुरा स्पष्ट हुनुपर्छ। <function>htmlspecialchars</function> ले HTML मा विशेष अर्थ राख्ने कुनै पनि क्यारेक्टरहरूलाई राम्रोसँग encode गरिएको सुनिश्चित गर्दछ ताकि मानिसहरूले तपाईँको पृष्ठमा HTML ट्यागहरू वा JavaScript इन्जेक्ट (XSS आक्रमण) गर्न नसकून्। उमेर फिल्डको लागि, किनभने हामीलाई थाहा छ कि यो एक सङ्ख्या हो, हामी यसलाई केवल <type>int</type> मा <link linkend="language.types.typecasting">रूपान्तरण (convert)</link> गर्न सक्छौँ जसले कुनै पनि अनावश्यक क्यारेक्टरहरूलाई स्वतः हटाउनेछ। <link linkend="ref.filter">filter</link> extension प्रयोग गरेर तपाईँले PHP लाई स्वचालित रूपमा यो गर्न लगाउन पनि सक्नुहुन्छ। <varname>$_POST['name']</varname> र <varname>$_POST['age']</varname> variables हरू PHP द्वारा तपाईँका लागि स्वतः सेट गरिन्छ। पहिले हामीले <varname>$_SERVER</varname> superglobal प्रयोग गरेका थियौँ; माथि हामीले भर्खरै <varname>$_POST</varname> superglobal प्रस्तुत गर्यौँ जसमा सबै POST डाटा समावेश हुन्छ। हाम्रो फारमको <emphasis>method</emphasis> कसरी POST हो ध्यान दिनुहोस्। यदि हामीले method <emphasis>GET</emphasis> प्रयोग गरेका थियौँ भने हाम्रो फारमको जानकारी यसको सट्टा <varname>$_GET</varname> superglobal मा रहने थियो। यदि तपाईँलाई आफ्नो अनुरोध डाटाको स्रोतको बारेमा चासो छैन भने तपाईँ <varname>$_REQUEST</varname> superglobal पनि प्रयोग गर्न सक्नुहुन्छ। यसमा GET, POST र COOKIE डाटाको मर्ज गरिएको जानकारी समावेश हुन्छ।
+    <function>htmlspecialchars</function> र <literal>(int)</literal> भागहरू बाहेक, यसले के गर्छ भन्ने कुरा स्पष्ट हुनुपर्छ। <function>htmlspecialchars</function> ले HTML मा विशेष अर्थ राख्ने कुनै पनि क्यारेक्टरहरूलाई राम्रोसँग encode गरिएको सुनिश्चित गर्दछ ताकि मानिसहरूले तपाईँको पृष्ठमा HTML ट्यागहरू वा JavaScript इन्जेक्ट (XSS आक्रमण) गर्न नसकून्। उमेर फिल्डको लागि, किनभने हामीलाई थाहा छ कि यो एउटा सङ्ख्या हो, हामी यसलाई केवल <type>int</type> मा <link linkend="language.types.typecasting">रूपान्तरण (convert)</link> गर्न सक्छौँ जसले कुनै पनि अनावश्यक क्यारेक्टरहरूलाई स्वतः हटाउनेछ। <link linkend="ref.filter">filter</link> extension प्रयोग गरेर तपाईँले PHP लाई स्वचालित रूपमा यो गर्न लगाउन पनि सक्नुहुन्छ। <varname>$_POST['name']</varname> र <varname>$_POST['age']</varname> variables हरू PHP द्वारा तपाईँका लागि स्वतः सेट गरिन्छ। पहिले हामीले <varname>$_SERVER</varname> superglobal प्रयोग गरेका थियौँ; माथि हामीले भर्खरै <varname>$_POST</varname> superglobal प्रस्तुत गर्यौँ जसमा सबै POST डाटा समावेश हुन्छ। हाम्रो फारमको <emphasis>method</emphasis> कसरी POST हो ध्यान दिनुहोस्। यदि हामीले method <emphasis>GET</emphasis> प्रयोग गरेका थियौँ भने हाम्रो फारमको जानकारी यसको सट्टा <varname>$_GET</varname> superglobal मा रहने थियो। यदि तपाईँलाई आफ्नो अनुरोध डाटाको स्रोतको बारेमा चासो छैन भने तपाईँ <varname>$_REQUEST</varname> superglobal पनि प्रयोग गर्न सक्नुहुन्छ। यसमा GET, POST र COOKIE डाटाको मर्ज गरिएको जानकारी समावेश हुन्छ।
    </simpara>
   </section>
 

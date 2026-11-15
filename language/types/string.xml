@@ -4,7 +4,7 @@
  <title>Strings (स्ट्रिङहरू)</title>
 
  <para>
-  <type>string</type> भनेको characters को एक शृङ्खला हो, जहाँ एउटा character भन्नु नै एउटा byte बराबर हुन्छ। यसको अर्थ PHP ले केवल 256-character set लाई मात्र समर्थन गर्छ, र त्यसैले यसले native Unicode support प्रदान गर्दैन। थप जानकारीका लागि <link linkend="language.types.string.details">string type का विस्तृत विवरण</link> हेर्नुहोस्।
+  <type>string</type> भनेको characters को एउटा शृङ्खला हो, जहाँ एउटा character भन्नु नै एउटा byte बराबर हुन्छ। यसको अर्थ PHP ले केवल 256-character set लाई मात्र समर्थन गर्छ, र त्यसैले यसले native Unicode support प्रदान गर्दैन। थप जानकारीका लागि <link linkend="language.types.string.details">string type का विस्तृत विवरण</link> हेर्नुहोस्।
  </para>
 
  <note>
