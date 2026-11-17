@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<!-- EN-Revision: e8ac70bf549a723cb36465667a6109d9933b8619 Maintainer: prateekbhujel Status: draft -->
 <sect1 xml:id="install.cloud.azure" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>Azure App Services</title>
   <para>PHP Azure App Services (अर्थात् Microsoft Azure, Windows Azure, Azure Web Apps) मा प्रायः प्रयोग गरिन्छ।</para>

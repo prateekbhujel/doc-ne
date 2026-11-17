@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<!-- EN-Revision: 31cacb6f262f455c616094cfe6d09bc0d1df2748 Maintainer: prateekbhujel Status: draft -->
 <refentry xml:id="function.array-reduce" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_reduce</refname>

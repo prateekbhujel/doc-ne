@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<!-- EN-Revision: d6dc2be3c5c70e4a1c3d13f788643ea232747c19 Maintainer: prateekbhujel Status: draft -->
 <refentry xml:id="function.str-shuffle" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>str_shuffle</refname>

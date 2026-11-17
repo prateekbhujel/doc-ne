@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<!-- EN-Revision: b536040d12c05c041e13028202e90d8e24fe3bf9 Maintainer: prateekbhujel Status: draft -->
   <sect1 xml:id="install.fpm.install" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
    <title>स्थापना</title>
     <sect2 xml:id="install.fpm.install.compiling">

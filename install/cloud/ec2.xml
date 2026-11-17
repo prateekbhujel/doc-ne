@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<!-- EN-Revision: d343dda81958034673651e2ccbda2bf139173f3d Maintainer: prateekbhujel Status: draft -->
  <sect1 xml:id="install.cloud.ec2" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>Amazon EC2</title>
   <para>PHP लाई <link xlink:href="&url.cloud.ec2;">EC2 cloud platform</link> मा install गर्न सकिन्छ।</para>

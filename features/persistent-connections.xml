@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: ready -->
+<!-- EN-Revision: ee5ee84013f11aaaf01b09484bc9aa3225379748 Maintainer: prateekbhujel Status: ready -->
 <chapter xml:id="features.persistent-connections" xmlns="http://docbook.org/ns/docbook">
  <title>Persistent Database Connections</title>
 

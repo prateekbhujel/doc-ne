@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<!-- EN-Revision: 6b56e6f444e49396ee5122258ee85b99a8543f6a Maintainer: prateekbhujel Status: draft -->
 <refentry xml:id="function.array-count-values" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_count_values</refname>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<!-- EN-Revision: bdef726773ce9f624da7958009367d607d7211ea Maintainer: prateekbhujel Status: draft -->
 <refentry xml:id="function.nl-langinfo" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>nl_langinfo</refname>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<!-- EN-Revision: aba94933258b1d1ce9fa5935a239804d71a481fa Maintainer: prateekbhujel Status: draft -->
 <refentry xml:id="function.array-shift" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array_shift</refname>

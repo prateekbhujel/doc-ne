@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<!-- EN-Revision: 2dbf3d9064d4cb07f0a2f7d06641c877a2e5ed24 Maintainer: prateekbhujel Status: draft -->
 <sect1 xml:id="install.windows.building" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>from source build गर्ने</title>
  <simpara>Visual Studio प्रयोग गरी build गर्नका लागि <link xlink:href="&url.install.windows.stepbystep;">चरणबद्ध build निर्देशनहरू</link> हेर्नुहोस्।</simpara>

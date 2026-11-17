@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<!-- EN-Revision: 9b68bf2b63200534e022bc65e800cae6c75abf26 Maintainer: prateekbhujel Status: draft -->
 <refentry xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" xml:id="function.strnatcasecmp">
  <refnamediv>
   <refname>strnatcasecmp</refname>

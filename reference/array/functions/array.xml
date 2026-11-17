@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<!-- EN-Revision: 2e60c5134e7a847c99f81eb3f7ecee1f5efeeace Maintainer: prateekbhujel Status: draft -->
 <refentry xml:id="function.array" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>array</refname>

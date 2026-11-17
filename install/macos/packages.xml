@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<!-- EN-Revision: e8ac70bf549a723cb36465667a6109d9933b8619 Maintainer: prateekbhujel Status: draft -->
  <sect1 xml:id="install.macosx.packages" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>तेस्रो-पक्ष packages प्रयोग गरेर macOS मा स्थापना</title>
   <simpara>macOS का लागि PHP का केही pre-packaged र pre-compiled version हरू उपलब्ध छन्। यसले standard configuration सेटअप गर्न मद्दत गर्न सक्छ, तर यदि तपाईँलाई फरक features चाहिन्छ भने (जस्तै सुरक्षित server, वा फरक database driver), तपाईँले PHP र/वा आफ्नो web server आफैँ build गर्नुपर्ने हुन सक्छ। यदि तपाईँ आफ्नै software build र compile गर्न अभ्यस्त हुनुहुन्न भने, तपाईँलाई चाहिने features सहित कसैले पहिले नै PHP को packaged version बनाइसकेको छ कि भनी जाँच गर्नु उपयुक्त हुन्छ।</simpara>
