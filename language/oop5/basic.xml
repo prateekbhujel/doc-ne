@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 7c915c0c28b8e2e4306333c64602ee4800c73754 Maintainer: prateekbhujel Status: ready -->
+<!-- EN-Revision: f8ecb73c5ebab866fb4b67d7873709612a518827 Maintainer: prateekbhujel Status: draft -->
 
  <sect1 xml:id="language.oop5.basic" xmlns="http://docbook.org/ns/docbook">
   <title>आधारभूत कुराहरू (The Basics)</title>
@@ -784,6 +784,42 @@ NS\ClassName
 ]]>
     </screen>
    </example>
+   <simpara>
+    Object बाहेकको value मा <literal>::class</literal> प्रयोग गर्दा <exceptionname>TypeError</exceptionname> आउँछ। यसमा class को नाम भएको <type>string</type> पनि पर्छ। त्यस्तो string लाई सिधै प्रयोग गर्न सकिन्छ।
+   </simpara>
+   <example xml:id="language.oop5.basic.class.class.non-object">
+    <title>String मा <literal>::class</literal> प्रयोग गर्दा</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$className = 'stdClass';
+
+try {
+    echo $className::class;
+} catch (TypeError $e) {
+    echo $e->getMessage();
+}
+?>
+]]>
+    </programlisting>
+    &example.outputs.83;
+    <screen>
+<![CDATA[
+Cannot use "::class" on string
+]]>
+    </screen>
+    &example.outputs.82;
+    <screen>
+<![CDATA[
+Cannot use "::class" on value of type string
+]]>
+    </screen>
+   </example>
+   <note>
+    <simpara>
+    <literal>'ClassName'::class</literal> जस्तो string literal मा <literal>::class</literal> प्रयोग गर्दा compile time मै resolve हुन्छ। String मा भएको class नामलाई fully qualified नामका रूपमा लिइन्छ। यसलाई हालको namespace का आधारमा resolve गरिँदैन र सुरुमा backslash भए हटाइन्छ।
+   </simpara>
+   </note>
   </sect2>
  <sect2 xml:id="language.oop5.basic.nullsafe">
   <title>Nullsafe methods र properties</title>

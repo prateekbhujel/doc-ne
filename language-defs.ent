@@ -68,7 +68,7 @@
 <!ENTITY Definition        "परिभाषा (Definition)">
 <!ENTITY Functions         "Functions">
 <!ENTITY Name              "नाम (Name)">
-<!ENTITY Alias             "को Alias">
+<!ENTITY Alias             "पर्यायवाची (Alias):">
 <!ENTITY Type              "Type">
 <!ENTITY Changelog         "Changelog">
 <!ENTITY Methods           "Methods">

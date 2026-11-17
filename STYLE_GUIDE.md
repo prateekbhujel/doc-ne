@@ -1,7 +1,7 @@
 # PHP Manual — Nepali Translation Style Guide
 (नेपाली अनुवाद शैली निर्देशिका)
 
-यो निर्देशिका आधिकारिक PHP Manual (php.net) को नेपाली अनुवाद (`doc-ne`) का लागि तय गरिएको मानक हो। यसको उद्देश्य नेपाली विकासकर्ता समुदायका लागि स्पष्ट, प्राकृतिक र प्राविधिक रूपमा त्रुटिरहित म्यानुअल तयार पार्नु हो।
+यो निर्देशिका PHP Manual को समुदायले तयार गर्दै गरेको नेपाली अनुवाद (`doc-ne`) का लागि हो। यसको उद्देश्य नेपाली विकासकर्ताहरूले सजिलै बुझ्ने र मूल प्राविधिक अर्थ कायम रहेको अनुवाद तयार गर्नु हो।
 
 ---
 
@@ -52,7 +52,7 @@ PHP, software, hardware, computer, program, code, variable, value, function, met
 ### उदाहरण ३: Condition र Loop
 - **English**: *"The `if` construct is one of the most important features of many languages, including PHP."*
 - **✅ प्राकृतिक नेपाली (Natural)**:
-  > "PHP लगायत थुप्रै programming language हरूमा `if` construct एकदमै महत्वपूर्ण विशेषता हो।"
+  > "PHP लगायत धेरै programming languages मा `if` महत्त्वपूर्ण construct हो।"
 - **❌ अस्वीकार्य अनुवाद (Unacceptable)**:
   > "`यदि` संरचना धेरै भाषाहरूमध्येको एक सबैभन्दा महत्त्वपूर्ण अङ्ग हो।"
 

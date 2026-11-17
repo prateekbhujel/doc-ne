@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 17c238517825dfb7ec3edfef5972acd944ffbc1e Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.explode" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>explode</refname>
+  <refpurpose>एउटा string लाई string द्वारा split गर्ने</refpurpose>
+ </refnamediv>
+ 
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>explode</methodname>
+   <methodparam><type>string</type><parameter>separator</parameter></methodparam>
+   <methodparam><type>string</type><parameter>string</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>limit</parameter><initializer><constant>PHP_INT_MAX</constant></initializer></methodparam>
+  </methodsynopsis>
+  <para>strings को एउटा array return गर्दछ, जसमध्ये each, string <parameter>separator</parameter> द्वारा बनेका सीमाहरूमा split गरेर बनेको <parameter>string</parameter> को एउटा substring हो।</para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>separator</parameter></term>
+     <listitem>
+      <para>Boundary string।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>string</parameter></term>
+     <listitem>
+      <para>Input string।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>limit</parameter></term>
+     <listitem>
+      <para>यदि <parameter>limit</parameter> set गरिएको छ र positive छ भने, return हुने array मा अधिकतम <parameter>limit</parameter> वटा elements समावेश हुनेछन्, जहाँ अन्तिम element ले बाँकी रहेको <parameter>string</parameter> समेट्दछ।</para>
+      <para>यदि <parameter>limit</parameter> parameter negative छ भने, अन्तिम -<parameter>limit</parameter> बाहेक सबै components return गरिन्छ।</para>
+      <para>यदि <parameter>limit</parameter> parameter zero छ भने, यसलाई 1 मानिन्छ।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+  <note>
+   <para>PHP 8.0 भन्दा पहिले, <function>implode</function> ले आफ्ना parameters जुनसुकै क्रममा पनि स्वीकार गर्दथ्यो। <function>explode</function> ले यो कहिल्यै support गरेको छैन: तपाईँले <parameter>separator</parameter> argument, <parameter>string</parameter> argument भन्दा अगाडि आउँछ भनी सुनिश्चित गर्नुपर्दछ।</para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para><parameter>separator</parameter> द्वारा बनेका boundaries मा <parameter>string</parameter> parameter लाई split गरेर बनाइएको <type>string</type> हरूको एउटा <type>array</type> return गर्दछ।</para>
+  <para>यदि <parameter>separator</parameter> एउटा खाली <type>string</type> ("") हो भने, <function>explode</function> ले एउटा <classname>ValueError</classname> throw गर्दछ। यदि <parameter>separator</parameter> मा <parameter>string</parameter> मा समावेश नभएको value छ र negative <parameter>limit</parameter> प्रयोग गरिएको छ भने, एउटा खाली <type>array</type> return हुनेछ, अन्यथा <parameter>string</parameter> समावेश भएको एउटा <type>array</type> return हुनेछ। यदि <parameter>separator</parameter> values <parameter>string</parameter> को सुरु वा end मा देखा पर्दछन् भने, उक्त values लाई return गरिएको <type>array</type> को क्रमशः पहिलो वा अन्तिम स्थानमा एउटा खाली <type>array</type> value को रूपमा थपिनेछ।</para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry><parameter>separator</parameter> parameter मा एउटा खाली string (<literal>""</literal>) दिँदा <function>explode</function> ले अब <classname>ValueError</classname> throw गर्नेछ। पहिले, यसको सट्टा <function>explode</function> ले &false; return गर्दथ्यो।</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>explode</function> का उदाहरणहरू</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// Example 1
+$pizza  = "piece1 piece2 piece3 piece4 piece5 piece6";
+$pieces = explode(" ", $pizza);
+echo $pieces[0], PHP_EOL; // piece1
+echo $pieces[1], PHP_EOL; // piece2
+
+// Example 2
+$data = "foo:*:1023:1000::/home/foo:/bin/sh";
+list($user, $pass, $uid, $gid, $gecos, $home, $shell) = explode(":", $data);
+echo $user, PHP_EOL; // foo
+echo $pass, PHP_EOL; // *
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title><function>explode</function> return का उदाहरणहरू</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+/* 
+   A string that doesn't contain the delimiter will simply
+   return a one-length array of the original string.
+*/
+$input1 = "hello";
+$input2 = "hello,there";
+$input3 = ',';
+var_dump( explode( ',', $input1 ) );
+var_dump( explode( ',', $input2 ) );
+var_dump( explode( ',', $input3 ) );
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(1) {
+  [0]=>
+  string(5) "hello"
+}
+array(2) {
+  [0]=>
+  string(5) "hello"
+  [1]=>
+  string(5) "there"
+}
+array(2) {
+  [0]=>
+  string(0) ""
+  [1]=>
+  string(0) ""
+}
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title><parameter>limit</parameter> parameter का उदाहरणहरू</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$str = 'one|two|three|four';
+
+// positive limit
+print_r(explode('|', $str, 2));
+
+// negative limit
+print_r(explode('|', $str, -1));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [0] => one
+    [1] => two|three|four
+)
+Array
+(
+    [0] => one
+    [1] => two
+    [2] => three
+)
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  &note.bin-safe;
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>preg_split</function></member>
+    <member><function>str_split</function></member>
+    <member><function>mb_split</function></member>
+    <member><function>str_word_count</function></member>
+    <member><function>strtok</function></member>
+    <member><function>implode</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 594c8c0a0188faae493b7070b3c1e331678e1655 Maintainer: prateekbhujel Status: ready -->
+<!-- EN-Revision: 594c8c0a0188faae493b7070b3c1e331678e1655 Maintainer: prateekbhujel Status: draft -->
 <chapter xml:id="language.functions" xmlns="http://docbook.org/ns/docbook" annotations="interactive">
  <title>Functions (फंक्सनहरू)</title>
 
@@ -185,8 +185,24 @@ recursion(17);
    linkend="functions.arguments.default">default argument मानहरू</link>, र <link
    linkend="functions.variable-arg-list">variable-length argument lists</link> समर्थन गर्दछ।
   </para>
+  <note>
+   <para>
+    PHP 7.3.0 देखि, function call गर्दा argument सूचीको अन्त्यमा पनि comma राख्न सकिन्छ:
+    <informalexample>
+     <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+$v = foo(
+    $arg_1,
+    $arg_2,
+);
+]]>
+     </programlisting>
+    </informalexample>
+   </para>
+  </note>
   <para>
-   PHP 8.0.0 देखि, function parameters को सूचीमा trailing comma समावेश हुन सक्छ, जसलाई बेवास्ता गरिनेछ। यो विशेष गरी उपयोगी हुन्छ जब arguments को सूची लामो हुन्छ वा चर नामहरू लामो हुन्छन्, जसले गर्दा arguments लाई ठाडो रूपमा ढाँचाबद्ध गर्न सहज हुन्छ:
+   PHP 8.0.0 देखि, function को parameter सूचीको अन्त्यमा पनि comma राख्न सकिन्छ। PHP ले त्यो अन्तिम comma लाई बेवास्ता गर्छ। Parameter सूची लामो हुँदा वा variable का नाम लामा हुँदा प्रत्येक parameter छुट्टाछुट्टै लाइनमा लेख्न यसले सजिलो बनाउँछ:
   </para>
   <example>
    <title>Trailing comma सहितको Function parameter सूची</title>

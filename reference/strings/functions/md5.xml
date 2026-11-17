@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<refentry xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" xml:id="function.md5">
+ <refnamediv>
+  <refname>md5</refname>
+  <refpurpose>एउटा string को md5 hash गणना गर्दछ</refpurpose>
+ </refnamediv>
+ 
+ <refsynopsisdiv>
+  &warn.passwordhashing;
+ </refsynopsisdiv>
+ 
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>md5</methodname>
+   <methodparam><type>string</type><parameter>string</parameter></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>binary</parameter><initializer>&false;</initializer></methodparam>
+  </methodsynopsis>
+  <para><parameter>string</parameter> को MD5 hash लाई <link xlink:href="&url.rfc;1321">RSA Data Security, Inc. MD5 Message-Digest Algorithm</link> प्रयोग गरी गणना गर्दछ, र उक्त hash return गर्दछ।</para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>string</parameter></term>
+     <listitem>
+      <para>उक्त string।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>binary</parameter></term>
+     <listitem>
+      <para>यदि ऐच्छिक <parameter>binary</parameter> लाई &true; मा सेट गरिएको छ भने, md5 digest त्यसको सट्टा 16 लम्बाइ भएको raw binary format मा return गरिन्छ।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>hash लाई 32-character hexadecimal सङ्ख्याको रूपमा return गर्दछ।</para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>एउटा <function>md5</function> उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$str = 'apple';
+
+if (md5($str) === '1f3870be274f6c49b3e31a0c6728957f') {
+    echo "Would you like a green or red apple?";
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>hash</function></member>
+    <member><function>password_hash</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

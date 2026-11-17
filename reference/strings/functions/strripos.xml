@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 46efd980535e8de6f6639a0015d2ad1e4bfe9d00 Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.strripos" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>strripos</refname>
+  <refpurpose>एउटा string मा case-insensitive substring अन्तिम पटक देखा परेको position पत्ता लगाउँछ</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type class="union"><type>int</type><type>false</type></type><methodname>strripos</methodname>
+   <methodparam><type>string</type><parameter>haystack</parameter></methodparam>
+   <methodparam><type>string</type><parameter>needle</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>offset</parameter><initializer>0</initializer></methodparam>
+  </methodsynopsis>
+  <para><parameter>haystack</parameter> string मा <parameter>needle</parameter> अन्तिम पटक देखा परेको numeric position पत्ता लगाउँछ।</para>
+  <simpara><function>strrpos</function> को विपरीत, <function>strripos</function> case-insensitive हुन्छ।</simpara>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>haystack</parameter></term>
+     <listitem>
+      <para>खोजी गरिने string।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>needle</parameter></term>
+     <listitem>
+      <para>खोजी गरिने string।</para>
+      &strings.parameter.needle.non-string;
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>offset</parameter></term>
+     <listitem>
+      <para>यदि शून्य वा positive भएमा, <parameter>haystack</parameter> का पहिलो <parameter>offset</parameter> bytes छोडेर बायाँबाट दायाँतर्फ खोजी गरिन्छ।</para>
+      <para>यदि negative भएमा, <parameter>haystack</parameter> का अन्तिम <parameter>offset</parameter> bytes छोडेर दायाँबाट बायाँतर्फ खोजी गरिन्छ र <parameter>needle</parameter> को पहिलो occurrence खोजिन्छ।<note>
+        <para>यसको वास्तविक अर्थ अन्तिम <parameter>offset</parameter> bytes भन्दा अगाडि <parameter>needle</parameter> को अन्तिम occurrence खोज्नु हो।</para>
+       </note>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para><parameter>haystack</parameter> string को सुरुको सापेक्षमा <parameter>needle</parameter> रहेको position return गर्दछ (search direction वा <parameter>offset</parameter> बाट स्वतन्त्र)।<note>
+    <simpara>String positions 0 बाट सुरु हुन्छन्, 1 बाट होइन।</simpara>
+   </note>
+  </para>
+  <para>यदि <parameter>needle</parameter> फेला परेन भने &false; return गर्दछ।</para>
+  &return.falseproblem;
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <itemizedlist>
+   <listitem>
+    <simpara>यदि <parameter>offset</parameter>, <parameter>haystack</parameter> को length भन्दा ठूलो छ भने, एउटा <classname>ValueError</classname> throw गरिनेछ।</simpara>
+   </listitem>
+  </itemizedlist>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &strings.changelog.ascii-case-folding;
+     &strings.changelog.needle-empty;
+     <row>
+      <entry>8.0.0</entry>
+      <entry><parameter>needle</parameter> को रूपमा एउटा &integer; pass गर्न अब support गरिँदैन।</entry>
+     </row>
+     <row>
+      <entry>7.3.0</entry>
+      <entry><parameter>needle</parameter> को रूपमा एउटा &integer; pass गर्ने कार्य deprecated गरिएको छ।</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>एउटा सरल <function>strripos</function> उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$haystack = 'ababcd';
+$needle   = 'aB';
+
+$pos      = strripos($haystack, $needle);
+
+if ($pos === false) {
+    echo "Sorry, we did not find `$needle` in `$haystack`";
+} else {
+    echo "Congratulations!\n";
+    echo "We found the last `$needle` in `$haystack` at position `$pos`";
+}
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Congratulations!
+We found the last `aB` in `ababcd` at position `2`
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>strpos</function></member>
+    <member><function>stripos</function></member>
+    <member><function>strrpos</function></member>
+    <member><function>strrchr</function></member>
+    <member><function>stristr</function></member>
+    <member><function>substr</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

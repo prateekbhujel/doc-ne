@@ -1,0 +1,1054 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<appendix xml:id="string.constants" xmlns="http://docbook.org/ns/docbook">
+ &reftitle.constants;
+ &extension.constants;
+ <variablelist>
+  <varlistentry xml:id="constant.crypt-salt-length">
+   <term>
+    <constant>CRYPT_SALT_LENGTH</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.crypt-std-des">
+   <term>
+    <constant>CRYPT_STD_DES</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara><function>crypt</function> मा standard DES-based hashes support हुन्छ कि हुँदैन भनी जनाउँछ। सधैँ <literal>1</literal>।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.crypt-ext-des">
+   <term>
+    <constant>CRYPT_EXT_DES</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara><function>crypt</function> मा extended DES-based hashes support हुन्छ कि हुँदैन भनी जनाउँछ। सधैँ <literal>1</literal>।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.crypt-md5">
+   <term>
+    <constant>CRYPT_MD5</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara><function>crypt</function> मा MD5 hashes support हुन्छ कि हुँदैन भनी जनाउँछ। सधैँ <literal>1</literal>।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.crypt-blowfish">
+   <term>
+    <constant>CRYPT_BLOWFISH</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara><function>crypt</function> मा Blowfish hashes support हुन्छ कि हुँदैन भनी जनाउँछ। सधैँ <literal>1</literal>।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.crypt-sha256">
+   <term>
+    <constant>CRYPT_SHA256</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara><function>crypt</function> मा SHA-256 hashes support हुन्छ कि हुँदैन भनी जनाउँछ। सधैँ <literal>1</literal>।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.crypt-sha512">
+   <term>
+    <constant>CRYPT_SHA512</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara><function>crypt</function> मा SHA-512 hashes support हुन्छ कि हुँदैन भनी जनाउँछ। सधैँ <literal>1</literal>।</simpara>
+   </listitem>
+  </varlistentry>
+   <varlistentry xml:id="constant.html-specialchars">
+   <term>
+    <constant>HTML_SPECIALCHARS</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.html-entities">
+   <term>
+    <constant>HTML_ENTITIES</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.ent-compat">
+   <term>
+    <constant>ENT_COMPAT</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.ent-quotes">
+   <term>
+    <constant>ENT_QUOTES</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.ent-noquotes">
+   <term>
+    <constant>ENT_NOQUOTES</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.ent-ignore">
+   <term>
+    <constant>ENT_IGNORE</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.ent-substitute">
+   <term>
+    <constant>ENT_SUBSTITUTE</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.ent-disallowed">
+   <term>
+    <constant>ENT_DISALLOWED</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.ent-html401">
+   <term>
+    <constant>ENT_HTML401</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.ent-xml1">
+   <term>
+    <constant>ENT_XML1</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.ent-xhtml">
+   <term>
+    <constant>ENT_XHTML</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.ent-html5">
+   <term>
+    <constant>ENT_HTML5</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.char-max">
+   <term>
+    <constant>CHAR_MAX</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.lc-ctype">
+   <term>
+    <constant>LC_CTYPE</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>locale setting बाट प्रभावित हुने character classification र conversion।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.lc-numeric">
+   <term>
+    <constant>LC_NUMERIC</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>locale setting बाट प्रभावित हुने decimal separator।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.lc-time">
+   <term>
+    <constant>LC_TIME</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>locale setting बाट प्रभावित हुने date र time formatting।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.lc-collate">
+   <term>
+    <constant>LC_COLLATE</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>locale setting बाट प्रभावित हुने String comparison।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.lc-monetary">
+   <term>
+    <constant>LC_MONETARY</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>locale setting बाट प्रभावित हुने monetary formatting।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.lc-all">
+   <term>
+    <constant>LC_ALL</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>अन्य कुनै पनि <constant>LC_<replaceable>*</replaceable></constant> constant ले असर गर्ने सबै functions लाई असर गर्दछ।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.lc-messages">
+   <term>
+    <constant>LC_MESSAGES</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>locale setting बाट प्रभावित हुने system responses। यदि PHP लाई <literal>libintl</literal> सँग compile गरिएको थियो भने उपलब्ध हुन्छ।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.str-pad-left">
+   <term>
+    <constant>STR_PAD_LEFT</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.str-pad-right">
+   <term>
+    <constant>STR_PAD_RIGHT</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.str-pad-both">
+   <term>
+    <constant>STR_PAD_BOTH</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+ <variablelist role="constant_list">
+  <title><function>nl_langinfo</function> <constant>LC_TIME</constant> Category Constant हरू</title>
+  <varlistentry xml:id="constant.abday-1">
+   <term>
+    <constant>ABDAY_1</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>हप्ताको पहिलो दिनको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.abday-2">
+   <term>
+    <constant>ABDAY_2</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>हप्ताको दोस्रो दिनको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.abday-3">
+   <term>
+    <constant>ABDAY_3</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>हप्ताको तेस्रो दिनको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.abday-4">
+   <term>
+    <constant>ABDAY_4</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>हप्ताको चौथो दिनको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.abday-5">
+   <term>
+    <constant>ABDAY_5</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>हप्ताको पाँचौँ दिनको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.abday-6">
+   <term>
+    <constant>ABDAY_6</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>हप्ताको छैटौँ दिनको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.abday-7">
+   <term>
+    <constant>ABDAY_7</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>हप्ताको सातौँ दिनको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.day-1">
+   <term>
+    <constant>DAY_1</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>हप्ताको पहिलो दिनको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.day-2">
+   <term>
+    <constant>DAY_2</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>हप्ताको दोस्रो दिनको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.day-3">
+   <term>
+    <constant>DAY_3</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>हप्ताको तेस्रो दिनको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.day-4">
+   <term>
+    <constant>DAY_4</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>हप्ताको चौथो दिनको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.day-5">
+   <term>
+    <constant>DAY_5</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>हप्ताको पाँचौँ दिनको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.day-6">
+   <term>
+    <constant>DAY_6</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>हप्ताको छैटौँ दिनको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.day-7">
+   <term>
+    <constant>DAY_7</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>हप्ताको सातौँ दिनको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.abmon-1">
+   <term>
+    <constant>ABMON_1</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको पहिलो महिनाको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.abmon-2">
+   <term>
+    <constant>ABMON_2</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको दोस्रो महिनाको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.abmon-3">
+   <term>
+    <constant>ABMON_3</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको तेस्रो महिनाको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.abmon-4">
+   <term>
+    <constant>ABMON_4</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको चौथो महिनाको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.abmon-5">
+   <term>
+    <constant>ABMON_5</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको पाँचौँ महिनाको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.abmon-6">
+   <term>
+    <constant>ABMON_6</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको छैटौँ महिनाको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.abmon-7">
+   <term>
+    <constant>ABMON_7</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको सातौँ महिनाको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.abmon-8">
+   <term>
+    <constant>ABMON_8</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको आठौँ महिनाको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.abmon-9">
+   <term>
+    <constant>ABMON_9</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको नवौँ महिनाको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.abmon-10">
+   <term>
+    <constant>ABMON_10</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको दशौँ महिनाको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.abmon-11">
+   <term>
+    <constant>ABMON_11</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको एघारौँ महिनाको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.abmon-12">
+   <term>
+    <constant>ABMON_12</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको बाह्रौँ महिनाको संक्षिप्त नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.mon-1">
+   <term>
+    <constant>MON_1</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको पहिलो महिनाको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.mon-2">
+   <term>
+    <constant>MON_2</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको दोस्रो महिनाको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.mon-3">
+   <term>
+    <constant>MON_3</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको तेस्रो महिनाको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.mon-4">
+   <term>
+    <constant>MON_4</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको चौथो महिनाको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.mon-5">
+   <term>
+    <constant>MON_5</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको पाँचौँ महिनाको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.mon-6">
+   <term>
+    <constant>MON_6</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको छैटौँ महिनाको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.mon-7">
+   <term>
+    <constant>MON_7</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको सातौँ महिनाको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.mon-8">
+   <term>
+    <constant>MON_8</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको आठौँ महिनाको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.mon-9">
+   <term>
+    <constant>MON_9</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको नवौँ महिनाको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.mon-10">
+   <term>
+    <constant>MON_10</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको दसौँ महिनाको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.mon-11">
+   <term>
+    <constant>MON_11</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको एघारौँ महिनाको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.mon-12">
+   <term>
+    <constant>MON_12</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वर्षको बाह्रौँ महिनाको नाम।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.am-str">
+   <term>
+    <constant>AM_STR</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>Ante meridian का लागि String।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.pm-str">
+   <term>
+    <constant>PM_STR</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>Post meridian का लागि String।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.d-t-fmt">
+   <term>
+    <constant>D_T_FMT</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>समय र मिति प्रतिनिधित्व गर्न <function>strftime</function> का लागि format string को रूपमा प्रयोग गर्न सकिने String।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.d-fmt">
+   <term>
+    <constant>D_FMT</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>मिति प्रतिनिधित्व गर्न <function>strftime</function> का लागि format string को रूपमा प्रयोग गर्न सकिने String।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.t-fmt">
+   <term>
+    <constant>T_FMT</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>समय प्रतिनिधित्व गर्न <function>strftime</function> का लागि format string को रूपमा प्रयोग गर्न सकिने String।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.t-fmt-ampm">
+   <term>
+    <constant>T_FMT_AMPM</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>ante/post meridian सहित 12-hour format मा समय प्रतिनिधित्व गर्न <function>strftime</function> का लागि format string को रूपमा प्रयोग गर्न सकिने String।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.era">
+   <term>
+    <constant>ERA</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वैकल्पिक era।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.era-year">
+   <term>
+    <constant>ERA_YEAR</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वैकल्पिक era format मा वर्ष।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.era-d-t-fmt">
+   <term>
+    <constant>ERA_D_T_FMT</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वैकल्पिक era format मा मिति र समय (string लाई <function>strftime</function> मा प्रयोग गर्न सकिन्छ)।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.era-d-fmt">
+   <term>
+    <constant>ERA_D_FMT</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वैकल्पिक era format मा मिति (string लाई <function>strftime</function> मा प्रयोग गर्न सकिन्छ)।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.era-t-fmt">
+   <term>
+    <constant>ERA_T_FMT</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>वैकल्पिक era format मा समय (string लाई <function>strftime</function> मा प्रयोग गर्न सकिन्छ)।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.alt-digits">
+   <term>
+    <constant>ALT_DIGITS</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>अङ्कहरूका लागि वैकल्पिक प्रतीकहरू।</simpara>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+ <variablelist role="constant_list">
+  <title><function>nl_langinfo</function> <constant>LC_MONETARY</constant> Category Constant हरू</title>
+  <varlistentry xml:id="constant.int-curr-symbol">
+   <term>
+    <constant>INT_CURR_SYMBOL</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>अन्तर्राष्ट्रिय मुद्रा प्रतीक।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.currency-symbol">
+   <term>
+    <constant>CURRENCY_SYMBOL</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>स्थानीय मुद्रा प्रतीक।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.crncystr">
+   <term>
+    <constant>CRNCYSTR</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara><constant>CURRENCY_SYMBOL</constant> सँग समान value।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.mon-decimal-point">
+   <term>
+    <constant>MON_DECIMAL_POINT</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>दशमलव बिन्दु character।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.mon-thousands-sep">
+   <term>
+    <constant>MON_THOUSANDS_SEP</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>Thousands separator (तीन अङ्कहरूको समूह)।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.mon-grouping">
+   <term>
+    <constant>MON_GROUPING</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara><literal>"grouping"</literal> element जस्तै।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.positive-sign">
+   <term>
+    <constant>POSITIVE_SIGN</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>positive values का लागि चिन्ह।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.negative-sign">
+   <term>
+    <constant>NEGATIVE_SIGN</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>negative values का लागि चिन्ह।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.int-frac-digits">
+   <term>
+    <constant>INT_FRAC_DIGITS</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>अन्तर्राष्ट्रिय fractional digits।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.frac-digits">
+   <term>
+    <constant>FRAC_DIGITS</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>स्थानीय fractional digits।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.p-cs-precedes">
+   <term>
+    <constant>P_CS_PRECEDES</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>यदि <constant>CURRENCY_SYMBOL</constant> positive value भन्दा अगाडि आउँछ भने 1 return गर्दछ।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.p-sep-by-space">
+   <term>
+    <constant>P_SEP_BY_SPACE</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>यदि space ले <constant>CURRENCY_SYMBOL</constant> from positive value लाई छुट्याउँछ भने 1 return गर्दछ।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.n-cs-precedes">
+   <term>
+    <constant>N_CS_PRECEDES</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>यदि <constant>CURRENCY_SYMBOL</constant> negative value भन्दा अगाडि आउँछ भने 1 return गर्दछ।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.n-sep-by-space">
+   <term>
+    <constant>N_SEP_BY_SPACE</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>यदि space ले <constant>CURRENCY_SYMBOL</constant> from negative value लाई छुट्याउँछ भने 1 return गर्दछ।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.p-sign-posn">
+   <term>
+    <constant>P_SIGN_POSN</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <para>
+     <itemizedlist>
+             <listitem>
+              <simpara>यदि parentheses ले quantity र <constant>CURRENCY_SYMBOL</constant> लाई घेर्दछ भने 0 return गर्दछ।</simpara>
+             </listitem>
+             <listitem>
+              <simpara>यदि sign string quantity र <constant>CURRENCY_SYMBOL</constant> भन्दा अगाडि आउँछ भने 1 return गर्दछ।</simpara>
+             </listitem>
+             <listitem>
+              <simpara>यदि sign string quantity र <constant>CURRENCY_SYMBOL</constant> भन्दा पछाडि आउँछ भने 2 return गर्दछ।</simpara>
+             </listitem>
+             <listitem>
+              <simpara>यदि sign string <constant>CURRENCY_SYMBOL</constant> को ठीक अगाडि आउँछ भने 3 return गर्दछ।</simpara>
+             </listitem>
+             <listitem>
+              <simpara>यदि sign string <constant>CURRENCY_SYMBOL</constant> को ठीक पछाडि आउँछ भने 4 return गर्दछ।</simpara>
+             </listitem>
+            </itemizedlist>
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.n-sign-posn">
+   <term>
+    <constant>N_SIGN_POSN</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+ <variablelist role="constant_list">
+  <title><function>nl_langinfo</function> <constant>LC_NUMERIC</constant> Category Constant हरू</title>
+  <varlistentry xml:id="constant.decimal-point">
+   <term>
+    <constant>DECIMAL_POINT</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>दशमलव बिन्दु character।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.radixchar">
+   <term>
+    <constant>RADIXCHAR</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara><constant>DECIMAL_POINT</constant> सँग समान value।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.thousands-sep">
+   <term>
+    <constant>THOUSANDS_SEP</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>हजार (तीन अङ्कका समूहहरू) का लागि Separator character।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.thousep">
+   <term>
+    <constant>THOUSEP</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara><constant>THOUSANDS_SEP</constant> सँग समान value।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.grouping">
+   <term>
+    <constant>GROUPING</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>
+
+    </simpara>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+ <variablelist role="constant_list">
+  <title><function>nl_langinfo</function> <constant>LC_MESSAGES</constant> Category Constant हरू</title>
+  <varlistentry xml:id="constant.yesexpr">
+   <term>
+    <constant>YESEXPR</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara><literal>"yes"</literal> input match गर्नका लागि regex string।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.noexpr">
+   <term>
+    <constant>NOEXPR</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara><literal>"no"</literal> input match गर्नका लागि regex string।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.yesstr">
+   <term>
+    <constant>YESSTR</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara><literal>"yes"</literal> का लागि output string।</simpara>
+   </listitem>
+  </varlistentry>
+  <varlistentry xml:id="constant.nostr">
+   <term>
+    <constant>NOSTR</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara><literal>"no"</literal> का लागि output string।</simpara>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+ <variablelist role="constant_list">
+  <title><function>nl_langinfo</function> <constant>LC_CTYPE</constant> Category Constant हरू</title>
+  <varlistentry xml:id="constant.codeset">
+   <term>
+    <constant>CODESET</constant>
+    (<type>int</type>)
+   </term>
+   <listitem>
+    <simpara>character encoding को नाम भएको एउटा string return गर्दछ।</simpara>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</appendix>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

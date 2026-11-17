@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 3237a040686263e6b95db60c86a29d39b25c298e Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.array-multisort" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>array_multisort</refname>
+  <refpurpose>धेरै वा multi-dimensional arrays लाई sort गर्छ</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>true</type><methodname>array_multisort</methodname>
+   <methodparam><type>array</type><parameter role="reference">array1</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>array1_sort_order</parameter><initializer>SORT_ASC</initializer></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>array1_sort_flags</parameter><initializer>SORT_REGULAR</initializer></methodparam>
+   <methodparam rep="repeat"><type>mixed</type><parameter>rest</parameter></methodparam>
+  </methodsynopsis>
+  <para><function>array_multisort</function> लाई एकैपटक धेरै arrays, वा एक वा बढी dimensions अनुसार एउटा multi-dimensional array लाई sort गर्न प्रयोग गर्न सकिन्छ।</para>
+  <para>Associative (<type>string</type>) keys कायम राखिनेछ, तर numeric keys लाई भने re-index गरिनेछ।</para>
+  &note.sort-unstable;
+  &note.reset-index;
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>array1</parameter></term>
+     <listitem>
+      <para>Sort गरिँदै गरेको एउटा <type>array</type>।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>array1_sort_order</parameter></term>
+     <listitem>
+      <para>अघिल्लो <type>array</type> argument लाई sort गर्न प्रयोग गरिने क्रम। या त ascending क्रममा sort गर्न <constant>SORT_ASC</constant> वा descending क्रममा sort गर्न <constant>SORT_DESC</constant>।</para>
+      <para>यो argument लाई <parameter>array1_sort_flags</parameter> सँग swap गर्न वा पूर्ण रूपमा छोड्न सकिन्छ, जुन अवस्थामा <constant>SORT_ASC</constant> मानिन्छ।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>array1_sort_flags</parameter></term>
+     <listitem>
+      <para>अघिल्लो <type>array</type> argument का लागि sort options हरू:</para>
+      <para>Sorting type flags हरू:<itemizedlist>
+        <listitem>
+         <simpara><constant>SORT_REGULAR</constant> - items लाई सामान्य रूपमा compare गर्छ (types परिवर्तन गर्दैन)</simpara>
+        </listitem>
+        <listitem>
+         <simpara><constant>SORT_NUMERIC</constant> - items लाई संख्यात्मक रूपमा compare गर्छ</simpara>
+        </listitem>
+        <listitem>
+         <simpara><constant>SORT_STRING</constant> - items लाई strings को रूपमा compare गर्छ</simpara>
+        </listitem>
+        <listitem>
+         <simpara><constant>SORT_LOCALE_STRING</constant> - items लाई current locale का आधारमा strings को रूपमा compare गर्छ। यसले locale प्रयोग गर्दछ, जसलाई <function>setlocale</function> प्रयोग गरेर परिवर्तन गर्न सकिन्छ</simpara>
+        </listitem>
+        <listitem>
+         <simpara><constant>SORT_NATURAL</constant> - <function>natsort</function> जस्तै "natural ordering" प्रयोग गरेर items लाई strings को रूपमा compare गर्छ</simpara>
+        </listitem>
+        <listitem>
+         <simpara><constant>SORT_FLAG_CASE</constant> - <constant>SORT_STRING</constant> वा <constant>SORT_NATURAL</constant> सँग combine (bitwise OR) गरेर strings लाई case-insensitively sort गर्न सकिन्छ</simpara>
+        </listitem>
+       </itemizedlist>
+      </para>
+      <para>यो argument लाई <parameter>array1_sort_order</parameter> सँग swap गर्न वा पूर्ण रूपमा छोड्न सकिन्छ, जुन अवस्थामा <constant>SORT_REGULAR</constant> मानिन्छ।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>rest</parameter></term>
+     <listitem>
+      <para>थप arrays, जसपछि ऐच्छिक रूपमा sort order र flags आउन सक्छन्। अघिल्ला arrays का बराबर elements सँग मेल खाने elements मात्र compare गरिन्छ। अर्को शब्दमा भन्नुपर्दा, sort lexicographical हुन्छ।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   &return.true.always;
+  </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <simpara>यदि कुनै अज्ञात sort flag दिइयो भने, वा सबै arrays को size एउटै छैन भने एउटा <exceptionname>ValueError</exceptionname> throw गर्दछ।</simpara>
+  <simpara>यदि कुनै argument न त <type>array</type> न त sort flag हो भने, वा एउटै array का लागि एकै प्रकारको sort flag दुई पटक दिइयो भने एउटा <exceptionname>TypeError</exceptionname> throw गर्दछ।</simpara>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.5.0</entry>
+      <entry>return type अब &true; भएको छ; पहिले, यो <type>bool</type> थियो।</entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>अब अमान्य arguments का लागि <exceptionname>ValueError</exceptionname> वा <exceptionname>TypeError</exceptionname> throw गर्दछ। पहिले, <constant>E_WARNING</constant> raise गरिन्थ्यो र &false; return गरिन्थ्यो।</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>धेरै arrays sort गर्ने</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$ar1 = array(10, 100, 100, 0);
+$ar2 = array(1, 3, 2, 4);
+array_multisort($ar1, $ar2);
+
+var_dump($ar1);
+var_dump($ar2);
+?>
+]]>
+    </programlisting>
+    <para>यस उदाहरणमा, sort गरिसकेपछि, पहिलो array मा 0, 10, 100, 100 हुनेछ। दोस्रो array मा 4, 1, 2, 3 हुनेछ। दोस्रो array का ती entries, जुन पहिलो array का समान entries (100 र 100) सँग मेल खान्छन्, ती पनि sort गरिएका थिए।</para>
+    <screen>
+<![CDATA[
+array(4) {
+  [0]=> int(0)
+  [1]=> int(10)
+  [2]=> int(100)
+  [3]=> int(100)
+}
+array(4) {
+  [0]=> int(4)
+  [1]=> int(1)
+  [2]=> int(2)
+  [3]=> int(3)
+}
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>multi-dimensional array sort गर्ने</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$ar = array(
+       array("10", 11, 100, 100, "a"),
+       array(   1,  2, "2",   3,   1)
+      );
+array_multisort($ar[0], SORT_ASC, SORT_STRING,
+                $ar[1], SORT_NUMERIC, SORT_DESC);
+var_dump($ar);
+?>
+]]>
+    </programlisting>
+    <para>यस उदाहरणमा, sort गरिसकेपछि, पहिलो array "10", 100, 100, 11, "a" मा रूपान्तरण हुनेछ (यसलाई ascending order मा strings का रूपमा sort गरिएको थियो)। दोस्रोमा 1, 3, "2", 2, 1 हुनेछ (descending order मा numbers का रूपमा sort गरिएको)।</para>
+    <screen>
+<![CDATA[
+array(2) {
+  [0]=> array(5) {
+    [0]=> string(2) "10"
+    [1]=> int(100)
+    [2]=> int(100)
+    [3]=> int(11)
+    [4]=> string(1) "a"
+  }
+  [1]=> array(5) {
+    [0]=> int(1)
+    [1]=> int(3)
+    [2]=> string(1) "2"
+    [3]=> int(2)
+    [4]=> int(1)
+  }
+}
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>database results sort गर्ने</title>
+    <para>यस उदाहरणका लागि, each element, जुन <varname>data</varname> array मा छ, त्यसले table को एउटा row लाई जनाउँछ। यस type को dataset, database records को विशिष्ट उदाहरण हो।</para>
+    <para>उदाहरण data:</para>
+    <screen>
+<![CDATA[
+volume | edition
+-------+--------
+    67 |       2
+    86 |       1
+    85 |       6
+    98 |       2
+    86 |       6
+    67 |       7
+]]>
+    </screen>
+    <para>यो data एउटा array को रूपमा छ, जसलाई <varname>data</varname> भनिन्छ। उदाहरणका लागि, यो प्रायः <function>mysqli_fetch_assoc</function> सँग loop गरेर प्राप्त गरिन्छ।</para>
+    <para>यस उदाहरणमा, हामी <varname>volume</varname> descending, र <varname>edition</varname> ascending क्रममा order गर्नेछौँ।</para>
+    <para>हामीसँग row हरूको एउटा array छ, तर <function>array_multisort</function> लाई column हरूको एउटा array चाहिन्छ, त्यसैले column हरू प्राप्त गर्न हामी तलको code प्रयोग गर्छौँ, र त्यसपछि sorting गर्छौँ।</para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// The data as created by looping over mysqli_fetch_assoc:
+$data[] = array('volume' => 67, 'edition' => 2);
+$data[] = array('volume' => 86, 'edition' => 1);
+$data[] = array('volume' => 85, 'edition' => 6);
+$data[] = array('volume' => 98, 'edition' => 2);
+$data[] = array('volume' => 86, 'edition' => 6);
+$data[] = array('volume' => 67, 'edition' => 7);
+
+// Obtain a list of columns
+foreach ($data as $key => $row) {
+    $volume[$key]  = $row['volume'];
+    $edition[$key] = $row['edition'];
+}
+
+// You can use array_column() instead of the above code
+$volume  = array_column($data, 'volume');
+$edition = array_column($data, 'edition');
+
+// Sort the data with volume descending, edition ascending
+// Add $data as the last parameter, to sort by the common key
+array_multisort($volume, SORT_DESC, $edition, SORT_ASC, $data);
+
+// Loop over the data and output the sorted values for each column
+echo 'volume | edition', PHP_EOL;
+echo '-------+--------', PHP_EOL;
+for ($i = 0; $i < count($data); $i++) {
+     printf("%6d | %7d\n", $volume[$i], $edition[$i]);
+}
+?>
+]]>
+    </programlisting>
+    <para>यो dataset अब sort भइसकेको छ, र यस्तो देखिनेछ:</para>
+    <screen>
+<![CDATA[
+volume | edition
+-------+--------
+    98 |       2
+    86 |       1
+    86 |       6
+    85 |       6
+    67 |       2
+    67 |       7
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>Case-insensitive sort गर्ने</title>
+    <para><constant>SORT_STRING</constant> र <constant>SORT_REGULAR</constant> दुवै case sensitive हुन्, capital letter बाट सुरु हुने strings, lowercase letter बाट सुरु हुने strings भन्दा अगाडि आउनेछन्।</para>
+    <para>case insensitive sort गर्नका लागि, मूल array को lowercase copy द्वारा sorting order निर्धारित हुने बनाउनुहोस्।</para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$array = array('Alpha', 'atomic', 'Beta', 'bank');
+$array_lowercase = array_map('strtolower', $array);
+
+array_multisort($array_lowercase, SORT_ASC, SORT_STRING, $array);
+
+print_r($array);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [0] => Alpha
+    [1] => atomic
+    [2] => bank
+    [3] => Beta
+)
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>usort</function></member>
+    <member>&seealso.array.sorting;</member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

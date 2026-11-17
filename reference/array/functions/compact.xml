@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.compact" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>compact</refname>
+  <refpurpose>variable हरू र तिनका values समावेश भएको array सिर्जना गर्नुहोस्</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>compact</methodname>
+   <methodparam><type class="union"><type>array</type><type>string</type></type><parameter>var_name</parameter></methodparam>
+   <methodparam rep="repeat"><type class="union"><type>array</type><type>string</type></type><parameter>var_names</parameter></methodparam>
+  </methodsynopsis>
+  <para>variable हरू र तिनका values समावेश भएको एउटा array सिर्जना गर्दछ।</para>
+  <para>यीमध्ये each का लागि, <function>compact</function> ले current <link linkend="features.gc.refcounting-basics">symbol table</link> मा त्यो नामको variable खोज्दछ र त्यसलाई output array मा यसरी थप्छ कि variable को नाम key बन्दछ र variable को contents त्यो key का लागि value बन्दछ। संक्षेपमा भन्नुपर्दा, यसले <function>extract</function> को ठीक उल्टो काम गर्छ।</para>
+  <note>
+   <para>PHP 7.3 भन्दा पहिले, set नगरिएका कुनै पनि strings हरूलाई silently skip गरिन्थ्यो।</para>
+  </note> 
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>var_name</parameter></term>
+     <term><parameter>var_names</parameter></term>
+     <listitem>
+      <para><function>compact</function> ले परिवर्तनशील सङ्ख्यामा parameters लिन्छ। प्रत्येक parameter या त variable को नाम भएको एउटा string वा variable का नामहरूको एउटा array हुन सक्छ। array भित्र variable का नामहरू भएका अन्य arrays पनि हुन सक्छन्; <function>compact</function> ले यसलाई recursively handle गर्दछ।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>सबै variable हरू थपिएको output array return गर्दछ।</para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>यदि दिइएको string ले set नगरिएको variable लाई refer गर्छ भने <function>compact</function> ले <constant>E_WARNING</constant> level error जारी गर्दछ।</para>
+ </refsect1>
+
+ <refsect1 role="changelog"><!-- {{{ -->
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>यदि दिइएको string ले set नगरिएको variable लाई references गर्दछ भने, अब एउटा <constant>E_WARNING</constant> level error जारी गरिन्छ।</entry>
+     </row>
+     <row>
+      <entry>7.3.0</entry>
+      <entry>यदि दिइएको string ले set नगरिएको variable लाई refer गर्छ भने <function>compact</function> ले अब <constant>E_NOTICE</constant> level error जारी गर्दछ। पहिले, त्यस्ता strings हरूलाई silently skip गरिन्थ्यो।</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1><!-- }}} -->
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>compact</function> को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$city  = "San Francisco";
+$state = "CA";
+$event = "SIGGRAPH";
+
+$location_vars = array("city", "state");
+
+$result = compact("event", $location_vars);
+print_r($result);
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen role="php">
+<![CDATA[
+Array
+(
+    [event] => SIGGRAPH
+    [city] => San Francisco
+    [state] => CA
+)
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <title>ध्यान दिनुपर्ने कुरा</title>
+   <para>functions भित्र PHP का <link linkend="language.variables.superglobals">Superglobal arrays</link> सँग <link linkend="language.variables.variable">variable variables</link> प्रयोग गर्न नसकिने हुनाले, Superglobal arrays लाई <function>compact</function> मा pass गर्न सकिँदैन।</para>
+  </note>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>extract</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

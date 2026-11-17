@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: a9d052e2db27dd26e5f77b13ca03f0e9d352db5a Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.htmlspecialchars" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>htmlspecialchars</refname>
+  <refpurpose>विशेष characters लाई HTML entities मा convert गर्दछ</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>htmlspecialchars</methodname>
+   <methodparam><type>string</type><parameter>string</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>flags</parameter><initializer>ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>encoding</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>double_encode</parameter><initializer>&true;</initializer></methodparam>
+  </methodsynopsis>
+  <para>HTML मा केही characters को विशेष महत्त्व हुन्छ, र यदि तिनीहरूको अर्थ सुरक्षित राख्नु छ भने तिनीहरूलाई HTML entities द्वारा प्रस्तुत गरिनुपर्छ। यो function ले यी conversions गरिएको एउटा string return गर्दछ। यदि तपाईँलाई सम्बन्धित named entities भएका सबै input substrings translate गर्न आवश्यक छ भने, यसको सट्टा <function>htmlentities</function> प्रयोग गर्नुहोस्।</para>
+  <para>यदि यस function मा pass गरिएको input string र final document ले एउटै character set साझा गर्दछन् भने, एउटा HTML document का धेरैजसो contexts मा समावेश गर्नका लागि input तयार पार्न यो function पर्याप्त हुन्छ। तर यदि input ले यस्ता characters प्रतिनिधित्व गर्न सक्छ जुन final document को character set मा code गरिएका छैनन्, र तपाईँ ती characters लाई (numeric वा named entities को रूपमा) सुरक्षित राख्न चाहनुहुन्छ भने, यो function र <function>htmlentities</function> (जसले named entity बराबर भएका substrings लाई मात्र encode गर्दछ) दुवै अपर्याप्त हुन सक्छन्। तपाईँले यसको सट्टा <function>mb_encode_numericentity</function> प्रयोग गर्नुपर्ने हुन सक्छ।</para>
+  <para>
+   <table>
+    <title>गरिएका रूपान्तरणहरू</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>अक्षर (Character)</entry>
+       <entry>प्रतिस्थापन</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><literal>&amp;</literal> (एम्परस्यानड / ampersand)</entry>
+       <entry><literal>&amp;amp;</literal></entry>
+      </row>
+      <row>
+       <entry><literal>&quot;</literal> (दोहोरो उद्धरण / double quote)</entry>
+       <entry><literal>&amp;quot;</literal>, यदि <constant>ENT_NOQUOTES</constant> set गरिएको छैन भने</entry>
+      </row>
+      <row>
+       <entry><literal>'</literal> (एकल उद्धरण / single quote)</entry>
+       <entry><literal>&amp;#039;</literal> (<constant>ENT_HTML401</constant> का लागि) वा <literal>&amp;apos;</literal> (<constant>ENT_XML1</constant>, <constant>ENT_XHTML</constant> वा <constant>ENT_HTML5</constant> का लागि), तर <constant>ENT_QUOTES</constant> set गरिएको बेला मात्र</entry>
+      </row>
+      <row>
+       <entry><literal>&lt;</literal> (भन्दा सानो / less than)</entry>
+       <entry><literal>&amp;lt;</literal></entry>
+      </row>
+      <row>
+       <entry><literal>&gt;</literal> (भन्दा ठूलो / greater than)</entry>
+       <entry><literal>&amp;gt;</literal></entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>string</parameter></term>
+     <listitem>
+      <para>रूपान्तरण गरिने <type>string</type>।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>flags</parameter></term>
+     <listitem>
+      <para>तलका flags मध्ये एक वा बढीको bitmask, जसले quotes, invalid code unit sequences र प्रयोग गरिएको document type लाई कसरी handle गर्ने भन्ने निर्दिष्ट गर्दछ। डिफल्ट <literal>ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401</literal> हो।<table>
+        <title>उपलब्ध <parameter>flags</parameter> constant हरू</title>
+        <tgroup cols="2">
+         <thead>
+          <row>
+           <entry>Constant को नाम</entry>
+           <entry>विवरण</entry>
+          </row>
+         </thead>
+         <tbody>
+          <row>
+           <entry><constant>ENT_COMPAT</constant></entry>
+           <entry>Double-quotes लाई रूपान्तरण गर्नेछ र single-quotes लाई त्यतिकै छोड्नेछ।</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_QUOTES</constant></entry>
+           <entry>Double र single दुवै quotes लाई रूपान्तरण गर्नेछ।</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_NOQUOTES</constant></entry>
+           <entry>Double र single दुवै quotes लाई रूपान्तरण नगरी त्यतिकै छोड्नेछ।</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_IGNORE</constant></entry>
+           <entry>खाली string return गर्नुको सट्टा चुपचाप invalid code unit sequences लाई discard गर्दछ। यो flag प्रयोग गर्न निरुत्साहित गरिन्छ किनभने यसका <link xlink:href="&url.delete.nonchars;">सुरक्षा जोखिमहरू हुन सक्छन्</link>।</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_SUBSTITUTE</constant></entry>
+           <entry>एउटा खाली string return गर्नुको सट्टा, अमान्य code unit sequence हरूलाई Unicode Replacement Character U+FFFD (UTF-8) वा &amp;#xFFFD; (अन्यथा) ले प्रतिस्थापन गर्दछ।</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_DISALLOWED</constant></entry>
+           <entry>दिइएको document type का लागि अमान्य code points हरूलाई जस्ताको तस्तै छोड्नुको सट्टा एउटा Unicode Replacement Character U+FFFD (UTF-8) वा &amp;#xFFFD; (अन्यथा) ले replace गर्दछ। यो, instance का लागि, embedded बाह्य content भएका XML documents को well-formedness सुनिश्चित गर्न उपयोगी हुन सक्छ।</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_HTML401</constant></entry>
+           <entry>code लाई HTML 4.01 को रूपमा handle गर्छ।</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_XML1</constant></entry>
+           <entry>code लाई XML 1 को रूपमा handle गर्दछ।</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_XHTML</constant></entry>
+           <entry>code लाई XHTML को रूपमा handle गर्दछ।</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_HTML5</constant></entry>
+           <entry>code लाई HTML 5 को रूपमा handle गर्दछ।</entry>
+          </row>
+         </tbody>
+        </tgroup>
+       </table>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>encoding</parameter></term>
+     <listitem>
+      &strings.parameter.encoding;
+      <para>यस function को प्रयोजनका लागि, encodings <literal>ISO-8859-1</literal>, <literal>ISO-8859-15</literal>, <literal>UTF-8</literal>, <literal>cp866</literal>, <literal>cp1251</literal>, <literal>cp1252</literal>, र <literal>KOI8-R</literal> व्यावहारिक रूपमा समान हुन्, तर यसका लागि <parameter>string</parameter> आफैँ encoding का लागि valid हुनुपर्छ, किनभने <function>htmlspecialchars</function> ले असर गर्ने character हरूले यी सबै encodings मा एउटै स्थान ओगट्छन्।</para>
+      &reference.strings.charsets;
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>double_encode</parameter></term>
+     <listitem>
+      <para>जब <parameter>double_encode</parameter> बन्द गरिन्छ, तब PHP ले पहिलेदेखि रहेका html entities लाई encode गर्दैन, default रूपमा भने सबै कुरा convert गरिन्छ।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>रूपान्तरण गरिएको <type>string</type>।</para>
+  <para>यदि input <parameter>string</parameter> मा दिइएको <parameter>encoding</parameter> भित्र invalid code unit sequence समावेश छ भने, <constant>ENT_IGNORE</constant> वा <constant>ENT_SUBSTITUTE</constant> flags सेट गरिएको अवस्थामा बाहेक खाली string return हुनेछ।</para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.1.0</entry>
+      <entry><parameter>flags</parameter> लाई from <constant>ENT_COMPAT</constant> बाट <constant>ENT_QUOTES</constant> | <constant>ENT_SUBSTITUTE</constant> | <constant>ENT_HTML401</constant> मा परिवर्तन गरियो।</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>htmlspecialchars</function> को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$new = htmlspecialchars("<a href='test'>Test</a>", ENT_QUOTES);
+echo $new; // &lt;a href=&#039;test&#039;&gt;Test&lt;/a&gt;
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>अमान्य UTF-8 sequences सहित <constant>ENT_IGNORE</constant> र <constant>ENT_SUBSTITUTE</constant></title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+// "\x80" is not a valid UTF-8 byte sequence.
+$input = "atta\x80ck";
+
+// ENT_IGNORE silently drops the invalid byte - output: "attack"
+echo bin2hex(htmlspecialchars($input, ENT_QUOTES | ENT_IGNORE, 'UTF-8')), "\n";
+// 61747461636b
+
+// ENT_SUBSTITUTE replaces the invalid byte with U+FFFD - output: "atta" + replacement char + "ck"
+echo bin2hex(htmlspecialchars($input, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')), "\n";
+// 61747461efbfbd636b
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>ध्यान दिनुहोस् कि यस function ले माथि उल्लेख गरिएका बाहेक अरू केही पनि रूपान्तरण गर्दैन। पूर्ण entity रूपान्तरणका लागि, <function>htmlentities</function> हेर्नुहोस्।</para>
+  </note>
+  <note>
+   <para>अस्पष्ट <parameter>flags</parameter> value को अवस्थामा, निम्न नियमहरू लागू हुन्छन्:</para>
+   <para>
+    <itemizedlist>
+     <listitem>
+      <simpara><constant>ENT_COMPAT</constant>, <constant>ENT_QUOTES</constant>, <constant>ENT_NOQUOTES</constant> मध्ये कुनै पनि उपस्थित नभएको अवस्थामा, default <constant>ENT_NOQUOTES</constant> हुन्छ।</simpara>
+     </listitem>
+     <listitem>
+      <simpara><constant>ENT_COMPAT</constant>, <constant>ENT_QUOTES</constant>, <constant>ENT_NOQUOTES</constant> मध्ये एक भन्दा बढी उपस्थित भएको अवस्थामा, <constant>ENT_QUOTES</constant> ले सबैभन्दा उच्च प्राथमिकता पाउँछ, र त्यसपछि <constant>ENT_COMPAT</constant> ले।</simpara>
+     </listitem>
+     <listitem>
+      <simpara><constant>ENT_HTML401</constant>, <constant>ENT_HTML5</constant>, <constant>ENT_XHTML</constant>, <constant>ENT_XML1</constant> मध्ये कुनै पनि उपस्थित नभएको अवस्थामा, default <constant>ENT_HTML401</constant> हुन्छ।</simpara>
+     </listitem>
+     <listitem>
+      <simpara><constant>ENT_HTML401</constant>, <constant>ENT_HTML5</constant>, <constant>ENT_XHTML</constant>, <constant>ENT_XML1</constant> मध्ये एक भन्दा बढी उपस्थित भएको अवस्थामा, <constant>ENT_HTML5</constant> ले सबैभन्दा उच्च प्राथमिकता पाउँछ, र त्यसपछि <constant>ENT_XHTML</constant>, <constant>ENT_XML1</constant> र <constant>ENT_HTML401</constant> ले।</simpara>
+     </listitem>
+     <listitem>
+      <simpara><constant>ENT_DISALLOWED</constant>, <constant>ENT_IGNORE</constant>, <constant>ENT_SUBSTITUTE</constant> मध्ये एक भन्दा बढी उपस्थित भएको अवस्थामा, <constant>ENT_IGNORE</constant> ले सबैभन्दा उच्च प्राथमिकता पाउँछ, र त्यसपछि <constant>ENT_SUBSTITUTE</constant> ले।</simpara>
+     </listitem>
+    </itemizedlist>
+   </para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>get_html_translation_table</function></member>
+    <member><function>htmlspecialchars_decode</function></member>
+    <member><function>strip_tags</function></member>
+    <member><function>htmlentities</function></member>
+    <member><function>nl2br</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

@@ -7,7 +7,7 @@ declare(strict_types=1);
  */
 
 $rootDir = realpath(__DIR__ . '/..');
-$enDir = realpath($rootDir . '/../phpdoc-build/en') ?: realpath($rootDir . '/../en');
+require_once __DIR__ . '/word-count.php';
 
 $iterator = new RecursiveIteratorIterator(
     new RecursiveDirectoryIterator($rootDir, RecursiveDirectoryIterator::SKIP_DOTS)
@@ -44,8 +44,7 @@ foreach ($iterator as $file) {
             $draft++;
         }
 
-        $textOnly = strip_tags($content);
-        $wordCount = str_word_count($textOnly);
+        $wordCount = countProseWords($content);
         $totalWords += $wordCount;
 
         $files[] = [
@@ -61,9 +60,11 @@ usort($files, fn($a, $b) => strcmp($a['file'], $b['file']));
 
 echo "# PHP Manual — नेपाली Translation Status Report\n\n";
 echo "- **Total Translated Files**: " . count($files) . "\n";
-echo "- **Human Proofread (`ready`)**: {$ready}\n";
+echo "- **Marked `ready`**: {$ready}\n";
 echo "- **Pending Review (`draft`)**: {$draft}\n";
-echo "- **Approximate Words Translated**: ~{$totalWords}\n\n";
+echo "- **Approximate Prose Word Tokens**: ~{$totalWords}\n\n";
+echo "Generated with `php tools/status.php > STATUS.md`. Counts exclude code examples, output, XML comments and entity names. Unicode letters and combining marks are counted together. English technical terms in prose are included; this is not a count of Nepali-only words or a coverage percentage.\n\n";
+echo "Statuses come from XML headers. They do not independently verify human proofreading or readiness for php.net. Edited translations stay `draft` until the maintainer reviews them.\n\n";
 echo "| # | File | Status | EN-Rev | Approx Words |\n";
 echo "|---|---|---|---|---|\n";
 foreach ($files as $idx => $f) {

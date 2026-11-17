@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 8dc5bef8981ffd33c8c51f7f33414fcf5c03767a Maintainer: prateekbhujel Status: draft -->
+<reference xml:id="class.returntypewillchange" role="class" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude">
+ <title>ReturnTypeWillChange attribute</title>
+ <titleabbrev>ReturnTypeWillChange</titleabbrev>
+
+ <partintro>
+
+  <section xml:id="returntypewillchange.intro">
+   &reftitle.intro;
+   <simpara>PHP 8.1.0 देखि, internal class methods का लागि return type declarations मा संक्रमणको एउटा tentative चरण सुरु भयो।</simpara>
+
+   <simpara>धेरैजसो non-final internal methods हरूमा अब override गर्ने methods ले compatible return type declare गर्नुपर्ने हुन्छ। अन्यथा, signature ले covariance नियम उल्लङ्घन गरेको चेतावनी दिँदै inheritance validation को क्रममा एउटा deprecation notice emit गरिन्छ।</simpara>
+
+   <simpara>भविष्यको एउटा PHP version मा, method signature checking strict हुनेछ, र mismatch ले गर्दा fatal error आउनेछ।</simpara>
+
+   <simpara>यदि PHP cross-version compatibility को चिन्ताका कारण override गर्ने method का लागि return type declare गर्न सकिएन भने, वा override गर्ने method ले incompatible return type declare गर्छ भने, deprecation notice लाई silence गर्न एउटा <code>#[\ReturnTypeWillChange]</code> attribute थप्न सकिन्छ।</simpara>
+
+   <warning>
+    <simpara>user-defined classes मा define गरिएका methods लाई override गर्दा, return types कडाइका साथ check गरिन्छ। override गर्ने method लाई उक्त attribute ले mark गरिएको भए तापनि mismatch हुँदा fatal error emit हुन्छ।</simpara>
+
+    <simpara><classname>ReturnTypeWillChange</classname> attribute ले tentative return type चरणको अवधिमा <emphasis>only</emphasis> deprecation warnings suppress गर्दछ। strict type checking लागू (enforced) भएपछि यो attribute ले काम गर्न छोड्नेछ र कुनै internal class को overriding method signature मा mismatch भएमा fatal error निम्तिनेछ।</simpara>
+   </warning>
+  </section>
+
+  <section xml:id="returntypewillchange.synopsis">
+   &reftitle.classsynopsis;
+
+   <classsynopsis class="class">
+    <ooclass>
+     <modifier role="attribute">#[\Attribute(\Attribute::TARGET_METHOD)]</modifier>
+     <modifier>final</modifier>
+     <classname>ReturnTypeWillChange</classname>
+    </ooclass>
+
+    <classsynopsisinfo role="comment">&Methods;</classsynopsisinfo>
+    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.returntypewillchange')/db:refentry/db:refsect1[@role='description']/descendant::db:constructorsynopsis[@role='ReturnTypeWillChange'])"/>
+   </classsynopsis>
+
+  </section>
+
+  <section xml:id="returntypewillchange.seealso">
+   &reftitle.seealso;
+   <para><link linkend="language.attributes">Attributes को परिचय</link></para>
+  </section>
+
+ </partintro>
+
+ &language.predefined.returntypewillchange.construct;
+
+</reference>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

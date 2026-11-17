@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.addcslashes" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>addcslashes</refname>
+  <refpurpose>C style मा slashes प्रयोग गरी string लाई quote गर्ने</refpurpose>
+ </refnamediv>
+ 
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>addcslashes</methodname>
+   <methodparam><type>string</type><parameter>string</parameter></methodparam>
+   <methodparam><type>string</type><parameter>characters</parameter></methodparam>
+  </methodsynopsis>
+  <para><parameter>characters</parameter> parameter मा सूचीकृत गरिएका characters को अगाडि backslashes राखिएको एउटा string return गर्दछ।</para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>string</parameter></term>
+     <listitem>
+      <para>Escape गरिनुपर्ने string।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>characters</parameter></term>
+     <listitem>
+      <para>Escape गरिनुपर्ने characters को एउटा list। यदि <parameter>characters</parameter> मा <literal>\n</literal>, <literal>\r</literal> आदि characters समावेश छन् भने, तिनीहरूलाई C-like style मा रूपान्तरण गरिन्छ, जबकि 32 भन्दा कम र 126 भन्दा बढी ASCII code भएका अन्य non-alphanumeric characters लाई octal representation मा रूपान्तरण गरिन्छ।</para>
+      <para>जब तपाईँ <parameter>characters</parameter> argument मा characters को एउटा sequence define गर्नुहुन्छ, तब तपाईँले range को start र end को रूपमा set गर्नुभएका characters बीच कुन characters आउँछन् भन्ने कुरा तपाईँलाई थाहा छ भनी make sure गर्नुहोस्।<example>
+        <title>Ranges सहितको <function>addcslashes</function></title>
+        <programlisting role="php">
+<![CDATA[
+<?php
+echo addcslashes('foo[ ]', 'A..z');
+// output:  \f\o\o\[ \]
+// All upper and lower-case letters will be escaped
+// ... but so will the [\]^_`
+?>
+]]>
+        </programlisting>
+       </example>साथै, यदि एउटा range मा पहिलो character को ASCII value range को दोस्रो character भन्दा बढी छ भने, कुनै पनि range निर्माण हुनेछैन। केवल start, end र period characters मात्र escape गरिनेछ। कुनै character को ASCII value पत्ता लगाउन <function>ord</function> function प्रयोग गर्नुहोस्।<example>
+        <title>गलत क्रममा characters भएको <function>addcslashes</function></title>
+        <programlisting role="php">
+<![CDATA[
+<?php
+echo addcslashes("zoo['.']", 'z..A');
+// output:  \zoo['\.']
+?>
+]]>
+        </programlisting>
+       </example>
+      </para>
+      <para>यदि तपाईँले 0, a, b, f, n, r, t र v characters लाई escape गर्न रोज्नुभयो भने सावधान रहनुहोस्। तिनीहरू \0, \a, \b, \f, \n, \r, \t र \v मा रूपान्तरण हुनेछन्, जुन सबै C मा predefined escape sequences हुन्। यीमध्ये धेरैजसो sequences PHP लगायत अन्य C-derived भाषाहरूमा पनि define गरिएका छन्, जसको अर्थ यदि तपाईँले <parameter>characters</parameter> मा यी characters define गरी ती भाषाहरूमा code generate गर्न <function>addcslashes</function> को output प्रयोग गर्नुभयो भने, तपाईँले चाहेको नतिजा प्राप्त नहुन सक्छ।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>Escape गरिएको string return गर्दछ।</para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para><parameter>characters</parameter> जस्तै "\0..\37", जसले 0 र 31 बीचको ASCII code भएका सबै characters लाई escape गर्छ।<example>
+    <title><function>addcslashes</function> को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$not_escaped = "PHP isThirty\nYears Old!\tYay to the Elephant!\n";
+$escaped = addcslashes($not_escaped, "\0..\37!@\177..\377");
+echo $escaped;
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>stripcslashes</function></member>
+    <member><function>stripslashes</function></member>
+    <member><function>addslashes</function></member>
+    <member><function>htmlspecialchars</function></member>
+    <member><function>quotemeta</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

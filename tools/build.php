@@ -68,8 +68,10 @@ if (!is_dir($outputDir)) {
     mkdir($outputDir, 0755, true);
 }
 
-$cmdPhd = "php " . escapeshellarg("{$buildBase}/phd/render.php") .
-    " -d " . escapeshellarg("{$buildBase}/doc-base/temp/manual.xml") .
+// PhD resolves media relative to the XML file. The configured .manual.xml in
+// doc-base/ lets its ../en/ fallback reach the English image directories.
+$cmdPhd = "cd " . escapeshellarg($buildBase) . " && php " . escapeshellarg("{$buildBase}/phd/render.php") .
+    " -d " . escapeshellarg("{$buildBase}/doc-base/.manual.xml") .
     " -P PHP -f xhtml -L ne -o " . escapeshellarg($outputDir);
 
 // Passing any -C option replaces PhD's default CSS list, so include both

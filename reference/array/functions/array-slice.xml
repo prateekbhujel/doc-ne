@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.array-slice" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>array_slice</refname>
+  <refpurpose>array को एउटा slice निकाल्दछ</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>array_slice</methodname>
+   <methodparam><type>array</type><parameter>array</parameter></methodparam>
+   <methodparam><type>int</type><parameter>offset</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>length</parameter><initializer>&null;</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>preserve_keys</parameter><initializer>&false;</initializer></methodparam>
+  </methodsynopsis>
+  <para><function>array_slice</function> ले <parameter>offset</parameter> र <parameter>length</parameter> parameters द्वारा तोकिए अनुसार array <parameter>array</parameter> from elements को sequence return गर्दछ।</para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>array</parameter></term>
+     <listitem>
+      <para>Input array।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>offset</parameter></term>
+     <listitem>
+      <para>यदि <parameter>offset</parameter> non-negative छ भने, sequence <parameter>array</parameter> मा उक्त offset बाट सुरु हुनेछ।</para>
+      <para>यदि <parameter>offset</parameter> negative छ भने, sequence <parameter>array</parameter> को end from त्यति टाढाबाट सुरु हुनेछ।</para>
+      <note>
+       <para><parameter>offset</parameter> parameter ले array भित्रको position जनाउँछ, key होइन।</para>
+      </note>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>length</parameter></term>
+     <listitem>
+      <para>यदि <parameter>length</parameter> दिइएको छ र positive छ भने, sequence मा त्यति सङ्ख्यासम्मका elements हुनेछन्।</para>
+      <para>यदि array <parameter>length</parameter> भन्दा छोटो छ भने, उपलब्ध array elements मात्र रहनेछन्।</para>
+      <para>यदि <parameter>length</parameter> दिइएको छ र negative छ भने, sequence array को end from त्यति elements पहिले रोकिनेछ।</para>
+      <para>यदि यो छुटाइयो भने, sequence मा <parameter>offset</parameter> from <parameter>array</parameter> को end सम्मका सबै कुरा रहनेछन्।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>preserve_keys</parameter></term>
+     <listitem>
+      <note>
+       <para><function>array_slice</function> ले डिफल्ट रूपमा integer array indices लाई reorder र reset गर्नेछ। <parameter>preserve_keys</parameter> लाई &true; set गरेर यो व्यवहार परिवर्तन गर्न सकिन्छ। यो parameter जस्तोसुकै भए पनि, String keys सधैँ सुरक्षित रहन्छन्।</para>
+      </note>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>Slice return गर्दछ। यदि offset array को size भन्दा ठूलो छ भने, एउटा खाली array return गरिन्छ।</para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>array_slice</function> का उदाहरणहरू</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$input = array("a", "b", "c", "d", "e");
+
+$output = array_slice($input, 2);      // returns "c", "d", and "e"
+$output = array_slice($input, -2, 1);  // returns "d"
+$output = array_slice($input, 0, 3);   // returns "a", "b", and "c"
+
+// note the differences in the array keys
+print_r(array_slice($input, 2, -1));
+print_r(array_slice($input, 2, -1, true));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [0] => c
+    [1] => d
+)
+Array
+(
+    [2] => c
+    [3] => d
+)
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title><function>array_slice</function> र one-based array</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$input = array(1 => "a", "b", "c", "d", "e");
+print_r(array_slice($input, 1, 2));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [0] => b
+    [1] => c
+)
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>मिश्रित keys सहित <function>array_slice</function> र array</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$ar = array('a'=>'apple', 'b'=>'banana', '42'=>'pear', 'd'=>'orange');
+print_r(array_slice($ar, 0, 3));
+print_r(array_slice($ar, 0, 3, true));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [a] => apple
+    [b] => banana
+    [0] => pear
+)
+Array
+(
+    [a] => apple
+    [b] => banana
+    [42] => pear
+)
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>array_chunk</function></member>
+    <member><function>array_splice</function></member>
+    <member><function>unset</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

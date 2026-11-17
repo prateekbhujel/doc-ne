@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: ee7185a089f266a9475b069aa199314811fad8a8 Maintainer: prateekbhujel Status: draft -->
+<sect1 xml:id="install.unix.apache2" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>Unix systems मा Apache httpd 2.x</title>
+
+ <simpara>यस खण्डमा Linux र Unix-जस्ता systems मा PHP का Apache HTTP Server 2.x installs सम्बन्धी विशेष notes र hints समावेश छन्।</simpara>
+
+ <warning>
+  <title>यसको सट्टा PHP-FPM प्रयोग गर्नुहोस्</title>
+  <simpara><emphasis role="strong">नयाँ installation हरूका लागि <literal>mod_php</literal> प्रयोग नगर्नुहोस्।</emphasis> यस पृष्ठका निर्देशनहरू ऐतिहासिक reference का लागि र Apache httpd process मा सिधै PHP embed गर्न विशेष रूपमा आवश्यक पर्ने दुर्लभ अवस्थाहरूका लागि राखिएका हुन्।</simpara>
+  <simpara>सबै आधुनिक deployment हरूका लागि, Apache httpd को <literal>mod_proxy_fcgi</literal> module सँग <link linkend="install.fpm">PHP-FPM</link> (FastCGI Process Manager) प्रयोग गर्नुहोस्। PHP-FPM ले अझ राम्रो resource व्यवस्थापन, process isolation, Apache httpd restart नगरीकनै PHP को स्वतन्त्र restart, र Apache httpd को <literal>event</literal> MPM (Apache httpd 2.4 देखिको default) सँग compatibility प्रदान गर्दछ। प्रमुख Linux distribution हरूले यसलाई default configuration का रूपमा उपलब्ध गराउँछन्।</simpara>
+  <simpara><literal>mod_php</literal> approach ले प्रत्येक Apache httpd worker process मा सिधै PHP embed गर्दछ। यदि PHP लाई thread safety (<literal>--enable-zts</literal>) सहित compile गरिएको छैन भने, <literal>mod_php</literal> लाई <literal>prefork</literal> MPM आवश्यक पर्दछ, जसले concurrency लाई उल्लेख्य रूपमा सीमित गर्दछ। यदि तपाईँ <literal>mod_php</literal> प्रयोग गरेर अघि बढ्नुहुन्छ भने, तपाईँले यसका performance र security सम्बन्धी प्रभावहरूलाई पूर्ण रूपमा बुझ्नुपर्छ।</simpara>
+ </warning>
+
+ <simpara><link xlink:href="&url.apache2.docs;">Apache Documentation</link> नै Apache httpd 2.x server सम्बन्धी जानकारीको सबैभन्दा आधिकारिक स्रोत हो। Apache httpd का installation विकल्पहरूबारे थप जानकारी त्यहाँ पाउन सकिन्छ।</simpara>
+
+ <simpara>Apache httpd को सबैभन्दा नयाँ version from <link xlink:href="&url.apache;">Apache download site</link> बाट, र उपयुक्त PHP version from माथि उल्लिखित स्थानहरूबाट प्राप्त गर्न सकिन्छ। यो quick guide ले Apache httpd 2.x र PHP सुरु गर्न आवश्यक आधारभूत कुराहरू मात्र समेट्छ। थप जानकारीका लागि <link xlink:href="&url.apache2.docs;">Apache Documentation</link> पढ्नुहोस्। निर्देशनहरू गलत नहोऊन् भनी सुनिश्चित गर्न यहाँ version नम्बरहरू हटाइएका छन्। तलका उदाहरणहरूमा, 'NN' लाई प्रयोग भइरहेको Apache httpd को निश्चित version ले replace गर्नुपर्छ।</simpara>
+
+ <simpara>यी निर्देशनहरू Apache httpd 2.4 का लागि लागू हुन्छन्, जुन Apache httpd को एक मात्र supported release branch हो। पुराना version हरू (2.2 र त्योभन्दा मुनि) end of life भइसकेका छन् र तिनको प्रयोग गरिनु हुँदैन।</simpara>
+
+ <note>
+  <simpara>PHP 8.4.0 देखि, apache2handler SAPI का लागि कम्तीमा Apache 2.4 आवश्यक पर्छ; End-of-Life भइसकेका Apache 2.0 र 2.2 को support हटाइएको छ।</simpara>
+ </note>
+
+ <orderedlist>
+  <listitem>
+   <simpara>Apache httpd from माथि उल्लिखित स्थानबाट प्राप्त गर्नुहोस्, र यसलाई unpack गर्नुहोस्:</simpara>
+
+   <informalexample>
+    <screen>
+<![CDATA[
+tar -xzf httpd-2.x.NN.tar.gz
+]]>
+    </screen>
+   </informalexample>
+  </listitem>
+
+  <listitem>
+   <simpara>त्यसै गरी, PHP source प्राप्त गर्नुहोस् र यसलाई unpack गर्नुहोस्:</simpara>
+
+   <informalexample>
+    <screen>
+<![CDATA[
+tar -xzf php-NN.tar.gz
+]]>
+    </screen>
+   </informalexample>
+  </listitem>
+
+  <listitem>
+   <simpara>Apache httpd build र install गर्नुहोस्। Apache httpd build गर्ने सम्बन्धी थप विवरणका लागि Apache httpd install documentation हेर्नुहोस्। ध्यान दिनुहोस् कि यदि PHP लाई thread safety (<literal>--enable-zts</literal>) सहित compile गरिएको छैन भने <literal>mod_php</literal> लाई <literal>prefork</literal> MPM आवश्यक पर्दछ। यदि तपाईँ यसको सट्टा PHP-FPM प्रयोग गर्न चाहनुहुन्छ भने (सिफारिस गरिएको), तपाईँ default <literal>event</literal> MPM प्रयोग गर्न सक्नुहुन्छ र सिधै <link linkend="install.fpm">PHP-FPM installation instructions</link> मा जान सक्नुहुन्छ।</simpara>
+
+   <informalexample>
+    <screen>
+<![CDATA[
+cd httpd-2_x_NN
+./configure --enable-so --with-mpm=prefork
+make
+make install
+]]>
+    </screen>
+   </informalexample>
+  </listitem>
+
+  <listitem>
+   <para>अब तपाईँसँग /usr/local/apache2 अन्तर्गत loadable module support र prefork MPM सहित configure गरिएको Apache httpd 2.x.NN उपलब्ध छ। installation परीक्षण गर्न Apache httpd server सुरु गर्ने आफ्नो सामान्य प्रक्रिया प्रयोग गर्नुहोस्, जस्तै:<informalexample>
+     <screen>
+<![CDATA[
+/usr/local/apache2/bin/apachectl start
+]]>
+     </screen>
+    </informalexample>र PHP का लागि configuration अगाडि बढाउन server लाई stop गर्नुहोस्:<informalexample>
+     <screen>
+<![CDATA[
+/usr/local/apache2/bin/apachectl stop
+]]>
+     </screen>
+    </informalexample>
+   </para>
+  </listitem>
+
+  <listitem>
+   <simpara>अब, PHP configure र build गर्नुहोस्। यसै चरणमा तपाईँ कुन extensions enable गर्ने जस्ता विभिन्न विकल्पहरूसहित PHP लाई customize गर्नुहुन्छ। उपलब्ध विकल्पहरूको list हेर्नका लागि <command>./configure --help</command> चलाउनुहोस्। हाम्रो उदाहरणमा हामी Apache httpd र MySQL support सहित एउटा सामान्य configure गर्नेछौँ।</simpara>
+
+   <simpara>यदि तपाईँले माथि वर्णन गरिएअनुसार Apache httpd लाई from source बाट build गर्नुभएको हो भने, तलको उदाहरण <command>apxs</command> का लागि तपाईँको path सँग मेल खानेछ; तर यदि तपाईँले कुनै अन्य तरिकाबाट Apache httpd install गर्नुभएको हो भने, तपाईँले <command>apxs</command> को path सोही अनुसार मिलाउनुपर्ने हुन्छ। ध्यान दिनुहोस् कि केही distribution हरूले <command>apxs</command> लाई <command>apxs2</command> मा rename गर्न सक्छन्।</simpara>
+
+   <informalexample>
+    <screen>
+<![CDATA[
+cd ../php-NN
+./configure --with-apxs2=/usr/local/apache2/bin/apxs --with-pdo-mysql
+make
+make install
+]]>
+    </screen>
+   </informalexample>
+
+   <simpara>यदि तपाईँले installation पछि आफ्ना configure विकल्पहरू परिवर्तन गर्ने निर्णय गर्नुभयो भने, तपाईँले <command>configure</command>, <command>make</command>, र <command>make install</command> चरणहरू पुनः चलाउनुपर्नेछ। नयाँ module लागू हुनका लागि तपाईँले केवल apache लाई restart गर्नुपर्ने हुन्छ। Apache httpd लाई फेरि recompile गर्नु आवश्यक पर्दैन।</simpara>
+
+   <para>ध्यान दिनुहोस् कि अन्यथा नभनिएको खण्डमा, <command>make install</command> ले <link xlink:href="&url.php.pear;">PEAR</link>, <link linkend="install.pecl.phpize">phpize</link> जस्ता विभिन्न PHP tools, PHP CLI, र अन्य धेरै कुराहरू पनि install गर्नेछ।</para>
+  </listitem>
+
+  <listitem>
+   <simpara>आफ्नो <filename>php.ini</filename> setup गर्नुहोस्।</simpara>
+
+   <informalexample>
+    <screen>
+<![CDATA[
+cp php.ini-development /usr/local/lib/php.ini
+]]>
+    </screen>
+   </informalexample>
+
+   <simpara>तपाईँ PHP का विकल्पहरू set गर्न आफ्नो <literal>.ini</literal> file edit गर्न सक्नुहुन्छ। यदि तपाईँ <filename>php.ini</filename> लाई अर्को स्थानमा राख्न चाहनुहुन्छ भने, चरण ५ मा <literal>--with-config-file-path=/some/path</literal> प्रयोग गर्नुहोस्।</simpara>
+
+   <simpara>यदि तपाईँले यसको सट्टा <filename>php.ini-production</filename> रोज्नुभयो भने, त्यसमा भएका परिवर्तनहरूको list अवश्य पढ्नुहोस्, किनकि ती परिवर्तनहरूले PHP ले कसरी काम गर्छ भन्ने कुरामा असर पार्दछन्।</simpara>
+  </listitem>
+
+  <listitem>
+   <simpara>PHP module load गर्न आफ्नो <filename>httpd.conf</filename> edit गर्नुहोस्। <literal>LoadModule</literal> statement को दायाँतर्फको path ले तपाईँको system मा रहेको PHP module को path लाई औंल्याउनुपर्छ। माथिको <command>make install</command> from ले यो तपाईँका लागि पहिले नै थपिसकेको हुन सक्छ, तर पनि जाँच गर्न नबिर्सनुहोस्।</simpara>
+
+   <informalexample>
+    <programlisting role="apache-conf">
+<![CDATA[
+LoadModule php_module modules/libphp.so
+]]>
+    </programlisting>
+   </informalexample>
+  </listitem>
+
+  <listitem>
+   <simpara>Apache httpd लाई निश्चित extensions हरूलाई PHP का रूपमा parse गर्न निर्देशन दिनुहोस्। उदाहरणका लागि, Apache httpd ले <literal>.php</literal> files लाई PHP का रूपमा parse गरोस्। केवल <literal>AddType</literal> directive मात्र प्रयोग गर्नुको सट्टा, हामी सम्भावित रूपमा खतरनाक upload हरू र सिर्जना गरिएका files जस्तै <filename>exploit.php.jpg</filename> from लाई PHP का रूपमा execute हुनबाट रोक्न चाहन्छौँ। यो उदाहरण प्रयोग गरेर, तपाईँ कुनै पनि extension(s) लाई केवल थप गरेर नै PHP का रूपमा parse गराउन सक्नुहुन्छ। देखाउनका लागि हामी <literal>.php</literal> थप्नेछौँ।</simpara>
+
+   <informalexample>
+    <programlisting role="apache-conf">
+<![CDATA[
+<FilesMatch \.php$>
+    SetHandler application/x-httpd-php
+</FilesMatch>
+]]>
+    </programlisting>
+   </informalexample>
+
+   <simpara>अथवा, यदि हामी अरू केही नभई केवल <literal>.php</literal>, <literal>.php2</literal>, <literal>.php3</literal>, <literal>.php4</literal>, <literal>.php5</literal>, <literal>.php6</literal>, र <literal>.phtml</literal> files लाई मात्र PHP का रूपमा execute हुन दिन चाहन्छौँ भने, हामी यो प्रयोग गर्नेछौँ:</simpara>
+
+   <informalexample>
+    <programlisting role="apache-conf">
+<![CDATA[
+<FilesMatch "\.(php[2-6]?|phtml)$">
+    SetHandler application/x-httpd-php
+</FilesMatch>
+]]>
+    </programlisting>
+   </informalexample>
+
+   <para>र <literal>.phps</literal> files लाई php source filter मार्फत handle गराउन र syntax-highlighted source code का रूपमा display गराउन, यो प्रयोग गर्नुहोस्:</para>
+
+   <informalexample>
+    <programlisting role="apache-conf">
+<![CDATA[
+<FilesMatch "\.phps$">
+    SetHandler application/x-httpd-php-source
+</FilesMatch>
+]]>
+    </programlisting>
+   </informalexample>
+
+   <simpara>यदि अन्य कुनै handler फेला परेन भने, उदाहरणका लागि routing engine प्रयोग गर्दा, एउटा PHP file लाई default handler का रूपमा प्रयोग गर्न दिनका लागि <literal>FallbackResource</literal> directive प्रयोग गर्न सकिन्छ।</simpara>
+
+   <simpara>file अस्तित्वमा भए पनि वा नभए पनि <literal>SetHandler</literal> directive लागू हुने भएकाले, र पहिले नै handler set नगरिएको अवस्थामा मात्र <literal>FallbackResource</literal> लागू हुने भएकाले, file अस्तित्वमा हुँदा मात्र handler लागू होस् भन्ने सुनिश्चित गर्न तपाईँले <literal>If</literal> directive प्रयोग गर्नुपर्ने हुन सक्छ। यसले <literal>.php</literal> मा end हुने तर अस्तित्वमा नरहेका path हरूलाई <literal>FallbackResource</literal> ले handle गर्न अनुमति दिन्छ, जुन error handling र routing का लागि उपयोगी हुन सक्छ।</simpara>
+
+   <informalexample>
+    <programlisting role="apache-conf">
+<![CDATA[
+<FilesMatch "\.php$">
+    <If "-f %{REQUEST_FILENAME}">
+        SetHandler application/x-httpd-php
+    </If>
+</FilesMatch>
+FallbackResource /index.php
+]]>
+    </programlisting>
+   </informalexample>
+
+   <para>कुनै पनि arbitrary <literal>.php</literal> file लाई <literal>.phps</literal> file मा rename वा copy नगरिकनै, syntax-highlighted source code का रूपमा display गराउन <literal>mod_rewrite</literal> प्रयोग गर्न सकिन्छ:</para>
+
+   <informalexample>
+    <programlisting role="apache-conf">
+<![CDATA[
+RewriteEngine On
+RewriteRule (.*\.php)s$ $1 [H=application/x-httpd-php-source]
+]]>
+    </programlisting>
+   </informalexample>
+
+   <para>php source filter लाई production system हरूमा enable गर्नु हुँदैन, जहाँ यसले source code भित्र रहेका गोप्य वा अन्य संवेदनशील जानकारीहरूलाई expose गर्न सक्छ।</para>
+  </listitem>
+
+  <listitem>
+   <simpara>Apache httpd सुरु गर्न आफ्नो सामान्य प्रक्रिया प्रयोग गर्नुहोस्, जस्तै:</simpara>
+
+   <informalexample>
+    <screen>
+<![CDATA[
+/usr/local/apache2/bin/apachectl start
+]]>
+    </screen>
+   </informalexample>
+
+   <para>OR</para>
+
+   <informalexample>
+    <screen>
+<![CDATA[
+service httpd restart
+]]>
+    </screen>
+   </informalexample>
+  </listitem>
+ </orderedlist>
+
+ <simpara>माथिका चरणहरू पूरा गरेपछि तपाईँसँग <literal>SAPI</literal> module का रूपमा PHP support सहितको चालू Apache httpd web server हुनेछ। Apache httpd र PHP का लागि थप थुप्रै configuration विकल्पहरू उपलब्ध छन्। थप जानकारीका लागि सम्बन्धित source tree भित्र <command>./configure --help</command> type गर्नुहोस्।</simpara>
+
+ <note>
+  <title>MPM अनुकूलता (Compatibility)</title>
+  <simpara>PHP लाई Zend Thread Safety (<literal>--enable-zts</literal>) सँग compile गरिएको अवस्थामा बाहेक, <literal>mod_php</literal> का लागि <literal>prefork</literal> MPM आवश्यक पर्दछ। यसो हुनुको कारणबारे जानकारीका लागि, <link linkend="faq.installation.apache2">threaded MPM सँग Apache httpd</link> प्रयोग गर्नेसम्बन्धी FAQ entry पढ्नुहोस्।</simpara>
+
+  <simpara><literal>mod_php</literal> का अधिकांश distribution packages हरू ZTS सँग build गरिएका हुँदैनन्, त्यसैले सामान्यतया <literal>prefork</literal> आवश्यक पर्दछ। यदि तपाईँलाई threaded MPM आवश्यक छ भने (load को समयमा अझ राम्रो performance का लागि सिफारिस गरिएको), त्यसको सट्टा <literal>mod_proxy_fcgi</literal> सँग <link linkend="install.fpm">PHP-FPM</link> प्रयोग गर्नुहोस्।</simpara>
+ </note>
+
+ <note>
+  <simpara><link linkend="faq.installation.apache.multiviews">Apache MultiViews FAQ</link> मा PHP सँग multiviews प्रयोग गर्ने विषयमा चर्चा गरिएको छ।</simpara>
+ </note>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
+

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 17c238517825dfb7ec3edfef5972acd944ffbc1e Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.strtok" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>strtok</refname>
+  <refpurpose>string लाई tokenize गर्छ</refpurpose>
+ </refnamediv>
+ 
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type class="union"><type>string</type><type>false</type></type><methodname>strtok</methodname>
+   <methodparam><type>string</type><parameter>string</parameter></methodparam>
+   <methodparam><type>string</type><parameter>token</parameter></methodparam>
+  </methodsynopsis>
+  <simpara>वैकल्पिक signature (named arguments सँग समर्थित छैन):</simpara>
+  <methodsynopsis>
+   <type class="union"><type>string</type><type>false</type></type><methodname>strtok</methodname>
+   <methodparam><type>string</type><parameter>token</parameter></methodparam>
+  </methodsynopsis>
+  <para><function>strtok</function> ले एउटा string (<parameter>string</parameter>) लाई साना strings (tokens) मा विभाजन गर्दछ, जहाँ each token लाई from <parameter>token</parameter> को कुनै पनि character द्वारा delimit गरिन्छ। अर्थात्, यदि तपाईँसँग "This is an example string" जस्तो एउटा string छ भने, तपाईँले space character लाई <parameter>token</parameter> को रूपमा प्रयोग गरेर यो string लाई यसका छुट्टाछुट्टै शब्दहरूमा tokenize गर्न सक्नुहुन्छ।</para>
+  <para>ध्यान दिनुहोस् कि strtok को पहिलो call ले मात्र <parameter>string</parameter> argument प्रयोग गर्दछ। strtok को त्यसपछिको प्रत्येक call मा प्रयोग गर्न <parameter>token</parameter> मात्र आवश्यक पर्दछ, किनभने यसले current string मा आफू कहाँ छ भनी ट्र्याक राख्दछ। फेरि सुरु गर्न, वा एउटा नयाँ string लाई tokenize गर्न, यसलाई initialize गर्न तपाईँले केवल <parameter>string</parameter> argument सहित पुनः strtok call गरे पुग्छ। ध्यान दिनुहोस् कि तपाईँले <parameter>token</parameter> parameter मा धेरैवटा tokens राख्न सक्नुहुन्छ। <parameter>token</parameter> argument भित्रका characters मध्ये कुनै एक फेला पर्नासाथ string tokenize हुनेछ।</para>
+  <note>
+   <para>यो function ले <function>explode</function> सँग परिचित हुँदा अपेक्षा गरिने भन्दा from केही फरक व्यवहार गर्दछ। पहिलो कुरा, parse गरिएको string मा लगातार आउने दुई वा दुईभन्दा बढी <parameter>token</parameter> characters को क्रमलाई एउटै delimiter मानिन्छ। साथै, string को सुरु वा end मा रहेको <parameter>token</parameter> लाई ignore गरिन्छ। उदाहरणका लागि, यदि एउटा string <literal>";aaa;;bbb;"</literal> प्रयोग गरियो भने, <parameter>token</parameter> को रूपमा <literal>";"</literal> सहित <function>strtok</function> का क्रमिक call हरूले strings "aaa" र "bbb", र त्यसपछि &false; return गर्नेछन्। फलस्वरूप, त्यो string दुईवटा elements मा मात्र विभाजन हुनेछ, जबकि <literal>explode(";", $string)</literal> ले ५ वटा elements भएको एउटा array return गर्नेछ।</para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>string</parameter></term>
+     <listitem>
+      <para>साना strings (tokens) मा विभाजन गरिने <type>string</type>।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>token</parameter></term>
+     <listitem>
+      <para><parameter>string</parameter> लाई विभाजन गर्दा प्रयोग गरिने delimiter।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ 
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>एउटा <type>string</type> token, वा थप tokens उपलब्ध नभएमा &false;।</para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>8.3.0</entry>
+       <entry>अब <parameter>token</parameter> नदिइएमा <constant>E_WARNING</constant> emit गर्दछ।</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>strtok</function> को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$string = "This is\tan example\nstring";
+/* Use tab and newline as tokenizing characters as well  */
+$tok = strtok($string, " \n\t");
+
+while ($tok !== false) {
+    echo "Word={$tok}\n";
+    $tok = strtok(" \n\t");
+}
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>खाली भाग फेला पर्दा <function>strtok</function> को व्यवहार</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$first_token  = strtok('/something', '/');
+$second_token = strtok('/');
+var_dump($first_token, $second_token);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(9) "something"
+bool(false)
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title><function>strtok</function> र <function>explode</function> बीचको भिन्नता</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$string = ";aaa;;bbb;";
+
+$parts = [];
+$tok = strtok($string, ";");
+while ($tok !== false) {
+    $parts[] = $tok;
+    $tok = strtok(";");
+}
+echo json_encode($parts),"\n";
+
+$parts = explode(";", $string);
+echo json_encode($parts),"\n";
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+["aaa","bbb"]
+["","aaa","","bbb",""]
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  
+  &return.falseproblem;
+ </refsect1>
+ 
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>explode</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

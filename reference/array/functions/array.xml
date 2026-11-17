@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.array" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>array</refname>
+  <refpurpose>एउटा array सिर्जना गर्दछ</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>array</methodname>
+   <methodparam rep="repeat"><type>mixed</type><parameter>values</parameter></methodparam>
+  </methodsynopsis>
+  <para>एउटा array सिर्जना गर्दछ। वैकल्पिक bracket syntax (<literal>[]</literal>) सम्बन्धी विवरणहरू सहित, array के हो भन्ने बारे थप जानकारीका लागि <link linkend="language.types.array">array type</link> खण्ड पढ्नुहोस्।</para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>values</parameter></term>
+     <listitem>
+      <para>अल्पविराम (comma) द्वारा छुट्याइएको Syntax "index =&gt; values" ले index र values define गर्दछ। index type string वा integer हुन सक्छ। जब index छुटाइन्छ, तब 0 बाट सुरु भएर एउटा integer index स्वतः generate हुन्छ। यदि index एउटा integer हो भने, next generate हुने index सबैभन्दा ठूलो integer index + 1 हुनेछ। ध्यान दिनुहोस् कि जब दुईवटा समान indices define गरिन्छ, तब पछिल्लोले अघिल्लोलाई overwrite गर्दछ।</para>
+      <para>अन्तिम define गरिएको array entry पछाडि trailing comma हुनु, असामान्य भए तापनि, एउटा मान्य syntax हो।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>parameters को एउटा array return गर्दछ। <literal>=&gt;</literal> operator मार्फत parameters लाई एउटा index दिन सकिन्छ। array के हो भन्ने बारे थप जानकारीका लागि <link linkend="language.types.array">array type</link> सम्बन्धी खण्ड पढ्नुहोस्।</para>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>तलको उदाहरणले एउटा two-dimensional array कसरी सिर्जना गर्ने, associative arrays का लागि keys कसरी specify गर्ने, र सामान्य arrays मा numeric indices लाई कसरी skip-and-continue गर्ने भन्ने कुरा देखाउँछ।<example>
+    <title><function>array</function> को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$fruits = array (
+    "fruits"  => array("a" => "orange", "b" => "banana", "c" => "apple"),
+    "numbers" => array(1, 2, 3, 4, 5, 6),
+    "holes"   => array("first", 5 => "second", "third")
+);
+print_r($fruits);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title><function>array</function> सँग automatic index</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$array = array(1, 1, 1, 1,  1, 8 => 1, 4 => 1, 19, 3 => 13);
+print_r($array);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen role="php">
+<![CDATA[
+Array
+(
+    [0] => 1
+    [1] => 1
+    [2] => 1
+    [3] => 13
+    [4] => 1
+    [8] => 1
+    [9] => 19
+)
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>याद गर्नुहोस् कि index '3' दुई पटक परिभाषित गरिएको छ, र यसले आफ्नो final value 13 कायम राख्छ। Index 4 लाई index 8 पछि परिभाषित गरिएको छ, र next generate भएको index (value 19) चाहिँ 9 हो, किनकि सबैभन्दा ठूलो index 8 थियो।</para>
+  <para>यो उदाहरणले एउटा 1-based array सिर्जना गर्दछ।<example>
+    <title><function>array</function> सँग 1-based index</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$firstQuarter = array(1 => 'January', 'February', 'March');
+print_r($firstQuarter);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [1] => January
+    [2] => February
+    [3] => March
+)
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>Perl मा जस्तै, तपाईँ double quotes भित्र array from एउटा value access गर्न सक्नुहुन्छ। यद्यपि, PHP मा भने तपाईँले आफ्नो array लाई curly braces बीचमा enclose गर्नुपर्ने हुन्छ।<example>
+    <title>double quotes भित्र एउटा array access गर्ने तरिका</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$foo = array('bar' => 'baz');
+echo "Hello {$foo['bar']}!"; // Hello baz!
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <para>
+   <note>
+    <para><function>array</function> literal arrays लाई represent गर्न प्रयोग गरिने एउटा language construct हो, कुनै regular function होइन।</para>
+   </note>
+  </para>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>array_pad</function></member>
+    <member><function>list</function></member>
+    <member><function>count</function></member>
+    <member><function>range</function></member>
+    <member>&foreach;</member>
+    <member><link linkend="language.types.array">array</link> type</member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

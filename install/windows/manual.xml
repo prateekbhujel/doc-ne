@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<sect1 xml:id="install.windows.manual" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>Pre-built binaries को manual installation</title>
+
+ <simplesect xml:id="install.windows.requirements" annotations="chunk:false">
+  <title>Installation का आवश्यकताहरू</title>
+  <simpara>PHP केवल 32-bit x86 वा 64-bit x64 systems का लागि मात्र उपलब्ध छ, र हाल यो Windows RT वा Windows on ARM मा चल्दैन। Version 8.3.0 देखि, PHP लाई Windows 8 वा Windows Server 2012 आवश्यक पर्दछ। 7.2.0 पछिका versions लाई Windows 2008 R2 वा Windows 7 आवश्यक पर्थ्यो। 7.2.0 भन्दा अघिका versions ले Windows 2008 र Vista लाई support गर्थे।</simpara>
+
+  <simpara>PHP लाई Visual C runtime (CRT) आवश्यक पर्दछ। धेरै अन्य application हरूलाई पनि यो आवश्यक पर्ने भएकाले, यो पहिले नै install भइसकेको हुन सक्छ; तर यदि छैन भने Visual Studio 2022 का लागि Microsoft Visual C++ Redistributable सबै PHP version हरूका लागि उपयुक्त हुन्छ र यसलाई <link xlink:href="&url.microsoft.visualc.redistr;">Microsoft from download गर्न</link> सकिन्छ।</simpara>
+
+  <simpara>PHP x86 build हरूसँग प्रयोग गर्नका लागि x86 CRT र PHP x64 build हरूका लागि x64 CRT download गर्नुपर्छ। यदि CRT पहिले नै install भइसकेको छ भने, installer ले यो पहिले नै install भइसकेको सन्देश देखाउनेछ र कुनै परिवर्तन make गर्नेछैन। CRT installer ले <option>/quiet</option> र <option>/norestart</option> command-line switch हरू support गर्दछ, त्यसैले installation लाई script गर्न सकिन्छ।</simpara>
+ </simplesect>
+
+ <simplesect>
+  <title>PHP binaries कहाँबाट download गर्ने</title>
+  <simpara>Windows build हरू <link xlink:href="&url.php.win.downloads;">the PHP Windows website</link> from download गर्न सकिन्छ। सबै build हरू optimized (<abbrev>PGO</abbrev>) हुन्छन्, र QA तथा GA release हरू राम्ररी test गरिएका हुन्छन्।</simpara>
+ </simplesect>
+
+ <simplesect xml:id="install.windows.pecl" annotations="chunk:false">
+  <title>पूर्व-निर्मित (Pre-built) PECL Extensions</title>
+  <para>PECL extensions का Pre-built Windows version हरू extension को PECL page मा DLL files का रूपमा वितरण गरिन्छ।</para>
+  <para>Unix जस्ता अन्य system का विशिष्ट feature हरू प्रयोग गर्ने, वा Windows मा उपलब्ध नभएका libraries मा निर्भर रहने extensions का लागि Binaries उपलब्ध छैनन्।</para>
+ </simplesect>
+
+
+ <simplesect>
+  <title>Build का प्रकारहरू (types)</title>
+  <para>PHP build का चारवटा types छन्:<itemizedlist spacing="compact">
+    <listitem>
+     <para>Thread-Safe (TS) - single process web servers का लागि, जस्तै mod_php सहितको Apache</para>
+    </listitem>
+    <listitem>
+     <para>Non-Thread-Safe (NTS) - IIS र अन्य FastCGI web servers (mod_fastcgi सहितको Apache) का लागि, र command-line scripts का लागि सिफारिस गरिएको</para>
+    </listitem>
+    <listitem>
+     <para>x86 - 32-bit system हरूका लागि।</para>
+    </listitem>
+    <listitem>
+     <para>x64 - 64-bit system हरूका लागि।</para>
+    </listitem>
+   </itemizedlist>
+  </para>
+ </simplesect>
+</sect1>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

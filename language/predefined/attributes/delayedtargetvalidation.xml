@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: aeea14601ab64883520b4dfee1c79bafb210748b Maintainer: prateekbhujel Status: draft -->
+<reference xml:id="class.delayedtargetvalidation" role="class" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude">
+ <title>DelayedTargetValidation attribute</title>
+ <titleabbrev>DelayedTargetValidation</titleabbrev>
+
+ <partintro>
+
+  <section xml:id="delayedtargetvalidation.intro">
+   &reftitle.intro;
+   <simpara>यो attribute ले internal attributes का target validation errors लाई from compile time देखि attribute लाई Reflection API मार्फत instantiate गर्ने समयसम्मका लागि delay गर्छ।</simpara>
+   <simpara>कुनै declaration मा लागू गर्दा, सोही target मा internal attributes को अमान्य प्रयोगले compile time error निम्त्याउँदैन। यसको सट्टा, validation लाई defer गरिन्छ र जब attribute लाई <link linkend="reflectionattribute.newinstance">ReflectionAttribute::newInstance()</link> मार्फत instantiate गरिन्छ, तब validation सम्पन्न गरिन्छ।</simpara>
+   <simpara>यो मुख्यतया forward compatibility का लागि लक्षित गरिएको हो, जसले code लाई पुराना version हरूमा नबिग्रिकन भविष्यका PHP version हरूमा थप मान्य target हरू पाउन सक्ने attributes प्रयोग गर्न अनुमति दिन्छ।</simpara>
+  </section>
+
+  <section xml:id="delayedtargetvalidation.synopsis">
+   &reftitle.classsynopsis;
+
+   <classsynopsis class="class">
+    <ooclass>
+     <modifier role="attribute">#[\Attribute(\Attribute::TARGET_ALL)]</modifier>
+     <modifier>final</modifier>
+     <classname>DelayedTargetValidation</classname>
+    </ooclass>
+   </classsynopsis>
+
+  </section>
+
+  <section xml:id="delayedtargetvalidation.examples">
+   &reftitle.examples;
+
+   <example>
+    <title>अमान्य target को validation पछि सार्ने</title>
+    <programlisting role="php"><![CDATA[
+<?php
+
+class Base {
+    public const NAME = 'base';
+
+    protected function foo(): void {}
+}
+
+class Child extends Base {
+
+    #[\DelayedTargetValidation]
+    #[\Override]
+    public const NAME = 'child';
+
+    #[\Override]
+    protected function foo(): void {}
+}
+]]></programlisting>
+
+    <simpara>class constants मा <classname>Override</classname> लाई अनुमति नभएका PHP versions मा, यसले compile time error उत्पन्न गर्दैन। PHP 8.6.0 देखि, <classname>Override</classname> ले class constants लाई target गर्न सक्छ, र <literal>Child::NAME</literal> ले <literal>Base::NAME</literal> लाई override गर्ने भएकाले यहाँ <classname>DelayedTargetValidation</classname> आवश्यक पर्दैन, र तलको reflection उदाहरणले पनि यसका लागि throw गर्दैन।</simpara>
+   </example>
+
+   <example>
+    <title>Reflection को समयमा हुने validation</title>
+    <programlisting role="php"><![CDATA[
+<?php
+
+$reflection = new ReflectionClassConstant(Child::class, 'NAME');
+
+foreach ($reflection->getAttributes() as $attribute) {
+    $attribute->newInstance(); // May throw if invalid
+}
+]]></programlisting>
+
+    <simpara>सोही target मा लागू गरिएको कुनै पनि attribute (DelayedTargetValidation आफैँ बाहेक) लाई <link linkend="reflectionattribute.newinstance">ReflectionAttribute::newInstance()</link> प्रयोग गरी reflection मार्फत instantiate गर्दा, target validation गरिन्छ र यदि attribute लाई असमर्थित target मा प्रयोग गरिएको छ भने एउटा exception throw हुन सक्छ।</simpara>
+   </example>
+
+  </section>
+
+  <section xml:id="delayedtargetvalidation.notes">
+   &reftitle.notes;
+   <simpara>यो attribute ले internal attributes को target validation लाई मात्र असर गर्छ।</simpara>
+   <simpara>यसले ती attributes द्वारा गरिने functional validation लाई suppress गर्दैन। उदाहरणका लागि, यदि कुनै method ले वास्तवमै parent method लाई override गर्दैन भने <classname>Override</classname> ले अझै पनि error जारी गर्छ।</simpara>
+  </section>
+
+  <section xml:id="delayedtargetvalidation.seealso">
+   &reftitle.seealso;
+   <simplelist>
+    <member><link linkend="language.attributes">Attributes को परिचय</link></member>
+    <member><link linkend="class.override">Override</link></member>
+   </simplelist>
+  </section>
+
+ </partintro>
+
+</reference>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

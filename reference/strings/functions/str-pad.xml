@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 25ec27a80ca17bf72bbe7a3ea65b0a1038c15025 Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.str-pad" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>str_pad</refname>
+  <refpurpose>एउटा string लाई अर्को string ले निश्चित लम्बाइसम्म pad गर्दछ</refpurpose>
+ </refnamediv>
+ 
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>str_pad</methodname>
+   <methodparam><type>string</type><parameter>string</parameter></methodparam>
+   <methodparam><type>int</type><parameter>length</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>pad_string</parameter><initializer>" "</initializer></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>pad_type</parameter><initializer><constant>STR_PAD_RIGHT</constant></initializer></methodparam>
+  </methodsynopsis>
+  <para>यो function ले तोकिएको padding length सम्म बायाँ, दायाँ, वा दुवैतर्फ pad गरिएको <parameter>string</parameter> string return गर्दछ। यदि वैकल्पिक argument <parameter>pad_string</parameter> दिइएको छैन भने, <parameter>string</parameter> लाई spaces ले pad गरिन्छ, अन्यथा यसलाई सीमासम्म <parameter>pad_string</parameter> from का characters ले pad गरिन्छ।</para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>string</parameter></term>
+     <listitem>
+      <para>Input string।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>length</parameter></term>
+     <listitem>
+      <para>final padded string को इच्छित लम्बाइ। यदि <parameter>length</parameter> को value negative छ, वा input string को लम्बाइभन्दा कम वा बराबर छ भने, कुनै पनि padding हुँदैन, र <parameter>string</parameter> return गरिनेछ।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>pad_string</parameter></term>
+     <listitem>
+      <note>
+       <para>यदि आवश्यक padding characters को सङ्ख्यालाई <parameter>pad_string</parameter> को लम्बाइले बराबर भाग गर्न सकिँदैन भने, <parameter>pad_string</parameter> truncate हुन सक्छ।</para>
+      </note>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>pad_type</parameter></term>
+     <listitem>
+      <para>वैकल्पिक argument <parameter>pad_type</parameter> चाहिँ <constant>STR_PAD_RIGHT</constant>, <constant>STR_PAD_LEFT</constant>, वा <constant>STR_PAD_BOTH</constant> हुन सक्छ। यदि <parameter>pad_type</parameter> उल्लेख गरिएको छैन भने, यसलाई <constant>STR_PAD_RIGHT</constant> मानिन्छ।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>Pad गरिएको string return गर्दछ।</para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <simpara>यदि <parameter>length</parameter>, <parameter>string</parameter> को लम्बाइभन्दा बढी छ र कि त <parameter>pad_string</parameter> खाली छ वा <parameter>pad_type</parameter> चाहिँ <constant>STR_PAD_LEFT</constant>, <constant>STR_PAD_RIGHT</constant> वा <constant>STR_PAD_BOTH</constant> होइन भने एउटा <exceptionname>ValueError</exceptionname> throw गर्दछ।</simpara>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>यदि padding आवश्यक छ र <parameter>pad_string</parameter> खाली छ वा <parameter>pad_type</parameter> अमान्य छ भने अब एउटा <exceptionname>ValueError</exceptionname> throw गर्दछ। पहिले, एउटा <constant>E_WARNING</constant> raise गरिन्थ्यो र &null; return गरिन्थ्यो।</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>str_pad</function> को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$input = "Alien";
+echo str_pad($input, 10), PHP_EOL;                      // produces "Alien     "
+echo str_pad($input, 10, "-=", STR_PAD_LEFT), PHP_EOL;  // produces "-=-=-Alien"
+echo str_pad($input, 10, "_", STR_PAD_BOTH), PHP_EOL;   // produces "__Alien___"
+echo str_pad($input,  6, "___"), PHP_EOL;               // produces "Alien_"
+echo str_pad($input,  3, "*"), PHP_EOL;                 // produces "Alien"
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>mb_str_pad</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

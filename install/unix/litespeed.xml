@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 8a4f1c0069f2f5ad08dfd5dfbd8ddc6a4107f110 Maintainer: prateekbhujel Status: draft -->
+<sect1 xml:id="install.unix.litespeed" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>Unix systems मा LiteSpeed Web Server/OpenLiteSpeed Web Server</title>
+
+ <simpara>LiteSpeed PHP भनेको LiteSpeed SAPI मार्फत LiteSpeed का उत्पादनहरूसँग काम गर्नका लागि बनाइएको PHP को एउटा optimized compilation हो। LSPHP आफ्नै process को रूपमा चल्छ र यसको आफ्नै standalone binary हुन्छ, जसलाई command line from PHP scripts execute गर्न एउटा सरल command line binary का रूपमा प्रयोग गर्न सकिन्छ।</simpara>
+
+ <simpara>LSAPI एउटा अत्यधिक optimized API हो जसले LiteSpeed र third party web engines बीच communication गर्न अनुमति दिन्छ। यसको protocol FCGI सँग मिल्दोजुल्दो छ, तर यो अझ बढी efficient छ।</simpara>
+
+ <simpara>यस documentation ले LiteSpeed Web Server र OpenLiteSpeed Web Server का लागि LSAPI सँग PHP install र configure गर्ने विषयलाई समेट्नेछ।</simpara>
+
+ <simpara>यो guide ले LSWS वा OLS आफ्ना default paths र flags सहित install गरिएको छ भनी मान्दछ। दुवै web servers का लागि default installation directory /usr/local/lsws हो र दुवैलाई bin subdirectory from run गर्न सकिन्छ।</simpara>
+
+ <simpara>कृपया ध्यान दिनुहोस् कि यो documentation भविष्यमा पनि सही रहोस् भन्ने सुनिश्चित गर्न यसमा version number हरूलाई एउटा <literal>x</literal> ले replace गरिएको छ। कृपया आवश्यकता अनुसार यिनीहरूलाई सम्बन्धित version number ले replace गर्नुहोस्।</simpara>
+
+ <orderedlist>
+  <listitem>
+   <simpara>LiteSpeed Web Server वा OpenLiteSpeed Web Server प्राप्त गर्न र install गर्नका लागि, LiteSpeed Web Server documentation को <link xlink:href="&url.litespeed.lsws;">install page</link> वा OpenLiteSpeed documentation को <link xlink:href="&url.litespeed.install;">install page</link> मा जानुहोस्।</simpara>
+  </listitem>
+
+  <listitem>
+   <simpara>php source प्राप्त गर्नुहोस् र unpack गर्नुहोस्:</simpara>
+
+   <informalexample xml:id="install.unix.litespeed.extract.php">
+    <screen>
+<![CDATA[
+mkdir /home/php
+cd /home/php
+wget http://us1.php.net/get/php-x.x.x.tar.gz/from/this/mirror
+tar -zxvf php-x.x.x.tar.gz
+cd php-x.x.x
+]]>
+    </screen>
+   </informalexample>
+  </listitem>
+
+  <listitem>
+   <simpara>PHP configure र build गर्नुहोस्। यहीँबाट PHP लाई विभिन्न विकल्पहरूसँग customize गर्न सकिन्छ, जस्तै कुन चाहिँ extensions enable गरिनेछ। उपलब्ध विकल्पहरूको list का लागि ./configure --help चलाउनुहोस्। यस उदाहरणमा, हामी LiteSpeed Web Server का लागि सिफारिस गरिएका default configuration विकल्पहरू प्रयोग गर्नेछौँ:</simpara>
+
+   <informalexample xml:id="install.unix.litespeed.build.php">
+    <screen>
+<![CDATA[
+./configure ... '--with-litespeed'
+make
+sudo make install
+]]>
+    </screen>
+   </informalexample>
+  </listitem>
+
+  <listitem>
+   <simpara>LSPHP installation जाँच गर्दै</simpara>
+
+   <simpara>PHP को installation सफल भयो कि भएन भनी जाँच गर्ने सबैभन्दा सरल तरिकाहरूमध्ये एउटा निम्न code चलाउनु हो:</simpara>
+
+   <informalexample>
+    <screen>
+<![CDATA[
+cd /usr/local/lsws/fcgi-bin/
+./lsphp5 -v
+]]>
+    </screen>
+   </informalexample>
+
+   <simpara>यसले नयाँ PHP build को बारेमा जानकारी return गर्नुपर्छ:</simpara>
+
+   <informalexample>
+    <screen>
+<![CDATA[
+PHP 5.6.17 (litespeed) (built: Mar 22 2016 11:34:19)
+Copyright (c) 1997-2014 The PHP Group
+Zend Engine v2.6.0, Copyright (c) 1998-2015 Zend Technologies
+]]>
+    </screen>
+   </informalexample>
+
+   <simpara>कोष्ठकमा रहेको <literal>litespeed</literal> लाई ध्यान दिनुहोस्। यसको अर्थ PHP binary लाई LSAPI support सहित build गरिएको छ भन्ने हुन्छ।</simpara>
+  </listitem>
+ </orderedlist>
+
+ <simpara>माथिका चरणहरू पालना गरेपछि, LiteSpeed / OpenLiteSpeed Web Server अब एउटा SAPI extension को रूपमा PHP को support सहित चलिरहेको हुनुपर्छ। LSWS / OLS र PHP का लागि अझ धेरै configuration विकल्पहरू उपलब्ध छन्। थप जानकारीका लागि, <link xlink:href="&url.litespeed.php;">PHP</link> सम्बन्धी LiteSpeed documentation हेर्नुहोस्।</simpara>
+
+ <simpara>command line from LSPHP प्रयोग गर्ने:</simpara>
+
+ <simpara>LSPHP(LSAPI + PHP) command line mode remote server मा चलिरहेका PHP scripts process गर्न प्रयोग गरिन्छ, जहाँ web server चलिरहेको हुनु अनिवार्य हुँदैन। यसलाई local web server (छुट्टै) मा रहेका PHP scripts process गर्न प्रयोग गरिन्छ। यो setup service scalability का लागि उपयुक्त हुन्छ, किनकि PHP processing लाई remote server मा offload गरिन्छ।</simpara>
+
+ <simpara>remote server मा command line from lsphp start गर्नुहोस्: LSPHP एउटा executable हो र यसलाई command line option -b socket_address प्रयोग गरी manually start गर्न तथा IPv4, IPv6, वा Unix domain socket address हरूमा bind गर्न सकिन्छ।</simpara>
+
+ <simpara>उदाहरणहरू:</simpara>
+
+ <simpara>LSPHP लाई सबै IPv4 र IPv6 address हरूमा port 3000 मा bind गराउनुहोस्:</simpara>
+
+ <informalexample>
+  <screen>
+<![CDATA[
+/path/to/lsphp -b [::]:3000
+]]>
+  </screen>
+ </informalexample>
+
+ <simpara>LSPHP लाई सबै IPv4 address हरूमा port 3000 मा bind गराउनुहोस्:</simpara>
+
+ <informalexample>
+  <screen>
+<![CDATA[
+/path/to/lsphp -b *:3000
+]]>
+  </screen>
+ </informalexample>
+
+ <simpara>LSPHP लाई address 192.168.0.2:3000 मा bind गराउनुहोस्:</simpara>
+
+ <informalexample>
+  <screen>
+<![CDATA[
+/path/to/lsphp -b 192.168.0.2:3000
+]]>
+  </screen>
+ </informalexample>
+
+ <simpara>LSPHP लाई Unix domain socket <literal>/tmp/lsphp_manual.sock</literal> मा requests accept गराउनुहोस्:</simpara>
+
+ <informalexample>
+  <screen>
+<![CDATA[
+/path/to/lsphp -b /tmp/lsphp_manual.sock
+]]>
+  </screen>
+ </informalexample>
+
+ <simpara>Environment variables लाई LSPHP executable भन्दा अगाडि थप्न सकिन्छ:</simpara>
+
+ <informalexample>
+  <screen>
+<![CDATA[
+PHP_LSAPI_MAX_REQUESTS=500 PHP_LSAPI_CHILDREN=35 /path/to/lsphp -b IP_address:port
+]]>
+  </screen>
+ </informalexample>
+
+ <simpara>हाल LiteSpeed PHP लाई LiteSpeed Web Server, OpenLiteSpeed Web Server, र Apache mod_lsapi सँग प्रयोग गर्न सकिन्छ। server-side configuration सम्बन्धी चरणहरूका लागि <link xlink:href="&url.litespeed.web.server;">LiteSpeed Web Server</link> र <link xlink:href="&url.litespeed.open;">OpenLiteSpeed</link> का documentation पृष्ठहरू हेर्नुहोस्।</simpara>
+
+ <simpara>LSPHP लाई अन्य थुप्रै तरिकाहरूबाट पनि install गर्न सकिन्छ।</simpara>
+
+ <simpara>CentOS: CentOS मा, <link xlink:href="&url.litespeed.packages;">RPM</link> प्रयोग गरेर LiteSpeed Repository वा Remi Repository from LSPHP install गर्न सकिन्छ।</simpara>
+
+ <simpara>Debian: Debian मा, <link xlink:href="&url.litespeed.packages;">apt</link> प्रयोग गरेर LiteSpeed Repository from LSPHP install गर्न सकिन्छ।</simpara>
+
+ <simpara>cPanel: EasyApache 4 प्रयोग गरेर cPanel र LSWS/OLS सँग LSPHP कसरी install गर्ने भन्ने बारे सम्बन्धित <link xlink:href="&url.litespeed.cpanel;">documentation page</link> हेर्नुहोस्।</simpara>
+
+ <simpara>Plesk: Plesk लाई CentOS, CloudLinux, Debian, र Ubuntu मा LSPHP सँग प्रयोग गर्न सकिन्छ, यस बारे थप विवरणका लागि सम्बन्धित <link xlink:href="&url.litespeed.plesk;">documentation page</link> हेर्नुहोस्।</simpara>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

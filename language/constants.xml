@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 5dc21d42fd5c1a8d6b0e45869c4fe3c3ac8e9a2c Maintainer: prateekbhujel Status: ready -->
+<!-- EN-Revision: 5dc21d42fd5c1a8d6b0e45869c4fe3c3ac8e9a2c Maintainer: prateekbhujel Status: draft -->
  <chapter xml:id="language.constants" xmlns="http://docbook.org/ns/docbook" annotations="interactive">
-  <title>Constants (स्थिर मानहरू)</title>
+ <title>Constants</title>
 
   <simpara>
-   Constant भनेको कुनै साधारण मानको लागि दिइने एउटा पहिचानकर्ता (नाम) हो। नामले नै सङ्केत गरे जस्तै, script चलिरहेको बेला यो मान परिवर्तन हुन सक्दैन (<link linkend="language.constants.magic">magic constants</link> बाहेक, जुन वास्तवमा वास्तविक constants होइनन्)।
-   Constants हरू case-sensitive (अक्षरको आकार अनुसार फरक) हुन्छन्। सामान्य चलन अनुसार constant पहिचानकर्ताहरू सधैँ ठूला अक्षर (UPPERCASE) मा लेखिन्छ।
+   Constant भनेको कुनै साधारण value लाई दिइएको नाम हो। नामले जनाएझैँ, script चलिरहेको बेला यो value बदल्न सकिँदैन (<link linkend="language.constants.magic">magic constants</link> बाहेक, जुन वास्तवमा constants होइनन्)।
+   Constants case-sensitive हुन्छन्, अर्थात् ठूला र साना अक्षरलाई फरक मानिन्छ। चलनअनुसार constant का नाम ठूला अक्षर (UPPERCASE) मा लेखिन्छन्।
   </simpara>
 
   <note>
@@ -21,7 +21,8 @@
   </note>
 
   <para>
-   Constant को नामले PHP का अन्य labels का नियमहरू नै पालना गर्छ। एउटा मान्य constant नाम अक्षर वा underscore बाट सुरु हुन्छ, र त्यसपछि जति पनि अक्षर, अङ्क वा underscores आउन सक्छन्।
+   Constant को नामका नियम PHP का अन्य labels का जस्तै हुन्छन्। मान्य नाम अक्षर वा underscore बाट सुरु हुन्छ। त्यसपछि जति पनि अक्षर, अङ्क वा underscores राख्न सकिन्छ। यसलाई regular expression मा यसरी लेख्न सकिन्छ:
+   <code>^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*$</code>
   </para>
   <para>
    <function>define</function> function मार्फत आरक्षित वा अमान्य नाम भएका constants पनि बनाउन सम्भव छ, तर तिनको मान <function>constant</function> function बाट मात्र निकाल्न सकिन्छ। यद्यपि, त्यसो गर्न सिफारिस गरिँदैन।
@@ -53,6 +54,12 @@ define("__FOO__", "something");
   <simpara>
    &link.superglobals; जस्तै constants को scope पनि global हुन्छ। Scope को नियमहरूको परवाह नगरी script को जुनसुकै स्थानबाट पनि constants प्रयोग गर्न सकिन्छ।
   </simpara>
+
+  <note>
+   <simpara>
+    यहाँ अक्षर भन्नाले a-z, A-Z र 128 देखि 255 (0x80-0xff) सम्मका byte values जनाइएको हो।
+   </simpara>
+  </note>
 
   <note>
    <simpara>

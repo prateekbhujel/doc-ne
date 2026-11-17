@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.wordwrap" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>wordwrap</refname>
+  <refpurpose>एउटा string लाई दिइएको characters को सङ्ख्यामा wrap गर्छ</refpurpose>
+ </refnamediv>
+ 
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>wordwrap</methodname>
+   <methodparam><type>string</type><parameter>string</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>width</parameter><initializer>75</initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>break</parameter><initializer>"\n"</initializer></methodparam>
+   <methodparam choice="opt"><type>bool</type><parameter>cut_long_words</parameter><initializer>&false;</initializer></methodparam>
+  </methodsynopsis>
+  <para>string break character प्रयोग गरी एउटा string लाई दिइएको characters को सङ्ख्यामा wrap गर्छ। <parameter>cut_long_words</parameter> लाई &true; मा set नगरिएसम्म Strings space (U+0020) character पछि wrap हुन्छन्।</para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>string</parameter></term>
+     <listitem>
+      <para>Input string।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>width</parameter></term>
+     <listitem>
+      <para>string wrap गरिने characters को सङ्ख्या।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>break</parameter></term>
+     <listitem>
+      <para>वैकल्पिक <parameter>break</parameter> parameter प्रयोग गरी line break गरिन्छ। यो एउटा खाली string हुनु हुँदैन।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>cut_long_words</parameter></term>
+     <listitem>
+      <para>यदि <parameter>cut_long_words</parameter> लाई &true; मा set गरिएको छ भने, string सधैँ तोकिएको <parameter>width</parameter> मा वा सोभन्दा अगाडि wrap हुन्छ। त्यसैले यदि तपाईँसँग दिइएको width भन्दा ठूलो शब्द छ भने, त्यसलाई टुक्र्याइन्छ। (दोस्रो उदाहरण हेर्नुहोस्)। &false; हुँदा, <parameter>width</parameter> शब्दको width भन्दा सानो भए तापनि function ले शब्दलाई split गर्दैन।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>तोकिएको length मा wrap गरिएको दिइएको string return गर्दछ।</para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <simpara>यदि <parameter>break</parameter> एउटा खाली string हो भने, एउटा <classname>ValueError</classname> throw गरिन्छ।</simpara>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>यदि <parameter>break</parameter> खाली string हो भने, एउटा <classname>ValueError</classname> throw गरिन्छ; पहिले यस अवस्थामा यसले <constant>E_WARNING</constant> emit गर्थ्यो र &false; return गर्थ्यो।</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>wordwrap</function> को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$text = "The quick brown fox jumped over the lazy dog.";
+$newtext = wordwrap($text, 20, "<br />\n");
+
+echo $newtext;
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+The quick brown fox<br />
+jumped over the lazy<br />
+dog.
+]]>
+    </screen>
+   </example>
+   <example>
+    <title><function>wordwrap</function> को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$text = "A very long woooooooooooord.";
+$newtext = wordwrap($text, 8, "\n", true);
+
+echo "$newtext\n";
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+A very
+long
+wooooooo
+ooooord.
+]]>
+    </screen>
+   </example>
+   <example>
+    <title><function>wordwrap</function> को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$text = "A very long woooooooooooooooooord. and something";
+$newtext = wordwrap($text, 8, "\n", false);
+
+echo "$newtext\n";
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+A very
+long
+woooooooooooooooooord.
+and
+something
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>nl2br</function></member>
+    <member><function>chunk_split</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

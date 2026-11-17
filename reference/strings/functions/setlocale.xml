@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 46efd980535e8de6f6639a0015d2ad1e4bfe9d00 Maintainer: prateekbhujel Status: draft -->
+<refentry xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://docbook.org/ns/docbook" xml:id="function.setlocale">
+ <refnamediv>
+  <refname>setlocale</refname>
+  <refpurpose>locale सम्बन्धी जानकारी सेट गर्ने</refpurpose>
+ </refnamediv>
+ 
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type class="union"><type>string</type><type>false</type></type><methodname>setlocale</methodname>
+   <methodparam><type>int</type><parameter>category</parameter></methodparam>
+   <methodparam><type class="union"><type>string</type><type>null</type></type><parameter>locales</parameter></methodparam>
+   <methodparam rep="repeat"><type>string</type><parameter>rest</parameter></methodparam>
+  </methodsynopsis>
+  <simpara>वैकल्पिक signature (named arguments सँग समर्थित छैन):</simpara>
+  <methodsynopsis>
+   <type class="union"><type>string</type><type>false</type></type><methodname>setlocale</methodname>
+   <methodparam><type>int</type><parameter>category</parameter></methodparam>
+   <methodparam><type>array</type><parameter>locale_array</parameter></methodparam>
+  </methodsynopsis>
+  <para>locale सम्बन्धी जानकारी सेट गर्दछ।</para>
+  <warning>
+   <simpara>locale सम्बन्धी जानकारी thread अनुसार नभई process अनुसार व्यवस्थापन गरिन्छ। यदि तपाईँ multithreaded server API मा PHP चलाउँदै हुनुहुन्छ भने, एउटा script चलिरहेको बेला तपाईँले locale settings मा अचानक परिवर्तनहरू अनुभव गर्न सक्नुहुन्छ, यद्यपि त्यो script आफैँले कहिल्यै <function>setlocale</function> कल नगरेको भए तापनि। यस्तो हुनुको कारण, एउटै process का विभिन्न threads मा एकै समयमा चलिरहेका अन्य scripts ले <function>setlocale</function> प्रयोग गरी process-wide locale परिवर्तन गर्नु हो। Windows मा भने, PHP 7.0.5 देखि locale सम्बन्धी जानकारी thread अनुसार व्यवस्थापन गरिन्छ।</simpara>
+  </warning>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>category</parameter></term>
+     <listitem>
+      <para><parameter>category</parameter> एउटा named constant हो जसले locale setting बाट प्रभावित हुने functions को category निर्दिष्ट गर्दछ:<itemizedlist>
+        <listitem>
+         <simpara>तलका सबैका लागि <constant>LC_ALL</constant></simpara>
+        </listitem>
+        <listitem>
+         <simpara>string comparison का लागि <constant>LC_COLLATE</constant>, <function>strcoll</function> हेर्नुहोस्</simpara>
+        </listitem>
+        <listitem>
+         <simpara>character वर्गीकरण र conversion का लागि <constant>LC_CTYPE</constant>, उदाहरणका लागि <function>ctype_alpha</function></simpara>
+        </listitem>
+        <listitem>
+         <simpara><function>localeconv</function> का लागि <constant>LC_MONETARY</constant></simpara>
+        </listitem>
+        <listitem>
+         <simpara>decimal separator का लागि <constant>LC_NUMERIC</constant> (<function>localeconv</function> पनि हेर्नुहोस्)</simpara>
+        </listitem>
+        <listitem>
+         <simpara><function>strftime</function> सँग date र time formatting का लागि <constant>LC_TIME</constant></simpara>
+        </listitem>
+        <listitem>
+         <simpara>system responses का लागि <constant>LC_MESSAGES</constant> (यदि PHP लाई <literal>libintl</literal> सँग compile गरिएको थियो भने उपलब्ध)</simpara>
+        </listitem>
+       </itemizedlist>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>locales</parameter></term>
+     <listitem>
+      <para>यदि <parameter>locales</parameter> खाली string <literal>""</literal> वा &null; छ भने, locale का नामहरू माथिका categories जस्तै समान नाम भएका environment variables का values from, वा "LANG" from सेट गरिनेछ।</para>
+      <para>यदि <parameter>locales</parameter> <literal>"0"</literal> छ भने, locale setting प्रभावित हुँदैन, केवल current setting मात्र return गरिन्छ।</para>
+      <para>यदि <parameter>locales</parameter> पछि थप parameters दिइएका छन् भने, सफल नभएसम्म each parameter लाई नयाँ locale को रूपमा सेट गर्ने प्रयास गरिन्छ। यदि कुनै locale विभिन्न systems मा फरक-फरक नामले चिनिन्छ भने, वा उपलब्ध नहुन सक्ने सम्भावित locale का लागि fallback प्रदान गर्न यो उपयोगी हुन्छ।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>rest</parameter></term>
+     <listitem>
+      <para>सफल नभएसम्म locale settings का रूपमा प्रयास गरिने optional string parameters।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>locale_array</parameter></term>
+     <listitem>
+      <para>सफल नभएसम्म प्रत्येक array element लाई नयाँ locale को रूपमा सेट गर्ने प्रयास गरिन्छ। यदि कुनै locale विभिन्न systems मा फरक-फरक नामले चिनिन्छ भने, वा उपलब्ध नहुन सक्ने सम्भावित locale का लागि fallback प्रदान गर्न यो उपयोगी हुन्छ।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <note>
+    <para>Windows मा, setlocale(LC_ALL, '') ले system को regional/language settings (Control Panel मार्फत access गर्न सकिने) from locale का नामहरू सेट गर्दछ।</para>
+   </note>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>नयाँ current locale return गर्दछ, वा यदि तपाईँको platform मा locale functionality implement गरिएको छैन, तोकिएको locale अस्तित्वमा छैन वा category नाम invalid छ भने &false; return गर्दछ।</para>
+  <para>invalid category नामले warning message पनि उत्पन्न गर्दछ। Category/locale का नामहरू <link xlink:href="&url.rfc;1766">RFC 1766</link> र <link xlink:href="&url.iso-639;">ISO 639</link> मा फेला पार्न सकिन्छ। विभिन्न systems मा locales का लागि फरक-फरक naming schemes हुन्छन्।</para>
+  <note>
+   <para><function>setlocale</function> को return value, PHP चलिरहेको system मा निर्भर गर्दछ। यसले system को <literal>setlocale</literal> function ले जे return गर्छ, ठ्याक्कै त्यही return गर्दछ।</para>
+  </note>
+ </refsect1>
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.5.0</entry>
+      <entry><parameter>locales</parameter> argument को रूपमा integer <literal>0</literal> pass गर्न अब support गरिँदैन र यसले अब <classname>TypeError</classname> throw गर्दछ।</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>setlocale</function> का उदाहरणहरू</title>
+    <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+/* Set locale to Dutch */
+setlocale(LC_ALL, 'nl_NL');
+
+/* Output: vrijdag 22 december 1978 */
+echo strftime("%A %e %B %Y", mktime(0, 0, 0, 12, 22, 1978));
+
+/* try different possible locale names for german */
+$loc_de = setlocale(LC_ALL, 'de_DE@euro', 'de_DE', 'de', 'ge');
+echo "Preferred locale for german on this system is '$loc_de'";
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title><function>setlocale</function> current setting प्राप्त गर्ने</title>
+    <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+/* Retrieve current setting */
+$current = setlocale(LC_ALL, null);
+
+echo "Current locale '$current'";
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>Windows का लागि <function>setlocale</function> का उदाहरणहरू</title>
+    <programlisting role="php" annotations="non-interactive">
+<![CDATA[
+<?php
+/* Set locale to Dutch */
+setlocale(LC_ALL, 'nld_nld');
+
+/* Output: vrijdag 22 december 1978 */
+echo strftime("%A %d %B %Y", mktime(0, 0, 0, 12, 22, 1978));
+
+/* try different possible locale names for german */
+$loc_de = setlocale(LC_ALL, 'de_DE@euro', 'de_DE', 'deu_deu');
+echo "Preferred locale for german on this system is '$loc_de'";
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <tip>
+   <para>Windows प्रयोगकर्ताहरूले Microsoft को <acronym>MSDN</acronym> website मा <parameter>locales</parameter> strings सम्बन्धी उपयोगी जानकारी फेला पार्न सक्नेछन्। supported language strings लाई <link xlink:href="&url.setlocale.lang.win32;">language strings documentation</link> मा र supported country/region strings लाई <link xlink:href="&url.setlocale.country.win32;">country/region strings documentation</link> मा फेला पार्न सकिन्छ।</para>
+  </tip>
+ </refsect1>
+
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

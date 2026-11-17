@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 3237a040686263e6b95db60c86a29d39b25c298e Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.extract" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>extract</refname>
+  <refpurpose>एउटा array from बाट current symbol table मा variables import गर्दछ</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>int</type><methodname>extract</methodname>
+   <methodparam><type>array</type><parameter role="reference">array</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>flags</parameter><initializer><constant>EXTR_OVERWRITE</constant></initializer></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>prefix</parameter><initializer>""</initializer></methodparam>
+  </methodsynopsis>
+  <para>एउटा array from बाट current <link linkend="features.gc.refcounting-basics">symbol table</link> मा variables import गर्दछ।</para>
+  <para>यसले each key मा मान्य variable name छ कि छैन भनी जाँच गर्दछ। यसले symbol table मा रहेका विद्यमान variable हरूसँगको collision पनि जाँच गर्दछ।</para>
+  <warning>
+   <para>user input (जस्तै: <varname>$_GET</varname>, <varname>$_FILES</varname>) जस्ता untrusted data मा <function>extract</function> प्रयोग नगर्नुहोस्।</para>
+  </warning>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>array</parameter></term>
+     <listitem>
+      <para>एउटा associative array। यो function ले keys लाई variable name का रूपमा र values लाई variable values का रूपमा व्यवहार गर्दछ। <parameter>flags</parameter> र <parameter>prefix</parameter> parameters को अधीनमा रही, यसले each key/value pair का लागि current symbol table मा एउटा variable सिर्जना गर्नेछ।</para>
+      <para>तपाईँले एउटा associative array प्रयोग गर्नुपर्छ; तपाईँले <constant>EXTR_PREFIX_ALL</constant> वा <constant>EXTR_PREFIX_INVALID</constant> प्रयोग नगरेसम्म numerically indexed array ले कुनै नतिजा उत्पन्न गर्ने छैन।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>flags</parameter></term>
+     <listitem>
+      <para>अमान्य/numeric keys र collision हरूलाई कसरी व्यवहार गरिन्छ भन्ने कुरा extraction <parameter>flags</parameter> द्वारा निर्धारण गरिन्छ। यो निम्न values मध्ये कुनै एक हुन सक्छ:<variablelist>
+        <varlistentry>
+         <term><constant>EXTR_OVERWRITE</constant></term>
+         <listitem>
+          <simpara>यदि collision भएमा, विद्यमान variable लाई overwrite गर्नुहोस्।</simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><constant>EXTR_SKIP</constant></term>
+         <listitem>
+          <simpara>यदि collision भएमा, विद्यमान variable लाई overwrite नगर्नुहोस्।</simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><constant>EXTR_PREFIX_SAME</constant></term>
+         <listitem>
+          <simpara>यदि collision भएमा, variable name को अगाडि <parameter>prefix</parameter> prefix गर्नुहोस्।</simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><constant>EXTR_PREFIX_ALL</constant></term>
+         <listitem>
+          <simpara>सबै variable name हरूको अगाडि <parameter>prefix</parameter> prefix गर्नुहोस्।</simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><constant>EXTR_PREFIX_INVALID</constant></term>
+         <listitem>
+          <simpara>अमान्य/numeric variable name हरूको अगाडि मात्र <parameter>prefix</parameter> prefix गर्नुहोस्।</simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><constant>EXTR_IF_EXISTS</constant></term>
+         <listitem>
+          <simpara>variable पहिले नै current symbol table मा अस्तित्वमा छ भने मात्र त्यसलाई overwrite गर्नुहोस्, अन्यथा केही नगर्नुहोस्। उदाहरणका लागि, मान्य variable हरूको एउटा list define गर्न र त्यसपछि <varname>$_REQUEST</varname> बाट तपाईँले define गर्नुभएका ती variable हरू मात्र extract गर्न यो उपयोगी हुन्छ।</simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><constant>EXTR_PREFIX_IF_EXISTS</constant></term>
+         <listitem>
+          <simpara>सोही variable को non-prefixed संस्करण current symbol table मा अस्तित्वमा छ भने मात्र prefixed variable name हरू सिर्जना गर्नुहोस्।</simpara>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><constant>EXTR_REFS</constant></term>
+         <listitem>
+          <simpara>variable हरूलाई references का रूपमा extract गर्दछ। यसको वास्तविक अर्थ imported variable हरूका values ले अझै पनि <parameter>array</parameter> parameter का values लाई reference गरिरहेका हुन्छन् भन्ने हो। तपाईँले यो flag एक्लै प्रयोग गर्न सक्नुहुन्छ वा <parameter>flags</parameter> लाई OR गरेर यसलाई अन्य कुनै पनि flag सँग combine गर्न सक्नुहुन्छ।</simpara>
+         </listitem>
+        </varlistentry>
+       </variablelist>
+      </para>
+      <para>यदि <parameter>flags</parameter> उल्लेख गरिएको छैन भने, यसलाई <constant>EXTR_OVERWRITE</constant> मानिन्छ।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>prefix</parameter></term>
+     <listitem>
+      <para>ध्यान दिनुहोस् कि <parameter>flags</parameter> को मान <constant>EXTR_PREFIX_SAME</constant>, <constant>EXTR_PREFIX_ALL</constant>, <constant>EXTR_PREFIX_INVALID</constant> वा <constant>EXTR_PREFIX_IF_EXISTS</constant> भएको अवस्थामा मात्र <parameter>prefix</parameter> आवश्यक पर्दछ। यदि prefix गरिएको नतिजा मान्य variable name होइन भने, यो symbol table मा import हुँदैन। Prefix हरूलाई एउटा underscore क्यारेक्टरद्वारा array key from स्वतः छुट्ट्याइन्छ।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>symbol table मा सफलतापूर्वक import गरिएका variable हरूको सङ्ख्या return गर्दछ।</para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <simpara>यदि <parameter>flags</parameter> मान्य extract type होइन भने, <parameter>prefix</parameter> दिइएको छैन तर <parameter>flags</parameter> लाई यो आवश्यक पर्दछ भने, वा <parameter>prefix</parameter> मान्य variable name होइन भने यसले <exceptionname>ValueError</exceptionname> throw गर्दछ।</simpara>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>अब अमान्य <parameter>flags</parameter> वा <parameter>prefix</parameter> का लागि यसले <exceptionname>ValueError</exceptionname> throw गर्दछ। यसअघि, एउटा <constant>E_WARNING</constant> raise गरिन्थ्यो र &null; return गरिन्थ्यो।</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>extract</function> को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$size = "large";
+$var_array = array(
+    "color" => "blue",
+    "size"  => "medium",
+    "shape" => "sphere"
+);
+
+extract($var_array, EXTR_PREFIX_SAME, "wddx");
+
+echo "$color, $size, $shape, $wddx_size\n";
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+blue, large, sphere, medium
+]]>
+    </screen>
+    <para>हामीले <constant>EXTR_PREFIX_SAME</constant> specify गरेकाले <varname>$size</varname> overwrite भएन, जसको परिणामस्वरूप <varname>$wddx_size</varname> सिर्जना भयो। यदि <constant>EXTR_SKIP</constant> specify गरिएको भए, <varname>$wddx_size</varname> सिर्जना समेत हुने थिएन। <constant>EXTR_OVERWRITE</constant> ले गर्दा <varname>$size</varname> को value "medium" हुने थियो, र <constant>EXTR_PREFIX_ALL</constant> को फलस्वरूप नयाँ variable हरूको नाम <varname>$wddx_color</varname>, <varname>$wddx_size</varname>, र <varname>$wddx_shape</varname> हुने थियो।</para>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <warning>
+   <para>user input (अर्थात् <varname>$_GET</varname>, <varname>$_FILES</varname>, आदि) जस्ता untrusted data मा <function>extract</function> प्रयोग नगर्नुहोस्। यदि तपाईँले गर्नुभयो भने, <constant>EXTR_SKIP</constant> जस्ता non-overwriting <parameter>flags</parameter> values मध्ये कुनै एक प्रयोग गर्नुभएको कुरा make sure गर्नुहोस् र <link linkend="ini">&php.ini;</link> भित्रको <link linkend="ini.variables-order">variables_order</link> मा define गरिएकै क्रममा तपाईँले extract गर्नुपर्छ भन्ने कुरामा सचेत रहनुहोस्।</para>
+  </warning>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>compact</function></member>
+    <member><function>list</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

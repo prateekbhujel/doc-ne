@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 72d861de4970c2dbc84c391c1a4caab4a10a91fa Maintainer: prateekbhujel Status: draft -->
+<reference xml:id="class.serializable" role="class" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+ <title>Serializable interface</title>
+ <titleabbrev>Serializable</titleabbrev>
+
+ <partintro>
+
+  <section xml:id="serializable.intro">
+   &reftitle.intro;
+   <para>customized serializing का लागि Interface।</para>
+
+   <simpara>यो interface implement गर्ने Classes ले <link linkend="object.sleep">__sleep()</link> र <link linkend="object.wakeup">__wakeup()</link> लाई support गर्दैनन्। कुनै instance लाई serialize गर्नुपर्दा <methodname>serialize</methodname> method call गरिन्छ। यस method भित्रै program नगरिएको भए, यसले <methodname>__destruct</methodname> लाई invoke गर्दैन वा अन्य कुनै side effect गर्दैन। जब data लाई unserialize गरिन्छ, class थाहा हुन्छ र <methodname>__construct</methodname> call गर्नुको सट्टा उपयुक्त <methodname>unserialize</methodname> method लाई constructor को रूपमा call गरिन्छ। इच्छा लागेमा, <methodname>unserialize</methodname> method भित्र from constructor लाई call गर्न सकिन्छ।</simpara>
+   
+   <warning>
+    <para>PHP 8.1.0 देखि, <link linkend="object.serialize">__serialize()</link> र <link linkend="object.unserialize">__unserialize()</link> implement नगरी <interfacename>Serializable</interfacename> implement गर्ने class ले deprecation warning दिनेछ।</para>
+   </warning>
+
+   <simpara>नयाँ code ले त्यसको सट्टा <link linkend="object.serialize">__serialize()</link> र <link linkend="object.unserialize">__unserialize()</link> magic methods प्रयोग गर्नुपर्छ, जुन PHP 7.4.0 देखि उपलब्ध छन्। जब कुनै class ले ती दुवै र यो interface declare गर्दछ, तब <function>serialize</function> ले सधैँ <link linkend="object.serialize">__serialize()</link> प्रयोग गर्छ र <methodname>Serializable::serialize</methodname> सम्म कहिल्यै पुग्दैन। त्यसको सट्टा unserialize गर्ने कुरा data को format ले निर्धारण गर्छ: PHP 7.4.0 वा त्यसपछि लेखिएको payload लाई <link linkend="object.unserialize">__unserialize()</link> ले पढ्छ, र त्योभन्दा पहिले लेखिएको payload लाई अझै पनि <methodname>Serializable::unserialize</methodname> ले पढ्छ। त्यसैले त्यस्ता पुराना payloads पढ्नका लागि र <interfacename>Serializable</interfacename> type declaration पूरा गर्नका लागि <interfacename>Serializable</interfacename> implement गर्नु उपयोगी रहन्छ; चारवटै methods declare गर्दा प्रत्येक case समेटिन्छ र deprecation notice बाट पनि बचिन्छ।</simpara>
+
+   <note>
+    <simpara>ती magic methods को आफ्नै कुनै interface हुँदैन, त्यसैले <interfacename>Serializable</interfacename> implement नगरी तिनीहरूलाई declare गर्ने class यसको instance हुँदैन। तिनीहरू पत्ता लगाउने तरिका <function>method_exists</function> हो।</simpara>
+   </note>
+  </section>
+
+  <section xml:id="serializable.synopsis">
+   &reftitle.interfacesynopsis;
+
+   <classsynopsis class="interface">
+    <oointerface>
+     <interfacename>Serializable</interfacename>
+    </oointerface>
+
+    <classsynopsisinfo role="comment">&Methods;</classsynopsisinfo>
+    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.serializable')/db:refentry/db:refsect1[@role='description']/descendant::db:methodsynopsis[@role='Serializable'])"/>
+   </classsynopsis>
+
+  </section>
+
+  <section xml:id="serializable.examples">
+   &reftitle.examples;
+   <example xml:id="serializable.example.basic">
+    <title>PHP 7.1.0 देखि 7.3.0 सम्मको support</title>
+    <simpara>magic methods ले serialized form बोक्छन् र interface methods ले तिनीहरूलाई delegate गर्छन्, जसले गर्दा एउटै representation ले दुवैको काम गर्दछ।</simpara>
+    <programlisting role="php">
+<![CDATA[
+<?php
+class Task implements Serializable
+{
+    private $label;
+
+    public function __construct($label)
+    {
+        $this->label = $label;
+    }
+
+    public function __serialize(): array
+    {
+        return ['label' => $this->label];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->label = $data['label'];
+    }
+
+    // Never called as of PHP 7.4.0
+    public function serialize()
+    {
+        return serialize($this->__serialize());
+    }
+
+    // Still called as of PHP 7.4.0, for data written before it
+    public function unserialize($data)
+    {
+        $this->__unserialize(unserialize($data));
+    }
+}
+
+var_dump(serialize(new Task('deploy')));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(40) "O:4:"Task":1:{s:5:"label";s:6:"deploy";}"
+]]>
+    </screen>
+    <simpara>PHP 7.4.0 भन्दा पहिले, यही code त्यसको सट्टा interface मार्फत serialize हुन्छ, र <literal>string(47) "C:4:"Task":31:{a:1:{s:5:"label";s:6:"deploy";}}"</literal> output दिन्छ।</simpara>
+   </example>
+  </section>
+
+
+ </partintro>
+
+ &language.predefined.serializable.serialize;
+ &language.predefined.serializable.unserialize;
+
+</reference>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

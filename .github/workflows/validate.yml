@@ -30,6 +30,12 @@ jobs:
         run: |
           php tools/validate.php /tmp/doc-en
 
+      - name: Check Unicode prose word counting
+        run: php tools/tests/word-count.php
+
+      - name: Check revision validation without an English checkout
+        run: php tools/tests/validate-revision.php
+
       - name: Generate Translation Status Report
         run: |
           php tools/status.php

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 10e6a2b042104bd7481b6c21ddbfda594683e3c4 Maintainer: prateekbhujel Status: draft -->
+<sect1 xml:id="install.windows.commandline" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>Windows प्रणालीहरूमा command line मा PHP run गर्ने</title>
+ <para>यस खण्डमा Windows का लागि command line from PHP चलाउनेसँग सम्बन्धित विशेष नोट र सुझावहरू समावेश छन्।</para>
+ <note>
+  <para>सबैभन्दा पहिले <link linkend="install.windows.manual">manual installation steps</link> पढ्नुहोस्!</para>
+ </note>
+ <para>Windows मा कुनै परिवर्तन नगरीकन command line from PHP चलाउन सकिन्छ।<screen>
+<![CDATA[
+C:\php\php.exe -f "C:\PHP Scripts\script.php" -- -arg1 -arg2 -arg3
+]]>     
+  </screen>
+ </para>
+
+ <para>तर यसलाई अझ सरल make गर्न केही सजिला step हरू पछ्याउन सकिन्छ। यीमध्ये केही step हरू पहिले नै पूरा भइसकेका हुन सक्छन्, तर एउटा पूर्ण step-by-step क्रम प्रदान गर्न यहाँ तिनलाई दोहोर्‍याइएको छ।<itemizedlist>
+   <note>
+    <para><envar>PATH</envar> र <envar>PATHEXT</envar> दुवै Windows का महत्त्वपूर्ण pre-existing system variables हुन्, र यी दुवै variable लाई overwrite नगरी केवल थप मात्र गर्न सावधानी अपनाउनुपर्छ।</para>
+   </note>
+
+   <listitem>
+    <para>PHP executable को location लाई (PHP version र display preferences अनुसार <filename>php.exe</filename>, <filename>php-win.exe</filename> वा <filename>php-cli.exe</filename>) <envar>PATH</envar> environment variable मा append गर्नुहोस्। <envar>PATH</envar> मा उपयुक्त directory कसरी थप्ने भन्ने बारे थप जान्न <link
+     linkend="faq.installation.addtopath">corresponding FAQ entry</link> पढ्नुहोस्।</para>
+   </listitem>
+
+   <listitem>
+    <para><varname>PATHEXT</varname> environment variable मा <literal>.PHP</literal> extension append गर्नुहोस्। यो काम <envar>PATH</envar> environment variable संशोधन गर्दाकै समयमा गर्न सकिन्छ। <link
+     linkend="faq.installation.addtopath">FAQ</link> मा वर्णन गरिएका समान step हरू पछ्याउनुहोस्, तर <envar>PATH</envar> environment variable को सट्टा <varname>PATHEXT</varname> environment variable लाई संशोधन गर्नुहोस्।<note>
+      <para>एउटै नाम भएका filenames हुँदा कुन script वा program execute हुन्छ भन्ने कुरा <literal>.PHP</literal> राखिएको स्थानले निर्धारण गर्नेछ। उदाहरणका लागि, यदि सोही नामको batch file छ भने, <literal>.BAT</literal> भन्दा अगाडि <literal>.PHP</literal> राख्दा batch file को सट्टा script run हुनेछ।</para>
+     </note>
+    </para>
+   </listitem>
+
+   <listitem>
+    <para><literal>.PHP</literal> extension लाई एउटा file type सँग associate गर्नुहोस्। यो तलको command run गरेर गरिन्छ:<screen>
+<![CDATA[
+assoc .php=phpfile
+]]>     
+     </screen>
+    </para>
+   </listitem>
+
+   <listitem>
+    <para><literal>phpfile</literal> file type लाई उपयुक्त PHP executable सँग associate गर्नुहोस्। यो तलको command run गरेर गरिन्छ:<screen>
+<![CDATA[
+ftype phpfile="C:\php\php.exe" -f "%1" -- %~2
+]]>     
+     </screen>
+    </para>
+   </listitem>
+
+  </itemizedlist>
+ </para>
+
+ <para>यी step हरू पछ्याउनाले PHP executable वा <literal>.PHP</literal> extension लाई type गर्नुपर्ने आवश्यकता बिना नै जुनसुकै directory from PHP scripts run गर्न सकिनेछ, र प्रोसेसिङका लागि सबै parameters सो script लाई उपलब्ध गराइनेछ।</para>
+
+ <para>तलको उदाहरणले manual रूपमा गर्न सकिने केही registry परिवर्तनहरूको विवरण दिन्छ।<example>
+   <title>Registry परिवर्तनहरू</title>
+   <screen>
+<![CDATA[
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\.php]
+@="phpfile"
+"Content Type"="application/php"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\phpfile]
+@="PHP Script"
+"EditFlags"=dword:00000000
+"BrowserFlags"=dword:00000008
+"AlwaysShowExt"=""
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\phpfile\DefaultIcon]
+@="C:\\php\\php-win.exe,0"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\phpfile\shell]
+@="Open"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\phpfile\shell\Open]
+@="&Open"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Classes\phpfile\shell\Open\command]
+@="\"C:\\php\\php.exe\" -f \"%1\" -- %~2"
+]]>
+   </screen>
+  </example>
+ </para>
+
+ <para>यी परिवर्तनहरूसँगै सोही command लाई यसरी लेख्न सकिन्छ:<screen>
+<![CDATA[
+"C:\PHP Scripts\script" -arg1 -arg2 -arg3
+]]>
+  </screen>वा, यदि <literal>"C:\PHP Scripts"</literal> directory <envar>PATH</envar> environment variable मा छ भने:<screen>
+<![CDATA[
+script -arg1 -arg2 -arg3
+]]>
+  </screen>
+ </para>
+
+ <note>
+  <para>तलको उदाहरण जस्तै PHP scripts लाई command line filter का रूपमा चलाउनका लागि यो विधि प्रयोग गर्न खोज्दा एउटा सानो समस्या आउँछ:<screen>
+<![CDATA[
+dir | "C:\PHP Scripts\script" -arg1 -arg2 -arg3
+]]>
+   </screen>वा<screen>
+<![CDATA[
+dir | script -arg1 -arg2 -arg3
+]]>
+   </screen>script सिधै hang हुन सक्छ र केही पनि output आउँदैन। यसलाई सञ्चालनयोग्य बनाउन अर्को registry परिवर्तन गर्न आवश्यक हुन्छ:<screen>
+<![CDATA[
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\Explorer]
+"InheritConsoleHandles"=dword:00000001
+]]>
+   </screen>यस समस्यासम्बन्धी थप जानकारी Microsoft Knowledgebase Article 321788 मा पाउन सकिन्छ। Windows 10 देखि यो setting उल्टो भएको देखिन्छ, जसले गर्दा Windows 10 को default install ले inherited console handles लाई स्वतः support गर्दछ।</para>
+ </note>
+</sect1>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

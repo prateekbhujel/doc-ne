@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 42b47025176b4d1d6ac6b6ba8d46b317b8206baa Maintainer: prateekbhujel Status: draft -->
+<chapter xml:id="configuration" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude">
+ <title>Runtime Configuration</title>
+
+ <sect1 xml:id="configuration.file">
+  <title>configuration file</title>
+
+  <simpara>PHP सुरु हुँदा मुख्य configuration file (&php.ini;) पढिन्छ। PHP का server module versions का लागि, web server सुरु हुँदा यो एक पटक मात्र हुन्छ। <acronym>CGI</acronym> र <acronym>CLI</acronym> versions का लागि भने, यो प्रत्येक invocation मा हुन्छ।</simpara>
+  <para>PHP ले मुख्य configuration file निम्नानुसार पत्ता लगाउँछ:<orderedlist>
+    <listitem>
+     <simpara>यदि सक्रिय SAPI ले कुनै निश्चित &php.ini; path override प्रदान गर्छ भने, त्यो प्रयोग गरिन्छ (उदाहरणका लागि, Apache 2 मा <literal>PHPIniDir</literal> directive, वा <acronym>CGI</acronym> र <acronym>CLI</acronym> मा <literal>-c</literal> command line option)।</simpara>
+    </listitem>
+    <listitem>
+     <simpara>अन्यथा, PHP ले निम्न स्थानहरू from एउटा search path तयार गर्छ:</simpara>
+     <itemizedlist>
+      <listitem>
+       <simpara><varname>PHPRC</varname> environment variable।</simpara>
+      </listitem>
+      <listitem>
+       <simpara>Windows मा, registry मा configure गरिएको path (<literal>IniFilePath</literal>)।</simpara>
+      </listitem>
+      <listitem>
+       <simpara>current working directory, यसलाई disable गर्ने SAPIs (जस्तै <acronym>CLI</acronym>) बाहेक।</simpara>
+       <note>
+        <simpara>Apache web server ले startup मा directory लाई root मा परिवर्तन गर्छ, जसका कारण यदि अस्तित्वमा छ भने PHP ले root filesystem from &php.ini; पढ्ने प्रयास गर्छ।</simpara>
+       </note>
+      </listitem>
+      <listitem>
+       <simpara>PHP executable वा SAPI module को directory।</simpara>
+      </listitem>
+      <listitem>
+       <simpara><literal>--with-config-file-path</literal> compile time option द्वारा निर्दिष्ट गरिएको directory, वा Windows मा Windows directory (<filename class="directory">C:\windows</filename> वा <filename class="directory">C:\winnt</filename>)।</simpara>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+    <listitem>
+     <simpara>त्यसपछि PHP ले उक्त search path मा <filename>php-SAPI.ini</filename> खोज्छ, र यदि त्यो फेला परेन भने &php.ini; खोज्छ। SAPI name <function>php_sapi_name</function> बाट पत्ता लगाउन सकिन्छ।</simpara>
+    </listitem>
+   </orderedlist>
+  </para>
+  <simpara>मुख्य configuration file चरणपछि, PHP ले <varname>PHP_INI_SCAN_DIR</varname> environment variable द्वारा, वा त्यो set गरिएको छैन भने <option role="configure">--with-config-file-scan-dir</option> compile time option द्वारा निर्दिष्ट गरिएको path मा थप रूपमा <literal>.ini</literal> files scan गर्न सक्छ।</simpara>
+  <sect2 xml:id="configuration.file.windows">
+   <title>Windows registry स्थान</title>
+
+   <simpara>Windows मा, PHP ले <literal>IniFilePath</literal> value प्रयोग गरेर registry from मुख्य configuration file को स्थान प्राप्त गर्न सक्छ।</simpara>
+
+   <simpara>जाँच गरिने निश्चित registry keys हरू PHP version मा, र PHP तथा Windows 32-bit हुन् वा 64-bit भन्ने कुरामा निर्भर गर्दछ।</simpara>
+
+   <para>32-bit OS मा 32-bit PHP का लागि, वा 64-bit OS मा 64-bit PHP का लागि, निम्न registry keys हरू क्रमानुसार जाँच गरिन्छ:<itemizedlist>
+     <listitem>
+      <simpara>
+       <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\PHP\x.y.z]</literal>
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\PHP\x.y]</literal>
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\PHP\x]</literal>
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\PHP]</literal>
+      </simpara>
+     </listitem>
+    </itemizedlist>
+   </para>
+   <simpara>यी keys मा, <literal>x</literal>, <literal>y</literal>, र <literal>z</literal> ले PHP का major, minor, र release version हरूलाई जनाउँछन्। यदि यी keys मध्ये कुनैमा <literal>IniFilePath</literal> value समावेश छ भने, भेटिएको पहिलो प्रयोग गरिन्छ।</simpara>
+   <para>६४-bit OS मा ३२-bit PHP का लागि, निम्न registry keys लाई क्रमशः जाँच गरिन्छ:<itemizedlist>
+     <listitem>
+      <simpara>
+       <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\PHP\x.y.z]</literal>
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\PHP\x.y]</literal>
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\PHP\x]</literal>
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <literal>[HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\PHP]</literal>
+      </simpara>
+     </listitem>
+    </itemizedlist>
+   </para>
+   <simpara>यदि यी keys मध्ये कुनैमा <literal>IniFilePath</literal> value समावेश छ भने, भेटिएको पहिलोलाई प्रयोग गरिन्छ।</simpara>
+  </sect2>
+  <sect2 xml:id="configuration.file.syntax">
+   <title>Configuration file syntax</title>
+   <simpara>तल देखाइए जस्तै, &php.ini; भित्रका configuration values मा Environment variable हरू reference गर्न सकिन्छ। PHP 8.3.0 देखि, reference गरिएको variable define नभएको अवस्थामा प्रयोग हुने गरी एउटा fallback value निर्दिष्ट गर्न सकिन्छ।</simpara>
+   <example>
+    <title>&php.ini; Environment Variable हरू</title>
+     <programlisting role="ini">
+<![CDATA[
+; PHP_MEMORY_LIMIT is taken from environment
+memory_limit = ${PHP_MEMORY_LIMIT}
+; If PHP_MAX_EXECUTION_TIME is not defined, it will fall back to 30
+max_execution_time = ${PHP_MAX_EXECUTION_TIME:-30}
+]]>
+    </programlisting>
+   </example>
+   <simpara>extensions ले ह्यान्डल गर्ने &php.ini; directives हरू स्वयम् extensions का सम्बन्धित पृष्ठहरूमा document गरिएका छन्। <link linkend="ini">कोर directives को सूची</link> appendix मा उपलब्ध छ। यस manual मा सबै PHP directives अनिवार्य रूपमा document गरिएकै हुन्छन् भन्ने छैन: तपाईँको PHP version मा उपलब्ध directives को पूर्ण list का लागि, कृपया राम्रोसँग comment गरिएको आफ्नो &php.ini; file पढ्नुहोस्। वैकल्पिक रूपमा, तपाईँले Git from <link xlink:href="&url.php.git.phpini;">सबैभन्दा नयाँ &php.ini;</link> पनि उपयोगी पाउन सक्नुहुन्छ।</simpara>
+   <example>
+    <title>&php.ini; को उदाहरण</title>
+    <programlisting role="ini">
+<![CDATA[
+; any text on a line after an unquoted semicolon (;) is ignored
+[php] ; section markers (text within square brackets) are also ignored
+; Boolean values can be set to either:
+;    true, on, yes
+; or false, off, no, none
+register_globals = off
+track_errors = yes
+
+; you can enclose strings in double-quotes
+include_path = ".:/usr/local/lib/php"
+
+; backslashes are treated the same as any other character
+include_path = ".;c:\php\lib"
+]]>
+    </programlisting>
+   <!-- TODO: add more details about values and expressions -->
+   </example>
+   <simpara>.ini files भित्र from पहिलेदेखि रहेका .ini variable हरूलाई refer गर्न सकिन्छ। उदाहरण: <literal>open_basedir = ${open_basedir}
+    ":/new/dir"</literal>।</simpara>
+  </sect2>
+  <sect2 xml:id="configuration.file.scan">
+   <title>directories scan गर्ने</title>
+
+   <para>&php.ini; पढिसकेपछि एउटा directory मा .ini files scan गर्नका लागि PHP लाई configure गर्न सकिन्छ। यो <option role="configure">--with-config-file-scan-dir</option> option set गरेर compile time मा गर्न सकिन्छ। त्यसपछि <varname>PHP_INI_SCAN_DIR</varname> environment variable set गरेर run time मा उक्त scan directory लाई override गर्न सकिन्छ।</para>
+
+   <para>platform-specific path separator (Windows, NetWare र RISC OS मा <literal>;</literal>; अन्य सबै platform हरूमा <literal>:</literal>; PHP ले प्रयोग गरिरहेको value भने <constant>PATH_SEPARATOR</constant> constant को रूपमा उपलब्ध छ) ले छुट्ट्याएर एकभन्दा बढी directories scan गर्न सकिन्छ। यदि <varname>PHP_INI_SCAN_DIR</varname> मा खाली directory दिइएको छ भने, PHP ले <option role="configure">--with-config-file-scan-dir</option> मार्फत compile time मा दिइएको directory लाई पनि scan गर्नेछ।</para>
+
+   <para>each directory भित्र, PHP ले <literal>.ini</literal> मा अन्त्य हुने सबै files लाई alphabetical order मा scan गर्नेछ। load गरिएका files र तिनको क्रमको एउटा list, <function>php_ini_scanned_files</function> लाई call गरेर वा <option>--ini</option> option सँग PHP चलाएर प्राप्त गर्न सकिन्छ।</para>
+
+   <informalexample>
+    <screen>
+<![CDATA[
+Assuming PHP is configured with --with-config-file-scan-dir=/etc/php.d,
+and that the path separator is :...
+
+$ php
+  PHP will load all files in /etc/php.d/*.ini as configuration files.
+
+$ PHP_INI_SCAN_DIR=/usr/local/etc/php.d php
+  PHP will load all files in /usr/local/etc/php.d/*.ini as
+  configuration files.
+
+$ PHP_INI_SCAN_DIR=:/usr/local/etc/php.d php
+  PHP will load all files in /etc/php.d/*.ini, then
+  /usr/local/etc/php.d/*.ini as configuration files.
+
+$ PHP_INI_SCAN_DIR=/usr/local/etc/php.d: php
+  PHP will load all files in /usr/local/etc/php.d/*.ini, then
+  /etc/php.d/*.ini as configuration files.
+]]>
+    </screen>
+   </informalexample>
+  </sect2>
+ </sect1>
+
+ <sect1 xml:id="configuration.file.per-user">
+  <title>.user.ini files</title>
+
+  <simpara>PHP मा प्रति-directory आधारमा configuration INI files को support समावेश छ। यी files <emphasis>केवल</emphasis> CGI/FastCGI SAPI द्वारा process गरिन्छन्। यो functionality ले PECL htscanner extension लाई obsolete बनाउँछ। यदि तपाईँ PHP लाई Apache module को रूपमा चलाउँदै हुनुहुन्छ भने, त्यही प्रभावका लागि &htaccess; files प्रयोग गर्नुहोस्।</simpara>
+
+  <simpara>मुख्य &php.ini; file का अलावा, PHP ले request गरिएको PHP file को directory बाट सुरु गरेर current document root (<varname>$_SERVER['DOCUMENT_ROOT']</varname> मा set गरिए अनुसार) सम्मका each directory मा INI files scan गर्दछ। यदि PHP file document root भन्दा बाहिर छ भने, यसको directory मात्र scan गरिन्छ।</simpara>
+  <simpara>.user.ini-style का INI files मा <constant>INI_ALL</constant>, <constant>INI_PERDIR</constant> र <constant>INI_USER</constant> mode भएका INI setting हरू मात्र पहिचान हुनेछन्।</simpara>
+
+  <simpara>दुईवटा नयाँ INI directives, <link linkend="ini.user-ini.filename">user_ini.filename</link> र <link linkend="ini.user-ini.cache-ttl">user_ini.cache_ttl</link> ले user INI files को प्रयोगलाई नियन्त्रण गर्छन्।</simpara>
+
+  <simpara><link linkend="ini.user-ini.filename">user_ini.filename</link> ले each directory मा PHP ले खोज्ने file को नाम set गर्छ; यदि यसलाई खाली string मा set गरियो भने, PHP ले पटक्कै scan गर्दैन। यसको default <literal>.user.ini</literal> हो।</simpara>
+
+  <simpara><link linkend="ini.user-ini.cache-ttl">user_ini.cache_ttl</link> ले user INI files कति समयको अन्तरालमा पुनः पढिन्छ भन्ने कुरा नियन्त्रण गर्छ। यसको default ३०० सेकेन्ड (५ मिनेट) हो।</simpara>
+ </sect1>
+
+ <sect1 xml:id="configuration.changes.modes">
+  <title>configuration setting कहाँ set गर्न सकिन्छ</title>
+
+  <para>यी mode हरूले कुनै PHP directive कहिले र कहाँ set गर्न सकिन्छ वा सकिँदैन भन्ने कुरा निर्धारण गर्छन्, र यस manual भित्रको each directive ले यी mode हरूमध्ये कुनै एउटालाई refer गर्दछ। उदाहरणका लागि, केही setting हरू <function>ini_set</function> प्रयोग गरेर एउटा PHP script भित्र set गर्न सकिन्छ, जबकि अरूका लागि &php.ini; वा &httpd.conf; आवश्यक पर्न सक्छ।</para>
+
+  <para>उदाहरणका लागि, <link linkend="ini.output-buffering">output_buffering</link> setting <constant>INI_PERDIR</constant> हो, त्यसैले यसलाई <function>ini_set</function> प्रयोग गरेर set गर्न सकिँदैन। तर, <link linkend="ini.display-errors">display_errors</link> directive भने <constant>INI_ALL</constant> हो, त्यसैले यसलाई <function>ini_set</function> लगायत जुनसुकै ठाउँमा पनि set गर्न सकिन्छ।</para>
+
+  <para>
+   <variablelist>
+<!--
+Replace everything inside the <variablelist> element with an <xi:include>
+once libxml2 gets XInclude 1.1 attribute copying support.
+The below <xi:include> will include the appropriate elements
+but needs all top-level xml:id's removed (see XInclude 1.1 set-xml-id).
+
+    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('constant.ini-mode')/*)"/>
+-->
+    <title>INI mode constant हरू</title>
+    <varlistentry>
+     <term>
+      <constant>INI_USER</constant>
+      (<type>int</type>)
+     </term>
+     <listitem>
+      <simpara>Entry लाई user scripts (जस्तै <function xmlns="http://docbook.org/ns/docbook">ini_set</function> मार्फत) वा <link xmlns="http://docbook.org/ns/docbook" linkend="configuration.changes.windows">Windows registry</link> मा set गर्न सकिन्छ। Entry लाई &user-ini; मा set गर्न सकिन्छ</simpara>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>
+      <constant>INI_PERDIR</constant>
+      (<type>int</type>)
+     </term>
+     <listitem>
+      <simpara>Entry लाई &php.ini;, &htaccess;, &httpd.conf; वा &user-ini; मा set गर्न सकिन्छ</simpara>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>
+      <constant>INI_SYSTEM</constant>
+      (<type>int</type>)
+     </term>
+     <listitem>
+      <simpara>Entry लाई &php.ini; वा &httpd.conf; मा set गर्न सकिन्छ</simpara>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>
+      <constant>INI_ALL</constant>
+      (<type>int</type>)
+     </term>
+     <listitem>
+      <simpara>Entry लाई जहाँसुकै पनि set गर्न सकिन्छ</simpara>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </sect1>
+
+ <sect1 xml:id="configuration.changes">
+  <title>configuration setting हरू कसरी परिवर्तन गर्ने</title>
+
+  <sect2 xml:id="configuration.changes.apache">
+   <title>PHP लाई एउटा Apache module को रूपमा चलाउने</title>
+   <simpara>PHP लाई एउटा Apache module को रूपमा प्रयोग गर्दा, तपाईँले Apache configuration files (जस्तै &httpd.conf;) र &htaccess; files भित्रका directives प्रयोग गरेर पनि configuration setting हरू परिवर्तन गर्न सक्नुहुन्छ। त्यसो गर्नका लागि तपाईँलाई "AllowOverride Options" वा "AllowOverride All" privileges आवश्यक पर्नेछ।</simpara>
+
+   <para>Apache configuration files भित्र PHP configuration from परिवर्तन गर्न दिने थुप्रै Apache directives हरू छन्। कुन-कुन directives <constant>INI_ALL</constant>, <constant>INI_PERDIR</constant>, वा <constant>INI_SYSTEM</constant> हुन् भन्ने सूचीका लागि, <link linkend="ini.list">php.ini directives को सूची</link> appendix हेर्नुहोस्।</para>
+
+   <para>
+    <variablelist>
+     <varlistentry>
+      <term><systemitem role="directive">php_value</systemitem> <parameter>name</parameter> <parameter>value</parameter></term>
+      <listitem>
+       <para>तोकिएको directive को value सेट गर्दछ। यसलाई <constant>INI_ALL</constant> र <constant>INI_PERDIR</constant> type directive हरूसँग मात्र प्रयोग गर्न सकिन्छ। पहिले सेट गरिएको value हटाउनका लागि value को रूपमा <literal>none</literal> प्रयोग गर्नुहोस्।</para>
+       <note>
+        <simpara>boolean values सेट गर्नका लागि <systemitem role="directive">php_value</systemitem> प्रयोग नगर्नुहोस्। त्यसको सट्टा <systemitem role="directive">php_flag</systemitem> (तल हेर्नुहोस्) प्रयोग गरिनुपर्छ।</simpara>
+       </note>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><systemitem role="directive">php_flag</systemitem> <parameter>name</parameter> <parameter>on|off</parameter></term>
+      <listitem>
+       <para>boolean configuration directive सेट गर्न प्रयोग गरिन्छ। यसलाई <constant>INI_ALL</constant> र <constant>INI_PERDIR</constant> type directive हरूसँग मात्र प्रयोग गर्न सकिन्छ।</para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><systemitem role="directive">php_admin_value</systemitem> <parameter>name</parameter> <parameter>value</parameter></term>
+      <listitem>
+       <para>तोकिएको directive को value सेट गर्दछ। यसलाई &htaccess; files मा <emphasis>प्रयोग गर्न सकिँदैन</emphasis>। <systemitem role="directive">php_admin_value</systemitem> द्वारा सेट गरिएको कुनै पनि directive type लाई &htaccess; वा <function>ini_set</function> मार्फत override गर्न सकिँदैन। पहिले सेट गरिएको value हटाउनका लागि value को रूपमा <literal>none</literal> प्रयोग गर्नुहोस्।</para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><systemitem role="directive">php_admin_flag</systemitem> <parameter>name</parameter> <parameter>on|off</parameter></term>
+      <listitem>
+       <para>boolean configuration directive सेट गर्न प्रयोग गरिन्छ। यसलाई &htaccess; files मा <emphasis>प्रयोग गर्न सकिँदैन</emphasis>। <systemitem role="directive">php_admin_flag</systemitem> द्वारा सेट गरिएको कुनै पनि directive type लाई &htaccess; वा <function>ini_set</function> मार्फत override गर्न सकिँदैन।</para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </para>
+   <para>
+    <example>
+     <title>Apache configuration को उदाहरण</title>
+     <programlisting role="ini">
+<![CDATA[
+<IfModule mod_php5.c>
+  php_value include_path ".:/usr/local/lib/php"
+  php_admin_flag engine on
+</IfModule>
+<IfModule mod_php4.c>
+  php_value include_path ".:/usr/local/lib/php"
+  php_admin_flag engine on
+</IfModule>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <caution>
+    <para>PHP constant हरू PHP बाहिर अस्तित्वमा हुँदैनन्। उदाहरणका लागि, &httpd.conf; मा तपाईँले <link linkend="ini.error-reporting">error_reporting</link> directive सेट गर्नका लागि <constant>E_ALL</constant> वा <constant>E_NOTICE</constant> जस्ता PHP constant हरू प्रयोग गर्न सक्नुहुन्न, किनभने तिनीहरूको कुनै अर्थ हुँदैन र तिनीहरू <emphasis>0</emphasis> मा evaluate हुनेछन्। त्यसको सट्टा सम्बन्धित bitmask values प्रयोग गर्नुहोस्। यी constant हरू &php.ini; मा प्रयोग गर्न सकिन्छ</para>
+   </caution>
+  </sect2>
+
+  <sect2 xml:id="configuration.changes.windows">
+   <title>Windows registry मार्फत PHP configuration परिवर्तन गर्ने तरिका</title>
+   <simpara>Windows मा PHP चलाउँदा, Windows registry प्रयोग गरेर प्रति-directory आधारमा configuration values परिमार्जन गर्न सकिन्छ। यी configuration values registry key <literal>HKLM\SOFTWARE\PHP\Per Directory Values</literal> भित्र path name सँग मिल्दो sub-keys मा store गरिन्छ। उदाहरणका लागि, directory <literal>c:\inetpub\wwwroot</literal> का लागि configuration values लाई key <literal>HKLM\SOFTWARE\PHP\Per Directory
+    Values\c\inetpub\wwwroot</literal> मा store गरिनेछ। यस directory वा यसको कुनै subdirectory from run हुने जुनसुकै script का लागि directory का settings सक्रिय हुनेछन्। key मुनिका values मा PHP configuration directive को नाम र string value हुनुपर्छ। values मा रहेका PHP constant हरू parse हुँदैनन्। तर, यसरी <constant>INI_USER</constant> मा परिवर्तन गर्न सकिने configuration values मात्र सेट गर्न सकिन्छ, <constant>INI_PERDIR</constant> values भने सकिँदैन, किनभने यी configuration values each request का लागि पुनः re-read गरिन्छ।</simpara>
+  </sect2>
+
+  <sect2 xml:id="configuration.changes.other">
+   <title>PHP का अन्य interfaces</title>
+   <para>तपाईँले PHP जसरी run गरे पनि, आफ्ना scripts को runtime मा <function>ini_set</function> मार्फत निश्चित values परिवर्तन गर्न सक्नुहुन्छ। थप जानकारीका लागि <function>ini_set</function> पृष्ठको documentation हेर्नुहोस्।</para>
+   <para>यदि तपाईँ आफ्नो system मा रहेका configuration settings र तिनका current values को पूरा list हेर्न चाहनुहुन्छ भने, तपाईँ <function>phpinfo</function> function execute गर्न सक्नुहुन्छ र प्राप्त हुने page हेर्न सक्नुहुन्छ। साथै, तपाईँले <function>ini_get</function> वा <function>get_cfg_var</function> प्रयोग गरेर runtime मा व्यक्तिगत configuration directive हरूका values पनि access गर्न सक्नुहुन्छ।</para>
+  </sect2>
+ </sect1>
+
+</chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: cf7dcffba0ab8ce14dbfd6019f2861f5a6843ed5 Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="closure.bindto" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <refnamediv>
+  <refname>Closure::bindTo</refname>
+  <refpurpose>नयाँ bound object र class scope सहित closure लाई duplicate गर्छ</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis role="Closure">
+   <modifier>public</modifier> <type class="union"><type>Closure</type><type>null</type></type><methodname>Closure::bindTo</methodname>
+   <methodparam><type class="union"><type>object</type><type>null</type></type><parameter>newThis</parameter></methodparam>
+   <methodparam choice="opt"><type class="union"><type>object</type><type>string</type><type>null</type></type><parameter>newScope</parameter><initializer>"static"</initializer></methodparam>
+  </methodsynopsis>
+  <simpara>यसकै जस्तै समान body र bound variables भएको, तर सम्भवतः फरक bound object र नयाँ class scope भएको एउटा नयाँ <link linkend="functions.anonymous">anonymous function</link> सिर्जना गर्दछ र return गर्दछ।</simpara>
+
+  <simpara>“bound object” ले function body भित्र <literal>$this</literal> ले पाउने value निर्धारण गर्दछ र “class scope” ले त्यस्तो class लाई प्रतिनिधित्व गर्दछ जसले anonymous function ले कुन-कुन private र protected members पहुँच गर्न पाउँछ भन्ने कुरा तय गर्दछ। अर्थात्, visible हुने members त्यस्ता हुन्छन् मानौँ त्यो anonymous function नै <parameter>newScope</parameter> parameter को value का रूपमा दिइएको class को एउटा method हो।</simpara>
+
+  <simpara>Static closures मा कुनै पनि bound object हुन सक्दैन (parameter <parameter>newThis</parameter> को value &null; हुनुपर्छ), तर पनि तिनीहरूको class scope बदल्नका लागि यो method प्रयोग गर्न सकिन्छ।</simpara>
+
+  <simpara>यो method ले एउटा non-static closure का लागि, bound instance हुनुको अर्थ scoped हुनु हो र यसको विपरित पनि लागू हुन्छ भन्ने कुरा सुनिश्चित गर्दछ। यस end का लागि, scope दिइएका तर &null; instance भएका non-static closures लाई static बनाइन्छ, र non-null instance दिइएका non-static non-scoped closures लाई एउटा अनिर्दिष्ट class मा scope गरिन्छ।</simpara>
+
+  <note>
+   <simpara>यदि तपाईँ anonymous functions लाई केवल duplicate मात्र गर्न चाहनुहुन्छ भने, त्यसको सट्टा <link linkend="language.oop5.cloning">cloning</link> प्रयोग गर्न सक्नुहुन्छ।</simpara>
+  </note>
+
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <variablelist>
+   <varlistentry>
+    <term><parameter>newThis</parameter></term>
+    <listitem>
+     <simpara>दिइएको anonymous function लाई bind गर्नुपर्ने object, वा closure लाई unbound राख्नका लागि &null;।</simpara>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><parameter>newScope</parameter></term>
+    <listitem>
+     <simpara>closure लाई सम्बद्ध गराउनुपर्ने class scope, वा current scope नै कायम राख्नका लागि 'static'। यदि कुनै object दिइएमा, त्यसको सट्टा उक्त object को type प्रयोग गरिनेछ। यसले bound object का protected र private methods को visibility निर्धारण गर्दछ। यस parameter का रूपमा कुनै internal class (वा त्यसको एउटा object) pass गर्न पाइँदैन।</simpara>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <simpara>नयाँ सिर्जना गरिएको <classname>Closure</classname> object return गर्दछ, वा असफलतामा &null;।</simpara>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.5.0</entry>
+      <entry>कुनै static closure मा एउटा instance bind गर्ने, वा अमिल्दो class hierarchy from कुनै method bind गर्ने कार्य अब deprecated गरिएको छ (यी केसहरूमा पहिले नै <constant>E_WARNING</constant> जारी गरिन्थ्यो)।</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <example>
+   <title><function>Closure::bindTo</function> को उदाहरण</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+
+class A
+{
+    private $val;
+
+    public function __construct($val)
+    {
+        $this->val = $val;
+    }
+
+    public function getClosure()
+    {
+        // Returns closure bound to this object and scope
+        return function() {
+            return $this->val;
+        };
+    }
+}
+
+$ob1 = new A(1);
+$ob2 = new A(2);
+
+$cl = $ob1->getClosure();
+echo $cl(), "\n";
+
+$cl = $cl->bindTo($ob2);
+echo $cl(), "\n";
+
+?>
+]]>
+   </programlisting>
+   &example.outputs.similar;
+   <screen>
+<![CDATA[
+1
+2
+]]>
+   </screen>
+  </example>
+ </refsect1>
+
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <simplelist>
+   <member><link linkend="functions.anonymous">Anonymous functions (अनाम फंक्सनहरू)</link></member>
+   <member><methodname>Closure::bind</methodname></member>
+  </simplelist>
+ </refsect1>
+
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

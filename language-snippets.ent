@@ -1,13 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: e354213395a98fbfe4454e1c386aca7ab6613a66 Maintainer: prateekbhujel Status: ready -->
+<!-- EN-Revision: 27b2b09c099ef08e199022d4ddc3cd4c19c0fdb1 Maintainer: prateekbhujel Status: draft -->
 <!-- Keep 'em sorted -->
 
 <!ENTITY installation.enabled.disable 'यो extension डिफल्ट रूपमा सक्षम (enabled) गरिएको हुन्छ। यसलाई compile गर्दा निम्न विकल्प दिएर अक्षम (disable) गर्न सकिन्छ: '>
 
+<!ENTITY array.changelog.by-ref '<row xmlns="http://docbook.org/ns/docbook">
+ <entry>8.0.0</entry>
+ <entry>
+  यदि <parameter>callback</parameter> ले कुनै parameter लाई reference द्वारा pass गरिने अपेक्षा गर्छ भने, यस function ले अब एउटा <constant>E_WARNING</constant> जारी गर्नेछ।
+ </entry>
+</row>'>
+
+<!ENTITY array.changelog.require-only-one '<row xmlns="http://docbook.org/ns/docbook">
+  <entry>8.0.0</entry>
+  <entry>
+  यस function लाई अब एउटा मात्र parameter दिएर call गर्न सकिन्छ।
+  यसअघि कम्तीमा दुईवटा parameters आवश्यक पर्दथ्यो।
+  </entry>
+</row>'>
+
+<!ENTITY array.resetspointer '<note xmlns="http://docbook.org/ns/docbook"><simpara>यस function ले प्रयोगपछि इनपुट array को <type>array</type> pointer लाई <function>reset</function> गर्नेछ।</simpara></note>'>
+
 <!-- Cautions -->
 <!ENTITY caution.cryptographically-insecure '<caution xmlns="http://docbook.org/ns/docbook"><para>यो function ले cryptographically secure value उत्पन्न गर्दैन, त्यसैले यसलाई सुरक्षा वा क्रिप्टोग्राफी सम्बन्धी प्रयोजनमा प्रयोग गर्नु हुँदैन। यदि cryptographically secure value चाहिने हो भने <function>random_int</function>, <function>random_bytes</function>, वा <function>openssl_random_pseudo_bytes</function> प्रयोग गर्नुहोस्।</para></caution>'>
 
+<!ENTITY caution.mt19937-global-state '<caution xmlns="http://docbook.org/ns/docbook">
+ <simpara>
+    यस function ले randomness को स्रोतका रूपमा global Mt19937 (“Mersenne Twister”) instance प्रयोग गर्दछ र त्यसैले global Mt19937 प्रयोग गर्ने अन्य सबै functions सँग आफ्नो state साझा गर्दछ।
+    यीमध्ये कुनै पनि function प्रयोग गर्दा scope जुनसुकै भए पनि अन्य <emphasis>सबै</emphasis> functions का लागि sequence अगाडि बढ्छ।
+  </simpara>
+  <simpara>
+    कुनै निश्चित value दिएर <function>mt_srand</function> वा <function>srand</function> लाई seed गरी दोहोरिने sequences उत्पन्न गर्दा यस function बाट पनि दोहोरिने (repeatable) output नै प्राप्त हुनेछ।
+  </simpara>
+  <simpara>
+    नयाँ लेखिने सबै code मा <classname>Random\Randomizer</classname> का methods प्रयोग गर्नु उपयुक्त हुन्छ।
+ </simpara>
+</caution>'>
+
+<!ENTITY deprecated.function 'यो function लाई deprecated गरिएको छ।'>
+
+<!ENTITY example.outputs '<simpara xmlns="http://docbook.org/ns/docbook">माथिको उदाहरणले निम्न output दिनेछ:</simpara>'>
+<!ENTITY example.outputs.32bit '<simpara xmlns="http://docbook.org/ns/docbook">32 bit मेशिनहरूमा माथिको उदाहरणको output:</simpara>'>
+<!ENTITY example.outputs.64bit '<simpara xmlns="http://docbook.org/ns/docbook">64 bit मेशिनहरूमा माथिको उदाहरणको output:</simpara>'>
+<!ENTITY example.outputs.7 '<simpara xmlns="http://docbook.org/ns/docbook">PHP 7 मा माथिको उदाहरणको output:</simpara>'>
+<!ENTITY example.outputs.71 '<simpara xmlns="http://docbook.org/ns/docbook">PHP 7.1 मा माथिको उदाहरणको output:</simpara>'>
+<!ENTITY example.outputs.73 '<simpara xmlns="http://docbook.org/ns/docbook">PHP 7.3 मा माथिको उदाहरणको output:</simpara>'>
+<!ENTITY example.outputs.8 '<simpara xmlns="http://docbook.org/ns/docbook">PHP 8 मा माथिको उदाहरणको output:</simpara>'>
+<!ENTITY example.outputs.8.similar '<simpara xmlns="http://docbook.org/ns/docbook">PHP 8 मा माथिको उदाहरणको output यस्तै किसिमको हुनेछ:</simpara>'>
+<!ENTITY example.outputs.80 '<simpara xmlns="http://docbook.org/ns/docbook">PHP 8.0 मा माथिको उदाहरणको output:</simpara>'>
+<!ENTITY example.outputs.81 '<simpara xmlns="http://docbook.org/ns/docbook">PHP 8.1 मा माथिको उदाहरणको output:</simpara>'>
+<!ENTITY example.outputs.82 '<simpara xmlns="http://docbook.org/ns/docbook">PHP 8.2 मा माथिको उदाहरणको output:</simpara>'>
+<!ENTITY example.outputs.82.similar '<simpara xmlns="http://docbook.org/ns/docbook">PHP 8.2 मा माथिको उदाहरणको output यस्तै किसिमको हुनेछ:</simpara>'>
+<!ENTITY example.outputs.83 '<simpara xmlns="http://docbook.org/ns/docbook">PHP 8.3 मा माथिको उदाहरणको output:</simpara>'>
+<!ENTITY example.outputs.83.similar '<simpara xmlns="http://docbook.org/ns/docbook">PHP 8.3 मा माथिको उदाहरणको output यस्तै किसिमको हुनेछ:</simpara>'>
+<!ENTITY example.outputs.84.similar '<simpara xmlns="http://docbook.org/ns/docbook">PHP 8.4 मा माथिको उदाहरणको output यस्तै किसिमको हुनेछ:</simpara>'>
+<!ENTITY example.outputs.85.similar '<simpara xmlns="http://docbook.org/ns/docbook">PHP 8.5 मा माथिको उदाहरणको output यस्तै किसिमको हुनेछ:</simpara>'>
+<!ENTITY example.outputs.86.similar '<simpara xmlns="http://docbook.org/ns/docbook">PHP 8.6 मा माथिको उदाहरणको output यस्तै किसिमको हुनेछ:</simpara>'>
+<!ENTITY example.outputs.similar '<simpara xmlns="http://docbook.org/ns/docbook">माथिको उदाहरणले यस्तै किसिमको output दिनेछ:</simpara>'>
+<!ENTITY examples.outputs '<simpara xmlns="http://docbook.org/ns/docbook">माथिका उदाहरणहरूले निम्न output दिनेछन्:</simpara>'>
+
+<!ENTITY extension.constants '<simpara xmlns="http://docbook.org/ns/docbook">
+तलका constants यस extension द्वारा परिभाषित गरिएका हुन्, र यो extension PHP मा compile गरिएको वा runtime मा गतिशील रूपमा (dynamically) लोड गरिएको अवस्थामा मात्र उपलब्ध हुनेछन्।
+</simpara>'>
+
+<!ENTITY extension.constants.core '<simpara xmlns="http://docbook.org/ns/docbook">
+तलका constants PHP core को भागका रूपमा सधैँ उपलब्ध हुन्छन्।
+</simpara>'>
+
+<!ENTITY fpm.intro '<simpara xmlns="http://docbook.org/ns/docbook">FPM (FastCGI Process Manager) उच्च ट्राफिक भएका साइटहरूका लागि उपयोगी विशेषताहरू समावेश गरिएको एउटा मुख्य PHP FastCGI कार्यान्वयन हो।</simpara>'>
+
+<!ENTITY fs.file.pointer '<simpara xmlns="http://docbook.org/ns/docbook">सामान्यतया <function>fopen</function> प्रयोग गरेर सिर्जना गरिने एउटा file system pointer <type>resource</type>।</simpara>'>
+
+<!ENTITY info.function.alias 'यो function निम्नको पर्यायवाची (alias) हो: '>
+
+<!ENTITY ini.descriptions.title '<simpara xmlns="http://docbook.org/ns/docbook">यहाँ configuration directives को संक्षिप्त व्याख्या दिइएको छ।</simpara>'>
+
+<!ENTITY listendand ' र'>
+
+<!ENTITY match '<link xmlns="http://docbook.org/ns/docbook" linkend="control-structures.match">match</link>'>
+
+<!ENTITY no.function.parameters '<simpara xmlns="http://docbook.org/ns/docbook">यस function मा कुनै पनि parameter छैन।</simpara>'>
+
+<!ENTITY no.install '<simpara xmlns="http://docbook.org/ns/docbook">यी functions प्रयोग गर्न कुनै छुट्टै installation आवश्यक पर्दैन; यिनीहरू PHP core कै भाग हुन्।</simpara>'>
+
 <!-- Notes -->
+<!ENTITY note.apache.slashes '<note xmlns="http://docbook.org/ns/docbook"><simpara>ध्यान दिनुहोस् कि Windows मा Apache configuration files भित्र path values थप्दा, <filename>c:\directory\file.ext</filename> जस्ता सबै backslashes लाई forward slashes मा परिणत गर्नुपर्छ: <filename>c:/directory/file.ext</filename>। Directories का लागि अन्तिममा एउटा trailing slash पनि आवश्यक पर्न सक्छ।</simpara></note>'>
+
 <!ENTITY note.bin-safe '<note xmlns="http://docbook.org/ns/docbook"><simpara>यो function binary-safe छ।</simpara></note>'>
 
 <!ENTITY note.clearstatcache '<note xmlns="http://docbook.org/ns/docbook"><simpara>यस function को नतिजा cache हुन्छ। थप विवरणका लागि <function>clearstatcache</function> हेर्नुहोस्।</simpara></note>'>
@@ -16,6 +94,752 @@
 
 <!ENTITY note.func-callback '<note xmlns="http://docbook.org/ns/docbook"><simpara>Function को नामको साटो object reference र method name समावेश भएको array पनि pass गर्न सकिन्छ।</simpara></note>'>
 
+<!ENTITY note.func-callback-exceptions '<note xmlns="http://docbook.org/ns/docbook"><simpara>यदि अघिल्लो callback मा कुनै uncaught exception throw भएको छ भने <function>call_user_func</function> र <function>call_user_func_array</function> जस्ता functions बाट दर्ता गरिएका callbacks लाई call गरिने छैन।</simpara></note>'>
+
 <!ENTITY note.funcbyref '<note xmlns="http://docbook.org/ns/docbook"><para>यदि arguments हरू reference द्वारा pass गरिएका छन् भने, ती arguments मा गरिने कुनै पनि परिवर्तन यस function बाट प्राप्त हुने value मा पनि देखिनेछ।</para></note>'>
 
+<!ENTITY note.is-superglobal "<note xmlns='http://docbook.org/ns/docbook'><simpara>यो एउटा 'superglobal' वा स्वतः उपलब्ध हुने global variable हो। यसको अर्थ यो script भरि सबै scopes मा उपलब्ध हुन्छ। Functions वा methods भित्र यसलाई प्रयोग गर्न <command>global $variable;</command> लेखिरहनु पर्दैन।</simpara></note>">
+
+<!ENTITY note.language-construct '<note xmlns="http://docbook.org/ns/docbook"><simpara>यो एउटा function नभई language construct भएकोले, यसलाई <link linkend="functions.variable-functions">variable functions</link> वा <link linkend="functions.named-arguments">named arguments</link> प्रयोग गरेर call गर्न सकिँदैन।</simpara></note>'>
+
+<!ENTITY note.no-key-association '<note xmlns="http://docbook.org/ns/docbook"><simpara>यस function ले <parameter>array</parameter> भित्रका elements लाई नयाँ keys प्रदान गर्दछ। यसले पहिलेका keys लाई केवल पुनर्गठन गर्नुको सट्टा हटाइदिन्छ।</simpara></note>'>
+
 <!ENTITY note.no-windows '<note xmlns="http://docbook.org/ns/docbook"><simpara>यो function Windows platform मा उपलब्ध छैन।</simpara></note>'>
+
+<!ENTITY note.not-bin-safe '<warning xmlns="http://docbook.org/ns/docbook"><simpara>यो function (अहिलेसम्म) binary-safe छैन!</simpara></warning>'>
+
+<!ENTITY note.reset-index "<note xmlns='http://docbook.org/ns/docbook'>
+ <simpara>
+    यसले array को internal pointer लाई पहिलो element मा reset गर्दछ।
+ </simpara>
+</note>">
+
+<!ENTITY note.sort-unstable '<note xmlns="http://docbook.org/ns/docbook">
+ <simpara>
+  यदि दुईवटा members तुलना गर्दा बराबर हुन्छन् भने, तिनीहरूको सुरुको क्रम यथावत् रहन्छ।
+  PHP 8.0.0 भन्दा पहिले, क्रमबद्ध गरिएको array मा तिनीहरूको सापेक्षिक क्रम अपरिभाषित (undefined) हुन्थ्यो।
+ </simpara>
+</note>'>
+
+<!ENTITY pecl.moving.to.pie '<warning xmlns="http://docbook.org/ns/docbook">
+ <simpara>
+  PECL लाई deprecated गरिएको छ।
+  PHP Installer for Extensions (<acronym>PIE</acronym>) ले PECL लाई प्रतिस्थापन गर्दछ र extensions install गर्न यसको प्रयोग गर्न सिफारिस गरिन्छ।
+  थप जानकारीका लागि <link xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://github.com/php/pie">https://github.com/php/pie</link> हेर्नुहोस्।
+ </simpara>
+</warning>'>
+
+<!ENTITY removed.function 'यो function हटाइएको छ।'>
+
+<!ENTITY return.callbacksort 'यदि पहिलो argument दोस्रोभन्दा क्रमशः सानो, बराबर वा ठूलो मानिन्छ भने तुलना गर्ने function ले शून्यभन्दा सानो, बराबर वा ठूलो integer return गर्नुपर्छ।'>
+
+<!ENTITY return.falseforfailure ' वा असफलतामा &false;'>
+
+<!ENTITY return.falseproblem '<warning xmlns="http://docbook.org/ns/docbook"><simpara>यस function ले Boolean &false; return गर्न सक्छ, तर &false; को रूपमा मूल्याङ्कन हुने गैर-Boolean value पनि return गर्न सक्छ। थप जानकारीका लागि कृपया <link linkend="language.types.boolean">Booleans</link> खण्ड पढ्नुहोस्। यस function को return value परीक्षण गर्न <link linkend="language.operators.comparison">=== operator</link> प्रयोग गर्नुहोस्।</simpara></warning>'>
+
+<!ENTITY return.success 'सफलतामा &true;&return.falseforfailure; return गर्दछ।'>
+
+<!ENTITY return.true.always 'सधैँ &true; return गर्दछ।'>
+
+<!ENTITY return.type.true '<row xmlns="http://docbook.org/ns/docbook">
+ <entry>8.2.0</entry>
+ <entry>
+  अब return type &true; हो; यसअघि यो <type>bool</type> थियो।
+ </entry>
+</row>'>
+
+<!ENTITY return.type.true.83 '<row xmlns="http://docbook.org/ns/docbook">
+ <entry>8.3.0</entry>
+ <entry>
+  अब return type &true; हो; यसअघि यो <type>bool</type> थियो।
+ </entry>
+</row>'>
+
+<!ENTITY return.void 'कुनै पनि value return हुँदैन।'>
+
+<!ENTITY seealso.array.sorting '<link xmlns="http://docbook.org/ns/docbook" linkend="array.sorting">array क्रमबद्ध गर्ने (sorting) functions को तुलना</link>'>
+
+<!ENTITY sort.callback.description '<simpara xmlns="http://docbook.org/ns/docbook">
+ &return.callbacksort;
+</simpara>
+&callback.cmp;
+<caution xmlns="http://docbook.org/ns/docbook">
+ <simpara>
+  तुलना गर्ने function बाट <type>float</type> जस्ता <emphasis>गैर-integer (non-integer)</emphasis> values return गर्दा callback को return value आन्तरिक रूपमा <type>int</type> मा cast हुन्छ। त्यसैले <literal>0.99</literal> र <literal>0.1</literal> जस्ता दुवै values <literal>0</literal> को integer value मा cast हुनेछन्, जसले गर्दा ती values बराबर मानिनेछन्।
+ </simpara>
+</caution>'>
+
+<!ENTITY sort.callback.description.presort '<caution xmlns="http://docbook.org/ns/docbook">
+ <para>
+  क्रमबद्ध गर्ने callback ले सुरुमा जुनसुकै क्रममा दिइएको भए तापनि कुनै पनि array को कुनै पनि value लाई जुनसुकै क्रममा सम्हाल्न सक्नुपर्छ।
+  किनभने अन्य arrays सँग तुलना गर्नुअघि प्रत्येक व्यक्तिगत array लाई पहिले आफैँ भित्र क्रमबद्ध गरिन्छ।
+
+  उदाहरणका लागि:
+  <programlisting role="php">
+<![CDATA[
+<?php
+$arrayA = ["string", 1];
+$arrayB = [["value" => 1]];
+// $item1 and $item2 can be any of "string", 1 or ["value" => 1]
+$compareFunc = static function ($item1, $item2) {
+    $value1 = is_string($item1) ? strlen($item1) : (is_array($item1) ? $item1["value"] : $item1);
+    $value2 = is_string($item2) ? strlen($item2) : (is_array($item2) ? $item2["value"] : $item2);
+    return $value1 <=> $value2;
+};
+?>
+]]>
+  </programlisting>
+ </para>
+</caution>'>
+
+<!ENTITY sort.flags.parameter '<varlistentry xmlns="http://docbook.org/ns/docbook">
+  <term><parameter>flags</parameter></term>
+  <listitem>
+   <simpara>
+    ऐच्छिक दोस्रो parameter <parameter>flags</parameter> लाई निम्न values प्रयोग गरी क्रमबद्ध गर्ने व्यवहार (sorting behavior) परिमार्जन गर्न प्रयोग गर्न सकिन्छ:
+   </simpara>
+   <para>
+    क्रमबद्ध गर्ने प्रकारका flags:
+    <itemizedlist>
+     <listitem>
+      <simpara><constant>SORT_REGULAR</constant> - items लाई सामान्य रूपमा तुलना गर्छ;
+      यसको विस्तृत विवरण <link linkend="language.operators.comparison">comparison operators</link> खण्डमा दिइएको छ</simpara>
+     </listitem>
+     <listitem>
+      <simpara><constant>SORT_NUMERIC</constant> - items लाई सङ्ख्यात्मक रूपमा (numerically) तुलना गर्छ</simpara>
+     </listitem>
+     <listitem>
+      <simpara><constant>SORT_STRING</constant> - items लाई strings को रूपमा तुलना गर्छ</simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <constant>SORT_LOCALE_STRING</constant> - हालको locale का आधारमा items लाई strings को रूपमा तुलना गर्छ। यसले locale प्रयोग गर्छ, जसलाई <function>setlocale</function> प्रयोग गरेर परिवर्तन गर्न सकिन्छ
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <constant>SORT_NATURAL</constant> - <function>natsort</function> जस्तै "natural ordering" प्रयोग गरी items लाई strings को रूपमा तुलना गर्छ
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <constant>SORT_FLAG_CASE</constant> - strings लाई case-insensitively क्रमबद्ध गर्न यसलाई <constant>SORT_STRING</constant> वा <constant>SORT_NATURAL</constant> सँग (bitwise OR मार्फत) संयोजन गर्न सकिन्छ
+      </simpara>
+     </listitem>
+    </itemizedlist>
+   </para>
+  </listitem>
+ </varlistentry>'>
+
+<!ENTITY standard.changelog.binary-safe-string-comparison '<row xmlns="http://docbook.org/ns/docbook">
+ <entry>8.2.0</entry>
+ <entry>
+  string को लम्बाइ बराबर नहुँदा यस function ले अब <code>strlen($string1) - strlen($string2)</code> नै return गर्छ भन्ने ग्यारेन्टी हुँदैन, बरु अब यसले <literal>-1</literal> वा <literal>1</literal> return गर्न सक्छ।
+ </entry>
+</row>'>
+
+<!ENTITY standard.changelog.calling-on-objects '<row xmlns="http://docbook.org/ns/docbook">
+ <entry>8.1.0</entry>
+ <entry>
+  &object; हरूमा यो function call गर्नु deprecated गरिएको छ।
+  यसको सट्टा पहिले <function>get_mangled_object_vars</function> प्रयोग गरेर &object; लाई &array; मा रूपान्तरण गर्नुहोस्, वा <classname>ArrayIterator</classname> जस्ता <interfacename>Iterator</interfacename> implement गर्ने class ले प्रदान गरेका methods प्रयोग गर्नुहोस्।
+ </entry>
+</row>
+<row xmlns="http://docbook.org/ns/docbook">
+ <entry>7.4.0</entry>
+ <entry>
+  <link xmlns="http://docbook.org/ns/docbook" linkend="book.spl">SPL</link> classes का instances लाई अब यस function सँग मिल्ने नामको <interfacename>Iterator</interfacename> method call गर्नुको सट्टा कुनै properties नभएका खाली objects जस्तै व्यवहार गरिन्छ।
+ </entry>
+</row>'>
+
+<!ENTITY strings.changelog.ascii-case-conversion '<row xmlns="http://docbook.org/ns/docbook">
+  <entry>8.2.0</entry>
+  <entry>
+   Case रूपान्तरण अब <function>setlocale</function> बाट सेट गरिएको locale मा निर्भर हुँदैन। केवल ASCII अक्षरहरू मात्र रूपान्तरण हुनेछन्।
+  </entry>
+ </row>'>
+
+<!ENTITY strings.changelog.ascii-case-folding '<row xmlns="http://docbook.org/ns/docbook">
+  <entry>8.2.0</entry>
+  <entry>
+   Case folding अब <function>setlocale</function> बाट सेट गरिएको locale मा निर्भर हुँदैन। केवल ASCII case folding मात्र गरिनेछ।
+   गैर-ASCII bytes लाई तिनीहरूको byte value का आधारमा तुलना गरिनेछ।
+  </entry>
+ </row>'>
+
+<!ENTITY strings.changelog.needle-empty '<row xmlns="http://docbook.org/ns/docbook">
+ <entry>8.0.0</entry>
+ <entry>
+  <parameter>needle</parameter> ले अब खाली string (empty string) स्वीकार गर्दछ।
+ </entry>
+</row>'>
+
+<!ENTITY strings.changelog.sprintf '<informaltable xmlns="http://docbook.org/ns/docbook">
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.5.0</entry>
+      <entry>
+       Precision नतोकिएको formatter ले अब गलत रूपमा precision लाई reset गर्नुको सट्टा त्यसलाई सही रूपमा <literal>0</literal> को precision मान्दछ।
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       यस function ले अब असफलतामा &false; return गर्दैन।
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       यदि arguments को सङ्ख्या शून्य छ भने एउटा <exceptionname>ValueError</exceptionname> throw गर्दछ;
+       यसअघि यो function ले <constant>E_WARNING</constant> जारी गर्दथ्यो।
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       यदि <literal>[width]</literal> शून्यभन्दा कम वा <constant>PHP_INT_MAX</constant> भन्दा ठूलो छ भने एउटा <exceptionname>ValueError</exceptionname> throw गर्दछ;
+       यसअघि यो function ले <constant>E_WARNING</constant> जारी गर्दथ्यो।
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       यदि <literal>[precision]</literal> शून्यभन्दा कम वा <constant>PHP_INT_MAX</constant> भन्दा ठूलो छ भने एउटा <exceptionname>ValueError</exceptionname> throw गर्दछ;
+       यसअघि यो function ले <constant>E_WARNING</constant> जारी गर्दथ्यो।
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       आवश्यकताभन्दा कम arguments दिइएमा एउटा <exceptionname>ArgumentCountError</exceptionname> throw गर्दछ;
+       यसअघि यो function ले <constant>E_WARNING</constant> जारी गर्दथ्यो।
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>'>
+
+<!ENTITY strings.changelog.vsprintf '<informaltable xmlns="http://docbook.org/ns/docbook">
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.5.0</entry>
+      <entry>
+       Precision नतोकिएको formatter ले अब गलत रूपमा precision लाई reset गर्नुको सट्टा त्यसलाई सही रूपमा <literal>0</literal> को precision मान्दछ।
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       यस function ले अब असफलतामा &false; return गर्दैन।
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       यदि arguments को सङ्ख्या शून्य छ भने एउटा <exceptionname>ValueError</exceptionname> throw गर्दछ;
+       यसअघि यो function ले <constant>E_WARNING</constant> जारी गर्दथ्यो।
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       यदि <literal>[width]</literal> शून्यभन्दा कम वा <constant>PHP_INT_MAX</constant> भन्दा ठूलो छ भने एउटा <exceptionname>ValueError</exceptionname> throw गर्दछ;
+       यसअघि यो function ले <constant>E_WARNING</constant> जारी गर्दथ्यो।
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       यदि <literal>[precision]</literal> शून्यभन्दा कम वा <constant>PHP_INT_MAX</constant> भन्दा ठूलो छ भने एउटा <classname>ValueError</classname> throw गर्दछ;
+       यसअघि यो function ले <constant>E_WARNING</constant> जारी गर्दथ्यो।
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       आवश्यकताभन्दा कम arguments दिइएमा एउटा <exceptionname>ValueError</exceptionname> throw गर्दछ;
+       यसअघि यो function ले <constant>E_WARNING</constant> जारी गर्दथ्यो।
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>'>
+
+<!ENTITY strings.comparison.return '<simpara xmlns="http://docbook.org/ns/docbook">
+   यदि <parameter>string1</parameter>, <parameter>string2</parameter> भन्दा सानो छ भने 0 भन्दा कम value; यदि <parameter>string1</parameter>, <parameter>string2</parameter> भन्दा ठूलो छ भने 0 भन्दा बढी value, र यदि दुवै बराबर छन् भने <literal>0</literal> return गर्दछ।
+   चिह्न (sign) बाहेक प्राप्त हुने सङ्ख्यात्मक मानबाट अन्य कुनै विशेष अर्थ भरपर्दो रूपमा निकाल्न सकिँदैन।
+  </simpara>'>
+
+<!ENTITY strings.errors.sprintf '<simpara xmlns="http://docbook.org/ns/docbook">
+   PHP 8.0.0 देखि, यदि arguments को सङ्ख्या शून्य छ भने एउटा <classname>ValueError</classname> throw गरिन्छ।
+   PHP 8.0.0 भन्दा पहिले, यसको सट्टा एउटा <constant>E_WARNING</constant> जारी गरिन्थ्यो।
+  </simpara>
+  <simpara xmlns="http://docbook.org/ns/docbook">
+   PHP 8.0.0 देखि, यदि <literal>[width]</literal> शून्यभन्दा कम वा <constant>PHP_INT_MAX</constant> भन्दा ठूलो छ भने एउटा <classname>ValueError</classname> throw गरिन्छ।
+   PHP 8.0.0 भन्दा पहिले, यसको सट्टा एउटा <constant>E_WARNING</constant> जारी गरिन्थ्यो।
+  </simpara>
+  <simpara xmlns="http://docbook.org/ns/docbook">
+   PHP 8.0.0 देखि, यदि <literal>[precision]</literal> शून्यभन्दा कम वा <constant>PHP_INT_MAX</constant> भन्दा ठूलो छ भने एउटा <classname>ValueError</classname> throw गरिन्छ।
+   PHP 8.0.0 भन्दा पहिले, यसको सट्टा एउटा <constant>E_WARNING</constant> जारी गरिन्थ्यो।
+  </simpara>
+  <simpara xmlns="http://docbook.org/ns/docbook">
+   PHP 8.0.0 देखि, आवश्यकताभन्दा कम arguments दिइएमा एउटा <classname>ArgumentCountError</classname> throw गरिन्छ।
+   PHP 8.0.0 भन्दा पहिले, &false; return गरिन्थ्यो र यसको सट्टा एउटा <constant>E_WARNING</constant> जारी गरिन्थ्यो।
+  </simpara>'>
+
+<!ENTITY strings.errors.vsprintf '<simpara xmlns="http://docbook.org/ns/docbook">
+   PHP 8.0.0 देखि, यदि arguments को सङ्ख्या शून्य छ भने एउटा <classname>ValueError</classname> throw गरिन्छ।
+   PHP 8.0.0 भन्दा पहिले, यसको सट्टा एउटा <constant>E_WARNING</constant> जारी गरिन्थ्यो।
+  </simpara>
+  <simpara xmlns="http://docbook.org/ns/docbook">
+   PHP 8.0.0 देखि, यदि <literal>[width]</literal> शून्यभन्दा कम वा <constant>PHP_INT_MAX</constant> भन्दा ठूलो छ भने एउटा <classname>ValueError</classname> throw गरिन्छ।
+   PHP 8.0.0 भन्दा पहिले, यसको सट्टा एउटा <constant>E_WARNING</constant> जारी गरिन्थ्यो।
+  </simpara>
+  <simpara xmlns="http://docbook.org/ns/docbook">
+   PHP 8.0.0 देखि, यदि <literal>[precision]</literal> शून्यभन्दा कम वा <constant>PHP_INT_MAX</constant> भन्दा ठूलो छ भने एउटा <classname>ValueError</classname> throw गरिन्छ।
+   PHP 8.0.0 भन्दा पहिले, यसको सट्टा एउटा <constant>E_WARNING</constant> जारी गरिन्थ्यो।
+  </simpara>
+  <simpara xmlns="http://docbook.org/ns/docbook">
+   PHP 8.0.0 देखि, आवश्यकताभन्दा कम arguments दिइएमा एउटा <classname>ValueError</classname> throw गरिन्छ।
+   PHP 8.0.0 भन्दा पहिले, &false; return गरिन्थ्यो र यसको सट्टा एउटा <constant>E_WARNING</constant> जारी गरिन्थ्यो।
+  </simpara>'>
+
+<!ENTITY strings.parameter.characters.optional '<simpara xmlns="http://docbook.org/ns/docbook">
+  ऐच्छिक रूपमा, हटाउनुपर्ने अक्षरहरूलाई <parameter>characters</parameter> parameter प्रयोग गरेर पनि तोक्न सकिन्छ।
+  हटाउनुपर्ने सबै अक्षरहरूलाई सामान्य रूपमा सूचीबद्ध गर्नुहोस्।
+  <literal>..</literal> को प्रयोग गरेर अक्षरहरूको बढ्दो दायरा (range) तोक्न सकिन्छ।
+ </simpara>'>
+
+<!ENTITY strings.parameter.encoding '<simpara xmlns="http://docbook.org/ns/docbook">
+  अक्षरहरू रूपान्तरण गर्दा प्रयोग गरिने encoding परिभाषित गर्ने एउटा ऐच्छिक argument।
+ </simpara>
+
+ <simpara xmlns="http://docbook.org/ns/docbook">
+  यदि छुटाइयो भने, <parameter>encoding</parameter> को मान डिफल्ट रूपमा <link linkend="ini.default-charset">default_charset</link> configuration विकल्पको value हुन्छ।
+ </simpara>
+
+ <simpara xmlns="http://docbook.org/ns/docbook">
+  यद्यपि यो argument प्राविधिक रूपमा ऐच्छिक हो, दिइएको इनपुटका लागि <link linkend="ini.default-charset">default_charset</link> configuration विकल्प गलत सेट भएको हुन सक्ने अवस्थामा तपाईँको code का लागि सही value स्पष्ट रूपमा तोक्न दृढतापूर्वक प्रोत्साहित गरिन्छ।
+ </simpara>'>
+
+<!ENTITY strings.parameter.format '<varlistentry xmlns="http://docbook.org/ns/docbook">
+ <term><parameter>format</parameter></term>
+ <listitem>
+  <simpara>
+   Format string शून्य वा बढी directives मिलेर बनेको हुन्छ:
+   नतिजामा सिधै प्रतिलिपि गरिने सामान्य अक्षरहरू (<literal>&#37;</literal> बाहेक) र <emphasis>conversion specifications</emphasis>, जसमध्ये प्रत्येकले आफ्नै parameter तान्दछ।
+  </simpara>
+
+  <simpara>
+   एउटा conversion specification ले यो ढाँचा (prototype) पछ्याउँछ:
+   <literal>&#37;[argnum$][flags][width][.precision]specifier</literal>।
+  </simpara>
+
+  <formalpara>
+   <title>Argnum</title>
+   <para>
+    रूपान्तरणमा कुन नम्बरको argument प्रयोग गर्ने भनी तोक्नका लागि डलर चिह्न <literal>$</literal> भन्दा अगाडि लेखिने एउटा integer।
+   </para>
+  </formalpara>
+
+  <formalpara>
+   <title>Flags</title>
+   <para>
+    <informaltable>
+     <tgroup cols="2">
+      <thead>
+       <row>
+        <entry>Flag</entry>
+        <entry>&Description;</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry><literal>-</literal></entry>
+        <entry>
+         दिइएको field चौडाइ भित्र बायाँ-मिलाउने (left-justify);
+         दायाँ-मिलाउने (right justification) डिफल्ट हो
+        </entry>
+       </row>
+       <row>
+        <entry><literal>+</literal></entry>
+        <entry>
+         धनात्मक सङ्ख्याहरूको अगाडि प्लस चिह्न <literal>+</literal> थप्ने।
+         डिफल्ट रूपमा ऋणात्मक सङ्ख्याहरूको अगाडि मात्र माइनस चिह्न राखिन्छ।
+        </entry>
+       </row>
+       <row>
+        <entry><literal> </literal>(space)</entry>
+        <entry>
+         नतिजालाई खाली स्थान (spaces) ले भर्दछ (pad गर्छ)।
+         यो डिफल्ट हो।
+        </entry>
+       </row>
+       <row>
+        <entry><literal>0</literal></entry>
+        <entry>
+         सङ्ख्याहरूलाई बायाँपट्टि मात्र शून्य (zeros) ले भर्दछ।
+         <literal>s</literal> specifier सँग प्रयोग गर्दा यसले दायाँपट्टि पनि शून्यले भर्न सक्छ।
+        </entry>
+       </row>
+       <row>
+        <entry><literal>&apos;</literal>(char)</entry>
+        <entry>
+         नतिजालाई तोकिएको अक्षर (char) ले भर्दछ।
+        </entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </para>
+  </formalpara>
+
+  <formalpara>
+   <title>Width</title>
+   <para>
+    यस रूपान्तरणले कम्तीमा कतिवटा अक्षरहरू दिनुपर्छ भनी तोक्ने एउटा integer, वा <literal>*</literal>।
+    यदि <literal>*</literal> प्रयोग गरिएको छ भने, specifier द्वारा ढाँचाबद्ध गरिने मानभन्दा ठिक अगाडि अतिरिक्त integer value को रूपमा चौडाइ (width) पठाइन्छ।
+   </para>
+  </formalpara>
+
+  <formalpara>
+   <title>Precision</title>
+   <para>
+    एउटा थोप्लो <literal>.</literal> जसको पछाडि ऐच्छिक रूपमा एउटा integer वा <literal>*</literal> आउँछ, जसको अर्थ specifier मा भर पर्छ:
+    <itemizedlist>
+     <listitem>
+      <simpara>
+       <literal>e</literal>, <literal>E</literal>, <literal>f</literal> र <literal>F</literal> specifiers का लागि: यो दशमलव बिन्दु पछाडि छापिने अङ्कहरूको सङ्ख्या हो (डिफल्ट रूपमा यो 6 हुन्छ)।
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <literal>g</literal>, <literal>G</literal>, <literal>h</literal> र <literal>H</literal> specifiers का लागि: यो छापिने अधिकतम महत्त्वपूर्ण अङ्कहरूको (significant digits) सङ्ख्या हो।
+      </simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <literal>s</literal> specifier का लागि: यसले string मा अधिकतम अक्षर सीमा सेट गर्दै cutoff बिन्दुको रूपमा काम गर्छ।
+      </simpara>
+     </listitem>
+    </itemizedlist>
+    <note>
+     <simpara>
+      यदि precision को स्पष्ट मान बिना थोप्लो मात्र तोकिएको छ भने, 0 मानिन्छ। यदि <literal>*</literal> प्रयोग गरिएको छ भने, specifier द्वारा ढाँचाबद्ध गरिने मानभन्दा ठिक अगाडि अतिरिक्त integer value को रूपमा precision पठाइन्छ।
+     </simpara>
+    </note>
+   </para>
+  </formalpara>
+
+  <para>
+   <table>
+    <title>Specifiers</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Specifier</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><literal>&#37;</literal></entry>
+       <entry>
+        प्रत्यक्ष प्रतिशत चिह्न (literal percent character)। कुनै argument आवश्यक पर्दैन।
+       </entry>
+      </row>
+      <row>
+       <entry><literal>b</literal></entry>
+       <entry>
+        Argument लाई integer मानिन्छ र बाइनरी (binary) सङ्ख्याको रूपमा प्रस्तुत गरिन्छ।
+       </entry>
+      </row>
+      <row>
+       <entry><literal>c</literal></entry>
+       <entry>
+        Argument लाई integer मानिन्छ र सो ASCII मान भएको अक्षरको रूपमा प्रस्तुत गरिन्छ।
+       </entry>
+      </row>
+      <row>
+       <entry><literal>d</literal></entry>
+       <entry>
+        Argument लाई integer मानिन्छ र चिह्नसहितको दशमलव (signed decimal) सङ्ख्याको रूपमा प्रस्तुत गरिन्छ।
+       </entry>
+      </row>
+      <row>
+       <entry><literal>e</literal></entry>
+       <entry>
+        Argument लाई वैज्ञानिक सङ्केतन (scientific notation) को रूपमा लिइन्छ (जस्तै 1.2e+2)।
+       </entry>
+      </row>
+      <row>
+       <entry><literal>E</literal></entry>
+       <entry>
+        <literal>e</literal> specifier जस्तै तर ठूलो अक्षर (uppercase) प्रयोग गर्दछ (जस्तै 1.2E+2)।
+       </entry>
+      </row>
+      <row>
+       <entry><literal>f</literal></entry>
+       <entry>
+        Argument लाई float मानिन्छ र floating-point सङ्ख्याको रूपमा प्रस्तुत गरिन्छ (locale अनुसार)।
+       </entry>
+      </row>
+      <row>
+       <entry><literal>F</literal></entry>
+       <entry>
+        Argument लाई float मानिन्छ र floating-point सङ्ख्याको रूपमा प्रस्तुत गरिन्छ (locale मा निर्भर नहुने)।
+       </entry>
+      </row>
+      <row>
+       <entry><literal>g</literal></entry>
+       <entry>
+        <simpara>
+         सामान्य ढाँचा (General format)।
+        </simpara>
+        <simpara>
+         मानौँ precision शून्य बाहेकको छ भने P बराबर सोही precision, यदि precision छुटाइएको छ भने 6, वा यदि precision शून्य छ भने 1 हुन्छ।
+         त्यसपछि, यदि style E को रूपान्तरणमा घाताङ्क (exponent) X हुन्छ भने:
+        </simpara>
+        <simpara>
+         यदि P > X ≥ −4 छ भने, रूपान्तरण style f र precision P − (X + 1) मा हुन्छ।
+         अन्यथा, रूपान्तरण style e र precision P − 1 मा हुन्छ।
+        </simpara>
+       </entry>
+      </row>
+      <row>
+       <entry><literal>G</literal></entry>
+       <entry>
+        <literal>g</literal> specifier जस्तै तर <literal>E</literal> र <literal>f</literal> प्रयोग गर्दछ।
+       </entry>
+      </row>
+      <row>
+       <entry><literal>h</literal></entry>
+       <entry>
+        <literal>g</literal> specifier जस्तै तर <literal>F</literal> प्रयोग गर्दछ। PHP 8.0.0 देखि उपलब्ध।
+       </entry>
+      </row>
+      <row>
+       <entry><literal>H</literal></entry>
+       <entry>
+        <literal>g</literal> specifier जस्तै तर <literal>E</literal> र <literal>F</literal> प्रयोग गर्दछ। PHP 8.0.0 देखि उपलब्ध।
+       </entry>
+      </row>
+      <row>
+       <entry><literal>o</literal></entry>
+       <entry>
+        Argument लाई integer मानिन्छ र अष्टक (octal) सङ्ख्याको रूपमा प्रस्तुत गरिन्छ।
+       </entry>
+      </row>
+      <row>
+       <entry><literal>s</literal></entry>
+       <entry>
+        Argument लाई string मानिन्छ र सोही रूपमा प्रस्तुत गरिन्छ।
+       </entry>
+      </row>
+      <row>
+       <entry><literal>u</literal></entry>
+       <entry>
+        Argument लाई integer मानिन्छ र चिह्नविहीन दशमलव (unsigned decimal) सङ्ख्याको रूपमा प्रस्तुत गरिन्छ।
+       </entry>
+      </row>
+      <row>
+       <entry><literal>x</literal></entry>
+       <entry>
+        Argument लाई integer मानिन्छ र सोह्रौँ आधारको (hexadecimal) सङ्ख्याको रूपमा (साना अक्षरहरूमा) प्रस्तुत गरिन्छ।
+       </entry>
+      </row>
+      <row>
+       <entry><literal>X</literal></entry>
+       <entry>
+        Argument लाई integer मानिन्छ र सोह्रौँ आधारको (hexadecimal) सङ्ख्याको रूपमा (ठूला अक्षरहरूमा) प्रस्तुत गरिन्छ।
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+
+  <warning>
+   <simpara>
+    <literal>c</literal> प्रकारको specifier ले padding र width लाई बेवास्ता गर्दछ।
+   </simpara>
+  </warning>
+
+  <warning>
+   <simpara>
+    प्रत्येक अक्षरका लागि एकभन्दा बढी byte आवश्यक पर्ने character sets सँग string र width specifiers को संयोजन प्रयोग गर्दा अनपेक्षित नतिजा आउन सक्छ।
+   </simpara>
+  </warning>
+
+  <para>
+   Variables लाई specifier का लागि उपयुक्त type मा स्वतः रूपान्तरण (coerced) गरिनेछ:
+   <table>
+    <title>Type परिचालन (Type Handling)</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>Type</entry>
+       <entry>Specifiers</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry><type>string</type></entry>
+       <entry><literal>s</literal></entry>
+      </row>
+      <row>
+       <entry><type>int</type></entry>
+       <entry>
+        <literal>d</literal>,
+        <literal>u</literal>,
+        <literal>c</literal>,
+        <literal>o</literal>,
+        <literal>x</literal>,
+        <literal>X</literal>,
+        <literal>b</literal>
+       </entry>
+      </row>
+      <row>
+       <entry><type>float</type></entry>
+       <entry>
+        <literal>e</literal>,
+        <literal>E</literal>,
+        <literal>f</literal>,
+        <literal>F</literal>,
+        <literal>g</literal>,
+        <literal>G</literal>,
+        <literal>h</literal>,
+        <literal>H</literal>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+ </listitem>
+</varlistentry>'>
+
+<!ENTITY strings.parameter.needle.non-string '<simpara xmlns="http://docbook.org/ns/docbook">
+  PHP 8.0.0 भन्दा पहिले, यदि <parameter>needle</parameter> एउटा string होइन भने, यसलाई integer मा रूपान्तरण गरिन्थ्यो र अक्षरको क्रमिक मान (ordinal value) को रूपमा लागू गरिन्थ्यो।
+  यो व्यवहार PHP 7.3.0 देखि deprecated गरिएको छ, र यसमा भर नपर्न कडा सल्लाह दिइन्छ। अपेक्षित व्यवहार अनुसार, <parameter>needle</parameter> लाई या त स्पष्ट रूपमा string मा cast गर्नुपर्छ, वा स्पष्ट रूपमा <function>chr</function> call गर्नुपर्छ।
+ </simpara>'>
+
+<!ENTITY strings.scanf.parameter.format '<varlistentry xmlns="http://docbook.org/ns/docbook">
+     <term><parameter>format</parameter></term>
+     <listitem>
+      <para>
+       <parameter>string</parameter> को व्याख्या गरिने ढाँचा (format), जुन निम्न भिन्नताहरूसहित <function>sprintf</function> को documentation मा वर्णन गरिएको छ:
+       <simplelist>
+        <member>
+         Function locale-aware छैन।
+        </member>
+        <member>
+         <literal>F</literal>, <literal>g</literal>, <literal>G</literal> र <literal>b</literal> समर्थित छैनन्।
+        </member>
+        <member>
+         <literal>D</literal> ले दशमलव सङ्ख्या (decimal number) जनाउँछ।
+        </member>
+        <member>
+         <literal>i</literal> ले आधार पहिचान (base detection) सहितको integer जनाउँछ।
+        </member>
+        <member>
+         <literal>n</literal> ले हालसम्म प्रशोधन गरिएका अक्षरहरूको सङ्ख्या जनाउँछ।
+        </member>
+        <member>
+         <literal>s</literal> ले कुनै पनि whitespace अक्षर भेटिएमा पढ्न रोक्छ।
+        </member>
+        <member>
+         <literal>argnum$</literal> को सट्टा <literal>*</literal> को प्रयोगले यस conversion specification को मान जाँच गर्छ तर variable मा assign गर्दैन।
+        </member>
+       </simplelist>
+      </para>
+     </listitem>
+    </varlistentry>'>
+
+<!ENTITY strings.stripped.characters '<itemizedlist xmlns="http://docbook.org/ns/docbook">
+    <listitem>
+     <simpara>
+      <literal>" "</literal>: <acronym>ASCII</acronym> <acronym>SP</acronym> अक्षर <literal>0x20</literal>, एउटा सामान्य खाली स्थान (space)।
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <literal>"\t"</literal>: <acronym>ASCII</acronym> <acronym>HT</acronym> अक्षर <literal>0x09</literal>, एउटा ट्याब (tab)।
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <literal>"\n"</literal>: <acronym>ASCII</acronym> <acronym>LF</acronym> अक्षर <literal>0x0A</literal>, एउटा नयाँ हरफ (line feed)।
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <literal>"\r"</literal>: <acronym>ASCII</acronym> <acronym>CR</acronym> अक्षर <literal>0x0D</literal>, एउटा क्यारिज रिटर्न (carriage return)।
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <literal>"\0"</literal>: <acronym>ASCII</acronym> <acronym>NUL</acronym> अक्षर <literal>0x00</literal>, NUL-byte।
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <literal>"\v"</literal>: <acronym>ASCII</acronym> <acronym>VT</acronym> अक्षर <literal>0x0B</literal>, एउटा ठाडो ट्याब (vertical tab)।
+     </simpara>
+    </listitem>
+    <listitem>
+     <simpara>
+      <literal>"\f"</literal>: <acronym>ASCII</acronym> <acronym>FF</acronym> अक्षर <literal>0x0C</literal>, एउटा फर्म फिड (form feed) (PHP 8.6.0 देखि)।
+     </simpara>
+    </listitem>
+   </itemizedlist>'>
+
+<!ENTITY tip.userlandnaming '<tip xmlns="http://docbook.org/ns/docbook"><simpara><xref linkend="userlandnaming" /> पनि हेर्नुहोस्।</simpara></tip>'>
+
+<!ENTITY warn.deprecated.feature-7-2-0.removed-8-0-0 '<warning
+xmlns="http://docbook.org/ns/docbook"><simpara>यो विशेषता PHP 7.2.0 देखि <emphasis>DEPRECATED</emphasis> गरिएको छ, र PHP 8.0.0 देखि <emphasis>हटाइएको (REMOVED)</emphasis> छ। यस विशेषतामा भर नपर्न कडा सल्लाह दिइन्छ।</simpara></warning>'>
+
+<!ENTITY warn.deprecated.feature-8-5-0 '<warning
+xmlns="http://docbook.org/ns/docbook"><simpara>यो विशेषता PHP 8.5.0 देखि <emphasis>DEPRECATED</emphasis> गरिएको छ। यस विशेषतामा भर नपर्न कडा सल्लाह दिइन्छ।</simpara></warning>'>
+
+<!ENTITY warn.deprecated.function-7-2-0.removed-8-0-0 '<warning
+xmlns="http://docbook.org/ns/docbook"><simpara>यो function PHP 7.2.0 देखि <emphasis>DEPRECATED</emphasis> गरिएको छ, र PHP 8.0.0 देखि <emphasis>हटाइएको (REMOVED)</emphasis> छ। यस function मा भर नपर्न कडा सल्लाह दिइन्छ।</simpara></warning>'>
+
+<!ENTITY warn.deprecated.function-7-4-0.removed-8-0-0 '<warning
+xmlns="http://docbook.org/ns/docbook"><simpara>यो function PHP 7.4.0 देखि <emphasis>DEPRECATED</emphasis> गरिएको छ, र PHP 8.0.0 देखि <emphasis>हटाइएको (REMOVED)</emphasis> छ। यस function मा भर नपर्न कडा सल्लाह दिइन्छ।</simpara></warning>'>
+
+<!ENTITY warn.deprecated.function-8-2-0 '<warning
+xmlns="http://docbook.org/ns/docbook"><simpara>यो function PHP 8.2.0 देखि <emphasis>DEPRECATED</emphasis> गरिएको छ। यस function मा भर नपर्न कडा सल्लाह दिइन्छ।</simpara></warning>'>
+
+<!ENTITY warn.install.cgi '<warning xmlns="http://docbook.org/ns/docbook"><simpara>CGI मोडमा परिनियोजन (deploy) गरिएको server विभिन्न सम्भावित सुरक्षा कमजोरीहरूका लागि खुला हुन्छ। यस्ता आक्रमणहरूबाट कसरी बच्ने भनी जान्नका लागि कृपया हाम्रो <link linkend="security.cgi-bin">CGI सुरक्षा खण्ड</link> पढ्नुहोस्।</simpara></warning>'>
+
+<!ENTITY warn.install.third-party-support '<warning xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <simpara>
+  तेस्रो-पक्ष (third-parties) बाट प्राप्त builds लाई अनौपचारिक मानिन्छ र PHP परियोजनाद्वारा प्रत्यक्ष समर्थन गरिँदैन। त्यस्ता अनौपचारिक builds मा भेटिएका कुनै पनि त्रुटिहरू (bugs) यदि <link xlink:href="&url.php.downloads;">आधिकारिक डाउनलोड क्षेत्र</link> का builds मा पुनः उत्पन्न (reproduce) गर्न सकिँदैन भने ती अनौपचारिक builds का प्रदायकलाई नै रिपोर्ट गर्नुपर्छ।
+ </simpara>
+</warning>'>
+
+<!ENTITY warn.passwordhashing '<warning xmlns="http://docbook.org/ns/docbook">
+ <simpara>
+  यस hashing एल्गोरिदमको तीव्र प्रकृतिका कारण पासवर्डहरू सुरक्षित राख्न यो function प्रयोग गर्न सिफारिस गरिँदैन। विस्तृत विवरण र उत्तम अभ्यासहरूका लागि <link linkend="faq.passwords.fasthash">Password Hashing FAQ</link> हेर्नुहोस्।
+ </simpara>
+</warning>'>
+
+<!ENTITY warning.csv.escape-parameter '<warning xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink"><simpara>
+ जब <parameter>escape</parameter> लाई खाली string (<literal>""</literal>) बाहेक अन्य कुनै कुरामा सेट गरिन्छ, यसले <link xlink:href="&url.rfc;4180">RFC 4180</link> को पालना नगर्ने वा PHP CSV functions मार्फत roundtrip पार गर्न नसक्ने CSV निम्त्याउन सक्छ। <parameter>escape</parameter> को डिफल्ट मान <literal>"\\"</literal> हो, त्यसैले यसलाई स्पष्ट रूपमा खाली string मा सेट गर्न सिफारिस गरिन्छ। डिफल्ट value PHP को भावी संस्करणमा (PHP 9.0 भन्दा पहिले होइन) परिवर्तन हुनेछ।
+</simpara></warning>'>

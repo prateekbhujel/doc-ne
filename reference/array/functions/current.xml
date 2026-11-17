@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.current" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>current</refname>
+  <refpurpose>एउटा array मा रहेको current element return गर्दछ</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>mixed</type><methodname>current</methodname>
+   <methodparam><type class="union"><type>array</type><type>object</type></type><parameter>array</parameter></methodparam>
+  </methodsynopsis>
+  <para>प्रत्येक array मा त्यसको "current" element तर्फ लक्षित एउटा internal pointer हुन्छ, जुन array मा insert गरिएको पहिलो element मा initialize गरिएको हुन्छ।</para>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>array</parameter></term>
+     <listitem>
+      <para>उक्त array।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para><function>current</function> function ले internal pointer ले हाल point गरिरहेको array element को value मात्र return गर्दछ। यसले pointer लाई कुनै पनि तरिकाले सार्दैन। यदि internal pointer ले elements list को end भन्दा पर point गर्दछ वा array खाली छ भने, <function>current</function> ले &false; return गर्दछ।</para>
+  &return.falseproblem;
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &standard.changelog.calling-on-objects;
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>current</function> र यसका सम्बन्धित function हरूको प्रयोगको उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$transport = array('foot', 'bike', 'car', 'plane');
+echo $mode = current($transport), PHP_EOL; // $mode = 'foot';
+echo $mode = next($transport), PHP_EOL;    // $mode = 'bike';
+echo $mode = current($transport), PHP_EOL; // $mode = 'bike';
+echo $mode = prev($transport), PHP_EOL;    // $mode = 'foot';
+echo $mode = end($transport), PHP_EOL;     // $mode = 'plane';
+echo $mode = current($transport), PHP_EOL; // $mode = 'plane';
+
+$arr = array();
+var_dump(current($arr)); // bool(false)
+
+$arr = array(array());
+var_dump(current($arr)); // array(0) { }
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <simpara>एउटा खाली array मा र internal pointer ले elements को end भन्दा पर point गरेको array मा <function>current</function> call गर्दा आउने परिणामहरूलाई एउटा <type>bool</type> &false; element from बाट छुट्ट्याउन सकिँदैन। &false; elements हुन सक्ने array लाई सही रूपमा traverse गर्नका लागि, &foreach; control structure हेर्नुहोस्।</simpara>
+   <simpara>तैपनि <function>current</function> प्रयोग गर्न र value साँच्चै नै array को एउटा element हो कि होइन भनी सही रूपमा जाँच गर्न, <function>current</function> element को <function>key</function> चाहिँ &null; from बाट strictly फरक छ कि छैन भनी जाँच गरिनुपर्छ।</simpara>
+  </note>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>end</function></member>
+    <member><function>key</function></member>
+    <member><function>each</function></member>
+    <member><function>prev</function></member>
+    <member><function>reset</function></member>
+    <member><function>next</function></member>
+    <member>&foreach;</member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

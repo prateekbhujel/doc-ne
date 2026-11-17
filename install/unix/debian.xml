@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 2d91caad93e275542dfdc1a99a6fc8a0ed030108 Maintainer: prateekbhujel Status: draft -->
+<sect1 xml:id="install.unix.debian" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>Debian GNU/Linux र सम्बन्धित distribution हरूमा from packages install गर्ने</title>
+ <para>PHP लाई source from install गर्न सकिने भए तापनि, यो <link xlink:href="&url.debian;">Debian GNU/Linux</link> from packages मार्फत पनि उपलब्ध छ। यो कुरा Debian मा आधारित अन्य distribution हरू जस्तै Ubuntu, Kali Linux, र Linux Mint का लागि पनि true हो।</para>
+ &warn.install.third-party-support;
+ <para>packages लाई <command>apt</command> वा <command>aptitude</command> command मध्ये जुनसुकै प्रयोग गरेर पनि install गर्न सकिन्छ। यो manual page मा यी दुई command हरूलाई एकअर्काको सट्टामा प्रयोग गरिएको छ।</para>
+ <sect2 xml:id="install.unix.debian.apt">
+  <title>APT को प्रयोग</title>
+   <simpara>पहिलो कुरा, Apache httpd 2 सँग integrate गर्नका लागि <literal>libapache2-mod-php</literal>, र PEAR का लागि <literal>php-pear</literal> जस्ता अन्य सम्बन्धित packages हरू पनि आवश्यक पर्न सक्छन् भन्ने कुरा ध्यान दिनुहोस्।</simpara>
+   <simpara>दोस्रो कुरा, एउटा package install गर्नुअघि package list up to date छ भनी सुनिश्चित गर्नु बुद्धिमानी हुन्छ। सामान्यतया, यो काम <command>apt update</command> command चलाएर गरिन्छ।</simpara>
+   <example xml:id="install.unix.debian.apt.example">
+    <title>Apache httpd 2 सँग Debian install गर्ने उदाहरण</title>
+    <programlisting role="shell">
+<![CDATA[
+# apt install php-common libapache2-mod-php php-cli
+]]>
+    </programlisting>
+   </example>
+   <simpara>APT ले Apache httpd 2 का लागि PHP module र यसका सबै dependencies स्वतः install गर्नेछ, र त्यसपछि यसलाई activate गर्नेछ। परिवर्तनहरू लागू हुनका लागि Apache httpd लाई restart गर्नुपर्छ। उदाहरणका लागि:</simpara>
+   <example xml:id="install.unix.debian.apt.example2">
+    <title>PHP install भइसकेपछि Apache httpd restart गर्ने</title>
+    <programlisting role="shell">
+<![CDATA[
+# systemctl restart apache2
+]]>
+    </programlisting>
+   </example>
+ </sect2>
+ <sect2 xml:id="install.unix.debian.config">
+  <title>configuration को अझ राम्रो नियन्त्रण</title>
+   <simpara>अघिल्लो खण्डमा, PHP लाई केवल core modules सँग मात्र install गरिएको थियो। तपाईँलाई थप modules हरू आवश्यक पर्न सक्ने सम्भावना धेरै हुन्छ, जस्तै <link linkend="book.mysql">MySQL</link>, <link linkend="book.curl">cURL</link>, <link linkend="book.image">GD</link>, आदि। यिनीहरूलाई पनि <command>apt</command> command मार्फत install गर्न सकिन्छ।</simpara>
+   <example xml:id="install.unix.debian.config.example">
+    <title>थप PHP packages हरूको सूची हेर्ने Methods</title>
+    <programlisting role="shell">
+<![CDATA[
+# apt-cache search php
+# apt search php | grep -i mysql
+# aptitude search php
+]]>
+    </programlisting>
+   </example>
+   <simpara>packages को list मा ठूलो संख्यामा packages हरू आउनेछन्, जसमा <literal>php-cgi</literal>, <literal>php-cli</literal>, र <literal>php-dev</literal> जस्ता आधारभूत PHP component हरूका साथै धेरै PHP extensions हरू पर्दछन्। जब extensions install गरिन्छ, ती packages का dependencies पूरा गर्न आवश्यकता अनुसार थप packages हरू स्वतः install हुनेछन्।</simpara>
+   <example xml:id="install.unix.debian.config.example2">
+    <title>MySQL र cURL सहित PHP install गर्ने</title>
+    <programlisting role="shell">
+<![CDATA[
+# apt install php-mysql php-curl
+]]>
+    </programlisting>
+   </example>
+   <simpara>APT ले <filename>/etc/php/8.x/apache2/php.ini</filename>, <filename>/etc/php/8.x/cli/php.ini</filename>, <filename>/etc/php/8.x/mods-available/*.ini</filename> आदि जस्ता विभिन्न &php.ini; सम्बन्धित files मा उपयुक्त line हरू स्वतः थपिदिनेछ, र extension अनुसार <literal>extension=foo.so</literal> जस्ता entry हरू थप्नेछ। यद्यपि, यी परिवर्तनहरू लागू हुनका लागि web server लाई restart गर्न आवश्यक हुन्छ।</simpara>
+ </sect2>
+ <sect2 xml:id="install.unix.debian.faq">
+  <title>सामान्य समस्याहरू</title>
+  <itemizedlist>
+   <listitem>
+    <simpara>यदि web server मार्फत PHP scripts parse भइरहेका छैनन् भने, सम्भवतः web server को configuration file मा PHP थपिएको छैन, जुन Debian मा <filename>/etc/apache2/apache2.conf</filename> वा यस्तै हुन सक्छ। थप विवरणका लागि Debian manual हेर्नुहोस्।</simpara>
+   </listitem>
+   <listitem>
+    <simpara>यदि एउटा extension install भएको देखिन्छ तर पनि functions हरू undefined छन् भने, उपयुक्त ini file load भइरहेको छ कि छैन र/वा installation पछि web server restart गरिएको थियो कि थिएन भनी सुनिश्चित गर्नुहोस्।</simpara>
+   </listitem>
+  </itemizedlist>
+ </sect2>
+</sect1>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
+

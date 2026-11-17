@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<sect1 xml:id="install.windows.recommended" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>Windows system हरूमा सिफारिस गरिएको configuration</title>
+ <sect2>
+  <title>OpCache</title>
+  <para>OpCache enable गर्न अत्यधिक सिफारिस गरिन्छ। यो extension Windows का लागि PHP सँगै समावेश गरिएको हुन्छ। यसले PHP scripts लाई compile तथा optimize गर्दछ र memory मा cache गर्दछ, जसले गर्दा प्रत्येक पटक page load हुँदा तिनीहरूलाई compile गर्नु पर्दैन।</para>
+  <para>&php.ini; लाई निम्नानुसार set गर्नुहोस्:<example>
+    <title>सिफारिस गरिएको OpCache configuration</title>
+    <screen>
+<![CDATA[
+opcache.enable=On
+opcache.enable_cli=On
+]]>
+    </screen>
+   </example>र web server restart गर्नुहोस्। थप जानकारीका लागि हेर्नुहोस्: <link linkend="opcache.configuration">OpCache Configuration</link></para>
+ </sect2>
+ <sect2>
+  <title>WinCache</title>
+  <para>यदि IIS प्रयोग गर्दै हुनुहुन्छ भने, विशेष गरी shared web hosting वातावरणमा वा networked file storage (NAS) प्रयोग गर्दा WinCache प्रयोग गर्न सिफारिस गरिन्छ। सबै PHP application हरूले WinCache को file cache feature from स्वतः लाभ पाउँछन्। File system operation हरू memory मा cache गरिन्छन्। WinCache ले user objects लाई memory मा cache गर्न र तिनीहरूलाई <varname>php.exe</varname> वा <varname>php-cgi.exe</varname> process हरू बीच share गर्न पनि सक्छ (requests बीच objects share गर्ने)। धेरै प्रमुख web application हरूमा WinCache user object cache को प्रयोग make गर्नका लागि plugin वा extension वा configuration option हुन्छ। यदि उच्च performance आवश्यक छ भने, application हरूमा object cache प्रयोग गर्नुहोस्। PHP extensions directory (<filename>php.ini</filename> मा रहेको <link linkend="ini.extension-dir">extension_dir</link>) मा WinCache DLL (वा <filename>WINCACHE_<replaceable>*</replaceable>.tgz</filename>) download गर्नका लागि हेर्नुहोस्: <link xlink:href="&url.pecl.package;WinCache">&url.pecl.package;WinCache</link>। &php.ini; लाई निम्नानुसार set गर्नुहोस्:<example>
+    <title>सिफारिस गरिएको WinCache configuration</title>
+    <screen>
+<![CDATA[
+extension=php_wincache.dll
+wincache.fcenabled=1
+wincache.ocenabled=1 ; removed as of wincache 2.0.0.0
+]]>
+    </screen>
+   </example>थप जानकारीका लागि हेर्नुहोस्: <link linkend="wincache.configuration">WinCache Configuration</link></para>
+ </sect2>
+</sect1>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

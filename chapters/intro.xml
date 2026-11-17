@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: cd7a4b94a4cf282d8fd70803f0e2fdd159557444 Maintainer: prateekbhujel Status: ready -->
+<!-- EN-Revision: cd7a4b94a4cf282d8fd70803f0e2fdd159557444 Maintainer: prateekbhujel Status: draft -->
  <chapter xml:id="introduction" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
   <info>
    <titleabbrev>परिचय</titleabbrev>
@@ -37,14 +37,14 @@
     </example>
    </para>
    <para>
-    C वा Perl जस्ता भाषाहरूमा जस्तो HTML output निकाल्न धेरै command लेख्नुको साटो, PHP pages भित्र HTML सँगै code राखिन्छ जसले <replaceable>केही कार्य</replaceable> सम्पादन गर्छ (यस उदाहरणमा, <computeroutput>Hi, I'm a PHP script!</computeroutput> प्रिन्ट गर्छ)।
-    PHP code लाई विशेष <link linkend="language.basic-syntax.phpmode">सुरुवात र अन्त्य जनाउने निर्देशिका <code>&lt;?php</code> र <code>?&gt;</code></link> भित्र राखिन्छ, जसले गर्दा आवश्यकता अनुसार <quote>PHP mode</quote> भित्र प्रवेश गर्न र बाहिरिन सकिन्छ।
+    C वा Perl मा जस्तो HTML output निकाल्न धेरै command लेख्नुको सट्टा, PHP पृष्ठमा HTML भित्रै <replaceable>केही काम गर्ने</replaceable> code राखिन्छ (यस उदाहरणमा, <computeroutput>Hi, I'm a PHP script!</computeroutput> देखाउने code)।
+    PHP code कहाँ सुरु हुन्छ र कहाँ सकिन्छ भन्ने जनाउन विशेष <link linkend="language.basic-syntax.phpmode">processing instructions <code>&lt;?php</code> र <code>?&gt;</code></link> प्रयोग गरिन्छ। यिनको मद्दतले आवश्यकताअनुसार <quote>PHP mode</quote> मा जान र त्यसबाट बाहिर निस्कन सकिन्छ।
    </para>
    <para>
-    Client-side JavaScript भन्दा PHP लाई फरक बनाउने मुख्य कुरा के हो भने, PHP code सर्भर (server) मा execute हुन्छ र HTML generate गरेर client (browser) मा पठाउँछ। Client ले script run भइसकेपछिको नतिजा मात्र प्राप्त गर्छ, तर त्यस पछाडिको वास्तविक PHP code कस्तो थियो भन्ने थाहा पाउँदैन। Web server लाई सबै HTML file हरूलाई PHP मार्फत process गर्न configure समेत गर्न सकिन्छ, जसले गर्दा प्रयोगकर्ताहरूले PHP प्रयोग भइरहेको छ भन्ने भेउ समेत पाउँदैनन्।
+    Client-side JavaScript र PHP बीचको मुख्य फरक code चल्ने ठाउँ हो। PHP code server मा चल्छ र त्यसले बनाएको HTML client मा पठाइन्छ। Client ले script चलेपछिको नतिजा पाउँछ, तर त्यसपछाडिको PHP code देख्दैन। सबै HTML files लाई PHP मार्फत process गर्ने गरी web server configure गर्न पनि सकिन्छ। त्यसो गर्दा प्रयोगकर्ताले PHP प्रयोग भएको थाहा पाउँदैनन्।
    </para>
    <para>
-    PHP प्रयोग गर्नुको सबैभन्दा राम्रो पक्ष के हो भने, यो नयाँ सिक्नेहरूका लागि निकै सरल छ, तर अनुभवी professional programmer का लागि धेरै advanced features पनि प्रदान गर्दछ। PHP का लामा विशेषताहरूको सूची देखेर नआत्तिनुहोस्। PHP को मद्दतले जो कोहीले पनि निकै छोटो समयमै साधारण script हरू लेख्न सुरु गर्न सक्छ।
+    PHP को राम्रो पक्ष के हो भने, नयाँ सिक्नेहरूलाई सुरु गर्न सजिलो छ र अनुभवी programmer का लागि पनि धेरै advanced features उपलब्ध छन्। PHP का विशेषताहरूको लामो सूची देखेर नआत्तिनुहोस्। PHP प्रयोग गरेर प्रायः जो कोहीले छोटो समयमै साधारण scripts लेख्न थाल्न सक्छन्।
    </para>
    <para>
     यद्यपि PHP को मुख्य ध्यान server-side scripting मा केन्द्रित छ, यसबाट अरू धेरै कामहरू पनि गर्न सकिन्छ। थप जानकारीका लागि <link linkend="intro-whatcando">PHP ले के गर्न सक्छ?</link> खण्ड पढ्नुहोस्, अथवा सिधै web programming सिक्न <link linkend="tutorial">प्रारम्भिक tutorial</link> मा जान सक्नुहुन्छ।
@@ -75,13 +75,13 @@
     PHP लाई Linux, धेरै Unix variants (जस्तै HP-UX, Solaris र OpenBSD), Microsoft Windows, macOS, RISC OS लगायत प्रायः सबै मुख्य operating system हरूमा <link linkend="install">प्रयोग</link> गर्न सकिन्छ। PHP ले आजका प्रायः सबै web server हरूलाई support गर्छ, जसमा Apache, IIS र अन्य धेरै पर्दछन्। यसका साथै lighttpd र nginx जस्ता FastCGI PHP binary प्रयोग गर्न सक्ने कुनै पनि web server मा पनि यो चल्छ। PHP ले module वा CGI processor को रूपमा काम गर्छ।
    </para>
    <para>
-    त्यसैले PHP प्रयोग गर्दा विकासकर्ताहरूलाई आफ्नो इच्छा अनुसारको operating system र web server छनोट गर्ने पूर्ण स्वतन्त्रता हुन्छ। यसबाहेक, procedural programming वा object-oriented programming (OOP), वा दुवैको सम्मिश्रण प्रयोग गर्ने विकल्प पनि उपलब्ध छ।
+    त्यसैले PHP प्रयोग गर्दा विकासकर्ताहरूले आफूलाई उपयुक्त operating system र web server छान्न सक्छन्। Procedural programming, object-oriented programming (OOP) वा दुवै मिसाएर code लेख्न पनि सकिन्छ।
    </para>
    <simpara>
     PHP केवल HTML output निकाल्नमा मात्र सीमित छैन। यसले images वा PDF files जस्ता rich file types तयार पार्न, data encrypt गर्न र emails पठाउन सक्छ। यसले JSON वा XML जस्ता कुनै पनि text format पनि सजिलै output दिन सक्छ। यस्ता file हरू सिधै print गर्नुको साटो dynamic content को server-side cache बनाउनका लागि filesystem मा save गर्न पनि सकिन्छ।
    </simpara>
    <simpara>
-    PHP को सबैभन्दा शक्तिशाली विशेषताहरू मध्ये एक यसको <link linkend="refs.database">विभिन्न प्रकारका database हरूलाई समर्थन</link> गर्नु हो। Database-specific extension हरू (जस्तै <link linkend="book.mysqli">MySQL</link> का लागि), वा <link linkend="book.pdo">PDO</link> जस्तो abstraction layer प्रयोग गरेर, वा <link linkend="book.uodbc">ODBC</link> मार्फत Open Database Connection standard समर्थन गर्ने कुनै पनि database सँग जोडिने web page लेख्न निकै सजिलो छ। CouchDB जस्ता अन्य database हरूले <link linkend="book.curl">cURL</link> वा <link linkend="book.sockets">sockets</link> प्रयोग गर्न सक्छन्।
+    PHP को एउटा प्रमुख विशेषता <link linkend="refs.database">धेरै किसिमका databases सँग काम गर्न सक्नु</link> हो। Database प्रयोग गर्ने web page लेख्न database-specific extensions (जस्तै <link linkend="book.mysqli">MySQL</link> का लागि) वा <link linkend="book.pdo">PDO</link> जस्तो abstraction layer प्रयोग गर्न सकिन्छ। Open Database Connection standard समर्थन गर्ने database सँग <link linkend="book.uodbc">ODBC</link> मार्फत जोडिन सकिन्छ। CouchDB जस्ता अन्य databases सँग काम गर्न <link linkend="book.curl">cURL</link> वा <link linkend="book.sockets">sockets</link> प्रयोग गर्न सकिन्छ।
    </simpara>
    <simpara>
     PHP ले LDAP, IMAP, SNMP, NNTP, POP3, HTTP, COM (Windows मा) लगायत थुप्रै protocol मार्फत अन्य service हरूसँग कुराकानी गर्न पनि समर्थन गर्दछ। साथै raw network sockets खोलेर अन्य कुनै पनि protocol सँग अन्तरक्रिया गर्न पनि सकिन्छ।

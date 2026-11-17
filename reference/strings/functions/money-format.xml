@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<refentry xmlns="http://docbook.org/ns/docbook" xml:id="function.money-format">
+ <refnamediv>
+  <refname>money_format</refname>
+  <refpurpose>एउटा सङ्ख्यालाई currency string को रूपमा format गर्दछ</refpurpose>
+ </refnamediv>
+ 
+ <refsynopsisdiv>
+   &warn.deprecated.function-7-4-0.removed-8-0-0;
+ </refsynopsisdiv>
+ 
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>money_format</methodname>
+   <methodparam><type>string</type><parameter>format</parameter></methodparam>
+   <methodparam><type>float</type><parameter>number</parameter></methodparam>
+  </methodsynopsis>
+  <para><function>money_format</function> ले <parameter>number</parameter> को format गरिएको रूप return गर्दछ। यो function ले C library function <function>strfmon</function> लाई wrap गर्दछ, तर फरक यति छ कि यो implementation ले एक पटकमा एउटा मात्र सङ्ख्या convert गर्दछ।</para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>format</parameter></term>
+     <listitem>
+      <para>Format specification मा निम्न क्रम समावेश हुन्छ:<itemizedlist>
+        <listitem><para>एउटा <literal>%</literal> character</para></listitem>
+        <listitem><para>ऐच्छिक flags</para></listitem>
+        <listitem><para>वैकल्पिक field width</para></listitem>
+        <listitem><para>वैकल्पिक left precision</para></listitem>
+        <listitem><para>वैकल्पिक right precision</para></listitem>
+        <listitem><para>एउटा आवश्यक conversion character</para></listitem>
+       </itemizedlist>
+      </para>
+      <formalpara>
+       <title>Flags</title>
+       <para>तलका वैकल्पिक flags मध्ये एक वा बढी प्रयोग गर्न सकिन्छ:<variablelist>
+         <varlistentry>
+          <term><literal>=</literal><replaceable>f</replaceable></term>
+          <listitem>
+           <para>character <literal>=</literal> र त्यसपछि आउने एउटा (single byte) character <replaceable>f</replaceable>, जसलाई numeric fill character को रूपमा प्रयोग गरिन्छ। default fill character space हो।</para>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term><literal>^</literal></term>
+          <listitem>
+           <para>grouping characters को प्रयोगलाई disable गर्दछ (current locale द्वारा परिभाषित गरिए अनुसार)।</para>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term><literal>+</literal> वा <literal>(</literal></term>
+          <listitem>
+           <para>positive र negative संख्याहरूका लागि formatting style निर्दिष्ट गर्दछ। यदि <literal>+</literal> प्रयोग गरियो भने, <literal>+</literal> र <literal>-</literal> का लागि locale को equivalent प्रयोग गरिनेछ। यदि <literal>(</literal> प्रयोग गरियो भने, negative रकमहरूलाई parenthesis भित्र राखिन्छ। यदि कुनै विवरण दिइएको छैन भने, default <literal>+</literal> हो।</para>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term><literal>!</literal></term>
+          <listitem>
+           <para>output string from currency symbol लाई suppress गर्दछ।</para>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term><literal>-</literal></term>
+          <listitem>
+           <para>यदि उपस्थित छ भने, यसले सबै fields लाई left-justified (दायाँतर्फ pad गरिएको) make गर्दछ, जुन fields लाई right-justified (बायाँतर्फ pad गरिएको) गरिने default व्यवस्थाको विपरीत हो।</para>
+          </listitem>
+         </varlistentry>
+        </variablelist>
+       </para>
+      </formalpara>
+      <formalpara>
+       <title>फिल्डको चौडाइ (Field width)</title>
+       <para>
+        <variablelist>
+         <varlistentry>
+          <term><replaceable>w</replaceable></term>
+          <listitem>
+           <para>न्यूनतम field width निर्दिष्ट गर्ने एउटा decimal digit string। flag <literal>-</literal> प्रयोग नगरिएसम्म field right-justified हुनेछ। default value 0 (zero) हो।</para>
+          </listitem>
+         </varlistentry>
+        </variablelist>
+       </para>
+      </formalpara>
+      <formalpara>
+       <title>बायाँ precision (Left precision)</title>
+       <para>
+        <variablelist>
+         <varlistentry>
+          <term><literal>#</literal><replaceable>n</replaceable></term>
+          <listitem>
+           <para>decimal character (जस्तै decimal point) को बायाँतर्फ रहने अंकहरूको अधिकतम संख्या (<replaceable>n</replaceable>)। सामान्यतया यसको प्रयोग formatted output लाई एउटै column मा aligned राख्नका लागि गरिन्छ, जहाँ अंकहरूको संख्या <replaceable>n</replaceable> भन्दा कम भएमा fill character प्रयोग गरिन्छ। यदि वास्तविक अंकहरूको संख्या <replaceable>n</replaceable> भन्दा बढी भएमा, यो specification लाई ignore गरिन्छ।</para>
+           <para>यदि <literal>^</literal> flag प्रयोग गरेर grouping लाई suppress गरिएको छैन भने, fill characters (यदि कुनै भएमा) थप्नुअघि grouping separators राखिनेछ। fill character एउटा digit नै भए तापनि, fill characters मा grouping separators लागू हुने छैन।</para>
+           <para>alignment सुनिश्चित गर्नका लागि, formatted output मा संख्याको अगाडि वा पछाडि देखिने कुनै पनि characters (जस्तै currency वा sign symbols) लाई तिनीहरूका positive र negative formats समान लम्बाइको make गर्न आवश्यकता अनुसार space characters ले pad गरिन्छ।</para>
+          </listitem>
+         </varlistentry>
+        </variablelist>
+       </para>
+      </formalpara>
+      <formalpara>
+       <title>दायाँ precision (Right precision)</title>
+       <para>
+        <variablelist>
+         <varlistentry>
+          <term><literal>.</literal><replaceable>p</replaceable></term>
+          <listitem>
+           <para>एउटा period र त्यसपछि decimal character पछाडि आउने अंक संख्या (<replaceable>p</replaceable>)। यदि <replaceable>p</replaceable> को value 0 (zero) छ भने, decimal character र त्यसको दायाँतर्फका अंकहरू हटाइनेछ। यदि कुनै right precision समावेश गरिएको छैन भने, default मान प्रयोगमा रहेको current locale ले निर्धारण गर्नेछ। format गरिँदै गरेको रकमलाई formatting गर्नुअघि तोकिएको अंक संख्यामा round गरिन्छ।</para>
+          </listitem>
+         </varlistentry>
+        </variablelist>
+       </para>
+      </formalpara>
+      <formalpara>
+       <title>रूपान्तरण अक्षरहरू (Conversion characters)</title>
+       <para>
+        <variablelist>
+         <varlistentry>
+          <term><literal>i</literal></term>
+          <listitem>
+           <para>संख्यालाई locale को international currency format अनुसार format गरिन्छ (जस्तै USA locale का लागि: USD 1,234.56)।</para>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term><literal>n</literal></term>
+          <listitem>
+           <para>संख्यालाई locale को national currency format अनुसार format गरिन्छ (जस्तै de_DE locale का लागि: EU1.234,56)।</para>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term><literal>%</literal></term>
+          <listitem>
+           <para><literal>%</literal> character return गर्दछ।</para>
+          </listitem>
+         </varlistentry>
+        </variablelist>
+       </para>
+      </formalpara>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>number</parameter></term>
+     <listitem>
+      <para>format गर्नुपर्ने संख्या।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>formatted string return गर्दछ। formatting string अगाडि र पछाडिका characters अपरिवर्तित रूपमा return हुनेछन्। Non-numeric <parameter>number</parameter> भएमा यसले &null; return गर्दछ र <constant>E_WARNING</constant> emit गर्दछ।</para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>8.0.0</entry>
+       <entry>
+        &removed.function;
+       </entry>
+      </row>
+      <row>
+       <entry>7.4.0</entry>
+       <entry>&deprecated.function; यसको सट्टा, <methodname>NumberFormatter::formatCurrency</methodname> प्रयोग गर्नुहोस्।</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>money_format</function> को उदाहरण</title>
+    <para>यस function को प्रयोग स्पष्ट पार्न हामी विभिन्न locales र format specifications प्रयोग गर्नेछौँ।</para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$number = 1234.56;
+
+// let's print the international format for the en_US locale
+setlocale(LC_MONETARY, 'en_US');
+echo money_format('%i', $number) . "\n";
+// USD 1,234.56
+
+// Italian national format with 2 decimals`
+setlocale(LC_MONETARY, 'it_IT');
+echo money_format('%.2n', $number) . "\n";
+// Eu 1.234,56
+
+// Using a negative number
+$number = -1234.5672;
+
+// US national format, using () for negative numbers
+// and 10 digits for left precision
+setlocale(LC_MONETARY, 'en_US');
+echo money_format('%(#10n', $number) . "\n";
+// ($        1,234.57)
+
+// Similar format as above, adding the use of 2 digits of right
+// precision and '*' as a fill character
+echo money_format('%=*(#10.2n', $number) . "\n";
+// ($********1,234.57)
+
+// Let's justify to the left, with 14 positions of width, 8 digits of
+// left precision, 2 of right precision, without the grouping character
+// and using the international format for the de_DE locale.
+setlocale(LC_MONETARY, 'de_DE');
+echo money_format('%=*^-14#8.2i', 1234.56) . "\n";
+// Eu 1234,56****
+
+// Let's add some blurb before and after the conversion specification
+setlocale(LC_MONETARY, 'en_GB');
+$fmt = 'The final value is %i (after a 10%% discount)';
+echo money_format($fmt, 1234.56) . "\n";
+// The final value is  GBP 1,234.56 (after a 10% discount)
+
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>सिस्टममा strfmon capabilities भएमा मात्र function <function>money_format</function> define गरिएको हुन्छ। उदाहरणका लागि, Windows मा यो हुँदैन, त्यसैले Windows मा <function>money_format</function> undefined हुन्छ।</para>
+  </note>
+  <note>
+   <para>locale settings को <constant>LC_MONETARY</constant> category ले यस function को behavior लाई असर गर्दछ। यो function प्रयोग गर्नुअघि उपयुक्त default locale set गर्न <function>setlocale</function> प्रयोग गर्नुहोस्।</para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>setlocale</function></member>
+    <member><function>sscanf</function></member>
+    <member><function>sprintf</function></member>
+    <member><function>printf</function></member>
+    <member><function>number_format</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

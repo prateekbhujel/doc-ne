@@ -93,9 +93,18 @@ foreach ($xmlFiles as $relPath) {
             }
 
             // Verify hash exists in English source if available
-            if ($enDir && file_exists($enDir . '/' . $relPath)) {
-                $enCommit = trim(shell_exec("git -C " . escapeshellarg($enDir) . " log -n1 --pretty=format:%H -- " . escapeshellarg($relPath)));
-                if (!empty($enCommit) && $enCommit !== $hash) {
+            if ($enDir) {
+                // Read the Git object database: CI clones doc-en with --no-checkout.
+                $git = 'git -C ' . escapeshellarg($enDir);
+                $revisionPath = [];
+                exec($git . ' cat-file -e ' . escapeshellarg($hash . ':' . $relPath) . ' 2>&1', $revisionPath, $revisionPathStatus);
+                if ($revisionPathStatus !== 0) {
+                    $fileErrors[] = "EN-Revision '{$hash}' does not contain '{$relPath}' in doc-en.";
+                }
+                $enCommit = trim(shell_exec("git -C " . escapeshellarg($enDir) . " log -n1 --pretty=format:%H -- " . escapeshellarg($relPath)) ?? '');
+                if (empty($enCommit)) {
+                    $fileErrors[] = "Source path '{$relPath}' not found in doc-en git history.";
+                } elseif ($enCommit !== $hash) {
                     // Check if hash is a valid ancestor commit in that file's history
                     $isAncestor = shell_exec("git -C " . escapeshellarg($enDir) . " merge-base --is-ancestor " . escapeshellarg($hash) . " " . escapeshellarg($enCommit) . " 2>&1; echo $?");
                     if (trim($isAncestor) !== "0") {
@@ -157,7 +166,7 @@ echo "Validation Summary:\n";
 echo "Total files checked: {$totalFiles}\n";
 echo "Passed:             {$passed}\n";
 echo "Failed:             {$failed}\n";
-echo "Human Proofread:    {$readyCount} (Status: ready)\n";
+echo "Marked ready:       {$readyCount} (Status: ready)\n";
 echo "Pending Review:     {$draftCount} (Status: draft)\n";
 echo "============================================\n";
 

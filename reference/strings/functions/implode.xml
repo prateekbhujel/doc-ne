@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.implode" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>implode</refname>
+  <refpurpose>array का elements हरूलाई एउटा string ले जोड्छ</refpurpose>
+ </refnamediv>
+ 
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>implode</methodname>
+   <methodparam><type>string</type><parameter>separator</parameter></methodparam>
+   <methodparam><type>array</type><parameter>array</parameter></methodparam>
+  </methodsynopsis>
+  <simpara>वैकल्पिक signature (named arguments सँग समर्थित छैन):</simpara>
+  <methodsynopsis>
+   <type>string</type><methodname>implode</methodname>
+   <methodparam><type>array</type><parameter>array</parameter></methodparam>
+  </methodsynopsis>
+  <simpara>Legacy signature (PHP 7.4.0 देखि deprecated गरिएको, PHP 8.0.0 देखि हटाइएको):</simpara>
+  <methodsynopsis>
+   <type>string</type><methodname>implode</methodname>
+   <methodparam><type>array</type><parameter>array</parameter></methodparam>
+   <methodparam><type>string</type><parameter>separator</parameter></methodparam>
+  </methodsynopsis>
+  <para>array elements लाई एउटा <parameter>separator</parameter> string ले जोड्दछ।</para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>separator</parameter></term>
+     <listitem>
+      <para>ऐच्छिक। डिफल्ट रूपमा खाली string हुन्छ।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>array</parameter></term>
+     <listitem>
+      <para>implode गरिने strings को array।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>each element को बीचमा separator string राखी, सोही क्रममा सबै array elements को string representation समावेश भएको एउटा string return गर्दछ।</para>
+ </refsect1>
+
+ <refsect1 role="changelog"><!-- {{{ -->
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry><parameter>array</parameter> पछाडि <parameter>separator</parameter> pass गर्न अब समर्थित छैन।</entry>
+     </row>
+     <row>
+      <entry>7.4.0</entry>
+      <entry><parameter>array</parameter> पछाडि <parameter>separator</parameter> pass गर्ने कार्य (अर्थात् legacy signature को प्रयोग) लाई deprecated गरिएको छ।</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1><!-- }}} -->
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>implode</function> को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+$array = ['lastname', 'email', 'phone'];
+var_dump(implode(",", $array)); // string(20) "lastname,email,phone"
+
+// Empty string when using an empty array:
+var_dump(implode('hello', [])); // string(0) ""
+
+// The separator is optional:
+var_dump(implode(['a', 'b', 'c'])); // string(3) "abc"
+
+?>
+]]>
+    </programlisting>
+   </example>   
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  &note.bin-safe;
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>explode</function></member>
+    <member><function>preg_split</function></member>
+    <member><function>http_build_query</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

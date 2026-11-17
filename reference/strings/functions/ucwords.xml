@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.ucwords" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>ucwords</refname>
+  <refpurpose>एउटा string मा each word को पहिलो character लाई uppercase बनाउँछ</refpurpose>
+ </refnamediv>
+ 
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>ucwords</methodname>
+   <methodparam><type>string</type><parameter>string</parameter></methodparam>
+   <methodparam choice="opt"><type>string</type><parameter>separators</parameter><initializer>" \t\r\n\f\v"</initializer></methodparam>
+  </methodsynopsis>
+  <para>यदि त्यो character <literal>"a"</literal> (0x61) र <literal>"z"</literal> (0x7a) बीचको ASCII character हो भने, <parameter>string</parameter> मा रहेका each word को पहिलो character capitalize गरिएको एउटा string return गर्दछ।</para>
+  <para>यस function का लागि, word भन्नाले <parameter>separators</parameter> parameter मा सूचीकृत नगरिएका characters को एउटा string हो। Default रूपमा, यी हुन्: space, horizontal tab, carriage return, newline, form-feed र vertical tab।</para>
+  <para>Multibyte strings मा यस्तै conversion गर्न, <constant>MB_CASE_TITLE</constant> mode सँग <function>mb_convert_case</function> प्रयोग गर्नुहोस्।</para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>string</parameter></term>
+     <listitem>
+      <para>Input string।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>separators</parameter></term>
+     <listitem>
+      <para>वैकल्पिक <parameter>separators</parameter> मा word separator characters समावेश हुन्छन्।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>परिमार्जित string return गर्दछ।</para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &strings.changelog.ascii-case-conversion;
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>ucwords</function> को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$foo = 'hello world!';
+echo ucwords($foo), PHP_EOL;             // Hello World!
+
+$bar = 'HELLO WORLD!';
+echo ucwords($bar), PHP_EOL;             // HELLO WORLD!
+echo ucwords(strtolower($bar)), PHP_EOL; // Hello World!
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+
+  <para>
+   <example>
+    <title>Custom delimiter सहितको <function>ucwords</function> उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$foo = 'hello|world!';
+echo ucwords($foo), PHP_EOL;             // Hello|world!
+
+echo ucwords($foo, "|"), PHP_EOL;        // Hello|World!
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+
+  <para>
+   <example>
+    <title>थप delimiters सहितको <function>ucwords</function> उदाहरण</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+$foo = "mike o'hara";
+echo ucwords($foo), PHP_EOL;                 // Mike O'hara
+
+echo ucwords($foo, " \t\r\n\f\v'"), PHP_EOL; // Mike O'Hara
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  &note.bin-safe;
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>strtoupper</function></member>
+    <member><function>strtolower</function></member>
+    <member><function>ucfirst</function></member>
+    <member><function>mb_convert_case</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

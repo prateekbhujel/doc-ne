@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 8a4f1c0069f2f5ad08dfd5dfbd8ddc6a4107f110 Maintainer: prateekbhujel Status: draft -->
+
+<chapter xml:id="install.pecl" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>PECL extensions को स्थापना</title>
+ &pecl.moving.to.pie;
+
+ <sect1 xml:id="install.pecl.intro">
+  <title>PECL स्थापनाको परिचय</title>
+  &pecl.moving.to.pie;
+  <simpara>&link.pecl;, <link xlink:href="&url.php.pear;">PEAR</link> packaging system मार्फत उपलब्ध गराइने PHP extensions को एउटा repository हो। Manual को यो खण्ड PECL extensions कसरी प्राप्त गर्ने र install गर्ने भन्ने देखाउन तयार गरिएको हो।</simpara>
+  <simpara>यी निर्देशनहरूमा <literal>/path/to/php/src/dir/</literal> लाई PHP source distribution को path र <literal>extname</literal> लाई PECL extension को नाम मानिएको छ। सोही अनुसार मिलाउनुहोस्। साथै, यी निर्देशनहरूमा तपाईँ <link xlink:href="&url.php.pear.cli;">pear command</link> सँग परिचित हुनुहुन्छ भन्ने मानिएको छ। <command>pear</command> command का लागि PEAR manual मा भएको जानकारी <command>pecl</command> command मा पनि लागू हुन्छ।</simpara>
+  <simpara>एउटा shared extension उपयोगी हुनका लागि त्यसलाई build, install र load गर्नैपर्छ। तल वर्णन गरिएका methods ले extensions कसरी build र install गर्ने भन्ने विभिन्न निर्देशनहरू दिन्छन्, तर तिनीहरूले तिनलाई स्वतः load गर्दैनन्। Extensions लाई &php.ini; file मा <link linkend="ini.extension">extension</link> directive थपेर वा <function>dl</function> function को प्रयोगमार्फत load गर्न सकिन्छ।</simpara>
+  <simpara>PHP modules build गर्दा, आवश्यक tools (autoconf, automake, libtool, आदि) का known-good version हरू हुनु महत्त्वपूर्ण हुन्छ। आवश्यक tools र आवश्यक version हरूको विवरणका लागि <link xlink:href="&url.php.anongit;">Anonymous Git Instructions</link> हेर्नुहोस्।</simpara>
+ </sect1>
+
+ <sect1 xml:id="install.pecl.downloads">
+  <title>PECL extensions download गर्ने</title>
+  &pecl.moving.to.pie;
+  <simpara>PECL extensions download गर्नका लागि थुप्रै विकल्पहरू छन्, जस्तै:</simpara>
+  <itemizedlist>
+   <listitem>
+    <simpara><command>pecl install extname</command> command ले extensions code स्वतः download गर्छ, त्यसैले यस अवस्थामा छुट्टै download गर्न आवश्यक पर्दैन।</simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <link xlink:href="&url.pecl;">&url.pecl;</link>
+    </simpara>
+    <simpara>PECL website मा PHP Development Team ले प्रदान गर्ने विभिन्न extensions सम्बन्धी जानकारीहरू समावेश छन्। यहाँ उपलब्ध जानकारीमा changelog, release notes, requirements, र अन्य यस्तै विवरणहरू पर्दछन्।</simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <command>pecl download extname</command>
+    </simpara>
+    <simpara>PECL website मा release हरू सूचीकृत भएका PECL extensions लाई <link xlink:href="&url.php.pear.cli;">pecl command</link> प्रयोग गरेर download र install गर्न सकिन्छ। निश्चित revision हरू पनि specify गर्न सकिन्छ।</simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <acronym>git</acronym>
+    </simpara>
+    <simpara>धेरै PECL extensions GitHub मा रहेका छन्। <!-- TODO Expand --></simpara>
+   </listitem>
+   <listitem>
+    <simpara>
+     <acronym>SVN</acronym>
+    </simpara>
+    <simpara>केही PECL extensions हरू <acronym>SVN</acronym> मा पनि रहेका छन्। यसको web-based view <link xlink:href="&url.php.svn;pecl/">&url.php.svn;pecl/</link> मा हेर्न सकिन्छ। सीधा from <acronym>SVN</acronym> बाट download गर्न, निम्न command हरूको क्रम प्रयोग गर्न सकिन्छ:</simpara>
+    <screen>
+<![CDATA[
+$ svn checkout https://svn.php.net/repository/pecl/extname/trunk extname
+]]>
+    </screen>
+   </listitem>
+   <listitem>
+    <simpara>Windows download हरू</simpara>
+    <simpara>PHP project ले package page मा अधिकांश PECL extensions का लागि Windows DLL हरू compile गरेर उपलब्ध गराउँछ।</simpara>
+   </listitem>
+  </itemizedlist>
+ </sect1>
+
+ <sect1 xml:id="install.pecl.windows">
+  <title>Windows मा PHP extension install गर्ने तरिका</title>
+  &pecl.moving.to.pie;
+  <para>Windows मा एउटा PHP extension load गर्ने दुईवटा तरिकाहरू छन्: या त यसलाई PHP भित्र compile गर्ने, वा DLL load गर्ने। Pre-compiled extension load गर्नु सबैभन्दा सजिलो र रुचाइएको तरिका हो।</para>
+  <para>एउटा extension load गर्नका लागि, यो system मा <filename>.dll</filename> file का रूपमा उपलब्ध हुनुपर्छ। सबै extensions हरू PHP Group द्वारा स्वचालित र आवधिक रूपमा compile गरिन्छ (download का लागि next खण्ड हेर्नुहोस्)।</para>
+  <para>एउटा extension लाई PHP भित्र compile गर्नका लागि, कृपया <link linkend="install.windows.building">building from source</link> documentation हेर्नुहोस्।</para>
+  <para>एउटा standalone extension (अर्थात् एउटा DLL file) compile गर्नका लागि, कृपया <link linkend="install.windows.building">building from source</link> documentation हेर्नुहोस्। यदि त्यो DLL file न त PHP distribution सँग न त PECL मा नै उपलब्ध छ भने, extension प्रयोग गर्नुअघि यसलाई compile गर्नुपर्ने हुन सक्छ।</para>
+  <sect2 xml:id="install.pecl.windows.find">
+   <title>extension कहाँ फेला पार्ने?</title>
+   <para>PHP extensions लाई सामान्यतया <filename>php_*.dll</filename> भनिन्छ (जहाँ star ले extension को नामलाई जनाउँछ), र तिनीहरू <filename>PHP\ext</filename> folder भित्र रहेका हुन्छन्।</para>
+   <para>PHP धेरैजसो developers का लागि सबैभन्दा उपयोगी हुने extensions सँगै आउँछ। तिनीहरूलाई <emphasis>bundled</emphasis> extensions भनिन्छ।</para>
+   <para>तर, यदि bundled extensions ले आवश्यक functionality प्रदान गर्दैन भने, त्यो काम गर्ने एउटा extension अझै पनि &link.pecl; मा फेला पार्न सकिन्छ। PHP Extension Community Library (PECL) PHP Extensions का लागि एउटा repository हो, जसले सबै ज्ञात extensions को एउटा directory प्रदान गर्दछ र PHP extensions download तथा विकास गर्नका लागि hosting सुविधाहरू उपलब्ध गराउँछ।</para>
+   <para>यदि कुनै extension विशेष प्रयोजनका लागि विकास गरिएको छ भने, त्यसलाई PECL मा host गर्न सकिन्छ ताकि उस्तै आवश्यकता भएका अरूले पनि यस from बाट फाइदा लिन सकून्। यसको एउटा राम्रो फाइदा के हो भने, feedback, (आशा छ) धन्यवाद, bug reports र यहाँसम्म कि fixes/patches प्राप्त गर्ने यो एउटा राम्रो अवसर हो। PECL मा hosting का लागि एउटा extension पेश गर्नुअघि, कृपया <link xlink:href="&url.pecl.submit;">PECL submit</link> पढ्नुहोस्।</para>
+  </sect2>
+
+  <sect2 xml:id="install.pecl.windows.which">
+   <title>कुन extension download गर्ने?</title>
+   <para><emphasis> धेरैजसो अवस्थामा, each DLL का थुप्रै versions उपलब्ध हुन्छन्: </emphasis><itemizedlist>
+     <listitem>
+      <simpara>फरक version numbers (कम्तीमा पहिलो दुईवटा numbers मिल्नुपर्छ)</simpara>
+     </listitem>
+     <listitem>
+      <simpara>फरक thread safety settings</simpara>
+     </listitem>
+     <listitem>
+      <simpara>फरक processor architecture (x86, x64, ...)</simpara>
+     </listitem>
+     <listitem>
+      <simpara>फरक debugging settings</simpara>
+     </listitem>
+     <listitem>
+      <simpara>
+       <literal>etc.</literal>
+      </simpara>
+     </listitem>
+    </itemizedlist>
+   </para>
+   <para>ध्यान दिनुहोस् कि extension settings प्रयोग भइरहेको PHP executable का सबै settings सँग मिल्नुपर्छ। तलको PHP script ले PHP settings का बारेमा <emphasis>all</emphasis> बताउनेछ:</para>
+   <para>
+    <example>
+     <title><function>phpinfo</function> call</title>
+     <programlisting role="php">
+<![CDATA[
+<?php
+phpinfo();
+?>
+]]>
+     </programlisting>
+    </example>
+   </para>
+   <para>वा command line बाट from चलाउनुहोस्:<screen>
+<![CDATA[
+drive:\path\to\php\executable\php.exe -i
+]]>
+    </screen>
+   </para>
+  </sect2>
+
+  <sect2 xml:id="install.pecl.windows.loading">
+   <title>extension load गर्ने तरिका</title>
+   <para>एउटा PHP extension load गर्ने सबैभन्दा सामान्य तरिका यसलाई &php.ini; configuration file मा समावेश गर्नु हो। कृपया ध्यान दिनुहोस् कि धेरै extensions हरू पहिले नै &php.ini; मा उपस्थित हुन्छन् र तिनीहरूलाई activate गर्नका लागि semicolon मात्र हटाए पुग्छ।</para>
+   <para>ध्यान दिनुहोस् कि, PHP 7.2.0 देखि, extension को file name को सट्टामा extension name प्रयोग गर्न सकिन्छ। यो OS-independent र विशेष गरी नयाँ प्रयोगकर्ताहरूका लागि सजिलो हुने भएकाले, load गर्नुपर्ने extensions specify गर्ने यो सिफारिस गरिएको तरिका बनेको छ। अघिल्ला versions सँग compatibility का लागि File names अझै पनि support गरिन्छन्।</para>
+   <screen>
+<![CDATA[
+;extension=php_extname.dll
+]]>
+   </screen>
+   <screen>
+<![CDATA[
+extension=php_extname.dll
+]]>
+   </screen>
+   <screen>
+<![CDATA[
+; As of PHP 7.2.0, prefer:
+extension=extname
+zend_extension=another_extension
+]]>
+   </screen>
+   <para>तर, केही web servers अन्योलपूर्ण हुन सक्छन् किनभने तिनीहरूले PHP executable सँगै रहेको &php.ini; प्रयोग गर्दैनन्। वास्तविक &php.ini; कहाँ रहेको छ भनी पत्ता लगाउन, <function>phpinfo</function> मा यसको path हेर्नुहोस्:</para>
+   <screen>
+<![CDATA[
+Configuration File (php.ini) Path  C:\WINDOWS
+]]>
+   </screen>
+   <screen>
+<![CDATA[
+Loaded Configuration File   C:\Program Files\PHP\8.2\php.ini
+]]>
+   </screen>
+   <para>एउटा extension activate गरिसकेपछि, &php.ini; save गर्नुहोस्, web server restart गर्नुहोस्, र फेरि <function>phpinfo</function> जाँच्नुहोस्। अब नयाँ extension को आफ्नै section हुनुपर्छ।</para>
+  </sect2>
+
+  <sect2 xml:id="install.pecl.windows.problemsolving">
+   <title>समस्या समाधान</title>
+   <para>यदि extension <function>phpinfo</function> मा देखा पर्दैन भने, समस्या कहाँबाट from आएको हो भनी पत्ता लगाउन logs जाँच गरिनुपर्छ।</para>
+   <para>यदि PHP लाई command line (CLI) from बाट प्रयोग गरिँदैछ भने, extension loading error सीधै स्क्रिनमा पढ्न सकिन्छ।</para>
+   <para>यदि PHP लाई web server सँग प्रयोग गरिँदैछ भने, logs को स्थान र format software अनुसार फरक-फरक हुन्छ। logs पत्ता लगाउन कृपया web server को documentation पढ्नुहोस्, किनकि यसको PHP आफैँसँग कुनै सम्बन्ध हुँदैन।</para>
+   <para>सामान्य समस्याहरू भनेका DLL र यो निर्भर रहने DLLs को स्थान, &php.ini; भित्रको "<link linkend="ini.extension-dir">extension_dir</link>" setting को value, र compile-time setting mismatches हुन्।</para>
+   <para>यदि समस्या compile-time setting mismatch मा छ भने, सम्भवतः download गरिएको DLL सही होइन। उपयुक्त settings सहित extension पुनः download गर्ने प्रयास गर्नुहोस्। फेरि पनि, <function>phpinfo</function> निकै सहयोगी हुन सक्छ।</para>
+  </sect2>
+
+ </sect1>
+
+ <sect1 xml:id="install.pecl.pear">
+  <title>pecl command मार्फत shared PECL extensions compile गर्ने</title>
+  &pecl.moving.to.pie;
+  <simpara>PECL ले shared PHP extensions सिर्जना गर्न सजिलो बनाउँछ। <link xlink:href="&url.php.pear.cli;">pecl command</link> को प्रयोग गरी निम्न अनुसार गर्नुहोस्:</simpara>
+  <screen>
+<![CDATA[
+$ pecl install extname
+]]>
+  </screen>
+  <simpara>यसले <emphasis>extname</emphasis> को source download गर्नेछ, compile गर्नेछ, र <filename>extname.so</filename> लाई <link linkend="ini.extension-dir">extension_dir</link> मा install गर्नेछ। त्यसपछि <filename>extname.so</filename> लाई &php.ini; मार्फत load गर्न सकिन्छ।</simpara>
+  <simpara>पूर्वनिर्धारित रूपमा, <command>pecl</command> command ले <literal>alpha</literal> वा <literal>beta</literal> state का रूपमा चिन्हित packages install गर्दैन। यदि कुनै पनि <literal>stable</literal> packages उपलब्ध छैनन् भने, निम्न command प्रयोग गरेर एउटा <literal>beta</literal> package install गर्न सकिन्छ:</simpara>
+  <screen>
+<![CDATA[
+$ pecl install extname-beta
+]]>
+  </screen>
+  <para>यो variant प्रयोग गरेर कुनै निश्चित version पनि install गर्न सकिन्छ:</para>
+  <screen>
+<![CDATA[
+$ pecl install extname-0.1
+]]>
+  </screen>
+  <note>
+   <para>&php.ini; मा extension enable गरेपछि, परिवर्तनहरू लागू हुन web service restart गर्न आवश्यक हुन्छ।</para>
+  </note>
+ </sect1>
+
+ <sect1 xml:id="install.pecl.phpize">
+  <title>phpize मार्फत shared PECL extensions compile गर्ने</title>
+  &pecl.moving.to.pie;
+  <simpara>कहिलेकाहीँ <command>pecl</command> installer प्रयोग गर्ने विकल्प हुँदैन। यो firewall भएकोले हुन सक्छ वा install गरिँदै गरेको extension चाहिँ PECL-compatible package को रूपमा उपलब्ध नभएर हुन सक्छ, जस्तै git from बाट unreleased extensions। यदि त्यस्तो extension build गर्नुपर्ने छ भने, म्यानुअल रूपमा build गर्न lower-level build tools प्रयोग गर्न सकिन्छ।</simpara>
+  <simpara><command>phpize</command> command को प्रयोग एउटा PHP extension का लागि build environment तयार गर्न गरिन्छ। तलको उदाहरणमा, एउटा extension का source हरू <filename>extname</filename> नामको directory मा छन्:</simpara>
+  <para>
+   <screen>
+<![CDATA[
+$ cd extname
+$ phpize
+$ ./configure
+$ make
+# make install
+]]>
+   </screen>
+  </para>
+  <simpara>सफल install ले <filename>extname.so</filename> सिर्जना गर्नेछ र यसलाई PHP को <link linkend="ini.extension-dir">extensions directory</link> भित्र राख्नेछ। extension प्रयोग गर्न सक्नुअघि &php.ini; मिलाउनुपर्नेछ र एउटा <literal>extension=extname.so</literal> line थप्नुपर्नेछ।</simpara>
+  <simpara>यदि system मा <command>phpize</command> command छैन, र precompiled packages (जस्तै RPMs) प्रयोग गरिन्छ भने, PHP package को उपयुक्त development version पनि अवश्य install गर्नुहोस्; किनभने तिनीहरूमा प्रायः PHP र यसका extensions build गर्नका लागि उपयुक्त header files का साथै <command>phpize</command> command पनि समावेश हुन्छ।</simpara>
+  <simpara>थप usage जानकारी हेर्नका लागि <command>phpize --help</command> execute गर्नुहोस्।</simpara>
+ </sect1>
+
+ <sect1 xml:id="install.pecl.php-config">
+  <title>
+   <command>php-config</command>
+  </title>
+  &pecl.moving.to.pie;
+  <para><command>php-config</command> install गरिएको PHP configuration बारे जानकारी प्राप्त गर्नका लागि एउटा सरल shell script हो।</para>
+  
+  <para>extensions compile गर्दा, यदि धेरै PHP version हरू install गरिएका छन् भने, सम्बन्धित <command>php-config</command> script को path set गरी configuration को क्रममा <option role="configure">--with-php-config</option> option प्रयोग गरेर कुन installation का लागि build गर्ने हो भनी specify गर्न सकिन्छ।</para>
+  
+  <para><command>php-config</command> script ले उपलब्ध गराउने command line options को list, <option>-h</option> switch का साथ <command>php-config</command> चलाएर जुनसुकै बेला query गर्न सकिन्छ:<screen>
+<![CDATA[
+Usage: /usr/local/bin/php-config [OPTION]
+Options:
+  --prefix            [...]
+  --includes          [...]
+  --ldflags           [...]
+  --libs              [...]
+  --extension-dir     [...]
+  --include-dir       [...]
+  --php-binary        [...]
+  --php-sapis         [...]
+  --configure-options [...]
+  --version           [...]
+  --vernum            [...]
+]]>
+   </screen>
+  </para>
+  
+  <para>
+   <table>
+    <title>कमान्ड लाइन विकल्पहरू (Command line options)</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>विकल्प (Option)</entry>
+       <entry>विवरण</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>--prefix</entry>
+       <entry>PHP install गरिएको Directory prefix, जस्तै /usr/local</entry>
+      </row>
+      <row>
+       <entry>--includes</entry>
+       <entry>सबै include files सहितका <literal>-I</literal> options को सूची</entry>
+      </row>
+      <row>
+       <entry>--ldflags</entry>
+       <entry>PHP compile गर्दा प्रयोग गरिएका <literal>LD</literal> flags</entry>
+      </row>
+      <row>
+       <entry>--libs</entry>
+       <entry>PHP compile गर्दा प्रयोग गरिएका थप libraries</entry>
+      </row>
+      <row>
+       <entry>--extension-dir</entry>
+       <entry>पूर्वनिर्धारित रूपमा extensions खोजिने Directory</entry>
+      </row>
+      <row>
+       <entry>--include-dir</entry>
+       <entry>पूर्वनिर्धारित रूपमा header files install गरिने Directory prefix</entry>
+      </row>
+      <row>
+       <entry>--php-binary</entry>
+       <entry>php CLI वा CGI binary सम्मको पूरा path</entry>
+      </row>
+      <row>
+       <entry>--php-sapis</entry>
+       <entry>उपलब्ध सबै SAPI modules देखाउने</entry>
+      </row>
+      <row>
+       <entry>--configure-options</entry>
+       <entry>current PHP installation को configuration पुनः सिर्जना गर्न configure options</entry>
+      </row>
+      <row>
+       <entry>--version</entry>
+       <entry>PHP संस्करण (version)</entry>
+      </row>
+      <row>
+       <entry>--vernum</entry>
+       <entry>integer को रूपमा PHP version</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </para>
+ </sect1>
+
+ <sect1 xml:id="install.pecl.static">
+  <title>PECL extensions लाई PHP मा statically compile गर्ने</title>
+  &pecl.moving.to.pie;
+  <simpara>PECL extension लाई PHP binary मा statically build गर्नुपर्ने हुन सक्छ। यसो गर्नका लागि, extension source लाई <filename>/path/to/php/src/dir/ext/</filename> directory भित्र राख्नुपर्नेछ, र PHP build system ले आफ्नो configure script पुनः सिर्जना गर्नुपर्ने हुन्छ।</simpara>
+  <para>
+   <screen>
+<![CDATA[
+$ cd /path/to/php/src/dir/ext
+$ pecl download extname
+$ gzip -d < extname.tgz | tar -xvf -
+$ mv extname-x.x.x extname
+]]>
+   </screen>
+  </para>
+  <simpara>यसको फलस्वरूप निम्न directory बन्नेछ:</simpara>
+  <screen>
+<![CDATA[
+/path/to/php/src/dir/ext/extname
+]]>
+  </screen>
+  <simpara>यहाँबाट, PHP लाई configure script पुनः build गर्न force गर्नुपर्छ, र त्यसपछि यसलाई सामान्य रूपमा build गर्न सकिन्छ:</simpara>
+  <screen>
+<![CDATA[
+$ cd /path/to/php/src/dir
+$ rm configure
+$ ./buildconf --force
+$ ./configure --help
+$ ./configure --with-extname --enable-someotherext --with-foobar
+$ make
+$ make install
+]]>
+  </screen>
+  <note>
+   <simpara><command>buildconf</command> script चलाउनका लागि, <command>autoconf</command> <literal>2.68</literal> र <command>automake</command> <literal>1.4+</literal> आवश्यक पर्नेछ। <command>autoconf</command> का नयाँ versions ले काम गर्न सक्छन्, तर ती supported छैनन्।</simpara>
+  </note>
+  <simpara><option role="configure">--enable-extname</option> वा <option role="configure">--with-extname</option> प्रयोग गर्ने भन्ने कुरा extension मा निर्भर हुन्छ। सामान्यतया, external libraries आवश्यक नपर्ने extension ले <option role="configure">--enable</option> प्रयोग गर्दछ। निश्चित हुनका लागि, <command>buildconf</command> पछि निम्न चलाउनुहोस्:</simpara>
+  <screen>
+<![CDATA[
+$ ./configure --help | grep extname
+]]>
+  </screen>
+ </sect1>
+</chapter>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

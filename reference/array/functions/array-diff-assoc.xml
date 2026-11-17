@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.array-diff-assoc" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>array_diff_assoc</refname>
+  <refpurpose>थप index जाँच सहित arrays को फरक गणना गर्दछ</refpurpose>
+ </refnamediv>
+ 
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>array_diff_assoc</methodname>
+   <methodparam><type>array</type><parameter>array</parameter></methodparam>
+   <methodparam rep="repeat"><type>array</type><parameter>arrays</parameter></methodparam>
+  </methodsynopsis>
+  <para><parameter>array</parameter> लाई <parameter>arrays</parameter> सँग तुलना गर्दछ र फरक return गर्दछ। <function>array_diff</function> को विपरीत, तुलनामा array keys पनि प्रयोग गरिन्छ।</para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+
+    <varlistentry>
+     <term><parameter>array</parameter></term>
+     <listitem>
+      <para>जस from तुलना गरिन्छ, त्यो array</para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><parameter>arrays</parameter></term>
+     <listitem>
+      <para>तुलना गरिने Arrays</para>
+     </listitem>
+    </varlistentry>
+
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>अन्य कुनै पनि arrays मा नभएका <parameter>array</parameter> from का सबै values समावेश भएको एउटा <type>array</type> return गर्दछ।</para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      &array.changelog.require-only-one;
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+<!--
+ <refsect1 role="errors">
+  &reftitle.errors;
+  &errors.no.unusual.errors;
+ </refsect1>
+-->
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>array_diff_assoc</function> को उदाहरण</title>
+    <para>यस उदाहरणमा <literal>"a" =&gt; "green"</literal> जोडी दुवै arrays मा उपस्थित छ र त्यसैले यो function from आउने output मा पर्दैन। यसको विपरीत, <literal>0 =&gt; "red"</literal> जोडी भने output मा आउँछ, किनभने पहिलो array मा <literal>"red"</literal> को key स्वतः <literal>0</literal> मा assign हुन्छ, जबकि दोस्रो array मा यो <literal>1</literal> मा assign हुन्छ किनकि key <literal>0</literal> पहिले नै <literal>yellow</literal> ले लिइसकेको हुन्छ।</para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$array1 = array("a" => "green", "b" => "brown", "c" => "blue", "red");
+$array2 = array("a" => "green", "yellow", "red");
+$result = array_diff_assoc($array1, $array2);
+print_r($result);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [b] => brown
+    [c] => blue
+    [0] => red
+)
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title><function>array_diff_assoc</function> को उदाहरण</title>
+    <para><emphasis>key =&gt; value</emphasis> जोडीहरू from का दुई values तब मात्र बराबर मानिन्छन् यदि <literal>(string) $elem1 === (string)
+     $elem2 </literal> हुन्छ। अर्को शब्दमा, एउटा strict जाँच हुने भएकाले string representation एउटै हुनुपर्छ।</para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$array1 = array(0, 1, 2);
+$array2 = array("00", "01", "2");
+$result = array_diff_assoc($array1, $array2);
+print_r($result);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [0] => 0
+    [1] => 1
+)
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <simpara>यो function ले n-dimensional array को एउटा dimension मात्र जाँच गर्दछ। उदाहरणका लागि, <literal>array_diff_assoc($array1[0], $array2[0]);</literal> प्रयोग गरेर अझ गहिरा dimension हरू जाँच गर्न सम्भव छ।</simpara>
+  </note>
+  <note>
+   <simpara>धेरै keys भएका उस्तै arrays हरू तुलना गर्दा arguments हरू सही क्रममा पास गरिएको सुनिश्चित गर्नुहोस्। नयाँ array उक्त list को सुरुमा हुनुपर्छ।</simpara>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>array_diff</function></member>
+    <member><function>array_diff_uassoc</function></member>
+    <member><function>array_udiff_assoc</function></member>
+    <member><function>array_udiff_uassoc</function></member>
+    <member><function>array_intersect</function></member>
+    <member><function>array_intersect_assoc</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

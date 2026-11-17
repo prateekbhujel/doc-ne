@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 0d8ee2131b4da66a4d274c576da9137c2a7963d5 Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.array-walk-recursive" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>array_walk_recursive</refname>
+  <refpurpose>एउटा array का प्रत्येक member मा user function recursive रूपमा apply गर्दछ</refpurpose>
+ </refnamediv>
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>true</type><methodname>array_walk_recursive</methodname>
+   <methodparam><type class="union"><type>array</type><type>object</type></type><parameter role="reference">array</parameter></methodparam>
+   <methodparam><type>callable</type><parameter>callback</parameter></methodparam>
+   <methodparam choice="opt"><type>mixed</type><parameter>arg</parameter><initializer>&null;</initializer></methodparam>
+  </methodsynopsis>
+  <para><parameter>array</parameter> को each element मा user-defined <parameter>callback</parameter> function apply गर्दछ। यो function अझ गहिरा arrays मा recurse हुनेछ।</para>
+  <simpara><parameter>array</parameter> को रूपमा एउटा object pass गर्न अनुमति छ, र यसलाई सुरुमा एउटा array मा <link linkend="language.types.array.casting">cast</link> गरिए झैँ मानिनेछ। function array वा object जुनसुकैबाट सुरु भएको भए पनि, यो भित्री objects मा recurse हुने छैन।</simpara>
+ </refsect1>
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>array</parameter></term>
+     <listitem>
+      <para>Input array।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>callback</parameter></term>
+     <listitem>
+      <para>सामान्यतया, <parameter>callback</parameter> ले दुईवटा parameters लिन्छ। जसमा पहिलो <parameter>array</parameter> parameter को value र दोस्रो key/index हुन्छ।</para>
+      <note>
+       <para>यदि <parameter>callback</parameter> ले array का वास्तविक values सँग काम गर्नुपर्ने छ भने, <parameter>callback</parameter> को पहिलो parameter लाई <link linkend="language.references">reference</link> को रूपमा specify गर्नुहोस्। त्यसपछि, ती elements मा गरिएका कुनै पनि परिवर्तनहरू मूल array आफैँमा हुनेछन्।</para>
+      </note>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>arg</parameter></term>
+     <listitem>
+      <para>यदि वैकल्पिक <parameter>arg</parameter> parameter दिइएको छ भने, यसलाई <parameter>callback</parameter> मा तेस्रो parameter को रूपमा pass गरिनेछ।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>
+   &return.true.always;
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      &return.type.true;
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>array_walk_recursive</function> को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$sweet = array('a' => 'apple', 'b' => 'banana');
+$fruits = array('sweet' => $sweet, 'sour' => 'lemon');
+
+function test_print($item, $key)
+{
+    echo "$key holds $item\n";
+}
+
+array_walk_recursive($fruits, 'test_print');
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen role="php">
+<![CDATA[
+a holds apple
+b holds banana
+sour holds lemon
+]]>
+    </screen>
+    <para>तपाईँले याद गर्नुभएको होला कि key '<literal>sweet</literal>' कहिल्यै display हुँदैन। <type>array</type> राख्ने कुनै पनि key लाई function मा pass गरिने छैन।</para>
+   </example>
+  </para>
+  <simpara>callback parameter लाई reference मार्फत pass गरेर values लाई in place update गर्न पनि <function>array_walk_recursive</function> प्रयोग गर्न सकिन्छ।</simpara>
+  <para>
+   <example>
+    <title>values लाई in place update गर्ने</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$sweet = ['a' => 'apple', 'b' => 'banana'];
+$fruits = ['sweet' => $sweet, 'sour' => 'lemon'];
+
+function test_update(&$item)
+{
+    $item = strtoupper($item);
+}
+
+function test_print($item, $key)
+{
+    echo "$key holds $item\n";
+}
+
+array_walk_recursive($fruits, 'test_update');
+array_walk_recursive($fruits, 'test_print');
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+a holds APPLE
+b holds BANANA
+sour holds LEMON
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>array_walk</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

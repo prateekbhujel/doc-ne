@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 17c238517825dfb7ec3edfef5972acd944ffbc1e Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.array-map" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>array_map</refname>
+  <refpurpose>दिइएका arrays का elements मा callback लागू गर्दछ</refpurpose>
+ </refnamediv>
+ 
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>array_map</methodname>
+   <methodparam><type class="union"><type>callable</type><type>null</type></type><parameter>callback</parameter></methodparam>
+   <methodparam><type>array</type><parameter>array</parameter></methodparam>
+   <methodparam rep="repeat"><type>array</type><parameter>arrays</parameter></methodparam>
+  </methodsynopsis>
+  <para><function>array_map</function> ले callback का लागि arguments का रूपमा प्रयोग गरिएका <parameter>array</parameter> (र थप arrays प्रदान गरिएको भए <parameter>arrays</parameter>) का सम्बन्धित value मा <parameter>callback</parameter> लागू गर्दा आउने परिणामहरू समावेश भएको एउटा &array; return गर्दछ। <parameter>callback</parameter> function ले स्वीकार गर्ने parameters को संख्या <function>array_map</function> मा pass गरिएका arrays को संख्यासँग मेल खानुपर्छ। अतिरिक्त input arrays लाई ignore गरिन्छ। यदि अपर्याप्त संख्यामा arguments प्रदान गरियो भने एउटा <classname>ArgumentCountError</classname> throw गरिन्छ।</para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>callback</parameter></term>
+     <listitem>
+      <para>each array का each element का लागि run गरिने एउटा <type>callable</type>।</para>
+      <para>धेरै arrays मा zip operation गर्न र एउटा यस्तो array return गर्नका लागि <parameter>callback</parameter> मा value का रूपमा &null; pass गर्न सकिन्छ, जहाँ each element एउटा यस्तो array हुन्छ जसमा आन्तरिक array pointer को एउटै position मा रहेका इनपुट arrays from का elements समावेश हुन्छन् (तलको उदाहरण हेर्नुहोस्)। यदि <parameter>array</parameter> मात्र प्रदान गरिएको छ भने, <methodname>array_map</methodname> ले इनपुट array return गर्दछ।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>array</parameter></term>
+     <listitem>
+      <para><parameter>callback</parameter> function मार्फत run गरिने एउटा array।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>arrays</parameter></term>
+     <listitem>
+      <para><parameter>callback</parameter> function मार्फत run गरिने array arguments को थप variable list।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>callback का लागि arguments का रूपमा प्रयोग गरिएका <parameter>array</parameter> (र थप arrays प्रदान गरिएमा <parameter>arrays</parameter>) का सम्बन्धित value मा <parameter>callback</parameter> function लागू गर्दा प्राप्त परिणामहरू समावेश भएको एउटा array return गर्दछ।</para>
+  <para>यदि र केवल यदि ठीक एउटा array pass गरिएको छ भने मात्र return गरिएको array ले array argument का keys सुरक्षित राख्नेछ। यदि एउटाभन्दा बढी array pass गरियो भने, return गरिएको array मा sequential integer keys हुनेछन्।</para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     &array.changelog.by-ref;
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>array_map</function> को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function cube($n)
+{
+    return ($n * $n * $n);
+}
+
+$a = [1, 2, 3, 4, 5];
+$b = array_map('cube', $a);
+print_r($b);
+?>
+]]>
+    </programlisting>
+    <para>यसले गर्दा <varname>$b</varname> मा निम्न मान हुन्छ:</para>
+    <screen>
+<![CDATA[
+Array
+(
+    [0] => 1
+    [1] => 8
+    [2] => 27
+    [3] => 64
+    [4] => 125
+)
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title>lambda function प्रयोग गरेर <function>array_map</function></title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$func = function(int $value): int {
+    return $value * 2;
+};
+
+print_r(array_map($func, range(1, 5)));
+
+// Or as of PHP 7.4.0:
+
+print_r(array_map(fn($value): int => $value * 2, range(1, 5)));
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [0] => 2
+    [1] => 4
+    [2] => 6
+    [3] => 8
+    [4] => 10
+)
+Array
+(
+    [0] => 2
+    [1] => 4
+    [2] => 6
+    [3] => 8
+    [4] => 10
+)
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title><function>array_map</function> - थप arrays प्रयोग गरेर</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+function show_Spanish(int $n, string $m): string
+{
+    return "The number {$n} is called {$m} in Spanish";
+}
+
+function map_Spanish(int $n, string $m): array
+{
+    return [$n => $m];
+}
+
+$a = [1, 2, 3, 4, 5];
+$b = ['uno', 'dos', 'tres', 'cuatro', 'cinco'];
+
+$c = array_map('show_Spanish', $a, $b);
+print_r($c);
+
+$d = array_map('map_Spanish', $a , $b);
+print_r($d);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+// printout of $c
+Array
+(
+    [0] => The number 1 is called uno in Spanish
+    [1] => The number 2 is called dos in Spanish
+    [2] => The number 3 is called tres in Spanish
+    [3] => The number 4 is called cuatro in Spanish
+    [4] => The number 5 is called cinco in Spanish
+)
+
+// printout of $d
+Array
+(
+    [0] => Array
+        (
+            [1] => uno
+        )
+
+    [1] => Array
+        (
+            [2] => dos
+        )
+
+    [2] => Array
+        (
+            [3] => tres
+        )
+
+    [3] => Array
+        (
+            [4] => cuatro
+        )
+
+    [4] => Array
+        (
+            [5] => cinco
+        )
+
+)
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>सामान्यतया दुई वा दुईभन्दा बढी arrays प्रयोग गर्दा तिनीहरू समान लम्बाइका हुनुपर्छ, किनभने callback function सम्बन्धित elements मा समानान्तर रूपमा लागू गरिन्छ। यदि arrays असमान लम्बाइका छन् भने, सबैभन्दा लामोको लम्बाइसँग मिलाउन छोटाहरूलाई खाली elements थपेर विस्तार गरिनेछ।</para>
+  <para>यो function को एउटा चाखलाग्दो प्रयोग arrays को एउटा array निर्माण गर्नु हो, जुन callback function को नामको रूपमा &null; प्रयोग गरेर सजिलै गर्न सकिन्छ।</para>
+  <para>
+   <example>
+    <title>arrays को zip operation गर्ने</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$a = [1, 2, 3, 4, 5];
+$b = ['one', 'two', 'three', 'four', 'five'];
+$c = ['uno', 'dos', 'tres', 'cuatro', 'cinco'];
+
+$d = array_map(null, $a, $b, $c);
+print_r($d);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+Array
+(
+    [0] => Array
+        (
+            [0] => 1
+            [1] => one
+            [2] => uno
+        )
+
+    [1] => Array
+        (
+            [0] => 2
+            [1] => two
+            [2] => dos
+        )
+
+    [2] => Array
+        (
+            [0] => 3
+            [1] => three
+            [2] => tres
+        )
+
+    [3] => Array
+        (
+            [0] => 4
+            [1] => four
+            [2] => cuatro
+        )
+
+    [4] => Array
+        (
+            [0] => 5
+            [1] => five
+            [2] => cinco
+        )
+
+)
+]]>
+    </screen>
+   </example>
+  </para>
+  
+  <para>
+   <example>
+    <title>केवल <parameter>array</parameter> सँग &null; <parameter>callback</parameter></title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$array = [1, 2, 3];
+var_dump(array_map(null, $array));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(3) {
+  [0]=>
+  int(1)
+  [1]=>
+  int(2)
+  [2]=>
+  int(3)
+}
+]]>
+    </screen>
+   </example>
+  </para>
+  <para>
+   <example>
+    <title><function>array_map</function> - string keys सहित</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$arr = ['stringkey' => 'value'];
+function cb1($a) {
+    return [$a];
+}
+function cb2($a, $b) {
+    return [$a, $b];
+}
+var_dump(array_map('cb1', $arr));
+var_dump(array_map('cb2', $arr, $arr));
+var_dump(array_map(null,  $arr));
+var_dump(array_map(null, $arr, $arr));
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(1) {
+  ["stringkey"]=>
+  array(1) {
+    [0]=>
+    string(5) "value"
+  }
+}
+array(1) {
+  [0]=>
+  array(2) {
+    [0]=>
+    string(5) "value"
+    [1]=>
+    string(5) "value"
+  }
+}
+array(1) {
+  ["stringkey"]=>
+  string(5) "value"
+}
+array(1) {
+  [0]=>
+  array(2) {
+    [0]=>
+    string(5) "value"
+    [1]=>
+    string(5) "value"
+  }
+}
+]]>
+    </screen>
+   </example>
+   <example>
+    <title><function>array_map</function> - associative arrays</title>
+    <para><function>array_map</function> ले array key लाई input को रूपमा प्रयोग गर्न प्रत्यक्ष समर्थन नगरे पनि, <function>array_keys</function> प्रयोग गरेर त्यसलाई simulate गर्न सकिन्छ।</para>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$arr = [
+    'v1' => 'First release',
+    'v2' => 'Second release',
+    'v3' => 'Third release',
+];
+
+// Note: Before 7.4.0, use the longer syntax for anonymous functions instead.
+$callback = fn(string $k, string $v): string => "$k was the $v";
+
+$result = array_map($callback, array_keys($arr), array_values($arr));
+
+var_dump($result);
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+array(3) {
+  [0]=>
+  string(24) "v1 was the First release"
+  [1]=>
+  string(25) "v2 was the Second release"
+  [2]=>
+  string(24) "v3 was the Third release"
+}
+]]>
+    </screen>
+   </example>
+  </para>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>array_filter</function></member>
+    <member><function>array_reduce</function></member>
+    <member><function>array_walk</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

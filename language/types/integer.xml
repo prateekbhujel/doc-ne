@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 4fc9f9ea7ba36a383613ede343a0820f5cc46aa2 Maintainer: prateekbhujel Status: ready -->
+<!-- EN-Revision: 6b413bea212d1372873771434c2061d2bd64f90a Maintainer: prateekbhujel Status: draft -->
 <sect1 xml:id="language.types.integer">
- <title>Integers (इन्टिजरहरू)</title>
+ <title>Integers</title>
 
  <simpara>
-  <type>int</type> भनेको पूर्ण सङ्ख्याहरूको समूह &#8484; = {..., -2, -1, 0, 1, 2, ...} मध्येको कुनै एउटा सङ्ख्या हो।
+  <type>int</type> भनेको signed integer हो। यसको दायरा सीमित हुन्छ र platform अनुसार फरक पर्छ। यसको न्यूनतम value <constant>PHP_INT_MIN</constant> र अधिकतम value <constant>PHP_INT_MAX</constant> हुन्छ।
  </simpara>
 
  <sect2 role="seealso">
@@ -53,7 +53,7 @@ $a = 1_234_567; // decimal number (PHP 7.4.0 देखि)
   </example>
 
   <para>
-   औपचारिक रूपमा, PHP 8.1.0 अनुसार <type>int</type> literals को संरचना यस प्रकार छ:
+   PHP 8.1.0 देखि <type>int</type> literals को औपचारिक संरचना यस प्रकार छ। अघिल्ला संस्करणहरूमा octal का लागि <literal>0o</literal> वा <literal>0O</literal> prefix प्रयोग गर्न मिल्दैनथ्यो। PHP 7.4.0 भन्दा अघि underscores पनि प्रयोग गर्न मिल्दैनथ्यो:
   </para>
 
   <informalexample>
@@ -158,7 +158,7 @@ var_dump(round(25/7));  // float(4)
    </title>
 
    <simpara>
-    <type>float</type> बाट <type>int</type> मा परिवर्तन गर्दा सङ्ख्यालाई <emphasis>शून्यतर्फ</emphasis> राउन्ड गरिन्छ। PHP 8.1.0 देखि, यदि दशमलव भएको float लाई int मा बदल्दा precision गुम्छ भने deprecation notice जारी हुन्छ।
+    <type>float</type> बाट <type>int</type> मा बदल्दा सङ्ख्यालाई <emphasis>शून्यतर्फ</emphasis> round गरिन्छ। PHP 8.1.0 देखि, भिन्नात्मक अंश भएको &float; लाई स्वतः (implicitly) &integer; मा बदल्दा precision गुमेमा deprecation notice आउँछ।
    </simpara>
 
    <example>
@@ -181,6 +181,16 @@ var_dump(intval(8.1)); // दुवै अवस्थामा 8
 ]]>
     </programlisting>
    </example>
+
+   <simpara>
+    Float को value <type>int</type> को सीमाभन्दा बाहिर छ भने नतिजा undefined हुन्छ, किनभने त्यस <type>float</type> मा ठ्याक्कै <type>int</type> नतिजा दिन पुग्ने precision हुँदैन। यो सीमा सामान्यतया ३२-बिट platforms मा <literal>+/- 2.15e+9 = 2^31</literal> र ६४-बिट platforms मा <literal>+/- 9.22e+18 = 2^63</literal> को हाराहारीमा हुन्छ। PHP 8.5.0 देखि, <type>int</type> मा व्यक्त गर्न नसकिने <type>float</type> लाई <type>int</type> मा cast गर्दा <constant>E_WARNING</constant> आउँछ। अघिल्ला संस्करणहरूमा यसबारे कुनै diagnostic आउँदैनथ्यो।
+   </simpara>
+
+   <note>
+    <simpara>
+     <literal>NaN</literal>, <literal>Inf</literal> र <literal>-Inf</literal> लाई <type>int</type> मा cast गर्दा सधैँ शून्य आउँछ। PHP 8.5.0 देखि यस्तो cast गर्दा <constant>E_WARNING</constant> पनि आउँछ। <constant>NAN</constant> लाई अरू कुनै type मा cast गर्दा पनि यही warning आउँछ।
+    </simpara>
+   </note>
 
    <warning>
     <para>
@@ -207,7 +217,7 @@ echo (int) ( (0.1+0.7) * 10 ); // यसले 7 output दिन्छ!
    <title>Strings बाट</title>
 
    <simpara>
-    यदि string <link linkend="language.types.numeric-strings">numeric</link> छ भने त्यो सम्बन्धित integer value मा रूपान्तरण हुन्छ, अन्यथा शून्य (<literal>0</literal>) बन्छ।
+    String <link linkend="language.types.numeric-strings">numeric वा leading numeric</link> भएमा त्यसलाई सम्बन्धित integer value मा बदलिन्छ। अन्यथा शून्य (<literal>0</literal>) मा बदलिन्छ।
    </simpara>
   </sect3>
 

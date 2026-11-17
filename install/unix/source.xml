@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: e07f764c8e4234d1195536ffed2eaf19c849ce50 Maintainer: prateekbhujel Status: draft -->
+<sect1 xml:id="install.unix.source" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>Unix र macOS systems मा from source install गर्ने</title>
+ <para>Compile गर्नका लागि आवश्यक software:<simplelist>
+   <member>
+    <link xlink:href="&url.gnu.make;">GNU <command>make</command></link>
+   </member>
+   <member>एउटा C compiler (PHP 8.0.0 देखि C99 compatibility आवश्यक हुन्छ; PHP 8.4.0 देखि C11 compatibility आवश्यक हुन्छ)</member>
+   <member>एउटा web server</member>
+   <member>कुनै पनि module विशेष components (जस्तै <acronym>GD</acronym>, <acronym>PDF</acronym> libs, आदि)</member>
+  </simplelist>
+ </para>
+
+ <para>सीधै Git sources from build गर्दा वा custom परिमार्जनहरू पछि, यी थप tools आवश्यक पर्न सक्छन्:<itemizedlist>
+   <listitem>
+    <simpara><link xlink:href="&url.gnu.autoconf;">autoconf</link>:</simpara>
+    <simplelist>
+     <member>PHP 7.3 र त्यसपछिका: 2.68+</member>
+     <member>
+      PHP 7.2: 2.64+
+     </member>
+     <member>PHP 7.1 र त्यसअघिका: 2.59+</member>
+    </simplelist>
+   </listitem>
+   <listitem>
+    <simpara><link xlink:href="&url.re2c;">re2c</link>:</simpara>
+    <simplelist>
+     <member>PHP 8.3 र त्यसपछिका: 1.0.3+</member>
+     <member>PHP 8.2 र त्यसअघिका: 0.13.4+</member>
+    </simplelist>
+   </listitem>
+   <listitem>
+    <simpara><link xlink:href="&url.bison;">bison</link>:</simpara>
+    <simplelist>
+     <member>PHP 7.4 र त्यसपछिका: 3.0.0+</member>
+     <member>PHP 7.3 र सोभन्दा अघिल्ला: 2.4+ (Bison 3.x सहित)</member>
+    </simplelist>
+   </listitem>
+  </itemizedlist>
+ </para>
+
+ <simpara>PHP from source compile गर्ने थप विस्तृत चरणहरूका लागि, source tarball मा रहेको <link xlink:href="&url.php.git.src.master.view;README.md">README.md</link> file हेर्नुहोस्।</simpara>
+
+ <simpara>प्रारम्भिक PHP setup र configuration प्रक्रियालाई <command>configure</command> script का command line options को प्रयोगद्वारा नियन्त्रण गरिन्छ। <command>./configure --help</command> run गरेर संक्षिप्त विवरणसहित उपलब्ध options को एउटा list हेर्न सकिन्छ। यो manual ले विभिन्न options लाई छुट्टाछुट्टै रूपमा document गर्दछ। <link linkend="configure.about">core options हरू appendix मा फेला पार्न सकिन्छ</link>, भने विभिन्न extension specific options लाई reference पृष्ठहरूमा वर्णन गरिएको छ।</simpara>
+
+ <simpara>configuration script run गरिसकेपछि, <command>make</command> command प्रयोग गरेर PHP build गर्न सकिन्छ। build सम्बन्धी समस्याहरू कसरी समाधान गर्ने भन्नेबारे थप जानकारी <link linkend="faq.installation">frequently asked questions को Installation खण्ड</link>मा दिइएको छ।</simpara>
+
+ <note>
+  <simpara>केही Unix प्रणालीहरूले (जस्तै OpenBSD र SELinux) सुरक्षाका कारण pages लाई writable र executable दुवै रूपमा map गर्न अनुमति नदिन सक्छन्, जसलाई <link xlink:href="&url.install.unix.pax-mprotect;">PaX MPROTECT</link> वा <link xlink:href="&url.install.unix.w-x-violation;">W^X violation protection</link> भनिन्छ। यस प्रकारको memory mapping PCRE को JIT support का लागि आवश्यक हुन्छ, त्यसैले या त PHP लाई <link linkend="pcre.installation">PCRE को JIT support बिना</link> build गर्नुपर्छ, वा प्रणालीद्वारा उपलब्ध गराइएको कुनै पनि माध्यमबाट binary लाई whitelist गर्नुपर्छ।</simpara>
+ </note>
+
+ <note>
+  <simpara>Android toolchain मार्फत ARM का लागि cross-compiling हाल समर्थित छैन।</simpara>
+ </note>
+</sect1>

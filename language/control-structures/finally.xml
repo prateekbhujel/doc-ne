@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 6af4cd5be387fcb28cabfca49f0d9109ebfc660f Maintainer: prateekbhujel Status: ready -->
+<!-- EN-Revision: 43127142d0d96b6a49d4bdcc6ca1a72d0e55b7a0 Maintainer: prateekbhujel Status: draft -->
 <sect1 xml:id="control-structures.finally" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <title>finally</title>
  <?phpdoc print-version-for="finally"?>
@@ -175,6 +175,45 @@ finally catch
 ]]>
    </screen>
   </example>
+  <simpara>
+   &finally; block को &return; statement ले त्यस बेला propagate भइरहेको exception पनि हटाउँछ। यसमा &try; block मा throw भएर catch नभएको exception वा &catch; block मा throw वा फेरि throw गरिएको exception पर्छ। कुनै error रिपोर्ट हुँदैन। Exception throw नै नभएझैँ function ले &finally; block को value return गर्छ:
+  </simpara>
+  <example>
+   <title>&finally; मा &return; गर्दा फेरि throw गरिएको exception हट्छ</title>
+   <programlisting role="php">
+<![CDATA[
+<?php
+function process() {
+    try {
+        throw new Exception('Original exception');
+    } catch (Exception $e) {
+        echo 'Caught: ', $e->getMessage(), "\n";
+        throw $e;
+    } finally {
+        echo 'Within finally', "\n";
+        return 'finally';
+    }
+}
+
+try {
+    echo process(), "\n";
+} catch (Exception $e) {
+    echo 'This is never reached', "\n";
+}
+]]>
+   </programlisting>
+   &example.outputs;
+   <screen>
+<![CDATA[
+Caught: Original exception
+Within finally
+finally
+]]>
+   </screen>
+  </example>
+  <simpara>
+   &return; को विपरीत, <link linkend="control-structures.break"><literal>break</literal></link>, <link linkend="control-structures.continue"><literal>continue</literal></link> वा <link linkend="control-structures.goto"><literal>goto</literal></link> प्रयोग गरेर &finally; block बाट बाहिर निस्कन मिल्दैन। त्यसो गर्दा compile-time fatal error आउँछ। तर पूरै &finally; block भित्र रहेका loops मा <literal>break</literal> र <literal>continue</literal> प्रयोग गर्न मिल्छ।
+  </simpara>
  </sect2>
 
  <sect2>

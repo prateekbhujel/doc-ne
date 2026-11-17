@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 7132d8833a86604aa2d10c16c0470d0ef1a0fdfb Maintainer: prateekbhujel Status: ready -->
+<!-- EN-Revision: 7132d8833a86604aa2d10c16c0470d0ef1a0fdfb Maintainer: prateekbhujel Status: draft -->
 <sect1 xml:id="language.types.float" xmlns:xlink="http://www.w3.org/1999/xlink">
- <title>Floating-point numbers (दशमलव सङ्ख्याहरू)</title>
+ <title>Floating-point सङ्ख्याहरू</title>
 
  <simpara>
-  Floating-point numbers (जसलाई "floats", "doubles", वा "real numbers" पनि भनिन्छ) लाई निम्न मध्ये कुनै पनि सिन्ट्याक्स प्रयोग गरेर लेख्न सकिन्छ:
+  Floating-point सङ्ख्याहरू (जसलाई "floats", "doubles" वा "real numbers" पनि भनिन्छ) निम्नमध्ये कुनै पनि syntax प्रयोग गरेर लेख्न सकिन्छ:
  </simpara>
 
  <informalexample>
@@ -21,7 +21,7 @@ $d = 1_234.567; // PHP 7.4.0 देखि
  </informalexample>
 
  <para>
-  औपचारिक रूपमा, PHP 7.4.0 अनुसार सिन्ट्याक्स:
+  PHP 7.4.0 देखि यसको औपचारिक syntax यस प्रकार छ (अघिल्ला संस्करणहरूमा underscores प्रयोग गर्न मिल्दैनथ्यो):
  </para>
 
  <informalexample>
@@ -42,11 +42,11 @@ EXPONENT_DNUM (({LNUM} | {DNUM}) [eE][+-]? {LNUM})
   <title>Floating-point शुद्धता (Floating-point precision)</title>
 
   <simpara>
-   Floating-point numbers को शुद्धता सीमित हुन्छ। PHP ले सामान्यतया IEEE 754 double precision format प्रयोग गर्छ, जसले गर्दा राउन्डिङका कारण अधिकतम त्रुटि लगभग 1.11e-16 सम्म हुन सक्छ। जटिल गणितीय गणनामा अझ बढी त्रुटि हुन सक्छ।
+   Floating-point सङ्ख्याहरूको precision सीमित हुन्छ। यो प्रणालीमा भर पर्ने भए पनि PHP ले सामान्यतया IEEE 754 double precision format प्रयोग गर्छ। यसमा rounding का कारण हुने अधिकतम सापेक्ष त्रुटि लगभग 1.11e-16 को हाराहारीमा हुन्छ। जटिल गणितीय गणनामा अझ बढी त्रुटि हुन सक्छ। धेरै गणना एकपछि अर्को गर्दा अघिल्ला गणनाको त्रुटिले पछिल्ला नतिजामा पार्ने असर पनि विचार गर्नुपर्छ।
   </simpara>
 
   <simpara>
-   यसका अतिरिक्त, आधार १० मा स्पष्ट देखिने दशमलव सङ्ख्याहरू (जस्तै <literal>0.1</literal> वा <literal>0.7</literal>) लाई computer को भित्री आधार २ (binary) प्रणालीमा सधैँ दुरुस्त रूपमा राख्न सकिँदैन। त्यसैले तिनलाई बाइनरीमा बदल्दा केही सूक्ष्म शुद्धता गुम्न पुग्छ। यसले गर्दा कहिलेकाहीँ अचम्म लाग्दो नतिजा आउँछ: उदाहरणका लागि, <literal>floor((0.1+0.7)*10)</literal> ले अपेक्षा गरिएको <literal>8</literal> को साटो सामान्यतया <literal>7</literal> फर्काउँछ, किनभने भित्री रूपमा यसको मान <literal>7.9999999999999991118...</literal> जस्तो हुन जान्छ।
+   आधार १० मा ठ्याक्कै लेख्न सकिने <literal>0.1</literal> वा <literal>0.7</literal> जस्ता सङ्ख्याहरूलाई computer ले भित्री रूपमा प्रयोग गर्ने आधार २ (binary) मा ठ्याक्कै लेख्न सकिँदैन। Mantissa जति ठूलो भए पनि यो सीमा रहन्छ। त्यसैले binary मा बदल्दा थोरै precision गुम्छ। यसले अलमल पार्ने नतिजा दिन सक्छ: उदाहरणका लागि, <literal>floor((0.1+0.7)*10)</literal> ले अपेक्षित <literal>8</literal> को सट्टा सामान्यतया <literal>7</literal> फर्काउँछ, किनभने भित्री value <literal>7.9999999999999991118...</literal> जस्तो हुन्छ।
   </simpara>
 
   <simpara>
@@ -65,7 +65,7 @@ EXPONENT_DNUM (({LNUM} | {DNUM}) [eE][+-]? {LNUM})
    <title>Strings बाट</title>
 
    <simpara>
-    यदि string <link linkend="language.types.numeric-strings">numeric</link> छ भने त्यो सम्बन्धित float value मा परिणत हुन्छ, अन्यथा शून्य (<literal>0</literal>) बन्छ।
+    String <link linkend="language.types.numeric-strings">numeric वा leading numeric</link> भएमा त्यसलाई सम्बन्धित float value मा बदलिन्छ। अन्यथा शून्य (<literal>0</literal>) मा बदलिन्छ।
    </simpara>
   </sect3>
 
@@ -74,6 +74,9 @@ EXPONENT_DNUM (({LNUM} | {DNUM}) [eE][+-]? {LNUM})
 
    <para>
     अन्य types का values का लागि, पहिले त्यसलाई <type>int</type> मा र त्यसपछि <type>float</type> मा परिवर्तन गरिन्छ। थप जानकारीका लागि <link linkend="language.types.integer.casting">Integer मा परिवर्तन गर्ने तरिका</link> हेर्नुहोस्।
+   </para>
+   <para>
+    केही types लाई <type>int</type> मा बदल्दाको व्यवहार undefined हुन्छ। तिनलाई <type>float</type> मा बदल्दा पनि यही कुरा लागू हुन्छ।
    </para>
   </sect3>
  </sect2>
@@ -88,6 +91,12 @@ EXPONENT_DNUM (({LNUM} | {DNUM}) [eE][+-]? {LNUM})
   <simpara>
    दुई floats समान छन् कि छैनन् भनी जाँच्नका लागि, गणनामा आउन सक्ने न्यूनतम स्वीकार्य भिन्नता (machine epsilon) प्रयोग गरिन्छ:
   </simpara>
+
+  <note>
+   <para>
+    तलको उदाहरणमा <varname>$a</varname> र <varname>$b</varname> पाँच अङ्कको precision सम्म बराबर छन्।
+   </para>
+  </note>
 
   <example>
    <title>Floats तुलना गर्ने उदाहरण</title>

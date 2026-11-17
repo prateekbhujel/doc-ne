@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.array-diff" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>array_diff</refname>
+  <refpurpose>arrays को फरक गणना गर्दछ</refpurpose>
+ </refnamediv>
+
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>array</type><methodname>array_diff</methodname>
+   <methodparam><type>array</type><parameter>array</parameter></methodparam>
+   <methodparam rep="repeat"><type>array</type><parameter>arrays</parameter></methodparam>
+  </methodsynopsis>
+  <para><parameter>array</parameter> लाई एक वा सोभन्दा बढी अन्य arrays सँग तुलना गर्दछ र अन्य कुनै पनि arrays मा नभएका <parameter>array</parameter> का values return गर्दछ।</para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>array</parameter></term>
+     <listitem>
+      <para>जस from तुलना गरिन्छ, त्यो array</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>arrays</parameter></term>
+     <listitem>
+      <para>तुलना गरिने Arrays</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>अन्य कुनै पनि arrays मा उपस्थित नभएका from <parameter>array</parameter> का सबै entries समावेश भएको एउटा <type>array</type> return गर्दछ। <parameter>array</parameter> array मा रहेका Keys सुरक्षित राखिन्छन्।</para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <para>
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      &array.changelog.require-only-one;
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </para>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title><function>array_diff</function> को उदाहरण</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$array1 = array("a" => "green", "red", "blue", "red");
+$array2 = array("b" => "green", "yellow", "red");
+$result = array_diff($array1, $array2);
+
+print_r($result);
+?>
+]]>
+    </programlisting>
+    <para><varname>$array1</varname> मा दोहोरिएका सबै प्रविष्टिहरूलाई एकै तरिकाले व्यवहार गरिन्छ। यसले निम्न output दिनेछ:</para>
+    <screen>
+<![CDATA[
+Array
+(
+    [1] => blue
+)
+]]>
+    </screen>
+   </example>
+  </para>
+
+  <para>दुईवटा elements तब र केवल तब मात्र बराबर मानिन्छन् जब <literal>(string) $elem1 === (string) $elem2</literal> हुन्छ। अर्थात्, जब <link linkend="language.types.string.casting">string representation</link> एउटै हुन्छ।</para>
+
+  <para>
+   <example>
+    <title>नमिल्ने types सहितको <function>array_diff</function> उदाहरण</title>
+    <programlisting role="php">
+     <![CDATA[
+<?php
+// This will generate a Notice that an array cannot be cast to a string.
+$source = [1, 2, 3, 4];
+$filter = [3, 4, [5], 6];
+$result = array_diff($source, $filter);
+
+// Whereas this is fine, since the objects can cast to a string.
+class S {
+  private $v;
+
+  public function __construct(string $v) {
+    $this->v = $v;
+  }
+
+  public function __toString() {
+    return $this->v;
+  }
+}
+
+$source = [new S('a'), new S('b'), new S('c')];
+$filter = [new S('b'), new S('c'), new S('d')];
+
+$result = array_diff($source, $filter);
+
+// $result now contains one instance of S('a');
+var_dump($result);
+?>
+]]>
+    </programlisting>
+   </example>
+  </para>
+  <para>वैकल्पिक comparison function प्रयोग गर्न, <function>array_udiff</function> हेर्नुहोस्।</para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>यो function ले n-dimensional array को एउटा dimension मात्र जाँच गर्दछ। अवश्य पनि, तपाईँले <literal>array_diff($array1[0], $array2[0]);</literal> प्रयोग गरेर अझ गहिरा dimension हरू जाँच गर्न सक्नुहुन्छ।</para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>array_diff_assoc</function></member>
+    <member><function>array_udiff</function></member>
+    <member><function>array_intersect</function></member>
+    <member><function>array_intersect_assoc</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

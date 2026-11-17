@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Revision$ -->
+<!-- EN-Revision: 5f720ab2b9c8122d1a127684748712fc57a24d06 Maintainer: prateekbhujel Status: draft -->
+<refentry xml:id="function.html-entity-decode" xmlns="http://docbook.org/ns/docbook">
+ <refnamediv>
+  <refname>html_entity_decode</refname>
+  <refpurpose>HTML entity हरूलाई तिनीहरूका सम्बन्धित क्यारेक्टरहरूमा रूपान्तरण गर्छ</refpurpose>
+ </refnamediv>
+ 
+ <refsect1 role="description">
+  &reftitle.description;
+  <methodsynopsis>
+   <type>string</type><methodname>html_entity_decode</methodname>
+   <methodparam><type>string</type><parameter>string</parameter></methodparam>
+   <methodparam choice="opt"><type>int</type><parameter>flags</parameter><initializer>ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401</initializer></methodparam>
+   <methodparam choice="opt"><type class="union"><type>string</type><type>null</type></type><parameter>encoding</parameter><initializer>&null;</initializer></methodparam>
+  </methodsynopsis>
+  <para><function>html_entity_decode</function>, <function>htmlentities</function> को उल्टो हो किनकि यसले <parameter>string</parameter> मा रहेका HTML entity हरूलाई तिनीहरूका सम्बन्धित क्यारेक्टरहरूमा रूपान्तरण गर्दछ।</para>
+  <para>अझ स्पष्ट रूपमा भन्नुपर्दा, यो function ले ती सबै entity हरू (सबै numeric entity हरू सहित) लाई decode गर्दछ जुन a) छानिएको document type का लागि अनिवार्य रूपमा मान्य छन् — अर्थात्, XML का लागि, यो function ले कुनै DTD मा परिभाषित हुन सक्ने named entity हरूलाई decode गर्दैन — र b) जसका character वा क्यारेक्टरहरू छानिएको encoding सँग सम्बन्धित coded character set मा पर्दछन् र छानिएको document type मा अनुमतिप्राप्त छन्। अन्य सबै entity हरूलाई जस्ताको तस्तै छोडिन्छ।</para>
+ </refsect1>
+
+ <refsect1 role="parameters">
+  &reftitle.parameters;
+  <para>
+   <variablelist>
+    <varlistentry>
+     <term><parameter>string</parameter></term>
+     <listitem>
+      <para>Input string।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>flags</parameter></term>
+     <listitem>
+      <para>निम्न flags मध्ये एक वा बढीको bitmask, जसले quotes कसरी handle गर्ने र कुन document type प्रयोग गर्ने भनी निर्दिष्ट गर्दछ। यसको default <literal>ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401</literal> हो।<table>
+        <title>उपलब्ध <parameter>flags</parameter> constant हरू</title>
+        <tgroup cols="2">
+         <thead>
+          <row>
+           <entry>Constant को नाम</entry>
+           <entry>विवरण</entry>
+          </row>
+         </thead>
+         <tbody>
+          <row>
+           <entry><constant>ENT_COMPAT</constant></entry>
+           <entry>Double-quotes लाई रूपान्तरण गर्नेछ र single-quotes लाई त्यतिकै छोड्नेछ।</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_QUOTES</constant></entry>
+           <entry>Double र single दुवै quotes लाई रूपान्तरण गर्नेछ।</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_NOQUOTES</constant></entry>
+           <entry>Double र single दुवै quotes लाई रूपान्तरण नगरी त्यतिकै छोड्नेछ।</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_SUBSTITUTE</constant></entry>
+           <entry>एउटा खाली string return गर्नुको सट्टा, अमान्य code unit sequence हरूलाई Unicode Replacement Character U+FFFD (UTF-8) वा &amp;#xFFFD; (अन्यथा) ले प्रतिस्थापन गर्दछ।</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_HTML401</constant></entry>
+           <entry>code लाई HTML 4.01 को रूपमा handle गर्छ।</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_XML1</constant></entry>
+           <entry>code लाई XML 1 को रूपमा handle गर्दछ।</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_XHTML</constant></entry>
+           <entry>code लाई XHTML को रूपमा handle गर्दछ।</entry>
+          </row>
+          <row>
+           <entry><constant>ENT_HTML5</constant></entry>
+           <entry>code लाई HTML 5 को रूपमा handle गर्दछ।</entry>
+          </row>
+         </tbody>
+        </tgroup>
+       </table>
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><parameter>encoding</parameter></term>
+     <listitem>
+      &strings.parameter.encoding;
+      &reference.strings.charsets;
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </para>
+ </refsect1>
+
+ <refsect1 role="returnvalues">
+  &reftitle.returnvalues;
+  <para>decode गरिएको string return गर्दछ।</para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.1.0</entry>
+      <entry><parameter>flags</parameter> लाई from <constant>ENT_COMPAT</constant> बाट <constant>ENT_QUOTES</constant> | <constant>ENT_SUBSTITUTE</constant> | <constant>ENT_HTML401</constant> मा परिवर्तन गरियो।</entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry><parameter>encoding</parameter> अब nullable भएको छ।</entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   <example>
+    <title>HTML entities decode गर्ने</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+$orig = "I'll \"walk\" the <b>dog</b> now";
+
+$a = htmlentities($orig);
+
+$b = html_entity_decode($a);
+
+echo $a, PHP_EOL; // I'll &quot;walk&quot; the &lt;b&gt;dog&lt;/b&gt; now
+
+echo $b, PHP_EOL; // I'll "walk" the <b>dog</b> now
+?>
+]]>
+    </programlisting>
+   </example>   
+  </para>
+ </refsect1>
+
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>तपाईँ सोच्न सक्नुहुन्छ कि trim(html_entity_decode('&amp;nbsp;')); ले string लाई खाली string मा किन घटाउँदैन, त्यो किनभने डिफल्ट ISO 8859-1 encoding मा '&amp;nbsp;' entity ASCII code 32 (जुन <function>trim</function> द्वारा हटाइन्छ) नभएर ASCII code 160 (0xa0) हो।</para>
+  </note>
+ </refsect1>
+
+ <refsect1 role="seealso">
+  &reftitle.seealso;
+  <para>
+   <simplelist>
+    <member><function>htmlentities</function></member>
+    <member><function>htmlspecialchars</function></member>
+    <member><function>get_html_translation_table</function></member>
+    <member><function>urldecode</function></member>
+   </simplelist>
+  </para>
+ </refsect1>
+
+</refentry>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->

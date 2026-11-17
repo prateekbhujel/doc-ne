@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- EN-Revision: 8dc5bef8981ffd33c8c51f7f33414fcf5c03767a Maintainer: prateekbhujel Status: draft -->
+<reference xml:id="class.deprecated" role="class" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude">
+ <title>Deprecated attribute</title>
+ <titleabbrev>Deprecated</titleabbrev>
+
+ <partintro>
+
+  <section xml:id="deprecated.intro">
+   &reftitle.intro;
+   <simpara>यो attribute कुनै functionality लाई deprecated का रूपमा चिन्हित गर्न प्रयोग गरिन्छ। deprecated functionality प्रयोग गर्दा एउटा <constant>E_USER_DEPRECATED</constant> error जारी हुन्छ।</simpara>
+   <simpara>PHP 8.5.0 देखि, यो attribute traits मा र कुनै class बाहिर declare गरिएका compile-time constants मा पनि लागू गर्न सकिन्छ।</simpara>
+  </section>
+
+  <section xml:id="deprecated.synopsis">
+   &reftitle.classsynopsis;
+
+   <classsynopsis class="class">
+    <ooclass>
+     <modifier role="attribute">#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_FUNCTION | \Attribute::TARGET_CLASS_CONSTANT | \Attribute::TARGET_CONSTANT | \Attribute::TARGET_CLASS)]</modifier>
+     <modifier>final</modifier>
+     <classname>Deprecated</classname>
+    </ooclass>
+
+    <classsynopsisinfo role="comment">&Properties;</classsynopsisinfo>
+    <fieldsynopsis>
+     <modifier>public</modifier>
+     <modifier>readonly</modifier>
+     <type class="union"><type>string</type><type>null</type></type>
+     <varname linkend="deprecated.props.message">message</varname>
+    </fieldsynopsis>
+    <fieldsynopsis>
+     <modifier>public</modifier>
+     <modifier>readonly</modifier>
+     <type class="union"><type>string</type><type>null</type></type>
+     <varname linkend="deprecated.props.since">since</varname>
+    </fieldsynopsis>
+
+    <classsynopsisinfo role="comment">&Methods;</classsynopsisinfo>
+    <xi:include xpointer="xmlns(db=http://docbook.org/ns/docbook) xpointer(id('class.deprecated')/db:refentry/db:refsect1[@role='description']/descendant::db:constructorsynopsis[@role='Deprecated'])"/>
+   </classsynopsis>
+  </section>
+
+  <section xml:id="deprecated.props">
+   &reftitle.properties;
+   <variablelist>
+    <varlistentry xml:id="deprecated.props.message">
+     <term><varname>message</varname></term>
+     <listitem>
+      <para>deprecation हुनुको कारण र सम्भावित प्रतिस्थापन functionality व्याख्या गर्ने एउटा optional सन्देश। यो emit गरिने deprecation सन्देशमा समावेश गरिनेछ।</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry xml:id="deprecated.props.since">
+     <term><varname>since</varname></term>
+     <listitem>
+       <para>उक्त functionality कहिलेदेखि deprecated भएको हो भनी जनाउने एउटा optional string। यसको सामग्रीलाई PHP द्वारा validate गरिँदैन र यसमा version नम्बर, मिति वा उपयुक्त मानिने अन्य कुनै पनि value समावेश हुन सक्छ। यो emit गरिने deprecation सन्देशमा समावेश गरिनेछ।</para>
+       <para>PHP को हिस्सा रहेको functionality ले <varname>since</varname> value को रूपमा Major.Minor प्रयोग गर्नेछ, उदाहरणका लागि <literal>'8.4'</literal>।</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </section>
+
+  <section>
+   &reftitle.examples;
+   <informalexample>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+#[\Deprecated(message: "use safe_replacement() instead", since: "1.5")]
+function unsafe_function()
+{
+   echo "This is unsafe", PHP_EOL;
+}
+
+unsafe_function();
+
+?>
+]]>
+    </programlisting>
+    &example.outputs.84.similar;
+    <screen>
+<![CDATA[
+Deprecated: Function unsafe_function() is deprecated since 1.5, use safe_replacement() instead in example.php on line 9
+This is unsafe
+]]>
+    </screen>
+   </informalexample>
+  </section>
+
+  <section role="changelog">
+   &reftitle.changelog;
+   <informaltable>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>&Version;</entry>
+       <entry>&Description;</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>8.5.0</entry>
+       <entry><classname>Deprecated</classname> लाई अब traits मा र एउटा class बाहिर declare गरिएका compile-time constants हरूमा लागू गर्न सकिन्छ, पछिल्लोलाई नयाँ <constant>Attribute::TARGET_CONSTANT</constant> target मार्फत।</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+  </section>
+
+  <section xml:id="deprecated.seealso">
+   &reftitle.seealso;
+   <simplelist>
+    <member><link linkend="language.attributes">Attributes को परिचय</link></member>
+    <member><methodname>ReflectionFunctionAbstract::isDeprecated</methodname></member>
+    <member><methodname>ReflectionClassConstant::isDeprecated</methodname></member>
+    <member><constant>E_USER_DEPRECATED</constant></member>
+   </simplelist>
+  </section>
+
+ </partintro>
+
+ &language.predefined.attributes.deprecated.construct;
+
+</reference>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+indent-tabs-mode:nil
+sgml-parent-document:nil
+sgml-default-dtd-file:"~/.phpdoc/manual.ced"
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+vim600: syn=xml fen fdm=syntax fdl=2 si
+vim: et tw=78 syn=sgml
+vi: ts=1 sw=1
+-->
